@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,43 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.srv;
+
+import java.util.List;
+
+import org.beigesoft.mdl.Page;
+
+/**
+ * <p>Page service for pagination.</p>
+ *
+ * @author Yury Demidenko
+ */
+public interface ISrvPg {
+
+  /**
+   * <p>Evaluate pages list.</p>
+   * <pre>
+   * example:
+   * 1 ... 13 14 15 currPg-16 17 18 19 ... 42
+   * currPg-1 2 3 4 ...  42
+   * 1 currPg-2 3 4 5 ...  42
+   * 1 ... 37 38 39 currPg-40 41 42
+   * 1 2 3 currPg-4 5 6
+   * </pre>
+   * @param pCurPgNo current page #
+   * @param pTotPgs total pages
+   * @param pTailSz quantity of pages after and before current page
+   * @return List<Page> list of pages
+   **/
+  List<Page> evPgs(int pCurPgNo, int pTotPgs, int pTailSz);
+
+  /**
+   * <p>Eval page count.</p>
+   * @param pRowCount Row Count
+   * @param pPgSz Items Per Page
+   * @return int count of pages
+   **/
+  int evPgCnt(int pRowCount, int pPgSz);
+}

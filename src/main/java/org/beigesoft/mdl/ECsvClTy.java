@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,49 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdl;
+
+/**
+ * <p>CSV column type.</p>
+ *
+ * @author Yury Demidenko
+ */
+public enum ECsvClTy {
+
+  /**
+   * <p>String 0.</p>
+   **/
+  STRING,
+
+  /**
+   * <p>Boolean 1.</p>
+   **/
+  BOOLEAN,
+
+  /**
+   * <p>Integer 2.</p>
+   **/
+  INTEGER,
+
+  /**
+   * <p>Numeric 3 (BigDecimal).</p>
+   **/
+  NUMERIC,
+
+  /**
+   * <p>Date 4.</p>
+   **/
+  DATE,
+
+  /**
+   * <p>Long 5.</p>
+   **/
+  LONG,
+
+  /**
+   * <p>Double 6.</p>
+   **/
+  DOUBLE;
+}

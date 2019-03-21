@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,27 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.hld;
+
+/**
+ * <p>Abstraction of generic holder of a thing that associated with
+ * another named one, e.g. holder of getters (reflect.Method)
+ * for a class fields.</p>
+ *
+ * @param <K> key thing type.
+ * @param <A> associated thing type.
+ * @author Yury Demidenko
+ */
+public interface IHldNm<K, A> {
+
+  /**
+   * <p>Get thing for given one and name,
+   * e.g. holder of getters (reflect.Method) for a class fields.</p>
+   * @param pKey key thing
+   * @param pNm name
+   * @return associated thing
+   **/
+  A get(K pKey, String pNm);
+}

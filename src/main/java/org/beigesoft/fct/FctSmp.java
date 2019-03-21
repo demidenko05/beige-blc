@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,52 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.fct;
+
+import java.util.Map;
+
+/**
+ * <p>Simple factory that create a request(or) scoped bean
+ * by using reflection.</p>
+ *
+ * @author Yury Demidenko
+ * @param <M> type of created bean
+ **/
+public class FctSmp<M> implements IFctRq<M> {
+
+  /**
+   * <p>Object class.</p>
+   **/
+  private Class<M> cls;
+
+  /**
+   * <p>Create a bean.</p>
+   * @param pRqVs request scoped vars
+   * @return M request(or) scoped bean
+   * @throws Exception - an exception
+   */
+  @Override
+  public final M create(final Map<String, Object> pRqVs) throws Exception {
+    M object = this.cls.newInstance();
+    return object;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for cls.</p>
+   * @return Class<M>
+   **/
+  public final Class<M> getCls() {
+    return this.cls;
+  }
+
+  /**
+   * <p>Setter for cls.</p>
+   * @param pCls reference
+   **/
+  public final void setCls(final Class<M> pCls) {
+    this.cls = pCls;
+  }
+}

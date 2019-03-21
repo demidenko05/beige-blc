@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,32 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.srv;
+
+import java.util.List;
+import java.util.Map;
+import java.io.Reader;
+
+import org.beigesoft.mdlp.CsvMth;
+
+/**
+ * <p>Basic reading service that reads next line from CSV file.</p>
+ *
+ * @author Yury Demidenko
+ */
+public interface ICsvRdr {
+
+  /**
+   * <p>Reads next line from CSV file as list of Strings,
+   * returns null if no more rows left.</p>
+   * @param pReqVars request scoped vars
+   * @param pReader Reader
+   * @param pCsvMth Csv Method
+   * @return List<String> list of columns values or null if no more rows left
+   * @throws Exception an Exception
+   **/
+  List<String> readNext(Map<String, Object> pReqVars,
+    Reader pReader, CsvMth pCsvMth) throws Exception;
+}

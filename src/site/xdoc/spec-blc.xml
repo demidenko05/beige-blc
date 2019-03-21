@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Beigesoft™ business logic common library specification.</title>
+  </properties>
+
+  <body>
+
+    <!-- The body of the document contains a number of sections -->
+    <section name="Beigesoft™ business logic common library specification.">
+      
+      <h4>Definitions, Goals, Facts and Requirements</h4>
+      <p>It's designed for goals:
+        <ul>
+          <li>high performance including for standalone applications on mobile devices</li>
+          <li>ability to change during runtime</li>
+        </ul>
+      </p>
+
+      <h4>Request scoped variables</h4>
+      <p>It's used in JSP (rendering), in converters and over services</p>
+      <p>String representations of some things depend of user preferences. To make it flexible, it's used Map&lt;String, Object&gt; to pass request scoped vars.
+        Request scoped variables pRqVs contains of:
+        <ul>
+          <li>rqDt - IReqDt request data (only when using in WEB application)</li>
+          <li>cmnPref - decimal places in quantity, cost, price, decimal separator char value</li>
+          <li>lngPrf - UsrPrf - persistable user preferences - decimal separator, digits in group, language, etc.</li>
+          <li><b>Converters specific variables:</b></li>
+          <li>fldCls - Class - current field's class</li>
+          <li>verAlg - Integer - version algorithm for current persistable entity, 0 auto-increment, 1-changed time</li>
+        </ul>
+      </p>
+      
+    </section>
+
+  </body>
+
+</document>

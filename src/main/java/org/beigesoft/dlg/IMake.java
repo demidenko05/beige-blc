@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,25 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.dlg;
+
+import java.util.Map;
+
+/**
+ * <p>Useful abstraction of delegate that make something
+ * and can use abstract parameter pRqVs,
+ * it can throws Exception.</p>
+ *
+ * @author Yury Demidenko
+ */
+public interface IMake {
+
+  /**
+   * <p>Make something.</p>
+   * @param pRqVs request scoped vars
+   * @throws Exception - an exception
+   **/
+  void make(Map<String, Object> pRqVs) throws Exception;
+}

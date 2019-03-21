@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,39 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.prp;
+
+import java.util.Properties;
+import java.util.LinkedHashSet;
+
+/**
+ * <p>Comparator for Entry.getValue().get(orderKey).Value of String that
+ * contain Integer.toString() value.</p>
+ *
+ * @author Yury Demidenko
+ */
+public class LnkPrps extends Properties {
+
+  /**
+   * <p>Ordered keys.</p>
+   **/
+  private final LinkedHashSet<String> ordKeys =
+    new LinkedHashSet<String>();
+
+  @Override
+  public final Object put(final Object key, final Object value) {
+    ordKeys.add(key.toString());
+    return super.put(key, value);
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Geter for ordKeys.</p>
+   * @return final LinkedHashSet<String>
+   **/
+  public final LinkedHashSet<String> getOrdKeys() {
+    return this.ordKeys;
+  }
+}

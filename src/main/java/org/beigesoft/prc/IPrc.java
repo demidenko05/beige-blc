@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,26 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.prc;
+
+import java.util.Map;
+
+import org.beigesoft.mdl.IReqDt;
+
+/**
+ * <p>Abstraction of service that processes a request.</p>
+ *
+ * @author Yury Demidenko
+ */
+public interface IPrc {
+
+  /**
+   * <p>Processes given request.</p>
+   * @param pRqVs request scoped vars
+   * @param pRqDt Request Data
+   * @throws Exception - an exception
+   **/
+  void process(Map<String, Object> pRqVs, IReqDt pRqDt) throws Exception;
+}

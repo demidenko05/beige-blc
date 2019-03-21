@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,22 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.srv;
+
+/**
+ * <p>Flexible alternative to Object.toString().</p>
+ *
+ * @author Yury Demidenko
+ * @param <M> type of model to be explained
+ */
+public interface IToStr<M> {
+
+  /**
+   * <p>Say about model.</p>
+   * @param model to be explained
+   * @return String representation
+   **/
+  String str(M model);
+}

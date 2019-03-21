@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,58 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.hld;
+
+import java.util.Map;
+
+import org.beigesoft.srv.IOrm;
+import org.beigesoft.mdlp.MaFrn;
+import org.beigesoft.mdlp.MaFrnLn;
+
+/**
+ * <p>Retriever Match Foreign from database.</p>
+ *
+ * @param <RS> platform dependent RDBMS recordset
+ * @author Yury Demidenko
+ */
+public class HlMaFrn<RS> implements IHldEx<Long, MaFrn>  {
+
+  /**
+   * <p>ORM service.</p>
+   **/
+  private IOrm<RS> orm;
+
+  /**
+   * <p>Get match foreign  given ID.</p>
+   * @param pRqVs request scoped vars
+   * @param pId ID
+   * @return match foreign
+   * @throws Exception an Exception
+   **/
+  public final MaFrn get(final Map<String, Object> pRqVs,
+    final Long pId) throws Exception {
+    MaFrn mf = getOrm().retEntId(pRqVs, null, MaFrn.class, pId);
+    mf.setLns(getOrm().retLstCnd(pRqVs, null, MaFrnLn.class,
+      "where OWNR=" + pId));
+    return mf;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for orm.</p>
+   * @return IOrm<RS>
+   **/
+  public final IOrm<RS> getOrm() {
+    return this.orm;
+  }
+
+  /**
+   * <p>Setter for orm.</p>
+   * @param pOrm reference
+   **/
+  public final void setOrm(final IOrm<RS> pOrm) {
+    this.orm = pOrm;
+  }
+}

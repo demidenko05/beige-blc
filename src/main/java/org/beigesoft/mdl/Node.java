@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,81 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdl;
+
+import java.util.List;
+
+/**
+ * <p>Node to make generic tree.</p>
+ *
+ * @param <T> value type
+ * @author Yury Demidenko
+ */
+public class Node<T> {
+
+  /**
+   * <p>Name.</p>
+   **/
+  private String nme;
+
+  /**
+   * <p>Value.</p>
+   **/
+  private T val;
+
+  /**
+   * <p>Owned nodes.</p>
+   **/
+  private List<Node<T>> nodes;
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for nme.</p>
+   * @return String
+   **/
+  public final String getNme() {
+    return this.nme;
+  }
+
+  /**
+   * <p>Setter for nme.</p>
+   * @param pNme reference
+   **/
+  public final void setNme(final String pNme) {
+    this.nme = pNme;
+  }
+
+  /**
+   * <p>Getter for val.</p>
+   * @return T
+   **/
+  public final T getVal() {
+    return this.val;
+  }
+
+  /**
+   * <p>Setter for val.</p>
+   * @param pVal reference
+   **/
+  public final void setVal(final T pVal) {
+    this.val = pVal;
+  }
+
+  /**
+   * <p>Getter for nodes.</p>
+   * @return List<Node>
+   **/
+  public final List<Node<T>> getNodes() {
+    return this.nodes;
+  }
+
+  /**
+   * <p>Setter for nodes.</p>
+   * @param pNodes reference
+   **/
+  public final void setNodes(final List<Node<T>> pNodes) {
+    this.nodes = pNodes;
+  }
+}

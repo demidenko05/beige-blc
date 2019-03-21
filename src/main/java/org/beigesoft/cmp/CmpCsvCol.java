@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,29 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.cmp;
+
+import java.util.Comparator;
+import java.io.Serializable;
+
+import org.beigesoft.mdlp.CsvCl;
+
+/**
+ * <p>Comparator of CSV column.</p>
+ *
+ * @author Yury Demidenko
+ */
+public class CmpCsvCol implements Comparator<CsvCl>, Serializable {
+
+  /**
+   * <p>serialVersionUID.</p>
+   **/
+  static final long serialVersionUID = 497319339317812L;
+
+  @Override
+  public final int compare(final CsvCl pCol1, final CsvCl pCol2) {
+    return pCol1.getIndx().compareTo(pCol2.getIndx());
+  }
+}

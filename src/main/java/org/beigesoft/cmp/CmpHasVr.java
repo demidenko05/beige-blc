@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,30 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.cmp;
+
+import java.util.Comparator;
+import java.io.Serializable;
+
+import org.beigesoft.mdl.IHasVr;
+
+/**
+ * <p>Comparator of model that has Version.</p>
+ *
+ * @param <T> has version type
+ * @author Yury Demidenko
+ */
+public class CmpHasVr<T extends IHasVr> implements Comparator<T>, Serializable {
+
+  /**
+   * <p>serialVersionUID.</p>
+   **/
+  static final long serialVersionUID = 491312476313412L;
+
+  @Override
+  public final int compare(final T o1, final T o2) {
+    return o1.getVer().compareTo(o2.getVer());
+  }
+}

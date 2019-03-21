@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,28 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdl;
+
+/**
+ * <p>Abstraction an persistable model that has owner,
+ * e.g. an invoice line.</p>
+ *
+ * @author Yury Demidenko
+ * @param <O> type of owner
+ */
+public interface IOwned<O> {
+
+  /**
+   * <p>Usually it's simple getter that return owner.</p>
+   * @return O owner
+   **/
+  O getOwnr();
+
+  /**
+   * <p>Usually it's simple setter for owner.</p>
+   * @param pOwnr reference
+   **/
+  void setOwnr(O pOwnr);
+}

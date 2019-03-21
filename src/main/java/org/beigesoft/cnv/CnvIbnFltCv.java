@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,40 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.cnv;
+
+import java.util.Map;
+import java.util.HashMap;
+
+import org.beigesoft.mdl.ColVals;
+
+/**
+ * <p>Converter from a Float type to column values
+ * without transformation.</p>
+ *
+ * @author Yury Demidenko
+ */
+public class CnvIbnFltCv implements IConvNmInto<Float, ColVals> {
+
+  /**
+   * <p>Put Float object to column values without transformation.</p>
+   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pVs invoker scoped vars, e.g. a current converted field's class of
+   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
+   * @param pFrom from a Float object
+   * @param pClVl to column values
+   * @param pNm field name
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final void conv(final Map<String, Object> pRqVs,
+    final Map<String, Object> pVs, final Float pFrom,
+      final ColVals pClVl, final String pNm) throws Exception {
+    if (pClVl.getFloats() == null) {
+      pClVl.setFloats(new HashMap<String, Float>());
+    }
+    pClVl.getFloats().put(pNm, pFrom);
+  }
+}

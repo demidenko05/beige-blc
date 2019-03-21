@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,55 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.cmp;
+
+import java.util.Comparator;
+import java.util.Map;
+import java.io.Serializable;
+
+/**
+ * <p>Comparator for Entry.getValue().get(orderKey).Value of String that
+ * contain Integer.toString() value.</p>
+ *
+ * @author Yury Demidenko
+ */
+public class CmpEntrVlStrInt
+  implements Comparator<Map.Entry<String, Map<String, String>>>, Serializable {
+
+  /**
+   * <p>serialVersionUID.</p>
+   **/
+  static final long serialVersionUID = 49732947987715L;
+
+  /**
+   * <p>Key of order property.</p>
+   **/
+  private final String orderKey;
+
+  /**
+   * <p>Only constructor.</p>
+   * @param pOrderKey order key
+   **/
+  public CmpEntrVlStrInt(final String pOrderKey) {
+    this.orderKey = pOrderKey;
+  }
+
+  @Override
+  public final int compare(final Map.Entry<String, Map<String, String>> o1,
+          final Map.Entry<String, Map<String, String>> o2) {
+    Integer intO1 = Integer.valueOf(o1.getValue().get(orderKey));
+    Integer intO2 = Integer.valueOf(o2.getValue().get(orderKey));
+    return intO1.compareTo(intO2);
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Geter for orderKey.</p>
+   * @return String
+   **/
+  public final String getOrderKey() {
+    return this.orderKey;
+  }
+}

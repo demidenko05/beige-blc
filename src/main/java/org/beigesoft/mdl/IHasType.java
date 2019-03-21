@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,25 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdl;
+
+/**
+ * <p>Abstract model of entity that is used in other one,
+ * but that using entity uses entity of different types the in same field.
+ * For example warehouse entry can be made by purchase or sales.
+ * Accounting record has sub-account that can be InvItem or DebtorCreditor.
+ * So cnsType returns unique code of entity type (OOP consumable constant).
+ * </p>
+ *
+ * @author Yury Demidenko
+ */
+public interface IHasType {
+
+  /**
+   * <p>Constant of entity type.</p>
+   * @return entity type code
+   **/
+  int cnsType();
+}

@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,60 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.prc;
+
+import java.util.Map;
+
+import org.beigesoft.exc.ExcCode;
+import org.beigesoft.mdl.IReqDt;
+import org.beigesoft.srv.ICsvDtRet;
+
+/**
+ * <p>Service that retrieves CSV sample data row.</p>
+ *
+ * @author Yury Demidenko
+ */
+public class PrCsSmDtRo implements IPrc {
+
+  /**
+   * <p>Retrs map.</p>
+   **/
+  private Map<String, ICsvDtRet> retrs;
+
+  /**
+   * <p>Retrieves CSV sample data row and put as request attribute "csDtTr".</p>
+   * @param pRqVs additional param
+   * @param pRqDt Request Data
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final void process(final Map<String, Object> pRqVs,
+    final IReqDt pRqDt) throws Exception {
+    String nmRet = pRqDt.getParam("nmRet");
+    ICsvDtRet ret = this.retrs.get(nmRet);
+    if (ret == null) {
+      throw new ExcCode(ExcCode.WRPR, "Can't find retriever " + nmRet);
+    }
+    pRqDt.setAttr("csDtTr", ret.getSmpDtRow(pRqVs));
+  }
+
+  //Simple getters and setters:
+
+  /**
+   * <p>Getter for retrs.</p>
+   * @return Map<String, ICsvDtRet>
+   **/
+  public final Map<String, ICsvDtRet> getRetrs() {
+    return this.retrs;
+  }
+
+  /**
+   * <p>Setter for retrs.</p>
+   * @param pRetrs reference
+   **/
+  public final void setRetrs(final Map<String, ICsvDtRet> pRetrs) {
+    this.retrs = pRetrs;
+  }
+}

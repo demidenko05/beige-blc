@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,25 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.dlg;
+
+import java.util.Map;
+
+/**
+ * <p>Abstraction of generic delegate that makes something with a model.</p>
+ *
+ * @author Yury Demidenko
+ * @param <M> type of model
+ */
+public interface IMakeWh<M> {
+
+  /**
+   * <p>Make something with a model.</p>
+   * @param pRqVs request scoped vars
+   * @param model to make
+   * @throws Exception - an exception
+   **/
+  void make(Map<String, Object> pRqVs, M model) throws Exception;
+}

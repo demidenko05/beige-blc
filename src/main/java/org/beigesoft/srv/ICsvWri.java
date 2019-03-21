@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,32 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.srv;
+
+import java.util.List;
+import java.util.Map;
+import java.io.OutputStream;
+
+import org.beigesoft.mdlp.CsvMth;
+
+/**
+ * <p>Basic writing service that writes CSV data into given stream according
+ * given data table and CSV method.</p>
+ *
+ * @author Yury Demidenko
+ */
+public interface ICsvWri {
+
+  /**
+   * <p>Writes CSV file according given data table and CSV method.</p>
+   * @param pRqVs request scoped vars
+   * @param pData data table
+   * @param pCsvMth Csv Method
+   * @param pOus servlet/file output stream
+   * @throws Exception an Exception
+   **/
+  void write(Map<String, Object> pRqVs, List<List<Object>> pData,
+    CsvMth pCsvMth, final OutputStream pOus) throws Exception;
+}

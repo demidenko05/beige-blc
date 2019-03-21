@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,30 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.srv;
+
+/**
+ * <p>Abstraction of I18N service.</p>
+ *
+ * @author Yury Demidenko
+ */
+public interface II18n {
+
+  /**
+   * <p>Evaluate message by given key for default, the first language
+   * or preferred language stored as thread local variable.</p>
+   * @param key of message
+   * @return String internationalized message
+   **/
+  String getMsg(String key);
+
+  /**
+   * <p>Evaluate message for given language.</p>
+   * @param pKey of message
+   * @param pLang language name e.g. "en" or "ru"
+   * @return String internationalized message
+   **/
+  String getMsg(String pKey, String pLang);
+}

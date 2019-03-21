@@ -1,0 +1,3 @@
+* text=auto
+src/test/resources/bnk-stm-crlf.csv text eol=crlf
+src/test/resources/bnk-stm-cr.csv text eol=cr

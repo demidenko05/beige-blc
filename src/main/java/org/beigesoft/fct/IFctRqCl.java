@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,26 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.fct;
+
+import java.util.Map;
+
+/**
+ * <p>Interface of Factory that make a bean copy (clone).</p>
+ *
+ * @author Yury Demidenko
+ * @param <M> type of created bean
+ **/
+public interface IFctRqCl<M> extends IFctRq<M> {
+
+  /**
+   * <p>Create bean based on pOrg.</p>
+   * @param pRqVs request scoped vars
+   * @param pOrg bean
+   * @return M copy of pOrg bean (request(or) scoped)
+   * @throws Exception - an exception
+   */
+  M clone(Map<String, Object> pRqVs, M pOrg) throws Exception;
+}

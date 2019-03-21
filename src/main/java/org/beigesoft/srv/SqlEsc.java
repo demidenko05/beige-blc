@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,25 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.srv;
+
+/**
+ * <p>Standard SQL Escape service.</p>
+ *
+ * @author Yury Demidenko
+ */
+public class SqlEsc implements ISqlEsc {
+
+  /**
+   * <p>Load string from file (usually SQL query).</p>
+   * @param pSource string
+   * @return String escaped
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final String esc(final String pSource) throws Exception {
+    return pSource.replace("'", "''");
+  }
+}

@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,29 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.hnd;
+
+import java.util.Map;
+
+import org.beigesoft.mdl.IReqDt;
+
+/**
+ * <p>Abstraction of business service for handle request.
+ * It is usually transactional service.
+ * It based on abstraction of request data (get/set param, attribute)
+ * that usually wrap HttpServletRequest(parameters/attributes).</p>
+ *
+ * @author Yury Demidenko
+ */
+public interface IHndRq {
+
+  /**
+   * <p>Handle request.</p>
+   * @param pRqVs Request scoped variables
+   * @param pRqDt Request Data
+   * @throws Exception - an exception
+   */
+  void handle(Map<String, Object> pRqVs, IReqDt pRqDt) throws Exception;
+}

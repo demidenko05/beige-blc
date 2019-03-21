@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,35 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.srv;
+
+import java.util.List;
+import java.util.Map;
+
+import org.beigesoft.mdl.Node;
+
+/**
+ * <p>Basic service that retrieves CSV data.</p>
+ *
+ * @author Yury Demidenko
+ */
+public interface ICsvDtRet {
+
+  /**
+   * <p>Retrieves CSV data.</p>
+   * @param pRqVs request scoped vars
+   * @return data table
+   * @throws Exception an Exception
+   **/
+  List<List<Object>> retData(Map<String, Object> pRqVs) throws Exception;
+
+  /**
+   * <p>Retrieves sample data row (tree) to make CSV column.</p>
+   * @param pRqVs request scoped vars
+   * @return sample data row
+   * @throws Exception an Exception
+   **/
+  List<Node<String>> getSmpDtRow(Map<String, Object> pRqVs) throws Exception;
+}

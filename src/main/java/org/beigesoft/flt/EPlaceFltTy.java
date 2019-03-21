@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,30 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.flt;
+
+
+/**
+ * <p>Place Filter type.</p>
+ *
+ * @author Yury Demidenko
+ */
+public enum EPlaceFltTy {
+
+  /**
+   * <p>0, List of pickup places.</p>
+   **/
+  LIST,
+
+  /**
+   * <p>1, Distance around place.</p>
+   **/
+  DISTANCE,
+
+  /**
+   * <p>2, Distance around place.</p>
+   **/
+  TIME_ZONE;
+}

@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,36 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.cnv;
+
+import java.util.Map;
+
+import org.beigesoft.mdl.IRecSet;
+
+/**
+ * <p>Converts named field from result-set to String.</p>
+ *
+ * @param <RS> platform dependent record set type
+ * @author Yury Demidenko
+ */
+public class CnvBnRsStr<RS> implements IConvNm<IRecSet<RS>, String> {
+
+  /**
+   * <p>Converts named field from resultset.</p>
+   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pVs invoker scoped vars, e.g. a current converted field's class of
+   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
+   * @param pRs result set
+   * @param pNm field name
+   * @return pTo to value
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final String conv(final Map<String, Object> pRqVs,
+    final Map<String, Object> pVs, final IRecSet<RS> pRs,
+      final String pNm) throws Exception {
+    return pRs.getStr(pNm);
+  }
+}

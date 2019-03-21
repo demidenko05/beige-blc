@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,39 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.flt;
+
+/**
+ * <p>Date Filter type.</p>
+ *
+ * @author Yury Demidenko
+ */
+public enum EDtFltTy {
+
+  /**
+   * <p>0, Since day.</p>
+   **/
+  SINCE_DAY,
+
+  /**
+   * <p>1, At day.</p>
+   **/
+  AT_DAY,
+
+  /**
+   * <p>2, At time (day, hour, minutes.</p>
+   **/
+  AT_TIME,
+
+  /**
+   * <p>3, From day1 till day2.</p>
+   **/
+  FROM_TILL_DAY,
+
+  /**
+   * <p>4, From day-hour-minute#1 till day-hour-minute#2.</p>
+   **/
+  FROM_TILL_TIME;
+}

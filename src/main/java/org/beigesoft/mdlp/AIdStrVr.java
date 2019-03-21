@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,40 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdlp;
+
+import org.beigesoft.mdl.AHasVr;
+import org.beigesoft.mdl.IIdStrVr;
+
+/**
+ * <p>Base abstraction mdlp model with ID String type.</p>
+ *
+ * @author Yury Demidenko
+ */
+public abstract class AIdStrVr extends AHasVr implements IIdStrVr {
+
+  /**
+   * <p>Fast explicit, usable ID of type String.</p>
+   **/
+  private String iid;
+
+  /**
+   * <p>Geter for id.</p>
+   * @return String
+   **/
+  @Override
+  public final String getIid() {
+    return this.iid;
+  }
+
+  /**
+   * <p>Setter for id.</p>
+   * @param pId reference/value
+   **/
+  @Override
+  public final void setIid(final String pId) {
+    this.iid = pId;
+  }
+}

@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,32 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.hnd;
+
+import java.util.Map;
+import java.io.OutputStream;
+
+import org.beigesoft.mdl.IReqDt;
+
+/**
+ * <p>Handler that get parameters (include report service name)
+ * from HTTP-request, and invoke report e.g.
+ * "reportInvoice.make(invoice, OutputStream)".
+ * This is usually a report (PDF, CSV...).</p>
+ *
+ * @author Yury Demidenko
+ */
+public interface IHndFlRpRq {
+
+  /**
+   * <p>Handle file-report request.</p>
+   * @param pRqVs Request scoped variables
+   * @param pRqDt Request Data
+   * @param pSous servlet output stream
+   * @throws Exception - an exception
+   */
+  void handle(Map<String, Object> pRqVs, IReqDt pRqDt,
+    OutputStream pSous) throws Exception;
+}

@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,28 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.dlg;
+
+import java.util.Map;
+
+/**
+ * <p>Abstraction of generic delegate that
+ * evaluates something from given data.</p>
+ *
+ * @author Yury Demidenko
+ * @param <M> type given data
+ * @param <R> type of evaluated data
+ */
+public interface IEvalFr<M, R> {
+
+  /**
+   * <p>Evaluate something from given data.</p>
+   * @param pRqVs request scoped vars
+   * @param pData data
+   * @return evaluated data
+   * @throws Exception - an exception
+   **/
+  R eval(Map<String, Object> pRqVs, M pData) throws Exception;
+}

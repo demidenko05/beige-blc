@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,34 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.srv;
+
+import java.util.Map;
+import java.io.OutputStream;
+
+import org.beigesoft.mdl.IReqDt;
+import org.beigesoft.mdl.IHasId;
+
+/**
+ * <p>Abstraction of service that makes file-report into stream
+ * for given entity.</p>
+ *
+ * @param <T> entity type
+ * @param <ID> entity ID type
+ * @author Yury Demidenko
+ */
+public interface IEntFlRp<T extends IHasId<ID>, ID> {
+
+  /**
+   * <p>Makes file-report into stream for given entity.</p>
+   * @param pRqVs request scoped vars
+   * @param pRqDt Request Data
+   * @param pEntity Entity to process
+   * @param pSous servlet output stream
+   * @throws Exception - an exception
+   **/
+   void report(Map<String, Object> pRqVs,
+    T pEntity, IReqDt pRqDt, OutputStream pSous) throws Exception;
+}

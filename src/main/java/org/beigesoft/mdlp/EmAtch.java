@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,61 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdlp;
+
+import org.beigesoft.mdl.IOwned;
+
+/**
+ * <p>Persistable model of attachment in email.</p>
+ *
+ * @author Yury Demidenko
+ */
+public class EmAtch extends AIdLnVrNm implements IOwned<EmMsg> {
+
+  /**
+   * <p>Email message.</p>
+   **/
+  private EmMsg ownr;
+
+  /**
+   * <p>Path.</p>
+   **/
+  private String pth;
+
+  /**
+   * <p>Getter for ownr.</p>
+   * @return EmMsg
+   **/
+  @Override
+  public final EmMsg getOwnr() {
+    return this.ownr;
+  }
+
+  /**
+   * <p>Setter for ownr.</p>
+   * @param pOwnr reference
+   **/
+  @Override
+  public final void setOwnr(final EmMsg pOwnr) {
+    this.ownr = pOwnr;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for pth.</p>
+   * @return String
+   **/
+  public final String getPth() {
+    return this.pth;
+  }
+
+  /**
+   * <p>Setter for pth.</p>
+   * @param pPth reference
+   **/
+  public final void setPth(final String pPth) {
+    this.pth = pPth;
+  }
+}

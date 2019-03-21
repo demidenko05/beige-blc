@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,27 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdl;
+
+/**
+ * <p>Abstraction an persistable model that must has ID.</p>
+ *
+ * @author Yury Demidenko
+ * @param <ID> type of ID
+ */
+public interface IHasId<ID> extends IEditable {
+
+  /**
+   * <p>Usually it's simple getter that return model ID.</p>
+   * @return ID model ID
+   **/
+  ID getIid();
+
+  /**
+   * <p>Usually it's simple setter for model ID.</p>
+   * @param pId model ID
+   **/
+  void setIid(ID pId);
+}

@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,27 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.fct;
+
+import java.util.Map;
+
+/**
+ * <p>Abstraction of type checked application scope beans factory.
+ * Beans are same type and same sphere, e.g. fields converters.</p>
+ *
+ * @param <T> bean super-type
+ * @author Yury Demidenko
+ */
+public interface IFctNm<T> {
+
+  /**
+   * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
+   * @param pRqVs request scoped vars
+   * @param pBnNm - bean name
+   * @return requested bean
+   * @throws Exception - an exception
+   */
+  T laz(Map<String, Object> pRqVs, String pBnNm) throws Exception;
+}

@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,37 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdl;
+
+/**
+ * <p>Base abstraction editable model with version.</p>
+ *
+ * @author Yury Demidenko
+ */
+public abstract class AHasVr extends AEditable implements IHasVr {
+
+  /**
+   * <p>Version to check dirty or replication.</p>
+   **/
+  private Long ver;
+
+  /**
+   * <p>Geter for ver.</p>
+   * @return Long
+   **/
+  @Override
+  public final Long getVer() {
+    return this.ver;
+  }
+
+  /**
+   * <p>Setter for ver.</p>
+   * @param pVer reference
+   **/
+  @Override
+  public final void setVer(final Long pVer) {
+    this.ver = pVer;
+  }
+}

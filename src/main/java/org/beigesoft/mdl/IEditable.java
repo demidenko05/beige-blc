@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,32 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdl;
+
+/**
+ * <p>Abstraction an editable model that has status "is new".
+ * Also it's used for persistable model to make decision
+ * "insert or update?".</p>
+ *
+ * @author Yury Demidenko
+ */
+public interface IEditable {
+
+  /**
+   * <p>Evaluate "is new" status.
+   * Usually it's simple getter.
+   * </p>
+   * @return boolean "is new?"
+   **/
+  Boolean getIsNew();
+
+  /**
+   * <p>Set "is new" status.
+   * Usually it's simple setter.
+   * </p>
+   * @param isNew "is new?"
+   **/
+  void setIsNew(Boolean isNew);
+}

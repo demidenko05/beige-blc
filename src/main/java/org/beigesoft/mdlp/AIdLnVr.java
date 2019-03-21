@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,40 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdlp;
+
+import org.beigesoft.mdl.AHasVr;
+import org.beigesoft.mdl.IIdLnVr;
+
+/**
+ * <p>Base abstraction mdlp model with ID Long type and version.</p>
+ *
+ * @author Yury Demidenko
+ */
+public abstract class AIdLnVr extends AHasVr implements IIdLnVr {
+
+  /**
+   * <p>Fast explicit, usable ID of type Long.</p>
+   **/
+  private Long iid;
+
+  /**
+   * <p>Geter for id.</p>
+   * @return Long
+   **/
+  @Override
+  public final Long getIid() {
+    return this.iid;
+  }
+
+  /**
+   * <p>Setter for id.</p>
+   * @param pId reference/value
+   **/
+  @Override
+  public final void setIid(final Long pId) {
+    this.iid = pId;
+  }
+}

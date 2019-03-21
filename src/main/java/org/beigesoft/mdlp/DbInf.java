@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,79 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdlp;
+
+/**
+ * <p>Every database must has ID for replication purposes
+ * and version for upgrade purpose.</p>
+ *
+ * @author Yury Demidenko
+ */
+public class DbInf {
+
+  /**
+   * <p>ID of type Integer.</p>
+   **/
+  private Integer dbId;
+
+  /**
+   * <p>Version of type Integer.</p>
+   **/
+  private Integer dbVr;
+
+  /**
+   * <p>Description.</p>
+   **/
+  private String desc;
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for dbId.</p>
+   * @return Integer
+   **/
+  public final Integer getDbId() {
+    return this.dbId;
+  }
+
+  /**
+   * <p>Setter for dbId.</p>
+   * @param pDbId reference
+   **/
+  public final void setDbId(final Integer pDbId) {
+    this.dbId = pDbId;
+  }
+
+  /**
+   * <p>Getter for dbVr.</p>
+   * @return Integer
+   **/
+  public final Integer getDbVr() {
+    return this.dbVr;
+  }
+
+  /**
+   * <p>Setter for dbVr.</p>
+   * @param pDbVr reference
+   **/
+  public final void setDbVr(final Integer pDbVr) {
+    this.dbVr = pDbVr;
+  }
+
+  /**
+   * <p>Getter for desc.</p>
+   * @return String
+   **/
+  public final String getDesc() {
+    return this.desc;
+  }
+
+  /**
+   * <p>Setter for desc.</p>
+   * @param pDesc reference
+   **/
+  public final void setDesc(final String pDesc) {
+    this.desc = pDesc;
+  }
+}

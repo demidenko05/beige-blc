@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,15 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+ * <p>This simple, cheap and powerful alternative to CDI.
+ * Instantiate a used bean inside of using bean
+ * by constructor (new) is very bad practice, that violence
+ * the main OOP approach - abstraction. And so does initializing by
+ * static approach.</p>
+ *
+ * @author Yury Demidenko
+ */
+package org.beigesoft.fct;

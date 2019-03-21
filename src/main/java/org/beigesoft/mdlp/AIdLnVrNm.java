@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,39 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdlp;
+
+import org.beigesoft.mdl.IIdLnVrNm;
+
+/**
+ * <p>Abstraction of mdlp model with name, Long Id and version.</p>
+ *
+ * @author Yury Demidenko
+ */
+public abstract class AIdLnVrNm extends AIdLnVr implements IIdLnVrNm {
+
+  /**
+   * <p>Name.</p>
+   **/
+  private String nme;
+
+  /**
+   * <p>Geter for nme.</p>
+   * @return String
+   **/
+  @Override
+  public final String getNme() {
+    return this.nme;
+  }
+
+  /**
+   * <p>Setter for nme.</p>
+   * @param pNme reference
+   **/
+  @Override
+  public final void setNme(final String pNme) {
+    this.nme = pNme;
+  }
+}

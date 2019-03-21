@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,30 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.cnv;
+
+import java.util.Map;
+
+/**
+ * <p>Abstraction of service that fills/converts object's field from a source,
+ * e.g. from HTML request's parameter.</p>
+ *
+ * @param <S> source type
+ * @author Yury Demidenko
+ */
+public interface IFilFld<S> {
+
+  /**
+   * <p>Fills object's field.</p>
+   * @param <T> object (entity) type
+   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pObject Object to fill, not null
+   * @param pFlVl Source field Value
+   * @param pFlNm Field name
+   * @throws Exception - an exception
+   **/
+  <T> void fill(Map<String, Object> pRqVs, T pObject,
+    S pFlVl, String pFlNm) throws Exception;
+}

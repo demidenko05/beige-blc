@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,31 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.cmp;
+
+import java.util.Comparator;
+import java.io.Serializable;
+
+import org.beigesoft.mdl.IHasId;
+
+/**
+ * <p>Comparator of model that has ID Long.</p>
+ *
+ * @param <T> has ID long type
+ * @author Yury Demidenko
+ */
+public class CmpHasIdLn<T extends IHasId<Long>>
+  implements Comparator<T>, Serializable {
+
+  /**
+   * <p>serialVersionUID.</p>
+   **/
+  static final long serialVersionUID = 713385274313412L;
+
+  @Override
+  public final int compare(final T o1, final T o2) {
+    return o1.getIid().compareTo(o2.getIid());
+  }
+}

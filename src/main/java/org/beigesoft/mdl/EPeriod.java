@@ -1,3 +1,4 @@
+/*
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -23,3 +24,54 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.mdl;
+
+/**
+ * <p>Time period.</p>
+ *
+ * @author Yury Demidenko
+ */
+public enum EPeriod {
+
+  /**
+   * <p>Daily 0.</p>
+   **/
+  DAILY,
+
+  /**
+   * <p>Weekly 1.</p>
+   **/
+  WEEKLY,
+
+  /**
+   * <p>Biweekly 2.</p>
+   **/
+  BIWEEKLY,
+
+  /**
+   * <p>Monthly 3.</p>
+   **/
+  MONTHLY,
+
+  /**
+   * <p>Bimonthly 4.</p>
+   **/
+  BIMONTHLY,
+
+  /**
+   * <p>Quarterly 5.</p>
+   **/
+  QUARTERLY,
+
+  /**
+   * <p>Half-yeary 6.</p>
+   **/
+  HALF_YEARLY,
+
+  /**
+   * <p>Yearly 7.</p>
+   **/
+  YEARLY;
+}
