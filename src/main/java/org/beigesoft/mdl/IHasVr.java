@@ -37,6 +37,11 @@ package org.beigesoft.mdl;
 public interface IHasVr {
 
   /**
+   * <p>Field and column version name.</p>
+   **/
+  String VERNM = "ver";
+
+  /**
    * <p>Geter for itsVersion to check dirty.</p>
    * @return Long
    **/

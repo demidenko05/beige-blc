@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
+  <!--It's for best performance, it never causes serious problems for this task.-->
+  <Match>
+     <Class name="org.beigesoft.hnd.HndI18nRq" />
+     <Bug pattern="IS2_INCONSISTENT_SYNC" />
+  </Match>
+  <!--See beigesoft-common test DoubleCkeckLockingRiApTest. Assigning fully
+  initialized bean to the class variable is reliable method.-->
+  <Match>
+     <Class name="org.beigesoft.hnd.HndI18nRq" />
+     <Bug pattern="DC_DOUBLECHECK" />
+  </Match>
   <!-- 1 - no need, 2 - opinion: https://sourceforge.net/p/findbugs/bugs/1379/: -->
   <Match>
      <Class name="org.beigesoft.prp.LnkPrps" />

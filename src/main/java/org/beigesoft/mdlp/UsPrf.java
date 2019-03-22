@@ -44,12 +44,12 @@ public class UsPrf extends AHasVr implements IHasId<UsPrfId> {
   private UsPrfId iid = new UsPrfId();
 
   /**
-   * <p>Cntr.</p>
+   * <p>Country, composite ID.</p>
    **/
   private Cntr cntr;
 
   /**
-   * <p>Lnguage.</p>
+   * <p>Lnguage, composite ID.</p>
    **/
   private Lng lng;
 

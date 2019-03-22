@@ -28,23 +28,57 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.cnv;
 
-import java.util.Map;
+import static org.junit.Assert.*;
+import org.junit.Test;
+
+import java.util.HashMap;
+
+import org.beigesoft.mdl.CmnPrf;
+import org.beigesoft.mdlp.UsPrf;
+import org.beigesoft.mdlp.DcSp;
+import org.beigesoft.mdlp.DcGrSp;
 
 /**
- * <p>Abstraction of simple generic converter from a type to another one.</p>
+ * <p>Converters tests.</p>
  *
  * @author Yury Demidenko
- * @param <FR> type of original
- * @param <TO> type of converted
  */
-public interface IConv<FR, TO> {
+public class CnvTest {
 
-  /**
-   * <p>Convert parameter.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pFrom value
-   * @return TO converted value
-   * @throws Exception - an exception
-   **/
-  TO conv(Map<String, Object> pRqVs, FR pFrom) throws Exception;
+  private final CnvStrDbl cnvStrDbl = new CnvStrDbl();
+  
+  @Test
+  public void tst1() throws Exception {
+    HashMap<String, Object> rqVs = new HashMap<String, Object>();
+    UsPrf upf = new UsPrf();
+    DcSp sp = new DcSp();
+    sp.setIid(".");
+    sp.setNme("Dot");
+    upf.setDcSp(sp);
+    DcGrSp gsp = new DcGrSp();
+    gsp.setIid(",");
+    gsp.setNme("Comma");
+    upf.setDcGrSp(gsp);
+    CmnPrf cpf = new CmnPrf();
+    if (upf.getDcSp().getIid().equals(DcSp.SPACEID)) {
+      cpf.setDcSpv(DcSp.SPACEVL);
+    } else if (upf.getDcSp().getIid().equals(DcSp.EMPTYID)) {
+      cpf.setDcSpv(DcSp.EMPTYVL);
+    } else {
+      cpf.setDcSpv(upf.getDcSp().getIid());
+    }
+    if (upf.getDcGrSp().getIid().equals(DcSp.SPACEID)) {
+      cpf.setDcGrSpv(DcSp.SPACEVL);
+    } else if (upf.getDcGrSp().getIid().equals(DcSp.EMPTYID)) {
+      cpf.setDcGrSpv(DcSp.EMPTYVL);
+    } else {
+      cpf.setDcGrSpv(upf.getDcGrSp().getIid());
+    }
+    Double dbVl = 12345.69;
+    String dbStVl = "123,45.69";
+    rqVs.put("cpf", cpf);
+    Double dbVlc = this.cnvStrDbl.conv(rqVs, dbStVl);
+    assertEquals(dbVl, dbVlc);
+  }
+  
 }

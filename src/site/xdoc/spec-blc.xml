@@ -27,8 +27,13 @@
         <ul>
           <li>rqDt - IReqDt request data (only when using in WEB application)</li>
           <li>cmnPref - decimal places in quantity, cost, price, decimal separator char value</li>
-          <li>lngPrf - UsrPrf - persistable user preferences - decimal separator, digits in group, language, etc.</li>
-          <li><b>Converters specific variables:</b></li>
+          <li>upf - UsrPrf - persistable user preferences - decimal separator, digits in group, language, etc.</li>
+          <li>cpf - CmnPrf - non-persistable system and user preferences - decimal spaces, current decimal separator char value, preferred locale.</li>
+        </ul>
+      </p>
+      <h4>Invoker scoped variables</h4>
+      <p>Invoker scoped variables pVs may contains of:
+        <ul>
           <li>fldCls - Class - current field's class</li>
           <li>verAlg - Integer - version algorithm for current persistable entity, 0 auto-increment, 1-changed time</li>
         </ul>

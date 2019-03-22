@@ -57,7 +57,7 @@ public class CnvIbnVrCv implements IConvNmInto<Long, ColVals> {
   public final void conv(final Map<String, Object> pRqVs,
     final Map<String, Object> pVs, final Long pFrom,
       final ColVals pClVl, final String pNm) throws Exception {
-    Integer verAlg = (Integer) pRqVs.get("verAlg");
+    Integer verAlg = (Integer) pVs.get("verAlg");
     if (verAlg == null) {
       throw new ExcCode(ExcCode.WRCN, "Missed parameter verAlg!");
     }

@@ -28,8 +28,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.mdl;
 
+import java.util.Locale;
+
+import org.beigesoft.mdlp.Lng;
+
 /**
- * <p>Model of common (system) preferences.</p>
+ * <p>Model of common (system) preferences, and non-persistent user ones.</p>
  *
  * @author Yury Demidenko
  */
@@ -51,15 +55,26 @@ public class CmnPrf  {
   private Integer quanDp = 2;
 
   /**
-   * <p>Char value of decimal separator value, e.g. '\u00A0' for "SPACE".</p>
+   * <p>Value of decimal separator, e.g. "\u00A0" for "SPACEID".</p>
    **/
-  private char dcSpc;
+  private String dcSpv;
 
   /**
-   * <p>Char value of decimal group separator value,
-   * e.g. '\u00A0' for "SPACE".</p>
+   * <p>Value of decimal group separator value,
+   * e.g. "\u00A0" for "SPACEID".</p>
    **/
-  private char dcGrSpc;
+  private String dcGrSpv;
+
+  /**
+   * <p>Default language.</p>
+   **/
+  private Lng lngDef;
+
+  //User preferences:
+  /**
+   * <p>Preferred/current locale.</p>
+   **/
+  private Locale usLoc;
 
   //Simple getters and setters:
   /**
@@ -111,34 +126,66 @@ public class CmnPrf  {
   }
 
   /**
-   * <p>Getter for dcSpc.</p>
-   * @return char
+   * <p>Getter for dcSpv.</p>
+   * @return String
    **/
-  public final char getDcSpc() {
-    return this.dcSpc;
+  public final String getDcSpv() {
+    return this.dcSpv;
   }
 
   /**
-   * <p>Setter for dcSpc.</p>
-   * @param pDcSpc reference
+   * <p>Setter for dcSpv.</p>
+   * @param pDcSpv reference
    **/
-  public final void setDcSpc(final char pDcSpc) {
-    this.dcSpc = pDcSpc;
+  public final void setDcSpv(final String pDcSpv) {
+    this.dcSpv = pDcSpv;
   }
 
   /**
-   * <p>Getter for dcGrSpc.</p>
-   * @return char
+   * <p>Getter for dcGrSpv.</p>
+   * @return String
    **/
-  public final char getDcGrSpc() {
-    return this.dcGrSpc;
+  public final String getDcGrSpv() {
+    return this.dcGrSpv;
   }
 
   /**
-   * <p>Setter for dcGrSpc.</p>
-   * @param pDcGrSpc reference
+   * <p>Setter for dcGrSpv.</p>
+   * @param pDcGrSpv reference
    **/
-  public final void setDcGrSpc(final char pDcGrSpc) {
-    this.dcGrSpc = pDcGrSpc;
+  public final void setDcGrSpv(final String pDcGrSpv) {
+    this.dcGrSpv = pDcGrSpv;
+  }
+
+  /**
+   * <p>Getter for lngDef.</p>
+   * @return Lng
+   **/
+  public final Lng getLngDef() {
+    return this.lngDef;
+  }
+
+  /**
+   * <p>Setter for lngDef.</p>
+   * @param pLngDef reference
+   **/
+  public final void setLngDef(final Lng pLngDef) {
+    this.lngDef = pLngDef;
+  }
+
+  /**
+   * <p>Getter for usLoc.</p>
+   * @return Locale
+   **/
+  public final Locale getUsLoc() {
+    return this.usLoc;
+  }
+
+  /**
+   * <p>Setter for usLoc.</p>
+   * @param pUsLoc reference
+   **/
+  public final void setUsLoc(final Locale pUsLoc) {
+    this.usLoc = pUsLoc;
   }
 }

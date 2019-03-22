@@ -37,6 +37,11 @@ package org.beigesoft.mdl;
 public interface IHasId<ID> extends IEditable {
 
   /**
+   * <p>ID field name.</p>
+   **/
+  String IDNM = "iid";
+
+  /**
    * <p>Usually it's simple getter that return model ID.</p>
    * @return ID model ID
    **/

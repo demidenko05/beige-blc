@@ -41,5 +41,5 @@ public interface IHndCh {
    * so cached ones must be refreshed.</p>
    * @throws Exception - an exception
    **/
-  void handleCh() throws Exception;
+  void hndChange() throws Exception;
 }

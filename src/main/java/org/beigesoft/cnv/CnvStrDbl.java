@@ -30,21 +30,49 @@ package org.beigesoft.cnv;
 
 import java.util.Map;
 
+import org.beigesoft.mdl.CmnPrf;
+
 /**
- * <p>Abstraction of simple generic converter from a type to another one.</p>
+ * <p>Converter of Double
+ * to/from string representation, null represents as "".</p>
  *
  * @author Yury Demidenko
- * @param <FR> type of original
- * @param <TO> type of converted
  */
-public interface IConv<FR, TO> {
+public class CnvStrDbl implements IConv<String, Double> {
 
   /**
-   * <p>Convert parameter.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pFrom value
-   * @return TO converted value
+   * <p>Convert from string.</p>
+   * @param pRqVs request scoped vars, e.g. IReqDt
+   * to fill owner version.
+   * @param pStrVal string representation
+   * @return Double value
    * @throws Exception - an exception
    **/
-  TO conv(Map<String, Object> pRqVs, FR pFrom) throws Exception;
+  @Override
+  public final Double conv(final Map<String, Object> pRqVs,
+    final String pStrVal) throws Exception {
+    if (pStrVal == null || "".equals(pStrVal)) {
+      return null;
+    }
+    if (pRqVs != null) {
+      CmnPrf cmnPrf = (CmnPrf) pRqVs.get("cpf");
+      if (cmnPrf != null) {
+        String strVal = null;
+        if (!"".equals(cmnPrf.getDcGrSpv())) {
+          strVal = pStrVal.replace(cmnPrf.getDcGrSpv(), "");
+        }
+        if ("".equals(cmnPrf.getDcSpv()) && ".".equals(cmnPrf.getDcSpv())) {
+          if (strVal != null) {
+            strVal = strVal.replace(cmnPrf.getDcSpv(), ".");
+          } else {
+            strVal = pStrVal.replace(cmnPrf.getDcSpv(), ".");
+          }
+        }
+        if (strVal != null) {
+          return Double.valueOf(strVal);
+        }
+      }
+    }
+    return Double.valueOf(pStrVal);
+  }
 }

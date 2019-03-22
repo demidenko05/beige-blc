@@ -72,7 +72,7 @@ public interface IReqDt extends IAttrs {
    * @param pName Name
    * @return cookie value or null
    **/
-  String getCookVls(String pName);
+  String getCookVl(String pName);
 
   /**
    * <p>Set(add/change) cookie value.</p>

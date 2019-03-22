@@ -146,7 +146,7 @@ public interface IOrm<RS> {
    * @return list of all business objects or empty list, not null
    * @throws Exception - an exception
    */
-  <T> List<T> retrLst(Map<String, Object> pRqVs, Map<String, Object> pVs,
+  <T> List<T> retLst(Map<String, Object> pRqVs, Map<String, Object> pVs,
     Class<T> pCls) throws Exception;
 
   /**

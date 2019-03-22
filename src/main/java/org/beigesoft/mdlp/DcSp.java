@@ -35,4 +35,23 @@ package org.beigesoft.mdlp;
  */
 public class DcSp extends AI18nFtr {
 
+  /**
+   * <p>Space ID.</p>
+   **/
+  public static final String SPACEID = "space";
+
+  /**
+   * <p>Empty ID.</p>
+   **/
+  public static final String EMPTYID = "empty";
+
+  /**
+   * <p>Space value.</p>
+   **/
+  public static final String SPACEVL = "'\u00A0'";
+
+  /**
+   * <p>Empty value.</p>
+   **/
+  public static final String EMPTYVL = "";
 }
