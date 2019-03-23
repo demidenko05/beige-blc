@@ -26,32 +26,30 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdlp;
+package org.beigesoft.test;
+
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import org.beigesoft.srv.UtlXml;
 
 /**
- * <p>Model of I18N feature - decimal separator.</p>
+ * <p>Service XML Escape Test.
+ * </p>
  *
  * @author Yury Demidenko
  */
-public class DcSp extends AI18nFtr {
+public class XmlEscapeTest {
+  
+  UtlXml utilXml = new UtlXml();
 
-  /**
-   * <p>Space ID.</p>
-   **/
-  public static final String SPACEID = "SPACE";
-
-  /**
-   * <p>Empty ID.</p>
-   **/
-  public static final String EMPTYID = "EMPTY";
-
-  /**
-   * <p>Space value.</p>
-   **/
-  public static final String SPACEVL = "\u00A0";
-
-  /**
-   * <p>Empty value.</p>
-   **/
-  public static final String EMPTYVL = "";
+  @Test
+  public void test1() throws Exception {
+    String strXmlUnescaped1 = "a=\"b-2\" & c > 1 and b<=5 'j' ";
+    String strXmlEscaped1 = "a=&quot;b-2&quot; &amp; c &gt; 1 and b&lt;=5 &apos;j&apos; ";
+    System.out.println(utilXml.escStr(strXmlUnescaped1));
+    System.out.println(utilXml.unescStr(strXmlEscaped1));
+    assertEquals(utilXml.escStr(strXmlUnescaped1), strXmlEscaped1); 
+    assertEquals(utilXml.unescStr(strXmlEscaped1), strXmlUnescaped1); 
+  }
 }

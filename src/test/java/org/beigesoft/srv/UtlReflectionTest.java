@@ -26,32 +26,33 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdlp;
+package org.beigesoft.srv;
+
+import java.lang.reflect.Field;
+import java.util.Set;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
 
 /**
- * <p>Model of I18N feature - decimal separator.</p>
+ * <p>Test for simple reflection service.
+ * </p>
  *
  * @author Yury Demidenko
  */
-public class DcSp extends AI18nFtr {
+public class UtlReflectionTest {
 
-  /**
-   * <p>Space ID.</p>
-   **/
-  public static final String SPACEID = "SPACE";
-
-  /**
-   * <p>Empty ID.</p>
-   **/
-  public static final String EMPTYID = "EMPTY";
-
-  /**
-   * <p>Space value.</p>
-   **/
-  public static final String SPACEVL = "\u00A0";
-
-  /**
-   * <p>Empty value.</p>
-   **/
-  public static final String EMPTYVL = "";
+  @Test
+  public void test1() throws Exception {
+    Reflect utlReflection = new Reflect();
+    Field[] fieldsArr = utlReflection.retFlds(org.beigesoft.mdlp.CsvMth.class);
+    System.out.print("CsvMth fields:");
+    for (Field fld : fieldsArr) {
+      System.out.print(" " + fld.getName());
+    }
+    System.out.println(";");
+    assertEquals(9, fieldsArr.length);
+  }
 }

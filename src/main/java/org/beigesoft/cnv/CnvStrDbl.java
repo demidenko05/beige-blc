@@ -33,8 +33,8 @@ import java.util.Map;
 import org.beigesoft.mdl.CmnPrf;
 
 /**
- * <p>Converter of Double
- * to/from string representation, null represents as "".</p>
+ * <p>Converter of Double from string representation, null represents as "".
+ * String value maybe formatted or not, e.g. "12,34.56" or "1234.56".</p>
  *
  * @author Yury Demidenko
  */
@@ -42,8 +42,7 @@ public class CnvStrDbl implements IConv<String, Double> {
 
   /**
    * <p>Convert from string.</p>
-   * @param pRqVs request scoped vars, e.g. IReqDt
-   * to fill owner version.
+   * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pStrVal string representation
    * @return Double value
    * @throws Exception - an exception
@@ -61,7 +60,7 @@ public class CnvStrDbl implements IConv<String, Double> {
         if (!"".equals(cmnPrf.getDcGrSpv())) {
           strVal = pStrVal.replace(cmnPrf.getDcGrSpv(), "");
         }
-        if ("".equals(cmnPrf.getDcSpv()) && ".".equals(cmnPrf.getDcSpv())) {
+        if (!"".equals(cmnPrf.getDcSpv()) && !".".equals(cmnPrf.getDcSpv())) {
           if (strVal != null) {
             strVal = strVal.replace(cmnPrf.getDcSpv(), ".");
           } else {

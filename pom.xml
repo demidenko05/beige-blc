@@ -8,8 +8,8 @@
   <name>Beigesoft™ common business logic library.</name>
   <inceptionYear>2019</inceptionYear>
 
-  <description>It consist of common abstractions, some implementations, some models, e.g. IFct, IOrm, IRdb, II18N,
-    persistable models for JDBC authentication, etc. This is based on beigesoft-bcommon.
+  <description>It consists of common business logic, e.g. persistable models to store languages, countries, users,
+    abstraction and implementations of services like ORM, JDBC, CSV writer, etc. This is based on beigesoft-bcommon.
   </description>
   <url>https://sites.google.com/site/beigesoftware</url>
 

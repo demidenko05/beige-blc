@@ -28,30 +28,75 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.mdlp;
 
+import org.beigesoft.mdl.AEditable;
+import org.beigesoft.mdl.IHasId;
+
 /**
- * <p>Model of I18N feature - decimal separator.</p>
+ * <p>Model of average goods rating.</p>
  *
  * @author Yury Demidenko
  */
-public class DcSp extends AI18nFtr {
+public class GoodsRating extends AEditable
+  implements IHasId<GoodVersionTime> {
 
   /**
-   * <p>Space ID.</p>
+   * <p>Goods, PK.</p>
    **/
-  public static final String SPACEID = "SPACE";
+  private GoodVersionTime goods;
 
   /**
-   * <p>Empty ID.</p>
+   * <p>Average rating, 0..10, if exist.</p>
    **/
-  public static final String EMPTYID = "EMPTY";
+  private Integer averageRating;
 
   /**
-   * <p>Space value.</p>
+   * <p>Usually it's simple getter that return model ID.</p>
+   * @return ID model ID
    **/
-  public static final String SPACEVL = "\u00A0";
+  @Override
+  public final GoodVersionTime getIid() {
+    return this.goods;
+  }
 
   /**
-   * <p>Empty value.</p>
+   * <p>Usually it's simple setter for model ID.</p>
+   * @param pId model ID
    **/
-  public static final String EMPTYVL = "";
+  @Override
+  public final void setIid(final GoodVersionTime pIid) {
+    this.goods = pIid;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for goods.</p>
+   * @return InvItem
+   **/
+  public final GoodVersionTime getGoods() {
+    return this.goods;
+  }
+
+  /**
+   * <p>Setter for goods.</p>
+   * @param pGoods reference
+   **/
+  public final void setGoods(final GoodVersionTime pGoods) {
+    this.goods = pGoods;
+  }
+
+  /**
+   * <p>Getter for averageRating.</p>
+   * @return Integer
+   **/
+  public final Integer getAverageRating() {
+    return this.averageRating;
+  }
+
+  /**
+   * <p>Setter for averageRating.</p>
+   * @param pAverageRating reference
+   **/
+  public final void setAverageRating(final Integer pAverageRating) {
+    this.averageRating = pAverageRating;
+  }
 }

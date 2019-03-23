@@ -45,9 +45,9 @@ import org.beigesoft.log.ILog;
 public class I18n implements II18n {
 
   /**
-   * <p>Logger.</p>
+   * <p>Log.</p>
    **/
-  private ILog logger;
+  private ILog log;
 
   /**
    * <p>Messages for default or the first language.</p>
@@ -68,16 +68,16 @@ public class I18n implements II18n {
       this.messages = null;
       this.messages = ResourceBundle.getBundle("Messages");
     } catch (Exception e) {
-      this.logger.error(null, I18n.class,
+      this.log.error(null, I18n.class,
         " when loading msgs for default locale ", e);
     }
     if (messages != null) {
       this.messagesMap.put(Locale.getDefault().getLanguage(), this.messages);
-      this.logger.info(null, I18n.class,
+      this.log.info(null, I18n.class,
         "Added messages for default locale: " + Locale.getDefault());
     } else {
       //If there is no MessagesBundle[current-locale].properties
-      this.logger.error(null, I18n.class,
+      this.log.error(null, I18n.class,
         "There is no messages for current locale: " + Locale.getDefault());
     }
   }
@@ -97,12 +97,12 @@ public class I18n implements II18n {
           try {
             msgs = ResourceBundle.getBundle("Messages", locale);
           } catch (Exception e) {
-            this.logger.error(null, I18n.class,
+            this.log.error(null, I18n.class,
               " when loading msg for locale " + locale, e);
           }
           if (msgs != null) {
             this.messagesMap.put(pLangCountries[i * 2], msgs);
-            this.logger.info(null, I18n.class,
+            this.log.info(null, I18n.class,
               "Added messages for lang/country: " + pLangCountries[i * 2]
                 + "/" + pLangCountries[i * 2 + 1]);
             if (this.messages == null) {
@@ -110,12 +110,12 @@ public class I18n implements II18n {
             }
           } else {
             //If there is no MessagesBundle[current-locale].properties
-            this.logger.error(null, I18n.class,
+            this.log.error(null, I18n.class,
               "There is no messages for lang/country: " + pLangCountries[i * 2]
                 + "/" + pLangCountries[i * 2 + 1]);
           }
         } else {
-          this.logger.info(null, I18n.class,
+          this.log.info(null, I18n.class,
             "Messages already added as default for lang/country: "
               + pLangCountries[i * 2] + "/" + pLangCountries[i * 2 + 1]);
         }
@@ -133,7 +133,7 @@ public class I18n implements II18n {
           }
         }
       }
-      this.logger.error(null, I18n.class,
+      this.log.error(null, I18n.class,
         "Parameters language error, pLangCountries: " + msg);
     }
   }
@@ -173,19 +173,19 @@ public class I18n implements II18n {
 
   //Simple getters and setters:
   /**
-   * <p>Geter for logger.</p>
+   * <p>Geter for log.</p>
    * @return ILog
    **/
-  public final ILog getLogger() {
-    return this.logger;
+  public final ILog getLog() {
+    return this.log;
   }
 
   /**
-   * <p>Setter for logger.</p>
-   * @param pLogger reference
+   * <p>Setter for log.</p>
+   * @param pLog reference
    **/
-  public final void setLogger(final ILog pLogger) {
-    this.logger = pLogger;
+  public final void setLog(final ILog pLog) {
+    this.log = pLog;
   }
 
 

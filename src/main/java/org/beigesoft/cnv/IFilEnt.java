@@ -26,32 +26,26 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdlp;
+package org.beigesoft.cnv;
+
+import java.util.Map;
 
 /**
- * <p>Model of I18N feature - decimal separator.</p>
+ * <p>Abstraction of service that fills/converts object (entity)
+ * from a source, e.g. from SQL result-set or HTML request.</p>
  *
+ * @param <S> source type
  * @author Yury Demidenko
  */
-public class DcSp extends AI18nFtr {
+public interface IFilEnt<S> {
 
   /**
-   * <p>Space ID.</p>
+   * <p>Fills object's fields from given source data.</p>
+   * @param <T> object (entity) type
+   * @param pRqVs request scoped vars
+   * @param pEnt entity to fill, not null
+   * @param pSrc Source, e.g. request data
+   * @throws Exception - an exception
    **/
-  public static final String SPACEID = "SPACE";
-
-  /**
-   * <p>Empty ID.</p>
-   **/
-  public static final String EMPTYID = "EMPTY";
-
-  /**
-   * <p>Space value.</p>
-   **/
-  public static final String SPACEVL = "\u00A0";
-
-  /**
-   * <p>Empty value.</p>
-   **/
-  public static final String EMPTYVL = "";
+  <T> void fill(Map<String, Object> pRqVs, T pEnt, S pSrc) throws Exception;
 }

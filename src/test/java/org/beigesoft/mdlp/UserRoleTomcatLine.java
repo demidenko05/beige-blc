@@ -28,30 +28,57 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.mdlp;
 
+import org.beigesoft.mdl.IOwned;
+
 /**
- * <p>Model of I18N feature - decimal separator.</p>
+ * <p>Test model User's Role for Tomcat line.</p>
  *
  * @author Yury Demidenko
  */
-public class DcSp extends AI18nFtr {
+public class UserRoleTomcatLine extends AIdLnVr implements IOwned<UsRlTmc> {
 
   /**
-   * <p>Space ID.</p>
+   * <p>Complex foreign ID.</p>
    **/
-  public static final String SPACEID = "SPACE";
+  private UsRlTmc ownr;
 
   /**
-   * <p>Empty ID.</p>
+   * <p>Description.</p>
    **/
-  public static final String EMPTYID = "EMPTY";
+  private String description;
 
   /**
-   * <p>Space value.</p>
+   * <p>Getter for ownr.</p>
+   * @return UsRlTmc
    **/
-  public static final String SPACEVL = "\u00A0";
+  @Override
+  public final UsRlTmc getOwnr() {
+    return this.ownr;
+  }
 
   /**
-   * <p>Empty value.</p>
+   * <p>Setter for ownr.</p>
+   * @param pOwnr reference
    **/
-  public static final String EMPTYVL = "";
+  @Override
+  public final void setOwnr(final UsRlTmc pOwnr) {
+    this.ownr = pOwnr;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for description.</p>
+   * @return String
+   **/
+  public final String getDescription() {
+    return this.description;
+  }
+
+  /**
+   * <p>Setter for description.</p>
+   * @param pDescription reference
+   **/
+  public final void setDescription(final String pDescription) {
+    this.description = pDescription;
+  }
 }

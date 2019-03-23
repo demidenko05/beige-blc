@@ -28,30 +28,75 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.mdlp;
 
+import org.beigesoft.mdl.IHasId;
+import org.beigesoft.mdl.AEditable;
+
 /**
- * <p>Model of I18N feature - decimal separator.</p>
+ * <p>Test model User's Role for Tomcat priority.</p>
  *
  * @author Yury Demidenko
  */
-public class DcSp extends AI18nFtr {
+public class UserRoleTomcatPriority extends AEditable
+  implements IHasId<UsRlTmc> {
 
   /**
-   * <p>Space ID.</p>
+   * <p>Composite primary and foreign ID.</p>
    **/
-  public static final String SPACEID = "SPACE";
+  private UsRlTmc userRoleTomcat;
 
   /**
-   * <p>Empty ID.</p>
+   * <p>Priority.</p>
    **/
-  public static final String EMPTYID = "EMPTY";
+  private Integer priority;
 
   /**
-   * <p>Space value.</p>
+   * <p>Getter for itsId.</p>
+   * @return UsRlTmc
    **/
-  public static final String SPACEVL = "\u00A0";
+  @Override
+  public final UsRlTmc getIid() {
+    return this.userRoleTomcat;
+  }
 
   /**
-   * <p>Empty value.</p>
+   * <p>Setter for itsId.</p>
+   * @param pIid reference/value
    **/
-  public static final String EMPTYVL = "";
+  @Override
+  public final void setIid(final UsRlTmc pIid) {
+    this.userRoleTomcat = pIid;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for userRoleTomcat.</p>
+   * @return UsRlTmc
+   **/
+  public final UsRlTmc getUserRoleTomcat() {
+    return this.userRoleTomcat;
+  }
+
+  /**
+   * <p>Setter for userRoleTomcat.</p>
+   * @param pUserRoleTomcat reference
+   **/
+  public final void setUserRoleTomcat(final UsRlTmc pUserRoleTomcat) {
+    this.userRoleTomcat = pUserRoleTomcat;
+  }
+
+  /**
+   * <p>Getter for priority.</p>
+   * @return Integer
+   **/
+  public final Integer getPriority() {
+    return this.priority;
+  }
+
+  /**
+   * <p>Setter for priority.</p>
+   * @param pPriority reference
+   **/
+  public final void setPriority(final Integer pPriority) {
+    this.priority = pPriority;
+  }
 }

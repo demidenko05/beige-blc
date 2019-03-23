@@ -26,32 +26,32 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdlp;
+package org.beigesoft.cnv;
+
+import java.util.Map;
 
 /**
- * <p>Model of I18N feature - decimal separator.</p>
+ * <p>Converter of an object to string representation, null represents as "".
+ * It's for standard objects like Integer, Long, BigDecimal, etc.</p>
  *
+ * @param <T> object type
  * @author Yury Demidenko
  */
-public class DcSp extends AI18nFtr {
+public class CnvObjStr<T> implements IConv<T, String> {
 
   /**
-   * <p>Space ID.</p>
+   * <p>Convert to string any standard object - Integer,  Long,  etc.</p>
+   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pObj object
+   * @return string representation
+   * @throws Exception - an exception
    **/
-  public static final String SPACEID = "SPACE";
-
-  /**
-   * <p>Empty ID.</p>
-   **/
-  public static final String EMPTYID = "EMPTY";
-
-  /**
-   * <p>Space value.</p>
-   **/
-  public static final String SPACEVL = "\u00A0";
-
-  /**
-   * <p>Empty value.</p>
-   **/
-  public static final String EMPTYVL = "";
+  @Override
+  public final String conv(final Map<String, Object> pRqVs,
+    final T pObj) throws Exception {
+    if (pObj == null) {
+      return "";
+    }
+    return pObj.toString();
+  }
 }

@@ -26,32 +26,52 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdlp;
+package org.beigesoft.srv;
+
+import java.util.Map;
+
+import org.beigesoft.hld.IHldEx;
+import org.beigesoft.mdlp.MaFrn;
 
 /**
- * <p>Model of I18N feature - decimal separator.</p>
+ * <p>Only MaFrn.</p>
  *
  * @author Yury Demidenko
  */
-public class DcSp extends AI18nFtr {
+public class HldMatchForeignOnly implements IHldEx<Long, MaFrn> {
 
   /**
-   * <p>Space ID.</p>
+   * <p>Only match foreign.</p>
    **/
-  public static final String SPACEID = "SPACE";
+  private MaFrn matchForeign;
 
   /**
-   * <p>Empty ID.</p>
+   * <p>Get match foreign  given ID.</p>
+   * @param pReqVars additional param
+   * @param pId ID
+   * @return match foreign
+   * @throws Exception an Exception
    **/
-  public static final String EMPTYID = "EMPTY";
+  public final MaFrn get(final Map<String, Object> pReqVars,
+    final Long pId) throws Exception {
+    return this.matchForeign;
+  }
+
+  //Simple getters and setters:
 
   /**
-   * <p>Space value.</p>
+   * <p>Getter for matchForeign.</p>
+   * @return MaFrn
    **/
-  public static final String SPACEVL = "\u00A0";
+  public final MaFrn getMatchForeign() {
+    return this.matchForeign;
+  }
 
   /**
-   * <p>Empty value.</p>
+   * <p>Setter for matchForeign.</p>
+   * @param pMatchForeign reference
    **/
-  public static final String EMPTYVL = "";
+  public final void setMatchForeign(final MaFrn pMatchForeign) {
+    this.matchForeign = pMatchForeign;
+  }
 }

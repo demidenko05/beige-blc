@@ -26,26 +26,14 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.cnv;
 
-import java.util.Map;
+package org.beigesoft.mdlp;
 
 /**
- * <p>Abstraction of service that fills/converts object (entity)
- * from a source, e.g. from SQL result-set or HTML request.</p>
+ * <p>Model for test ORM.</p>
  *
- * @param <S> source type
  * @author Yury Demidenko
  */
-public interface IFilObj<S> {
+public class Warehouse extends AIdLnVrNm {
 
-  /**
-   * <p>Fills object's fields from given source data.</p>
-   * @param <T> object (entity) type
-   * @param pRqVs request scoped vars
-   * @param pObj Object to fill, not null
-   * @param pSrc Source, e.g. request data
-   * @throws Exception - an exception
-   **/
-  <T> void fill(Map<String, Object> pRqVs, T pObj, S pSrc) throws Exception;
 }

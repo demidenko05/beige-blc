@@ -45,6 +45,7 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.cmp.CmpCsvCol;
 import org.beigesoft.hld.IHldEx;
 import org.beigesoft.mdl.ECsvClTy;
+import org.beigesoft.mdlp.DcSp;
 import org.beigesoft.mdlp.CsvMth;
 import org.beigesoft.mdlp.CsvCl;
 import org.beigesoft.mdlp.MaFrn;
@@ -105,8 +106,8 @@ public class CsvWri implements ICsvWri {
           try {
             seps = col.getFrmt().split(",");
             for (int i = 0; i < 2; i++) {
-              if ("SPACE".equals(seps[i])) {
-                seps[i] = "\u00A0";
+              if (DcSp.SPACEID.equals(seps[i])) {
+                seps[i] = DcSp.SPACEVL;
               } else if ("COMMA".equals(seps[i])) {
                 seps[i] = ",";
               }

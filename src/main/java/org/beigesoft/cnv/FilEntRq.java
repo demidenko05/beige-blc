@@ -41,7 +41,7 @@ import org.beigesoft.mdl.IReqDt;
  *
  * @author Yury Demidenko
  */
-public class FilEntRq implements IFilObj<IReqDt> {
+public class FilEntRq implements IFilEnt<IReqDt> {
 
   /**
    * <p>Logger.</p>

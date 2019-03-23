@@ -1,0 +1,5 @@
+Date,Description,Status,Amount,Cause
+01/01/2018,"ABC check #175762, ws",VOIDED,23.15,wrong signature
+01/01/2018,"ABC check #175763",OK,23.15,
+01/01/2018,,OK,-14.15,
+01/01/2018,monthly fee,OK,-11.15,

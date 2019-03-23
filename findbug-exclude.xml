@@ -5,7 +5,7 @@
      <Class name="org.beigesoft.hnd.HndI18nRq" />
      <Bug pattern="IS2_INCONSISTENT_SYNC" />
   </Match>
-  <!--See beigesoft-common test DoubleCkeckLockingRiApTest. Assigning fully
+  <!--See test DoubleCkeckLockingRiApTest. Assigning fully
   initialized bean to the class variable is reliable method.-->
   <Match>
      <Class name="org.beigesoft.hnd.HndI18nRq" />

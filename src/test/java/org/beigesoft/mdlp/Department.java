@@ -26,32 +26,16 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 package org.beigesoft.mdlp;
 
+import java.util.List;
+
 /**
- * <p>Model of I18N feature - decimal separator.</p>
+ * <p>Model for testing. Retrieving through 2nd level.</p>
  *
  * @author Yury Demidenko
  */
-public class DcSp extends AI18nFtr {
+public class Department extends AOrIdVrNm {
 
-  /**
-   * <p>Space ID.</p>
-   **/
-  public static final String SPACEID = "SPACE";
-
-  /**
-   * <p>Empty ID.</p>
-   **/
-  public static final String EMPTYID = "EMPTY";
-
-  /**
-   * <p>Space value.</p>
-   **/
-  public static final String SPACEVL = "\u00A0";
-
-  /**
-   * <p>Empty value.</p>
-   **/
-  public static final String EMPTYVL = "";
 }

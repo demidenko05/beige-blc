@@ -31,12 +31,14 @@ package org.beigesoft.cnv;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.util.Map;
 import java.util.HashMap;
 
 import org.beigesoft.mdl.CmnPrf;
 import org.beigesoft.mdlp.UsPrf;
 import org.beigesoft.mdlp.DcSp;
 import org.beigesoft.mdlp.DcGrSp;
+import org.beigesoft.mdlp.PersistableHead;
 
 /**
  * <p>Converters tests.</p>
@@ -45,11 +47,26 @@ import org.beigesoft.mdlp.DcGrSp;
  */
 public class CnvTest {
 
-  private final CnvStrDbl cnvStrDbl = new CnvStrDbl();
-  
+  private CnvStrDbl cnvStrDbl = new CnvStrDbl();
+
+  private Map<Class<?>, Map<String, Map<String, String>>> uvdStMp;
+
+  public CnvTest() {
+    this.cnvStrDbl = new CnvStrDbl();
+    this.uvdStMp = new HashMap<Class<?>, Map<String, Map<String, String>>>();
+    Map<String, Map<String, String>> phFldSts = new HashMap<String, Map<String, String>>();
+    this.uvdStMp.put(PersistableHead.class, phFldSts);
+    Map<String, String> phDtSt = new HashMap<String, String>();
+    phFldSts.put("itsDate", phDtSt);
+    phDtSt.put("cnvFrSt", "cnvStrDtTm");
+    Map<String, String> phTotSt = new HashMap<String, String>();
+    phFldSts.put("itsTotal", phTotSt);
+    phTotSt.put("toSt", "toTot");
+  }
+
   @Test
   public void tst1() throws Exception {
-    HashMap<String, Object> rqVs = new HashMap<String, Object>();
+    Map<String, Object> rqVs = new HashMap<String, Object>();
     UsPrf upf = new UsPrf();
     DcSp sp = new DcSp();
     sp.setIid(".");
@@ -81,4 +98,7 @@ public class CnvTest {
     assertEquals(dbVl, dbVlc);
   }
   
+  @Test
+  public void tst2() throws Exception {
+  }
 }

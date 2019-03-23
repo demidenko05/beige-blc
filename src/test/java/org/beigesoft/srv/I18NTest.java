@@ -1,0 +1,90 @@
+/*
+BSD 2-Clause License
+
+Copyright (c) 2019, Beigesoft™
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.srv;
+
+
+import java.util.Locale;
+
+import static org.junit.Assert.*;
+import org.junit.Test;
+
+import org.beigesoft.log.ILog;
+import org.beigesoft.log.LogSmp;
+
+/**
+ * <p>I18N tests.</p>
+ *
+ * @author Yury Demidenko
+ */
+public class I18NTest {
+  
+  private ILog log;
+
+  public void initIfNeed() {
+    if (this.log == null) {
+      this.log = new LogSmp();
+    }
+  }
+
+  @Test
+  public void tst1(){
+    initIfNeed();
+    I18n srvI18n = new I18n();
+    srvI18n.setLog(this.log);
+    srvI18n.initDefault();
+    srvI18n.add(new String[]{"en", "US", "ru", "RU"});
+    this.log.debug(null, I18NTest.class, "Default locale country/language: " + Locale.getDefault().getCountry()
+      + "/" + Locale.getDefault().getLanguage());
+    this.log.debug(null, I18NTest.class, "Yes en = " + srvI18n.getMsg("Yes", "en"));
+    this.log.debug(null, I18NTest.class, "Yes en = " + srvI18n.getMsg("Yes", "en"));
+    this.log.debug(null, I18NTest.class, "Omitted en = " + srvI18n.getMsg("Omitted", "en"));
+    this.log.debug(null, I18NTest.class, "Yes ru = " + srvI18n.getMsg("Yes", "ru"));
+    this.log.debug(null, I18NTest.class, "Omitted ru = " + srvI18n.getMsg("Omitted", "ru"));
+    this.log.debug(null, I18NTest.class, "Omitted def = " + srvI18n.getMsg("Omitted"));
+    assertEquals(2, srvI18n.getMessagesMap().size());
+    assertEquals("Yes", srvI18n.getMsg("Yes", "en"));
+    assertEquals("Да", srvI18n.getMsg("Yes", "ru"));
+  }
+
+  /**
+   * <p>Getter for log.</p>
+   * @return ILog
+   **/
+  public final ILog getLog() {
+    return this.log;
+  }
+
+  /**
+   * <p>Setter for log.</p>
+   * @param pLog reference
+   **/
+  public final void setLog(final ILog pLog) {
+    this.log = pLog;
+  }
+}
