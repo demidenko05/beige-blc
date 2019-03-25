@@ -31,27 +31,26 @@ package org.beigesoft.cnv;
 import java.util.Map;
 
 /**
- * <p>Converter of an object to string representation, null represents as "".
- * It's for standard objects like Integer, Long, BigDecimal, etc.</p>
+ * <p>Converter of an enum to its name.</p>
  *
- * @param <T> object type
+ * @param <E> enum type
  * @author Yury Demidenko
  */
-public class CnvObjStr<T> implements IConv<T, String> {
+public class CnvEnmStr<E extends Enum<E>> implements IConv<E, String> {
 
   /**
-   * <p>Convert to string any standard object - Integer,  Long,  etc.</p>
+   * <p>Convert to string Enum as name.</p>
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pObj object
-   * @return string representation
+   * @param pObj object enum
+   * @return enum name
    * @throws Exception - an exception
    **/
   @Override
   public final String conv(final Map<String, Object> pRqVs,
-    final T pObj) throws Exception {
+    final E pObj) throws Exception {
     if (pObj == null) {
       return "";
     }
-    return pObj.toString();
+    return pObj.name();
   }
 }

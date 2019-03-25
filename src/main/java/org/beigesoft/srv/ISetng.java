@@ -26,35 +26,24 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.fct;
-
-import java.util.Map;
+package org.beigesoft.srv;
 
 /**
- * <p>Abstraction of application beans factory.
- * This simple, cheap and powerful alternative to CDI.
- * It is pure OOP abstraction method.
- * This factory is able to free memory (release beans)
- * when it's idle for a time,
- * so it also memory friendly approach.
- * </p>
+ * <p>Abstraction of service that loads classes and their fields settings
+ * from XML property file.</p>
  *
  * @author Yury Demidenko
  */
-public interface IFctApp {
+public interface ISetng {
 
   /**
-   * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
-   * @param pBnNm - bean name
-   * @return Object - requested bean
+   * <p>Lazy gets fields setting by given name.</p>
+   * @param pCls class
+   * @param pFldNm field name
+   * @param pStgNm setting name
+   * @return String setting, maybe NULL
    * @throws Exception - an exception
-   */
-  Object laz(Map<String, Object> pRqVs, String pBnNm) throws Exception;
-
-  /**
-   * <p>Release beans (memory). This is "memory friendly" factory.</p>
-   * @throws Exception - an exception
-   */
-  void release() throws Exception;
+   **/
+  String lazFldStg(Class<?> pCls, String pFldNm,
+    String pStgNm) throws Exception;
 }

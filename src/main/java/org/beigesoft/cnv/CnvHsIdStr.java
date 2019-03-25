@@ -29,32 +29,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
-import java.util.Set;
-import java.lang.reflect.Method;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
-import org.beigesoft.hld.IHld;
 import org.beigesoft.hld.IHldNm;
 
 /**
- * <p>Converter of an entity composite ID to string representation.
- * String value is comma separated field name=value set,
- * e.g. ID user-role tomcat UsRlTmcId:
- * <pre>
- *  usr=admin,rol=admin
- * </pre>
- * Complex ID can't has entity with complex ID, in example above "usr" is
- * UsTmc, "rol" is RlTmc.</p>
+ * <p>Converter of an owned entity to string.
+ * It's entity ID field converted to string. ID either simple - String/Long
+ * or complex - composite or a foreign entity.</p>
  *
- * @param <T> Composite ID type
+ * @param <T> entity type
  * @author Yury Demidenko
  */
-public class CnvIdcStr<T> implements IConv<T, String> {
-
-  /**
-   * <p>Holder of composite ID's fields names.</p>
-   **/
-  private IHld<Class<?>, Set<String>> hldFlNms;
+public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
 
   /**
    * <p>Converters fields factory.</p>
@@ -62,61 +50,28 @@ public class CnvIdcStr<T> implements IConv<T, String> {
   private IFctNm<IConv<?, String>> fctCnvFld;
 
   /**
-   * <p>Fields getters RAPI holder.</p>
-   **/
-  private IHldNm<Class<?>, Method> hldGets;
-
-  /**
    * <p>Fields converters names holder.</p>
    **/
   private IHldNm<Class<?>, String> hldNmFdCn;
 
   /**
-   * <p>Convert to string composite ID.</p>
+   * <p>Converts any entity to string (ID).</p>
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pCmId composite ID
+   * @param pHsId Entity that ID
    * @return string representation
    * @throws Exception - an exception
    **/
   @Override
   public final String conv(final Map<String, Object> pRqVs,
-    final T pCmId) throws Exception {
-    StringBuffer sb = new StringBuffer("");
-    boolean isFirst = true;
-    for (String fldNm : this.hldFlNms.get(pCmId.getClass())) {
-      String cnNm = this.hldNmFdCn.get(pCmId.getClass(), fldNm);
-      @SuppressWarnings("unchecked")
-      IConv<Object, String> flCn = (IConv<Object, String>) this.fctCnvFld
-        .laz(pRqVs, cnNm);
-      if (isFirst) {
-        isFirst = false;
-      } else {
-        sb.append(",");
-      }
-      Method getter = this.hldGets.get(pCmId.getClass(), fldNm);
-      Object fldVal = getter.invoke(pCmId);
-      sb.append(fldNm + "=" + flCn.conv(pRqVs, fldVal));
-    }
-    return sb.toString();
+    final T pHsId) throws Exception {
+    String cnNm = this.hldNmFdCn.get(pHsId.getClass(), IHasId.IDNM);
+    @SuppressWarnings("unchecked")
+    IConv<Object, String> flCn = (IConv<Object, String>) this.fctCnvFld
+      .laz(pRqVs, cnNm);
+    return flCn.conv(pRqVs, pHsId.getIid());
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Getter for hldFlNms.</p>
-   * @return IHld<Class<?>, Set<String>>
-   **/
-  public final IHld<Class<?>, Set<String>> getHldFlNms() {
-    return this.hldFlNms;
-  }
-
-  /**
-   * <p>Setter for hldFlNms.</p>
-   * @param pHldFlNms reference
-   **/
-  public final void setHldFlNms(final IHld<Class<?>, Set<String>> pHldFlNms) {
-    this.hldFlNms = pHldFlNms;
-  }
-
   /**
    * <p>Getter for fctCnvFld.</p>
    * @return IFctNm<IConv<?, String>>
@@ -132,22 +87,6 @@ public class CnvIdcStr<T> implements IConv<T, String> {
   public final void setFctCnvFld(
     final IFctNm<IConv<?, String>> pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
-  }
-
-  /**
-   * <p>Getter for hldGets.</p>
-   * @return IHldNm<Class<?>, Method>
-   **/
-  public final IHldNm<Class<?>, Method> getHldGets() {
-    return this.hldGets;
-  }
-
-  /**
-   * <p>Setter for hldGets.</p>
-   * @param pHldGets reference
-   **/
-  public final void setHldGets(final IHldNm<Class<?>, Method> pHldGets) {
-    this.hldGets = pHldGets;
   }
 
   /**

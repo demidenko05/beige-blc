@@ -134,21 +134,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     List<DcSp> dssTmp = this.dcSps;
     List<DcGrSp> dgssTmp = this.dcGrSps;
     UsPrf upf = revUsPrf(pRqDt, lgsTmp, dssTmp, dgssTmp, upfsTmp);
-    CmnPrf cpf = new CmnPrf();
-    if (upf.getDcSp().getIid().equals(DcSp.SPACEID)) {
-      cpf.setDcSpv(DcSp.SPACEVL);
-    } else if (upf.getDcSp().getIid().equals(DcSp.EMPTYID)) {
-      cpf.setDcSpv(DcSp.EMPTYVL);
-    } else {
-      cpf.setDcSpv(upf.getDcSp().getIid());
-    }
-    if (upf.getDcGrSp().getIid().equals(DcSp.SPACEID)) {
-      cpf.setDcGrSpv(DcSp.SPACEVL);
-    } else if (upf.getDcGrSp().getIid().equals(DcSp.EMPTYID)) {
-      cpf.setDcGrSpv(DcSp.EMPTYVL);
-    } else {
-      cpf.setDcGrSpv(upf.getDcGrSp().getIid());
-    }
+    CmnPrf cpf = revCmnPrf(upf);
     for (UsPrf upft : upfsTmp) {
       if (upft.getDef()) {
         cpf.setLngDef(upft.getLng());
@@ -169,6 +155,30 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     cpf.setUsLoc(locCurr);
     pRqVs.put("upf", upf);
     pRqVs.put("cpf", cpf);
+  }
+
+  /**
+   * <p>Reveals common preferences from user preferences.</p>
+   * @param pUpf UsPrf
+   * @return common preferences
+   */
+  public final CmnPrf revCmnPrf(final UsPrf pUpf) {
+    CmnPrf cpf = new CmnPrf();
+    if (pUpf.getDcSp().getIid().equals(DcSp.SPACEID)) {
+      cpf.setDcSpv(DcSp.SPACEVL);
+    } else if (pUpf.getDcSp().getIid().equals(DcSp.EMPTYID)) {
+      cpf.setDcSpv(DcSp.EMPTYVL);
+    } else {
+      cpf.setDcSpv(pUpf.getDcSp().getIid());
+    }
+    if (pUpf.getDcGrSp().getIid().equals(DcSp.SPACEID)) {
+      cpf.setDcGrSpv(DcSp.SPACEVL);
+    } else if (pUpf.getDcGrSp().getIid().equals(DcSp.EMPTYID)) {
+      cpf.setDcGrSpv(DcSp.EMPTYVL);
+    } else {
+      cpf.setDcGrSpv(pUpf.getDcGrSp().getIid());
+    }
+    return cpf;
   }
 
   /**

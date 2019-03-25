@@ -33,12 +33,21 @@ import org.junit.Test;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import org.beigesoft.mdl.CmnPrf;
 import org.beigesoft.mdlp.UsPrf;
 import org.beigesoft.mdlp.DcSp;
 import org.beigesoft.mdlp.DcGrSp;
 import org.beigesoft.mdlp.PersistableHead;
+import org.beigesoft.mdlp.Lng;
+import org.beigesoft.fct.FctBlc;
+import org.beigesoft.fct.FctNmCnvStr;
+import org.beigesoft.hld.HldNmCnvStr;
+import org.beigesoft.hnd.HndI18nRq;
+import org.beigesoft.cnv.IConv;
+import org.beigesoft.srv.Reflect;
 
 /**
  * <p>Converters tests.</p>
@@ -47,11 +56,14 @@ import org.beigesoft.mdlp.PersistableHead;
  */
 public class CnvTest {
 
-  private CnvStrDbl cnvStrDbl = new CnvStrDbl();
+  private FctBlc fctApp;
+
+  private CnvStrDbl cnvStrDbl;
 
   private Map<Class<?>, Map<String, Map<String, String>>> uvdStMp;
 
   public CnvTest() {
+    this.fctApp = new FctBlc();
     this.cnvStrDbl = new CnvStrDbl();
     this.uvdStMp = new HashMap<Class<?>, Map<String, Map<String, String>>>();
     Map<String, Map<String, String>> phFldSts = new HashMap<String, Map<String, String>>();
@@ -76,29 +88,37 @@ public class CnvTest {
     gsp.setIid(",");
     gsp.setNme("Comma");
     upf.setDcGrSp(gsp);
-    CmnPrf cpf = new CmnPrf();
-    if (upf.getDcSp().getIid().equals(DcSp.SPACEID)) {
-      cpf.setDcSpv(DcSp.SPACEVL);
-    } else if (upf.getDcSp().getIid().equals(DcSp.EMPTYID)) {
-      cpf.setDcSpv(DcSp.EMPTYVL);
-    } else {
-      cpf.setDcSpv(upf.getDcSp().getIid());
-    }
-    if (upf.getDcGrSp().getIid().equals(DcSp.SPACEID)) {
-      cpf.setDcGrSpv(DcSp.SPACEVL);
-    } else if (upf.getDcGrSp().getIid().equals(DcSp.EMPTYID)) {
-      cpf.setDcGrSpv(DcSp.EMPTYVL);
-    } else {
-      cpf.setDcGrSpv(upf.getDcGrSp().getIid());
-    }
+    HndI18nRq hndI18nRq = (HndI18nRq) this.fctApp.laz(null, HndI18nRq.class.getSimpleName());
+    CmnPrf cpf = hndI18nRq.revCmnPrf(upf);
     Double dbVl = 12345.69;
     String dbStVl = "123,45.69";
     rqVs.put("cpf", cpf);
+    rqVs.put("upf", upf);
     Double dbVlc = this.cnvStrDbl.conv(rqVs, dbStVl);
     assertEquals(dbVl, dbVlc);
   }
   
   @Test
   public void tst2() throws Exception {
+    HldNmCnvStr hldNmCnvStr = (HldNmCnvStr) this.fctApp.laz(null, HldNmCnvStr.class.getSimpleName());
+    FctNmCnvStr fctNmCnvStr = (FctNmCnvStr) this.fctApp.laz(null, FctNmCnvStr.class.getSimpleName());
+    Reflect reflect = (Reflect) this.fctApp.laz(null, Reflect.class.getSimpleName());
+    Lng lng = new Lng();
+    lng.setIid("ru");
+    lng.setNme("Russian");
+    Map<String, String> rz = new HashMap<String, String>();
+    for (Field fld : reflect.retFlds(Lng.class)) {
+      String cnNm = hldNmCnvStr.get(Lng.class, fld.getName());
+      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(null, cnNm);
+      Method gets = reflect.retGet(Lng.class, fld.getName());
+      Object fdVl = gets.invoke(lng);
+      String fdSvl = cnv.conv(null, fdVl);
+      System.out.println("Class/field/value: Lng/" + fld.getName() + "/" + fdSvl);
+      rz.put(fld.getName(), fdSvl);
+    }
+    assertEquals(Boolean.FALSE.toString(), rz.get("isNew"));
+    assertEquals(lng.getNme(), rz.get("nme"));
+    assertEquals(lng.getIid(), rz.get("iid"));
+    assertEquals("", rz.get("ver"));
   }
 }

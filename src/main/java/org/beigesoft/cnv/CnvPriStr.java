@@ -26,35 +26,62 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.fct;
+package org.beigesoft.cnv;
 
 import java.util.Map;
+import java.math.BigDecimal;
+
+import org.beigesoft.mdl.CmnPrf;
+import org.beigesoft.mdlp.UsPrf;
+import org.beigesoft.srv.INumStr;
 
 /**
- * <p>Abstraction of application beans factory.
- * This simple, cheap and powerful alternative to CDI.
- * It is pure OOP abstraction method.
- * This factory is able to free memory (release beans)
- * when it's idle for a time,
- * so it also memory friendly approach.
- * </p>
+ * <p>Converter of a BigDecimal price to string representation with digital
+ * separators, null represents as "". It requires request scoped
+ * digital preferences.</p>
  *
  * @author Yury Demidenko
  */
-public interface IFctApp {
+public class CnvPriStr implements IConv<BigDecimal, String> {
 
   /**
-   * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
-   * @param pBnNm - bean name
-   * @return Object - requested bean
-   * @throws Exception - an exception
-   */
-  Object laz(Map<String, Object> pRqVs, String pBnNm) throws Exception;
+   * <p>Number to string service.</p>
+   **/
+  private INumStr numStr;
 
   /**
-   * <p>Release beans (memory). This is "memory friendly" factory.</p>
+   * <p>Converts BigDecimal to string.</p>
+   * @param pRqVs request scoped vars, must has upf - UsPrf, and cpf - CmnPrf
+   * @param pObj BigDecimal price/total
+   * @return string representation
    * @throws Exception - an exception
-   */
-  void release() throws Exception;
+   **/
+  @Override
+  public final String conv(final Map<String, Object> pRqVs,
+    final BigDecimal pObj) throws Exception {
+    if (pObj == null) {
+      return "";
+    }
+    CmnPrf cpf = (CmnPrf) pRqVs.get("cpf");
+    UsPrf upf = (UsPrf) pRqVs.get("upf");
+    return this.numStr.frmt(pObj.toString(), cpf.getDcSpv(),
+      cpf.getDcGrSpv(), cpf.getPriDp(), upf.getDgInGr());
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for numStr.</p>
+   * @return INumStr
+   **/
+  public final INumStr getNumStr() {
+    return this.numStr;
+  }
+
+  /**
+   * <p>Setter for numStr.</p>
+   * @param pNumStr reference
+   **/
+  public final void setNumStr(final INumStr pNumStr) {
+    this.numStr = pNumStr;
+  }
 }

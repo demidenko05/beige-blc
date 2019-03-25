@@ -32,8 +32,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.beigesoft.log.ILog;
-import org.beigesoft.fct.IFctCls;
+import org.beigesoft.fct.IFctNm;
 import org.beigesoft.hld.IHld;
+import org.beigesoft.hld.IHldNm;
 import org.beigesoft.mdl.IReqDt;
 
 /**
@@ -49,14 +50,19 @@ public class FilEntRq implements IFilEnt<IReqDt> {
   private ILog logger;
 
   /**
-   * <p>Fillers fields factory.</p>
-   */
-  private IFctCls<IFilFld<String>> fctFilFld;
-
-  /**
    * <p>Holder of entities fields names. It's a delegate to UVD-settings.</p>
    **/
   private IHld<Class<?>, Set<String>> hldFlNms;
+
+  /**
+   * <p>Holder of  fillersfields names.</p>
+   **/
+  private IHldNm<Class<?>, String> hldFilFdNms;
+
+  /**
+   * <p>Fillers fields factory.</p>
+   */
+  private IFctNm<IFilFld<String>> fctFilFld;
 
   /**
    * <p>Fill entity from pequest.</p>
@@ -71,15 +77,17 @@ public class FilEntRq implements IFilEnt<IReqDt> {
     final T pEnt, final IReqDt pReq) throws Exception {
     boolean isDbgSh = this.logger.getDbgSh(this.getClass())
       && this.logger.getDbgFl() < 5001 && this.logger.getDbgCl() > 4999;
-    IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, pEnt.getClass());
     for (String flNm : this.hldFlNms.get(pEnt.getClass())) {
       String valStr = pReq.getParam(pEnt.getClass().getSimpleName()
         + "." + flNm); // standard
-      if (isDbgSh) {
-        this.logger.debug(pRqVs, FilEntRq.class, "Filling field/inClass/value: "
-        + flNm + "/" + pEnt.getClass().getCanonicalName() + "/" + "/" + valStr);
-      }
       if (valStr != null) { // e.g. Boolean checkbox or none-editable
+        String filFdNm = this.hldFilFdNms.get(pEnt.getClass(), flNm);
+        IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
+        if (isDbgSh) {
+          this.logger.debug(pRqVs, FilEntRq.class,
+        "Filling fieldNm/inClass/value/filler: " + flNm + "/" + pEnt.getClass()
+      .getSimpleName() + "/" + valStr + "/" + filFl.getClass().getSimpleName());
+        }
         filFl.fill(pRqVs, pEnt, valStr, flNm);
       }
     }
@@ -104,9 +112,9 @@ public class FilEntRq implements IFilEnt<IReqDt> {
 
   /**
    * <p>Getter for fctFilFld.</p>
-   * @return IFctCls<IFilFld<String>>
+   * @return IFctNm<IFilFld<String>>
    **/
-  public final IFctCls<IFilFld<String>> getFctFilFld() {
+  public final IFctNm<IFilFld<String>> getFctFilFld() {
     return this.fctFilFld;
   }
 
@@ -114,8 +122,25 @@ public class FilEntRq implements IFilEnt<IReqDt> {
    * <p>Setter for fctFilFld.</p>
    * @param pFctFilFld reference
    **/
-  public final void setFctFilFld(final IFctCls<IFilFld<String>> pFctFilFld) {
+  public final void setFctFilFld(final IFctNm<IFilFld<String>> pFctFilFld) {
     this.fctFilFld = pFctFilFld;
+  }
+
+  /**
+   * <p>Getter for hldFilFdNms.</p>
+   * @return IHldNm<Class<?>, String>
+   **/
+  public final IHldNm<Class<?>, String> getHldFilFdNms() {
+    return this.hldFilFdNms;
+  }
+
+  /**
+   * <p>Setter for hldFilFdNms.</p>
+   * @param pHldFilFdNms reference
+   **/
+  public final void setHldFilFdNms(
+    final IHldNm<Class<?>, String> pHldFilFdNms) {
+    this.hldFilFdNms = pHldFilFdNms;
   }
 
   /**
