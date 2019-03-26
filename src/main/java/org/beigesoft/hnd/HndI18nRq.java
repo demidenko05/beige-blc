@@ -51,7 +51,7 @@ import org.beigesoft.srv.IOrm;
 public class HndI18nRq<RS> implements IHndRq, IHndCh {
 
   /**
-   * <p>Log.</p>
+   * <p>Logger.</p>
    **/
   private ILog log;
 
@@ -99,6 +99,11 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
   @Override
   public final void handle(final Map<String, Object> pRqVs,
     final IReqDt pRqDt) throws Exception {
+    //unlocked references of the latest versions of shared data:
+    List<UsPrf> upfsTmp = null;
+    List<Lng> lgsTmp = null;
+    List<DcSp> dssTmp = null;
+    List<DcGrSp> dgssTmp = null;
     if (this.usPrfs == null) {
       synchronized (this) {
         if (this.usPrfs == null) {
@@ -126,13 +131,20 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
             this.rdb.release();
           }
         }
+        upfsTmp = this.usPrfs;
+        lgsTmp = this.lngs;
+        dssTmp = this.dcSps;
+        dgssTmp = this.dcGrSps;
       }
     }
-    //unlocked references of the latest versions of shared data:
-    List<UsPrf> upfsTmp = this.usPrfs;
-    List<Lng> lgsTmp = this.lngs;
-    List<DcSp> dssTmp = this.dcSps;
-    List<DcGrSp> dgssTmp = this.dcGrSps;
+    if (upfsTmp == null) {
+      synchronized (this) {
+        upfsTmp = this.usPrfs;
+        lgsTmp = this.lngs;
+        dssTmp = this.dcSps;
+        dgssTmp = this.dcGrSps;
+      }
+    }
     UsPrf upf = revUsPrf(pRqDt, lgsTmp, dssTmp, dgssTmp, upfsTmp);
     CmnPrf cpf = revCmnPrf(upf);
     for (UsPrf upft : upfsTmp) {

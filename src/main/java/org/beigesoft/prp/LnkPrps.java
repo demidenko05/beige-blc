@@ -32,8 +32,7 @@ import java.util.Properties;
 import java.util.LinkedHashSet;
 
 /**
- * <p>Comparator for Entry.getValue().get(orderKey).Value of String that
- * contain Integer.toString() value.</p>
+ * <p>Properties with ordered keys of String type.</p>
  *
  * @author Yury Demidenko
  */

@@ -35,7 +35,13 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.hld.HldFldCls;
 import org.beigesoft.hld.HldNmCnvStr;
 import org.beigesoft.hnd.HndI18nRq;
+import org.beigesoft.prp.UtlPrp;
+import org.beigesoft.prp.ISetng;
+import org.beigesoft.prp.Setng;
+import org.beigesoft.log.ILog;
 import org.beigesoft.srv.Reflect;
+import org.beigesoft.srv.IRdb;
+import org.beigesoft.srv.IOrm;
 
 /**
  * <p>Application beans factory of beige-blc beans. It's inner factory
@@ -49,6 +55,11 @@ public class FctBlc implements IFctApp {
    * <p>Beans map.</p>
    **/
   private final Map<String, Object> beans = new HashMap<String, Object>();
+
+  /**
+   * <p>Outside app-beans factory.</p>
+   **/
+  private IFctApp fctOut;
   /**
    * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
    * @param pRqVs request scoped vars
@@ -67,13 +78,17 @@ public class FctBlc implements IFctApp {
         rz = this.beans.get(pBnNm);
         if (rz == null) {
           if (HndI18nRq.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHndI18nRq();
+            rz = lazHndI18nRq(pRqVs);
+          } else if (ISetng.class.getSimpleName().equals(pBnNm)) {
+            rz = lazSetng(pRqVs);
           } else if (HldNmCnvStr.class.getSimpleName().equals(pBnNm)) {
             rz = lazHldNmCnvStr();
           } else if (HldFldCls.class.getSimpleName().equals(pBnNm)) {
             rz = lazHldFldCls();
           } else if (FctNmCnvStr.class.getSimpleName().equals(pBnNm)) {
             rz = lazFctNmCnvStr();
+          } else if (UtlPrp.class.getSimpleName().equals(pBnNm)) {
+            rz = lazUtlPrp();
           } else if (Reflect.class.getSimpleName().equals(pBnNm)) {
             rz = lazReflect();
           }
@@ -93,14 +108,38 @@ public class FctBlc implements IFctApp {
 
   /**
    * <p>Lazy getter HndI18nRq.</p>
+   * @param pRqVs request scoped vars
    * @return HndI18nRq
+   * @throws Exception - an exception
    */
-  private HndI18nRq lazHndI18nRq() {
+  private HndI18nRq lazHndI18nRq(
+    final Map<String, Object> pRqVs) throws Exception {
     HndI18nRq rz = (HndI18nRq) this.beans
       .get(HndI18nRq.class.getSimpleName());
     if (rz == null) {
-      rz = new HndI18nRq(); //TODO
+      rz = new HndI18nRq();
+      rz.setOrm((IOrm) this.fctOut.laz(pRqVs, IOrm.class.getSimpleName()));
+      rz.setRdb((IRdb) this.fctOut.laz(pRqVs, IRdb.class.getSimpleName()));
+      rz.setLog((ILog) this.fctOut.laz(pRqVs, ILog.class.getSimpleName()));
       this.beans.put(HndI18nRq.class.getSimpleName(), rz);
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter Setng.</p>
+   * @param pRqVs request scoped vars
+   * @return Setng
+   * @throws Exception - an exception
+   */
+  private Setng lazSetng(final Map<String, Object> pRqVs) throws Exception {
+    Setng rz = (Setng) this.beans.get(ISetng.class.getSimpleName());
+    if (rz == null) {
+      rz = new Setng();
+      rz.setReflect(lazReflect());
+      rz.setUtlPrp(lazUtlPrp());
+      rz.setLog((ILog) this.fctOut.laz(pRqVs, ILog.class.getSimpleName()));
+      this.beans.put(ISetng.class.getSimpleName(), rz);
     }
     return rz;
   }
@@ -150,6 +189,19 @@ public class FctBlc implements IFctApp {
   }
 
   /**
+   * <p>Lazy getter UtlPrp.</p>
+   * @return UtlPrp
+   */
+  private UtlPrp lazUtlPrp() {
+    UtlPrp rz = (UtlPrp) this.beans.get(UtlPrp.class.getSimpleName());
+    if (rz == null) {
+      rz = new UtlPrp();
+      this.beans.put(UtlPrp.class.getSimpleName(), rz);
+    }
+    return rz;
+  }
+
+  /**
    * <p>Lazy getter Reflect.</p>
    * @return Reflect
    */
@@ -160,5 +212,22 @@ public class FctBlc implements IFctApp {
       this.beans.put(Reflect.class.getSimpleName(), rz);
     }
     return rz;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for fctOut.</p>
+   * @return IFctNm
+   **/
+  public final synchronized IFctApp getFctOut() {
+    return this.fctOut;
+  }
+
+  /**
+   * <p>Setter for fctOut.</p>
+   * @param pFctOut reference
+   **/
+  public final synchronized void setFctOut(final IFctApp pFctOut) {
+    this.fctOut = pFctOut;
   }
 }

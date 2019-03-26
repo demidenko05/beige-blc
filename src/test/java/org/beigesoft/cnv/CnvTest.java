@@ -42,6 +42,7 @@ import org.beigesoft.mdlp.DcSp;
 import org.beigesoft.mdlp.DcGrSp;
 import org.beigesoft.mdlp.PersistableHead;
 import org.beigesoft.mdlp.Lng;
+import org.beigesoft.fct.FctTst;
 import org.beigesoft.fct.FctBlc;
 import org.beigesoft.fct.FctNmCnvStr;
 import org.beigesoft.hld.HldNmCnvStr;
@@ -64,6 +65,8 @@ public class CnvTest {
 
   public CnvTest() {
     this.fctApp = new FctBlc();
+    FctTst fctTst = new FctTst();
+    this.fctApp.setFctOut(fctTst);
     this.cnvStrDbl = new CnvStrDbl();
     this.uvdStMp = new HashMap<Class<?>, Map<String, Map<String, String>>>();
     Map<String, Map<String, String>> phFldSts = new HashMap<String, Map<String, String>>();

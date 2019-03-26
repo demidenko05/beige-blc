@@ -1,0 +1,694 @@
+/*
+BSD 2-Clause License
+
+Copyright (c) 2019, Beigesoft™
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.beigesoft.prp;
+
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
+import org.beigesoft.exc.ExcCode;
+import org.beigesoft.log.ILog;
+import org.beigesoft.srv.IReflect;
+
+/**
+ * <p>Service that loads classes and their fields settings
+ * from XML property file.</p>
+ *
+ * @author Yury Demidenko
+ */
+public class Setng implements ISetng {
+
+  //Services:
+  /**
+   * <p>Logger.</p>
+   **/
+  private ILog log;
+
+  /**
+   * <p>Reflection service.</p>
+   **/
+  private IReflect reflect;
+
+  /**
+   * <p>LnkPrps service.</p>
+   **/
+  private UtlPrp utlPrp;
+
+  //Configuration:
+    //Base settings:
+  /**
+   * <p>XML properties directory.</p>
+   **/
+  private String dir;
+
+    //Target settings:
+  /**
+   * <p>Common settings.</p>
+   */
+  private Map<String, String> cmnStgs;
+
+  /**
+   * <p>Classes settings.</p>
+   */
+  private Map<Class<?>, Map<String, String>> clsStgs;
+
+  /**
+   * <p>Fields settings.</p>
+   */
+  private Map<Class<?>, Map<String, Map<String, String>>> fldStgs;
+
+    //Loaded sources properties from conf.xml:
+  /**
+   * <p>All involved classes.</p>
+   **/
+  private LinkedHashSet<Class<?>> clss;
+
+  /**
+   * <p>Class settings names.</p>
+   */
+  private LinkedHashSet<String> clsStgNms;
+
+  /**
+   * <p>Fields settings names.</p>
+   */
+  private LinkedHashSet<String> fldStgNms;
+
+  /**
+   * <p>Excluded fields names.</p>
+   */
+  private LinkedHashSet<String> exlFlds;
+
+    //Cached XML properties. Empty (non-null) values means lazy initialized
+    //from NULL:
+  /**
+   * <p>Setting name - Class type to CS properties map.</p>
+   */
+  private Map<String, Map<Class<?>, String>> clsTyCs;
+
+  /**
+   * <p>Class - Field name + setting name to setting props.</p>
+   */
+  private Map<Class<?>, LnkPrps> clsFs;
+
+  /**
+   * <p>Setting name - Field type to FS properties.</p>
+   */
+  private Map<String, Map<Class<?>, String>> fldTyFs;
+
+  /**
+   * <p>Setting name - Field name to FS properties.</p>
+   */
+  private Map<String, LnkPrps> fldNmFs;
+
+  /**
+   * <p>Field name + Setting name - Field type to FS properties.</p>
+   */
+  private Map<String, Map<Class<?>, String>> fldNmTyFs;
+
+  /**
+   * <p>Field name + Setting name - class type to FS properties.</p>
+   */
+  private Map<String, Map<Class<?>, String>> fldNmClTyFs;
+
+  /**
+   * <p>Lazy gets fields setting by given name. Maybe NULL, e.g. converter
+   * name for fields of standard type (resource friendly approach).
+   * It's also maybe only class settings configuration.</p>
+   * @param pCls class
+   * @param pFldNm field name
+   * @param pStgNm setting name
+   * @return String setting, maybe NULL
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final String lazFldStg(final Class<?> pCls, final String pFldNm,
+    final String pStgNm) throws Exception {
+    lazConf();
+    if (!this.clss.contains(pCls)) {
+      throw new ExcCode(ExcCode.WRPR, "There is no class " + pCls);
+    }
+    lazFldPrp(pCls, pFldNm, pStgNm);
+    if (this.fldStgs == null || this.fldStgs.get(pCls) == null
+      || !this.fldStgs.get(pCls).keySet().contains(pFldNm)
+        || !this.fldStgs.get(pCls).get(pFldNm).keySet().contains(pStgNm)) {
+      synchronized (this) {
+        if (this.fldStgs == null || this.fldStgs.get(pCls) == null
+          || !this.fldStgs.get(pCls).keySet().contains(pFldNm)
+            || !this.fldStgs.get(pCls).get(pFldNm).keySet().contains(pStgNm)) {
+          String stg = revFldStg(pCls, pFldNm, pStgNm);
+          if (this.fldStgs != null && this.fldStgs.get(pCls) != null
+            && this.fldStgs.get(pCls).get(pFldNm) != null) {
+            this.fldStgs.get(pCls).get(pFldNm).put(pStgNm, stg);
+          } else {
+            Map<String, String> flSts = new HashMap<String, String>();
+            flSts.put(pStgNm, stg);
+            if (this.fldStgs != null && this.fldStgs.get(pCls) != null) {
+              this.fldStgs.get(pCls).put(pFldNm, flSts);
+            } else {
+              Map<String, Map<String, String>> flsSts =
+                new HashMap<String, Map<String, String>>();
+              flsSts.put(pFldNm, flSts);
+              if (this.fldStgs != null) {
+                this.fldStgs.put(pCls, flsSts);
+              } else {
+                Map<Class<?>, Map<String, Map<String, String>>> tfldStgs =
+                  new HashMap<Class<?>, Map<String, Map<String, String>>>();
+                tfldStgs.put(pCls, flsSts);
+                this.fldStgs = tfldStgs;
+              }
+            }
+          }
+        }
+      }
+    }
+    return this.fldStgs.get(pCls).get(pFldNm).get(pStgNm);
+  }
+
+  /**
+   * <p>Clear all loaded data, releases memory.</p>
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final synchronized void release() throws Exception {
+    this.cmnStgs = null;
+    this.clsStgs = null;
+    this.fldStgs = null;
+    this.clss = null;
+    this.clsStgNms = null;
+    this.fldStgNms = null;
+    this.exlFlds = null;
+    this.clsTyCs = null;
+    this.fldTyFs = null;
+    this.fldNmFs = null;
+    this.fldNmTyFs = null;
+    this.fldNmClTyFs = null;
+  }
+
+  //Utils:
+  /**
+   * <p>Reveal setting for given class, field and setting name.</p>
+   * @param pCls class
+   * @param pFldNm field name
+   * @param pStgNm setting name
+   * @return string or NULL
+   * @throws Exception - an exception
+   **/
+  public final synchronized String revFldStg(final Class<?> pCls,
+    final String pFldNm, final String pStgNm) throws Exception {
+    if (this.clsFs != null && this.clsFs.get(pCls) != null) {
+      String ky = pFldNm + pStgNm;
+      if (this.clsFs.get(pCls).getOrdKeys().contains(ky)) {
+        return this.utlPrp.evPrpVl(this.clsFs.get(pCls), ky);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * <p>Lazy load XML properties for given class, field and setting name.</p>
+   * @param pCls class
+   * @param pFldNm field name
+   * @param pStgNm setting name
+   * @throws Exception - an exception
+   **/
+  public final void lazFldPrp(final Class<?> pCls, final String pFldNm,
+    final String pStgNm) throws Exception {
+    if (this.fldTyFs == null || this.fldTyFs.get(pStgNm) == null) {
+      synchronized (this) {
+        if (this.fldTyFs == null || this.fldTyFs.get(pStgNm) == null) {
+          String fiPa = "/" + this.dir + "/" + DIRFLDTYFS + "/" + pStgNm
+            + ".xml";
+          Map<Class<?>, String> flTyFsMp = ldClPrps(pStgNm, fiPa);
+          fiPa = "/" + this.dir + "/" + DIRFLDNMFS + "/" + pStgNm + ".xml";
+          LnkPrps flNmFsPr = ldPrps(pStgNm, fiPa);
+          String fiNm = pFldNm + pStgNm;
+          fiPa = "/" + this.dir + "/" + DIRFLDNMTYFS + "/" + fiNm + ".xml";
+          Map<Class<?>, String> flNmTyFsMp = ldClPrps(fiNm, fiPa);
+          fiPa = "/" + this.dir + "/" + DIRFLDNMCLSTYFS + "/" + fiNm + ".xml";
+          Map<Class<?>, String> flNmClTyFsMp = ldClPrps(fiNm, fiPa);
+          fiNm = pCls.getSimpleName();
+          fiPa = "/" + this.dir + "/" + DIRCLSFS + "/" + fiNm + ".xml";
+          LnkPrps clFsPr = ldPrps(fiNm, fiPa);
+          //assigning fully initializing beans:
+          if (clFsPr != null) {
+            if (this.clsFs == null) {
+              this.clsFs = new HashMap<Class<?>, LnkPrps>();
+            }
+            this.clsFs.put(pCls, clFsPr);
+          }
+          if (this.fldNmFs == null) {
+            this.fldNmFs = new HashMap<String, LnkPrps>();
+          }
+          this.fldNmFs.put(fiNm, flNmFsPr);
+          if (this.fldNmClTyFs == null) {
+            this.fldNmClTyFs = new HashMap<String, Map<Class<?>, String>>();
+          }
+          this.fldNmClTyFs.put(fiNm, flNmClTyFsMp);
+          if (this.fldNmTyFs == null) {
+            this.fldNmTyFs = new HashMap<String, Map<Class<?>, String>>();
+          }
+          this.fldNmTyFs.put(fiNm, flNmTyFsMp);
+          if (this.fldTyFs == null) {
+            this.fldTyFs = new HashMap<String, Map<Class<?>, String>>();
+          }
+          this.fldTyFs.put(pStgNm, flTyFsMp);
+        }
+      }
+    }
+  }
+
+  /**
+   * <p>Lazy loads configuration.</p>
+   * @throws Exception - an exception
+   **/
+  public final void lazConf() throws Exception {
+    if (this.clss == null) {
+      synchronized (this) {
+        if (this.clss == null) {
+          String cnfFiNm = "/" + this.dir + "/" + CONFFLNM;
+          this.log.info(null, Setng.class, "try to load: " + cnfFiNm);
+          LnkPrps conf = this.utlPrp.load(cnfFiNm);
+          if (conf == null) {
+            throw new ExcCode(ExcCode.WRCN, "There is no configuration file "
+              + cnfFiNm);
+          }
+          String strClss = conf.getProperty(KEYCLSS);
+          if (strClss == null) {
+            throw new ExcCode(ExcCode.WRCN, "There is no property " + KEYCLSS
+              + " in configuration file!");
+          }
+          this.log.info(null, Setng.class, "classes: " + strClss);
+          LinkedHashSet<String> clsNms = this.utlPrp.evPrpStrSet(strClss);
+          LinkedHashSet<Class<?>> tclss = new LinkedHashSet<Class<?>>();
+          for (String clsNm : clsNms) {
+            tclss.add(Class.forName(clsNm));
+          }
+          String strClsStgNms = conf.getProperty(KEYCLSSTNMS);
+          LinkedHashSet<String> tclsStgNms = null;
+          if (strClsStgNms == null) {
+            this.log.warn(null, Setng.class, "There is no classes settings!");
+          } else {
+          this.log.info(null, Setng.class, "classes settings: " + strClsStgNms);
+            LinkedHashSet<String> clsStNmPrs = this.utlPrp
+              .evPrpStrSet(strClsStgNms);
+            tclsStgNms = new LinkedHashSet<String>();
+            for (String clsStNmPr : clsStNmPrs) {
+              tclsStgNms.add(clsStNmPr);
+            }
+          }
+          String strFldStgNms = conf.getProperty(KEYFLDSTNMS);
+          LinkedHashSet<String> tfldStgNms = null;
+          if (strFldStgNms == null) {
+            this.log.warn(null, Setng.class, "There is no fields settings!");
+          } else {
+           this.log.info(null, Setng.class, "fields settings: " + strFldStgNms);
+            LinkedHashSet<String> fldStNmPrs = this.utlPrp
+              .evPrpStrSet(strFldStgNms);
+            tfldStgNms = new LinkedHashSet<String>();
+            for (String fldStNmPr : fldStNmPrs) {
+              tfldStgNms.add(fldStNmPr);
+            }
+          }
+          String strExlFlds = conf.getProperty(KEYEXLFLDS);
+          LinkedHashSet<String> texlFlds = null;
+          if (strExlFlds == null) {
+            this.log.warn(null, Setng.class, "There is no excluded fields!");
+          } else {
+            this.log.info(null, Setng.class, "excluded fields: " + strExlFlds);
+            LinkedHashSet<String> fldStNmPrs = this.utlPrp
+              .evPrpStrSet(strExlFlds);
+            texlFlds = new LinkedHashSet<String>();
+            for (String fldStNmPr : fldStNmPrs) {
+              texlFlds.add(fldStNmPr);
+            }
+          }
+          //assign fully initialized beans:
+          this.clsStgNms = tclsStgNms;
+          this.fldStgNms = tfldStgNms;
+          this.exlFlds = texlFlds;
+          this.clss = tclss;
+        }
+      }
+    }
+  }
+
+  /**
+   * <p>Load properties String-String from XML file.</p>
+   * @param pKey setting file name - setting name or
+   *  field name + setting name or class name
+   * @param pFiNm File Name
+   * @return LnkPrps LnkPrps
+   * @throws Exception - an exception
+   **/
+  public final synchronized LnkPrps ldPrps(
+    final String pKey, final String pFiNm) throws Exception {
+    LnkPrps rz = this.utlPrp.load(pFiNm);
+    if (rz != null) {
+      boolean isDbgSh = this.log.getDbgSh(this.getClass())
+        && this.log.getDbgFl() < 6002 && this.log.getDbgCl() > 6000;
+      if (isDbgSh) {
+        this.log.debug(null, Setng.class, "added setting file: " + pFiNm);
+      }
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Load properties Class-String from XML file.</p>
+   * @param pKey setting file name - setting name or
+   *  field name + setting name or class name
+   * @param pFiNm File Name
+   * @return class-property map
+   * @throws Exception - an exception
+   **/
+  public final synchronized Map<Class<?>, String> ldClPrps(
+    final String pKey, final String pFiNm) throws Exception {
+    Map<Class<?>, String> rz = new LinkedHashMap<Class<?>, String>();
+    LnkPrps lprp = this.utlPrp.load(pFiNm);
+    if (lprp != null) {
+      for (String ky : lprp.getOrdKeys()) {
+        rz.put(Class.forName(ky), lprp.getProperty(ky));
+      }
+      boolean isDbgSh = this.log.getDbgSh(this.getClass())
+        && this.log.getDbgFl() < 6003 && this.log.getDbgCl() > 6001;
+      if (isDbgSh) {
+        this.log.debug(null, Setng.class, "added setting file: " + pFiNm);
+      }
+    }
+    return rz;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for log.</p>
+   * @return ILog
+   **/
+  public final synchronized ILog getLog() {
+    return this.log;
+  }
+
+  /**
+   * <p>Setter for log.</p>
+   * @param pLog reference
+   **/
+  public final synchronized void setLog(final ILog pLog) {
+    this.log = pLog;
+  }
+
+  /**
+   * <p>Getter for reflect.</p>
+   * @return IReflect
+   **/
+  public final synchronized IReflect getReflect() {
+    return this.reflect;
+  }
+
+  /**
+   * <p>Setter for reflect.</p>
+   * @param pReflect reference
+   **/
+  public final synchronized void setReflect(final IReflect pReflect) {
+    this.reflect = pReflect;
+  }
+
+  /**
+   * <p>Getter for utlPrp.</p>
+   * @return UtlPrp
+   **/
+  public final synchronized UtlPrp getUtlPrp() {
+    return this.utlPrp;
+  }
+
+  /**
+   * <p>Setter for utlPrp.</p>
+   * @param pUtlPrp reference
+   **/
+  public final synchronized void setUtlPrp(final UtlPrp pUtlPrp) {
+    this.utlPrp = pUtlPrp;
+  }
+
+  /**
+   * <p>Getter for dir.</p>
+   * @return String
+   **/
+  public final synchronized String getDir() {
+    return this.dir;
+  }
+
+  /**
+   * <p>Setter for dir.</p>
+   * @param pDir reference
+   **/
+  public final synchronized void setDir(final String pDir) {
+    this.dir = pDir;
+  }
+
+  //For debugging purposes:
+  /**
+   * <p>Getter for cmnStgs.</p>
+   * @return Map<String, String>
+   **/
+  public final synchronized Map<String, String> getCmnStgs() {
+    return this.cmnStgs;
+  }
+
+  /**
+   * <p>Setter for cmnStgs.</p>
+   * @param pCmnStgs reference
+   **/
+  public final synchronized void setCmnStgs(
+    final Map<String, String> pCmnStgs) {
+    this.cmnStgs = pCmnStgs;
+  }
+
+  /**
+   * <p>Getter for clsStgs.</p>
+   * @return Map<Class<?>, Map<String, String>>
+   **/
+  public final synchronized Map<Class<?>, Map<String, String>> getClsStgs() {
+    return this.clsStgs;
+  }
+
+  /**
+   * <p>Setter for clsStgs.</p>
+   * @param pClsStgs reference
+   **/
+  public final synchronized void setClsStgs(
+    final Map<Class<?>, Map<String, String>> pClsStgs) {
+    this.clsStgs = pClsStgs;
+  }
+
+  /**
+   * <p>Getter for fldStgs.</p>
+   * @return Map<Class<?>, Map<String, Map<String, String>>>
+   **/
+  public final synchronized
+    Map<Class<?>, Map<String, Map<String, String>>> getFldStgs() {
+    return this.fldStgs;
+  }
+
+  /**
+   * <p>Setter for fldStgs.</p>
+   * @param pFldStgs reference
+   **/
+  public final synchronized void setFldStgs(
+    final Map<Class<?>, Map<String, Map<String, String>>> pFldStgs) {
+    this.fldStgs = pFldStgs;
+  }
+
+  /**
+   * <p>Getter for clss.</p>
+   * @return LinkedHashSet<Class<?>>
+   **/
+  public final synchronized LinkedHashSet<Class<?>> getClss() {
+    return this.clss;
+  }
+
+  /**
+   * <p>Setter for clss.</p>
+   * @param pClss reference
+   **/
+  public final synchronized void setClss(final LinkedHashSet<Class<?>> pClss) {
+    this.clss = pClss;
+  }
+
+  /**
+   * <p>Getter for clsStgNms.</p>
+   * @return LinkedHashSet<String>
+   **/
+  public final synchronized LinkedHashSet<String> getClsStgNms() {
+    return this.clsStgNms;
+  }
+
+  /**
+   * <p>Setter for clsStgNms.</p>
+   * @param pClsStgNms reference
+   **/
+  public final synchronized void setClsStgNms(
+    final LinkedHashSet<String> pClsStgNms) {
+    this.clsStgNms = pClsStgNms;
+  }
+
+  /**
+   * <p>Getter for fldStgNms.</p>
+   * @return LinkedHashSet<String>
+   **/
+  public final synchronized LinkedHashSet<String> getFldStgNms() {
+    return this.fldStgNms;
+  }
+
+  /**
+   * <p>Setter for fldStgNms.</p>
+   * @param pFldStgNms reference
+   **/
+  public final synchronized void setFldStgNms(
+    final LinkedHashSet<String> pFldStgNms) {
+    this.fldStgNms = pFldStgNms;
+  }
+
+  /**
+   * <p>Getter for exlFlds.</p>
+   * @return LinkedHashSet<String>
+   **/
+  public final synchronized LinkedHashSet<String> getExlFlds() {
+    return this.exlFlds;
+  }
+
+  /**
+   * <p>Setter for exlFlds.</p>
+   * @param pExlFlds reference
+   **/
+  public final synchronized void setExlFlds(
+    final LinkedHashSet<String> pExlFlds) {
+    this.exlFlds = pExlFlds;
+  }
+
+  /**
+   * <p>Getter for clsTyCs.</p>
+   * @return Map<String, Map<Class<?>, String>>
+   **/
+  public final synchronized Map<String, Map<Class<?>, String>> getClsTyCs() {
+    return this.clsTyCs;
+  }
+
+  /**
+   * <p>Setter for clsTyCs.</p>
+   * @param pClsTyCs reference
+   **/
+  public final synchronized void setClsTyCs(
+    final Map<String, Map<Class<?>, String>> pClsTyCs) {
+    this.clsTyCs = pClsTyCs;
+  }
+
+  /**
+   * <p>Getter for clsFs.</p>
+   * @return Map<Class<?>, LnkPrps>
+   **/
+  public final synchronized Map<Class<?>, LnkPrps> getClsFs() {
+    return this.clsFs;
+  }
+
+  /**
+   * <p>Setter for clsFs.</p>
+   * @param pClsFs reference
+   **/
+  public final synchronized void setClsFs(final Map<Class<?>, LnkPrps> pClsFs) {
+    this.clsFs = pClsFs;
+  }
+
+  /**
+   * <p>Getter for fldTyFs.</p>
+   * @return Map<String, Map<Class<?>, String>>
+   **/
+  public final synchronized Map<String, Map<Class<?>, String>> getFldTyFs() {
+    return this.fldTyFs;
+  }
+
+  /**
+   * <p>Setter for fldTyFs.</p>
+   * @param pFldTyFs reference
+   **/
+  public final synchronized void setFldTyFs(
+    final Map<String, Map<Class<?>, String>> pFldTyFs) {
+    this.fldTyFs = pFldTyFs;
+  }
+
+  /**
+   * <p>Getter for fldNmFs.</p>
+   * @return Map<String, LnkPrps>
+   **/
+  public final synchronized Map<String, LnkPrps> getFldNmFs() {
+    return this.fldNmFs;
+  }
+
+  /**
+   * <p>Setter for fldNmFs.</p>
+   * @param pFldNmFs reference
+   **/
+  public final synchronized void setFldNmFs(
+    final Map<String, LnkPrps> pFldNmFs) {
+    this.fldNmFs = pFldNmFs;
+  }
+
+  /**
+   * <p>Getter for fldNmTyFs.</p>
+   * @return Map<String, Map<Class<?>, String>>
+   **/
+  public final synchronized Map<String, Map<Class<?>, String>> getFldNmTyFs() {
+    return this.fldNmTyFs;
+  }
+
+  /**
+   * <p>Setter for fldNmTyFs.</p>
+   * @param pFldNmTyFs reference
+   **/
+  public final synchronized void setFldNmTyFs(
+    final Map<String, Map<Class<?>, String>> pFldNmTyFs) {
+    this.fldNmTyFs = pFldNmTyFs;
+  }
+
+  /**
+   * <p>Getter for fldNmClTyFs.</p>
+   * @return Map<String, Map<Class<?>, String>>
+   **/
+  public final synchronized
+    Map<String, Map<Class<?>, String>> getFldNmClTyFs() {
+    return this.fldNmClTyFs;
+  }
+
+  /**
+   * <p>Setter for fldNmClTyFs.</p>
+   * @param pFldNmClTyFs reference
+   **/
+  public final synchronized void setFldNmClTyFs(
+    final Map<String, Map<Class<?>, String>> pFldNmClTyFs) {
+    this.fldNmClTyFs = pFldNmClTyFs;
+  }
+}

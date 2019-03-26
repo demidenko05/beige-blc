@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
 BSD 2-Clause License
 
 Copyright (c) 2019, Beigesoft™
@@ -24,26 +25,19 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-package org.beigesoft.srv;
-
-/**
- * <p>Abstraction of service that loads classes and their fields settings
- * from XML property file.</p>
- *
- * @author Yury Demidenko
- */
-public interface ISetng {
-
-  /**
-   * <p>Lazy gets fields setting by given name.</p>
-   * @param pCls class
-   * @param pFldNm field name
-   * @param pStgNm setting name
-   * @return String setting, maybe NULL
-   * @throws Exception - an exception
-   **/
-  String lazFldStg(Class<?> pCls, String pFldNm,
-    String pStgNm) throws Exception;
-}
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Beigesoft settings service test1 configuration</comment>
+<entry key="clss">org.beigesoft.mdlp.Department,
+  org.beigesoft.mdlp.Warehouse,
+  org.beigesoft.mdlp.GoodVersionTime,
+  org.beigesoft.mdlp.GoodsRating,
+  org.beigesoft.mdlp.PersistableHead,
+  org.beigesoft.mdlp.PersistableLine,
+  org.beigesoft.mdlp.UsTmc,
+  org.beigesoft.mdlp.UsRlTmc</entry>
+<entry key="stgClsNms">cnstrAdd, exlFlds</entry>
+<entry key="stgFldNms">cnvStr</entry>
+<entry key="exlFlds">isNew</entry>
+</properties>

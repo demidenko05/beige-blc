@@ -39,7 +39,7 @@ import org.beigesoft.mdl.IHasId;
 public class UsRlTmc extends AEditable implements IHasId<UsRlTmcId> {
 
   /**
-   * <p>Complex ID. Must be initialized cause reflection use.</p>
+   * <p>Complex ID. Must be initialized cause reflection usage.</p>
    **/
   private UsRlTmcId iid = new UsRlTmcId();
 

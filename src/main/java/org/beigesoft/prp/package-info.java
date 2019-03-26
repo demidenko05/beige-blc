@@ -27,7 +27,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /**
- * <p>Consist of ordered properties and utilities.</p>
+ * <p>Consist of ordered properties, utilities, clasees and fields settings
+ * service from XML file.</p>
  * @author Yury Demidenko
  */
 package org.beigesoft.prp;
