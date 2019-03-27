@@ -66,7 +66,7 @@ public class FctTst implements IFctApp {
       synchronized (this) {
         rz = this.beans.get(pBnNm);
         if (rz == null) {
-          if (ILog.class.getSimpleName().equals(pBnNm)) {
+          if (FctBlc.LOGSTDNM.equals(pBnNm)) {
             rz = lazLog();
           }
         }
@@ -80,10 +80,10 @@ public class FctTst implements IFctApp {
    * @return Reflect
    */
   private ILog lazLog() {
-    ILog rz = (ILog) this.beans.get(ILog.class.getSimpleName());
+    ILog rz = (ILog) this.beans.get(FctBlc.LOGSTDNM);
     if (rz == null) {
       rz = new LogSmp();
-      this.beans.put(ILog.class.getSimpleName(), rz);
+      this.beans.put(FctBlc.LOGSTDNM, rz);
     }
     return rz;
   }

@@ -29,17 +29,37 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.prp;
 
 import java.util.LinkedHashSet;
+import java.util.Collection;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.lang.reflect.Field;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.log.ILog;
+import org.beigesoft.hld.IHldNm;
 import org.beigesoft.srv.IReflect;
 
 /**
  * <p>Service that loads classes and their fields settings
- * from XML property file.</p>
+ * from XML property file.
+ * Priority of XML classes properties:
+ * <pre>
+ * 1. clsCs - class to settings
+ * 5. clsTyCs - class type to settings
+ * </pre>
+ * Priority of XML fields properties:
+ * <pre>
+ * 1. clsFs - class to settings
+ * 2. fldNmClsTyFs - field name class type to settings
+ * 3. fldNmTyFs - field name and type to settings
+ * 4. fldNmFs - field name to settings
+ * 5. fldTyFs - field type to settings
+ * </pre>
+ * It is also holder of involved classes involved fields names.
+ * </p>
  *
  * @author Yury Demidenko
  */
@@ -61,6 +81,11 @@ public class Setng implements ISetng {
    **/
   private UtlPrp utlPrp;
 
+  /**
+   * <p>Holder of an entity's field's class.</p>
+   **/
+  private IHldNm<Class<?>, Class<?>> hldFdCls;
+
   //Configuration:
     //Base settings:
   /**
@@ -68,7 +93,7 @@ public class Setng implements ISetng {
    **/
   private String dir;
 
-    //Target settings:
+    //Target data:
   /**
    * <p>Common settings.</p>
    */
@@ -83,6 +108,11 @@ public class Setng implements ISetng {
    * <p>Fields settings.</p>
    */
   private Map<Class<?>, Map<String, Map<String, String>>> fldStgs;
+
+  /**
+   * <p>Fields names involved.</p>
+   */
+  private Map<Class<?>, Set<String>> fldNms;
 
     //Loaded sources properties from conf.xml:
   /**
@@ -152,7 +182,10 @@ public class Setng implements ISetng {
     final String pStgNm) throws Exception {
     lazConf();
     if (!this.clss.contains(pCls)) {
-      throw new ExcCode(ExcCode.WRPR, "There is no class " + pCls);
+      throw new ExcCode(ExcCode.WRPR, "Excluded class " + pCls);
+    }
+    if (this.exlFlds != null && this.exlFlds.contains(pFldNm)) {
+      throw new ExcCode(ExcCode.WRPR, "Excluded field " + pFldNm);
     }
     lazFldPrp(pCls, pFldNm, pStgNm);
     if (this.fldStgs == null || this.fldStgs.get(pCls) == null
@@ -192,6 +225,54 @@ public class Setng implements ISetng {
   }
 
   /**
+   * <p>Lazy gets fields names for given name excluding collections and
+   * excluded fields by XML file.</p>
+   * @param pCls class
+   * @return fields names set
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final Set<String> lazFldNms(final Class<?> pCls) throws Exception {
+    lazConf();
+    if (!this.clss.contains(pCls)) {
+      throw new ExcCode(ExcCode.WRPR, "Excluded class " + pCls);
+    }
+    if (this.fldNms == null || this.fldNms.get(pCls) == null) {
+      synchronized (this) {
+        if (this.fldNms == null || this.fldNms.get(pCls) == null) {
+          lazConf();
+          Set<String> fNms = new HashSet<String>();
+          for (Field fld : this.reflect.retFlds(pCls)) {
+            if (!(Collection.class.isAssignableFrom(fld.getType())
+             || this.exlFlds != null && this.exlFlds.contains(fld.getName()))) {
+              fNms.add(fld.getName());
+            }
+          }
+          if (this.fldNms == null) {
+            this.fldNms = new HashMap<Class<?>, Set<String>>();
+          }
+          this.fldNms.put(pCls, fNms);
+        }
+      }
+    }
+    return this.fldNms.get(pCls);
+  }
+
+  /**
+   * <p>Holder class fields name delegate.</p>
+   * @param pCls class
+   * @return fields names set
+   **/
+  @Override
+  public final Set<String> get(final Class<?> pCls) {
+    try {
+      return lazFldNms(pCls);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
    * <p>Clear all loaded data, releases memory.</p>
    * @throws Exception - an exception
    **/
@@ -222,13 +303,56 @@ public class Setng implements ISetng {
    **/
   public final synchronized String revFldStg(final Class<?> pCls,
     final String pFldNm, final String pStgNm) throws Exception {
-    if (this.clsFs != null && this.clsFs.get(pCls) != null) {
-      String ky = pFldNm + pStgNm;
-      if (this.clsFs.get(pCls).getOrdKeys().contains(ky)) {
-        return this.utlPrp.evPrpVl(this.clsFs.get(pCls), ky);
+    String kyFdSt = pFldNm + pStgNm;
+    if (this.clsFs != null && this.clsFs.get(pCls) != null
+      && this.clsFs.get(pCls).getOrdKeys().contains(kyFdSt)) {
+      return this.utlPrp.evPrpVl(this.clsFs.get(pCls), kyFdSt);
+    }
+    if (this.fldNmClTyFs != null && this.fldNmClTyFs.get(kyFdSt) != null) {
+      String trz = revStgByTy(this.fldNmClTyFs.get(kyFdSt), pCls);
+      if (!"".equals(trz)) {
+        return trz;
+      }
+    }
+    if (this.fldNmTyFs != null && this.fldNmTyFs.get(kyFdSt) != null) {
+      Class<?> fdCls = this.hldFdCls.get(pCls, pFldNm);
+      String trz = revStgByTy(this.fldNmTyFs.get(kyFdSt), fdCls);
+      if (!"".equals(trz)) {
+        return trz;
+      }
+    }
+    if (this.fldNmFs != null && this.fldNmFs.get(pStgNm) != null
+      && this.fldNmFs.get(pStgNm).getOrdKeys().contains(pFldNm)) {
+      return this.utlPrp.evPrpVl(this.fldNmFs.get(pStgNm), pFldNm);
+    }
+    if (this.fldTyFs != null && this.fldTyFs.get(pStgNm) != null) {
+      Class<?> fdCls = this.hldFdCls.get(pCls, pFldNm);
+      String trz = revStgByTy(this.fldTyFs.get(pStgNm), fdCls);
+      if (!"".equals(trz)) {
+        return trz;
       }
     }
     return null;
+  }
+
+  /**
+   * <p>Reveal setting from type map for given type.</p>
+   * @param pTy class or field type
+   * @param pStgs map
+   * @return string value including NULL, empty string "" if not found
+   * @throws Exception - an exception
+   **/
+  public final synchronized String revStgByTy(
+    final Map<Class<?>, String> pStgs, final Class<?> pTy) {
+    if (pStgs.keySet().contains(pTy)) {
+      return pStgs.get(pTy);
+    }
+    for (Class<?> ky : pStgs.keySet()) {
+      if (ky.isAssignableFrom(pTy)) {
+        return pStgs.get(pTy);
+      }
+    }
+    return "";
   }
 
   /**
@@ -248,14 +372,14 @@ public class Setng implements ISetng {
           Map<Class<?>, String> flTyFsMp = ldClPrps(pStgNm, fiPa);
           fiPa = "/" + this.dir + "/" + DIRFLDNMFS + "/" + pStgNm + ".xml";
           LnkPrps flNmFsPr = ldPrps(pStgNm, fiPa);
-          String fiNm = pFldNm + pStgNm;
-          fiPa = "/" + this.dir + "/" + DIRFLDNMTYFS + "/" + fiNm + ".xml";
-          Map<Class<?>, String> flNmTyFsMp = ldClPrps(fiNm, fiPa);
-          fiPa = "/" + this.dir + "/" + DIRFLDNMCLSTYFS + "/" + fiNm + ".xml";
-          Map<Class<?>, String> flNmClTyFsMp = ldClPrps(fiNm, fiPa);
-          fiNm = pCls.getSimpleName();
-          fiPa = "/" + this.dir + "/" + DIRCLSFS + "/" + fiNm + ".xml";
-          LnkPrps clFsPr = ldPrps(fiNm, fiPa);
+          String fdStNm = pFldNm + pStgNm;
+          fiPa = "/" + this.dir + "/" + DIRFLDNMTYFS + "/" + fdStNm + ".xml";
+          Map<Class<?>, String> flNmTyFsMp = ldClPrps(fdStNm, fiPa);
+          fiPa = "/" + this.dir + "/" + DIRFLDNMCLSTYFS + "/" + fdStNm + ".xml";
+          Map<Class<?>, String> flNmClTyFsMp = ldClPrps(fdStNm, fiPa);
+          fiPa = "/" + this.dir + "/" + DIRCLSFS + "/"
+            + pCls.getSimpleName() + ".xml";
+          LnkPrps clFsPr = ldPrps(pCls.getSimpleName(), fiPa);
           //assigning fully initializing beans:
           if (clFsPr != null) {
             if (this.clsFs == null) {
@@ -266,15 +390,15 @@ public class Setng implements ISetng {
           if (this.fldNmFs == null) {
             this.fldNmFs = new HashMap<String, LnkPrps>();
           }
-          this.fldNmFs.put(fiNm, flNmFsPr);
+          this.fldNmFs.put(pStgNm, flNmFsPr);
           if (this.fldNmClTyFs == null) {
             this.fldNmClTyFs = new HashMap<String, Map<Class<?>, String>>();
           }
-          this.fldNmClTyFs.put(fiNm, flNmClTyFsMp);
+          this.fldNmClTyFs.put(fdStNm, flNmClTyFsMp);
           if (this.fldNmTyFs == null) {
             this.fldNmTyFs = new HashMap<String, Map<Class<?>, String>>();
           }
-          this.fldNmTyFs.put(fiNm, flNmTyFsMp);
+          this.fldNmTyFs.put(fdStNm, flNmTyFsMp);
           if (this.fldTyFs == null) {
             this.fldTyFs = new HashMap<String, Map<Class<?>, String>>();
           }
@@ -394,7 +518,7 @@ public class Setng implements ISetng {
     LnkPrps lprp = this.utlPrp.load(pFiNm);
     if (lprp != null) {
       for (String ky : lprp.getOrdKeys()) {
-        rz.put(Class.forName(ky), lprp.getProperty(ky));
+        rz.put(Class.forName(ky), this.utlPrp.evPrpVl(lprp, ky));
       }
       boolean isDbgSh = this.log.getDbgSh(this.getClass())
         && this.log.getDbgFl() < 6003 && this.log.getDbgCl() > 6001;
@@ -406,6 +530,24 @@ public class Setng implements ISetng {
   }
 
   //Simple getters and setters:
+    //configuration:
+  /**
+   * <p>Getter for dir.</p>
+   * @return String
+   **/
+  public final synchronized String getDir() {
+    return this.dir;
+  }
+
+  /**
+   * <p>Setter for dir.</p>
+   * @param pDir reference
+   **/
+  public final synchronized void setDir(final String pDir) {
+    this.dir = pDir;
+  }
+
+    //parts:
   /**
    * <p>Getter for log.</p>
    * @return ILog
@@ -455,19 +597,19 @@ public class Setng implements ISetng {
   }
 
   /**
-   * <p>Getter for dir.</p>
-   * @return String
+   * <p>Getter for hldFdCls.</p>
+   * @return IHldNm<Class<?>, Class<?>>
    **/
-  public final synchronized String getDir() {
-    return this.dir;
+  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+    return this.hldFdCls;
   }
 
   /**
-   * <p>Setter for dir.</p>
-   * @param pDir reference
+   * <p>Setter for hldFdCls.</p>
+   * @param pHldFdCls reference
    **/
-  public final synchronized void setDir(final String pDir) {
-    this.dir = pDir;
+  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+    this.hldFdCls = pHldFdCls;
   }
 
   //For debugging purposes:
@@ -521,6 +663,23 @@ public class Setng implements ISetng {
   public final synchronized void setFldStgs(
     final Map<Class<?>, Map<String, Map<String, String>>> pFldStgs) {
     this.fldStgs = pFldStgs;
+  }
+
+  /**
+   * <p>Getter for fldNms.</p>
+   * @return Map<Class<?>, Set<String>>
+   **/
+  public final synchronized Map<Class<?>, Set<String>> getFldNms() {
+    return this.fldNms;
+  }
+
+  /**
+   * <p>Setter for fldNms.</p>
+   * @param pFldNms reference
+   **/
+  public final synchronized void setFldNms(
+    final Map<Class<?>, Set<String>> pFldNms) {
+    this.fldNms = pFldNms;
   }
 
   /**

@@ -28,13 +28,32 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.prp;
 
+import java.util.Set;
+
+import org.beigesoft.hld.IHld;
+
 /**
  * <p>Abstraction of service that loads classes and their fields settings
- * from XML property file.</p>
+ * from XML property file.
+ * Priority of XML classes properties:
+ * <pre>
+ * 1. clsCs - class to settings
+ * 5. clsTyCs - class type to settings
+ * </pre>
+ * Priority of XML fields properties:
+ * <pre>
+ * 1. clsFs - class to settings
+ * 2. fldNmClsTyFs - field name class type to settings
+ * 3. fldNmTyFs - field name and type to settings
+ * 4. fldNmFs - field name to settings
+ * 5. fldTyFs - field type to settings
+ * </pre>
+ * It is also holder of involved classes involved fields names.
+ * </p>
  *
  * @author Yury Demidenko
  */
-public interface ISetng {
+public interface ISetng extends IHld<Class<?>, Set<String>> {
 
   //Keys for configuration file:
   /**
@@ -121,8 +140,30 @@ public interface ISetng {
     String pStgNm) throws Exception;
 
   /**
+   * <p>Lazy gets fields names for given name excluding collections and
+   * excluded fields by XML file.</p>
+   * @param pCls class
+   * @return fields names set
+   * @throws Exception - an exception
+   **/
+  Set<String> lazFldNms(Class<?> pCls) throws Exception;
+
+  /**
    * <p>Releases beans (memory).</p>
    * @throws Exception - an exception
    **/
   void release() throws Exception;
+
+    //configuration:
+  /**
+   * <p>Getter for base setting directory.</p>
+   * @return String
+   **/
+  String getDir();
+
+  /**
+   * <p>Setter for base setting directory.</p>
+   * @param pDir reference
+   **/
+  void setDir(String pDir);
 }

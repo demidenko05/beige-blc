@@ -56,10 +56,14 @@ public class HldFldCls implements IHldNm<Class<?>, Class<?>> {
    * <p>Get thing for given class and thing name.</p>
    * @param pCls a Class
    * @param pFlNm Thing Name
-   * @return a thing
+   * @return class or exception if not found
    **/
   @Override
   public final Class<?> get(final Class<?> pCls, final String pFlNm) {
+    if (pCls == null || pFlNm == null) {
+      throw new RuntimeException("NULL parameter cls/fld: " + pCls
+        + "/" + pFlNm);
+    }
     Map<String, Class<?>> clMp = this.clsMap.get(pCls);
     if (clMp == null) {
       // There is no way to get from Map partially initialized bean
@@ -78,7 +82,12 @@ public class HldFldCls implements IHldNm<Class<?>, Class<?>> {
         }
       }
     }
-    return clMp.get(pFlNm);
+    Class<?> rz = clMp.get(pFlNm);
+    if (rz == null) {
+      throw new RuntimeException("Can't get class for cls/fld: " + pCls
+        + "/" + pFlNm);
+    }
+    return rz;
   }
 
   //Simple getters and setters:

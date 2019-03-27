@@ -33,6 +33,7 @@ import java.util.Map;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHld;
 
 /**
  * <p>Converter of an owned entity to string.
@@ -55,6 +56,11 @@ public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
   private IHldNm<Class<?>, String> hldNmFdCn;
 
   /**
+   * <p>ID Fields names holder.</p>
+   **/
+  private IHld<Class<?>, String> hldIdFdNm;
+
+  /**
    * <p>Converts any entity to string (ID).</p>
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pHsId Entity that ID
@@ -64,7 +70,11 @@ public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
   @Override
   public final String conv(final Map<String, Object> pRqVs,
     final T pHsId) throws Exception {
-    String cnNm = this.hldNmFdCn.get(pHsId.getClass(), IHasId.IDNM);
+    if (pHsId == null) {
+      return "";
+    }
+    String cnNm = this.hldNmFdCn.get(pHsId.getClass(),
+      this.hldIdFdNm.get(pHsId.getClass()));
     @SuppressWarnings("unchecked")
     IConv<Object, String> flCn = (IConv<Object, String>) this.fctCnvFld
       .laz(pRqVs, cnNm);
@@ -103,5 +113,21 @@ public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
    **/
   public final void setHldNmFdCn(final IHldNm<Class<?>, String> pHldNmFdCn) {
     this.hldNmFdCn = pHldNmFdCn;
+  }
+
+  /**
+   * <p>Getter for hldIdFdNm.</p>
+   * @return IHld<Class<?>, String>
+   **/
+  public final IHld<Class<?>, String> getHldIdFdNm() {
+    return this.hldIdFdNm;
+  }
+
+  /**
+   * <p>Setter for hldIdFdNm.</p>
+   * @param pHldIdFdNm reference
+   **/
+  public final void setHldIdFdNm(final IHld<Class<?>, String> pHldIdFdNm) {
+    this.hldIdFdNm = pHldIdFdNm;
   }
 }

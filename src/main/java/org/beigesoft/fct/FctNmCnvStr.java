@@ -28,13 +28,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.fct;
 
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
+import java.lang.reflect.Method;
 
 import org.beigesoft.exc.ExcCode;
+import org.beigesoft.mdl.IHasId;
+import org.beigesoft.hld.IHld;
+import org.beigesoft.hld.IHldNm;
 import org.beigesoft.cnv.IConv;
+import org.beigesoft.cnv.CnvDtStr;
+import org.beigesoft.cnv.CnvDtTmStr;
+import org.beigesoft.cnv.CnvEnmStr;
 import org.beigesoft.cnv.CnvSmpStr;
 import org.beigesoft.cnv.CnvBlnStr;
+import org.beigesoft.cnv.CnvHsIdStr;
+import org.beigesoft.cnv.CnvIdcStr;
+import org.beigesoft.cnv.CnvPriStr;
+import org.beigesoft.srv.INumStr;
 
 /**
  * <p>Factory of fields converters to string.</p>
@@ -43,6 +55,33 @@ import org.beigesoft.cnv.CnvBlnStr;
  */
 public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
 
+  //parts:
+  /**
+   * <p>Number to string service.</p>
+   **/
+  private INumStr numStr;
+
+  /**
+   * <p>Fields converters names holder.</p>
+   **/
+  private IHldNm<Class<?>, String> hldNmFdCn;
+
+  /**
+   * <p>Holder of class fields names.</p>
+   **/
+  private IHld<Class<?>, Set<String>> hldFdNms;
+
+  /**
+   * <p>Fields getters RAPI holder.</p>
+   **/
+  private IHldNm<Class<?>, Method> hldGets;
+
+  /**
+   * <p>ID Fields names holder.</p>
+   **/
+  private IHld<Class<?>, String> hldIdFdNm;
+
+  //requested data:
   /**
    * <p>Converters map.</p>
    **/
@@ -65,6 +104,18 @@ public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
         if (rz == null) {
           if (CnvSmpStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvSmpStr();
+          } else if (CnvDtStr.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvDtStr();
+          } else if (CnvDtTmStr.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvDtTmStr();
+          } else if (CnvEnmStr.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvEnmStr();
+          } else if (CnvIdcStr.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvIdcStr();
+          } else if (CnvHsIdStr.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvHsIdStr();
+          } else if (CnvPriStr.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvPriStr();
           } else if (CnvBlnStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvBlnStr();
           } else {
@@ -73,6 +124,74 @@ public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
         }
       }
     }
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvDtStr.</p>
+   * @return CnvDtStr
+   */
+  private CnvDtStr crPuCnvDtStr() {
+    CnvDtStr rz = new CnvDtStr();
+    this.convrts.put(CnvDtStr.class.getSimpleName(), rz);
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvDtTmStr.</p>
+   * @return CnvDtTmStr
+   */
+  private CnvDtTmStr crPuCnvDtTmStr() {
+    CnvDtTmStr rz = new CnvDtTmStr();
+    this.convrts.put(CnvDtTmStr.class.getSimpleName(), rz);
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvEnmStr.</p>
+   * @return CnvEnmStr
+   */
+  private CnvEnmStr<?> crPuCnvEnmStr() {
+    CnvEnmStr rz = new CnvEnmStr();
+    this.convrts.put(CnvEnmStr.class.getSimpleName(), rz);
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvIdcStr.</p>
+   * @return CnvIdcStr
+   */
+  private CnvIdcStr<?> crPuCnvIdcStr() {
+    CnvIdcStr rz = new CnvIdcStr();
+    rz.setFctCnvFld(this);
+    rz.setHldNmFdCn(getHldNmFdCn());
+    rz.setHldFdNms(getHldFdNms());
+    rz.setHldGets(getHldGets());
+    this.convrts.put(CnvIdcStr.class.getSimpleName(), rz);
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvHsIdStr.</p>
+   * @return CnvHsIdStr
+   */
+  private CnvHsIdStr<IHasId<?>> crPuCnvHsIdStr() {
+    CnvHsIdStr<IHasId<?>> rz = new CnvHsIdStr<IHasId<?>>();
+    rz.setFctCnvFld(this);
+    rz.setHldNmFdCn(getHldNmFdCn());
+    rz.setHldIdFdNm(getHldIdFdNm());
+    this.convrts.put(CnvHsIdStr.class.getSimpleName(), rz);
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvPriStr.</p>
+   * @return CnvPriStr
+   */
+  private CnvPriStr crPuCnvPriStr() {
+    CnvPriStr rz = new CnvPriStr();
+    rz.setNumStr(getNumStr());
+    this.convrts.put(CnvPriStr.class.getSimpleName(), rz);
     return rz;
   }
 
@@ -90,9 +209,90 @@ public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
    * <p>Create and put into the Map CnvSmpStr.</p>
    * @return CnvSmpStr
    */
-  private CnvSmpStr crPuCnvSmpStr() {
+  private CnvSmpStr<?> crPuCnvSmpStr() {
     CnvSmpStr rz = new CnvSmpStr();
     this.convrts.put(CnvSmpStr.class.getSimpleName(), rz);
     return rz;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for numStr.</p>
+   * @return INumStr
+   **/
+  public final INumStr getNumStr() {
+    return this.numStr;
+  }
+
+  /**
+   * <p>Setter for numStr.</p>
+   * @param pNumStr reference
+   **/
+  public final void setNumStr(final INumStr pNumStr) {
+    this.numStr = pNumStr;
+  }
+
+  /**
+   * <p>Getter for hldNmFdCn.</p>
+   * @return IHldNm<Class<?>, String>
+   **/
+  public final IHldNm<Class<?>, String> getHldNmFdCn() {
+    return this.hldNmFdCn;
+  }
+
+  /**
+   * <p>Setter for hldNmFdCn.</p>
+   * @param pHldNmFdCn reference
+   **/
+  public final void setHldNmFdCn(final IHldNm<Class<?>, String> pHldNmFdCn) {
+    this.hldNmFdCn = pHldNmFdCn;
+  }
+
+  /**
+   * <p>Getter for hldFdNms.</p>
+   * @return IHld<Class<?>, Set<String>>
+   **/
+  public final IHld<Class<?>, Set<String>> getHldFdNms() {
+    return this.hldFdNms;
+  }
+
+  /**
+   * <p>Setter for hldFdNms.</p>
+   * @param pHldFdNms reference
+   **/
+  public final void setHldFdNms(final IHld<Class<?>, Set<String>> pHldFdNms) {
+    this.hldFdNms = pHldFdNms;
+  }
+
+  /**
+   * <p>Getter for hldGets.</p>
+   * @return IHldNm<Class<?>, Method>
+   **/
+  public final IHldNm<Class<?>, Method> getHldGets() {
+    return this.hldGets;
+  }
+
+  /**
+   * <p>Setter for hldGets.</p>
+   * @param pHldGets reference
+   **/
+  public final void setHldGets(final IHldNm<Class<?>, Method> pHldGets) {
+    this.hldGets = pHldGets;
+  }
+
+  /**
+   * <p>Getter for hldIdFdNm.</p>
+   * @return IHld<Class<?>, String>
+   **/
+  public final IHld<Class<?>, String> getHldIdFdNm() {
+    return this.hldIdFdNm;
+  }
+
+  /**
+   * <p>Setter for hldIdFdNm.</p>
+   * @param pHldIdFdNm reference
+   **/
+  public final void setHldIdFdNm(final IHld<Class<?>, String> pHldIdFdNm) {
+    this.hldIdFdNm = pHldIdFdNm;
   }
 }

@@ -98,7 +98,7 @@ import org.beigesoft.mdl.EStatus;
   private Double itsDouble;
 
   /**
-   * <p>Non-persistable.</p>
+   * <p>Non-persistable, hidden.</p>
    **/
   private String tmpDescription;
 

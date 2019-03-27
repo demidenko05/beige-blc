@@ -137,8 +137,13 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
         dgssTmp = this.dcGrSps;
       }
     }
-    if (upfsTmp == null) {
-      synchronized (this) {
+    upfsTmp = this.usPrfs;
+    lgsTmp = this.lngs;
+    dssTmp = this.dcSps;
+    dgssTmp = this.dcGrSps;
+    if (upfsTmp == null || lgsTmp == null || dssTmp == null
+      || dgssTmp == null) {
+      synchronized (this) { //waiting for another thread refresh data
         upfsTmp = this.usPrfs;
         lgsTmp = this.lngs;
         dssTmp = this.dcSps;

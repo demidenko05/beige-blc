@@ -80,10 +80,10 @@ public class UsRlTmc extends AEditable implements IHasId<UsRlTmcId> {
 
   /**
    * <p>Setter for usr.</p>
-   * @param pItsUser reference/value
+   * @param pUsr reference/value
    **/
-  public final void setItsUser(final UsTmc pItsUser) {
-    this.usr = pItsUser;
+  public final void setUsr(final UsTmc pUsr) {
+    this.usr = pUsr;
     if (this.iid == null) {
       this.iid = new UsRlTmcId();
     }
@@ -100,5 +100,22 @@ public class UsRlTmc extends AEditable implements IHasId<UsRlTmcId> {
       this.iid = new UsRlTmcId();
     }
     this.iid.setRol(this.rol);
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for usr.</p>
+   * @return UsTmc
+   **/
+  public final UsTmc getUsr() {
+    return this.usr;
+  }
+
+  /**
+   * <p>Getter for rol.</p>
+   * @return String
+   **/
+  public final String getRol() {
+    return this.rol;
   }
 }

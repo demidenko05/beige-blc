@@ -54,7 +54,7 @@ public class CnvIdcStr<T> implements IConv<T, String> {
   /**
    * <p>Holder of composite ID's fields names.</p>
    **/
-  private IHld<Class<?>, Set<String>> hldFlNms;
+  private IHld<Class<?>, Set<String>> hldFdNms;
 
   /**
    * <p>Converters fields factory.</p>
@@ -83,7 +83,7 @@ public class CnvIdcStr<T> implements IConv<T, String> {
     final T pCmId) throws Exception {
     StringBuffer sb = new StringBuffer("");
     boolean isFirst = true;
-    for (String fldNm : this.hldFlNms.get(pCmId.getClass())) {
+    for (String fldNm : this.hldFdNms.get(pCmId.getClass())) {
       String cnNm = this.hldNmFdCn.get(pCmId.getClass(), fldNm);
       @SuppressWarnings("unchecked")
       IConv<Object, String> flCn = (IConv<Object, String>) this.fctCnvFld
@@ -102,19 +102,19 @@ public class CnvIdcStr<T> implements IConv<T, String> {
 
   //Simple getters and setters:
   /**
-   * <p>Getter for hldFlNms.</p>
+   * <p>Getter for hldFdNms.</p>
    * @return IHld<Class<?>, Set<String>>
    **/
-  public final IHld<Class<?>, Set<String>> getHldFlNms() {
-    return this.hldFlNms;
+  public final IHld<Class<?>, Set<String>> getHldFdNms() {
+    return this.hldFdNms;
   }
 
   /**
-   * <p>Setter for hldFlNms.</p>
-   * @param pHldFlNms reference
+   * <p>Setter for hldFdNms.</p>
+   * @param pHldFdNms reference
    **/
-  public final void setHldFlNms(final IHld<Class<?>, Set<String>> pHldFlNms) {
-    this.hldFlNms = pHldFlNms;
+  public final void setHldFdNms(final IHld<Class<?>, Set<String>> pHldFdNms) {
+    this.hldFdNms = pHldFdNms;
   }
 
   /**

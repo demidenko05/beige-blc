@@ -56,10 +56,14 @@ public class HldSets implements IHldNm<Class<?>, Method> {
    * <p>Get thing for given class and thing name.</p>
    * @param pCls a Class
    * @param pFlNm Thing Name
-   * @return a thing
+   * @return setter or exception if not found
    **/
   @Override
   public final Method get(final Class<?> pCls, final String pFlNm) {
+    if (pCls == null || pFlNm == null) {
+      throw new RuntimeException("NULL parameter cls/fld: " + pCls
+        + "/" + pFlNm);
+    }
     Map<String, Method> stsMp = this.setsMap.get(pCls);
     if (stsMp == null) {
       // There is no way to get from Map partially initialized bean
@@ -82,7 +86,12 @@ public class HldSets implements IHldNm<Class<?>, Method> {
         }
       }
     }
-    return stsMp.get(pFlNm);
+    Method rz = stsMp.get(pFlNm);
+    if (rz == null) {
+      throw new RuntimeException("Can't get setter for cls/fld: " + pCls
+        + "/" + pFlNm);
+    }
+    return rz;
   }
 
   //Simple getters and setters:

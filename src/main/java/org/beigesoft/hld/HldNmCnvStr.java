@@ -31,9 +31,12 @@ package org.beigesoft.hld;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.cnv.CnvSmpStr;
 import org.beigesoft.cnv.CnvBlnStr;
 import org.beigesoft.cnv.CnvEnmStr;
+import org.beigesoft.cnv.CnvHsIdStr;
+import org.beigesoft.prp.ISetng;
 
 /**
  * <p>Holder of names of converters of fields values to string.
@@ -44,9 +47,20 @@ import org.beigesoft.cnv.CnvEnmStr;
 public class HldNmCnvStr implements IHldNm<Class<?>, String> {
 
   /**
+   * <p>Setting name of converter to string.</p>
+   **/
+
+  public static final String CNVTOSTRNM = "cnvStr";
+
+  /**
    * <p>Holder of an entity's field's class.</p>
    **/
   private IHldNm<Class<?>, Class<?>> hldFdCls;
+
+  /**
+   * <p>Holder of custom field's converters. It's a settings service.</p>
+   **/
+  private ISetng setng;
 
   /**
    * <p>Map of names of standard converters of fields values to string.
@@ -54,11 +68,6 @@ public class HldNmCnvStr implements IHldNm<Class<?>, String> {
    * Fields like Date requires manual format.</p>
    **/
   private final Map<Class<?>, String> stdCnvNms;
-
-  /**
-   * <p>Holder of custom field's converters. It's a settings service.</p>
-   **/
-  private IHldNm<Class<?>, String> hldNmFdCn;
 
   /**
    * <p>Only constructor.</p>
@@ -87,13 +96,20 @@ public class HldNmCnvStr implements IHldNm<Class<?>, String> {
     if (fdCls.isEnum()) {
       return CnvEnmStr.class.getSimpleName();
     }
+    if (IHasId.class.isAssignableFrom(fdCls)) {
+      return CnvHsIdStr.class.getSimpleName();
+    }
     String rez = this.stdCnvNms.get(fdCls);
     if (rez == null) {
-      if (this.hldNmFdCn == null) {
+      if (this.setng == null) {
     throw new RuntimeException("Not set holder CNV FLD TO STR! enCl/flNm/fdCl: "
   + pCls.getSimpleName() + "/" + pFlNm + "/" + fdCls.getSimpleName());
       }
-      rez = this.hldNmFdCn.get(pCls, pFlNm);
+      try {
+        rez = this.setng.lazFldStg(pCls, pFlNm, CNVTOSTRNM);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
       if (rez == null) {
         throw new RuntimeException(
           "Custom holder has no CNV FLD TO STR enCl/fdNm/fdCl: "
@@ -121,18 +137,18 @@ public class HldNmCnvStr implements IHldNm<Class<?>, String> {
   }
 
   /**
-   * <p>Getter for hldNmFdCn.</p>
-   * @return IHldNm<Class<?>, String>
+   * <p>Getter for setng.</p>
+   * @return ISetng
    **/
-  public final IHldNm<Class<?>, String> getHldNmFdCn() {
-    return this.hldNmFdCn;
+  public final ISetng getSetng() {
+    return this.setng;
   }
 
   /**
-   * <p>Setter for hldNmFdCn.</p>
-   * @param pHldNmFdCn reference
+   * <p>Setter for setng.</p>
+   * @param pSetng reference
    **/
-  public final void setHldNmFdCn(final IHldNm<Class<?>, String> pHldNmFdCn) {
-    this.hldNmFdCn = pHldNmFdCn;
+  public final void setSetng(final ISetng pSetng) {
+    this.setng = pSetng;
   }
 }
