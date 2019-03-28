@@ -29,28 +29,39 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
+import java.math.BigDecimal;
+
+import org.beigesoft.mdl.CmnPrf;
 
 /**
- * <p>Converter of Double from string representation, null represents as "".
- * String value must not be formatted, e.g. "1234.56789".</p>
+ * <p>Converter of BigDecimal from string representation,
+ * null represents as "". String value must formatted e.g. "12,34.56".</p>
  *
  * @author Yury Demidenko
  */
-public class CnvStrDbl implements IConv<String, Double> {
+public class CnvStrBgd implements IConv<String, BigDecimal> {
 
   /**
-   * <p>Convert from string.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * <p>Converts BigDecimal from string.</p>
+   * @param pRqVs request scoped vars must has cpf-CmnPrf
    * @param pStrVal string representation
-   * @return Double value
+   * @return BigDecimal value
    * @throws Exception - an exception
    **/
   @Override
-  public final Double conv(final Map<String, Object> pRqVs,
+  public final BigDecimal conv(final Map<String, Object> pRqVs,
     final String pStrVal) throws Exception {
     if (pStrVal == null || "".equals(pStrVal)) {
       return null;
     }
-    return Double.valueOf(pStrVal);
+    String strVal = pStrVal;
+    CmnPrf cmnPrf = (CmnPrf) pRqVs.get("cpf");
+    if (!"".equals(cmnPrf.getDcGrSpv())) {
+      strVal = strVal.replace(cmnPrf.getDcGrSpv(), "");
+    }
+    if (!"".equals(cmnPrf.getDcSpv()) && !".".equals(cmnPrf.getDcSpv())) {
+      strVal = strVal.replace(cmnPrf.getDcSpv(), ".");
+    }
+    return new BigDecimal(strVal);
   }
 }

@@ -29,28 +29,59 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
+import java.math.BigDecimal;
+
+import org.beigesoft.mdl.CmnPrf;
+import org.beigesoft.mdlp.UsPrf;
+import org.beigesoft.srv.INumStr;
 
 /**
- * <p>Converter of Double from string representation, null represents as "".
- * String value must not be formatted, e.g. "1234.56789".</p>
+ * <p>Converter of a BigDecimal cost to string representation with digital
+ * separators, null represents as "". It requires request scoped
+ * digital preferences.</p>
  *
  * @author Yury Demidenko
  */
-public class CnvStrDbl implements IConv<String, Double> {
+public class CnvCostStr implements IConv<BigDecimal, String> {
 
   /**
-   * <p>Convert from string.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pStrVal string representation
-   * @return Double value
+   * <p>Number to string service.</p>
+   **/
+  private INumStr numStr;
+
+  /**
+   * <p>Converts BigDecimal to string.</p>
+   * @param pRqVs request scoped vars, must has upf - UsPrf, and cpf - CmnPrf
+   * @param pObj BigDecimal cost
+   * @return string representation
    * @throws Exception - an exception
    **/
   @Override
-  public final Double conv(final Map<String, Object> pRqVs,
-    final String pStrVal) throws Exception {
-    if (pStrVal == null || "".equals(pStrVal)) {
-      return null;
+  public final String conv(final Map<String, Object> pRqVs,
+    final BigDecimal pObj) throws Exception {
+    if (pObj == null) {
+      return "";
     }
-    return Double.valueOf(pStrVal);
+    CmnPrf cpf = (CmnPrf) pRqVs.get("cpf");
+    UsPrf upf = (UsPrf) pRqVs.get("upf");
+    return this.numStr.frmt(pObj.toString(), cpf.getDcSpv(),
+      cpf.getDcGrSpv(), cpf.getCostDp(), upf.getDgInGr());
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for numStr.</p>
+   * @return INumStr
+   **/
+  public final INumStr getNumStr() {
+    return this.numStr;
+  }
+
+  /**
+   * <p>Setter for numStr.</p>
+   * @param pNumStr reference
+   **/
+  public final void setNumStr(final INumStr pNumStr) {
+    this.numStr = pNumStr;
   }
 }

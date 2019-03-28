@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
+import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHld;
 import org.beigesoft.hld.IHldNm;
 import org.beigesoft.cnv.IConv;
@@ -45,7 +46,10 @@ import org.beigesoft.cnv.CnvSmpStr;
 import org.beigesoft.cnv.CnvBlnStr;
 import org.beigesoft.cnv.CnvHsIdStr;
 import org.beigesoft.cnv.CnvIdcStr;
+import org.beigesoft.cnv.CnvMaxStr;
 import org.beigesoft.cnv.CnvPriStr;
+import org.beigesoft.cnv.CnvQuanStr;
+import org.beigesoft.cnv.CnvCostStr;
 import org.beigesoft.srv.INumStr;
 
 /**
@@ -53,7 +57,13 @@ import org.beigesoft.srv.INumStr;
  *
  * @author Yury Demidenko
  */
-public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
+public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
+
+  //services:
+  /**
+   * <p>Outside app-beans factory.</p>
+   **/
+  private ILog logStd;
 
   //parts:
   /**
@@ -114,12 +124,18 @@ public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
             rz = crPuCnvIdcStr();
           } else if (CnvHsIdStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvHsIdStr();
+          } else if (CnvCostStr.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvCostStr();
+          } else if (CnvQuanStr.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvQuanStr();
+          } else if (CnvMaxStr.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvMaxStr();
           } else if (CnvPriStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvPriStr();
           } else if (CnvBlnStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvBlnStr();
           } else {
-            throw new ExcCode(ExcCode.WRCN, "There is no CNV STR: " + pCnNm);
+            throw new ExcCode(ExcCode.WRCN, "There is no CNV TO STR: " + pCnNm);
           }
         }
       }
@@ -134,6 +150,8 @@ public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
   private CnvDtStr crPuCnvDtStr() {
     CnvDtStr rz = new CnvDtStr();
     this.convrts.put(CnvDtStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvDtStr.class.getSimpleName()
+      + " has been created.");
     return rz;
   }
 
@@ -144,6 +162,8 @@ public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
   private CnvDtTmStr crPuCnvDtTmStr() {
     CnvDtTmStr rz = new CnvDtTmStr();
     this.convrts.put(CnvDtTmStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvDtTmStr.class.getSimpleName()
+      + " has been created.");
     return rz;
   }
 
@@ -154,6 +174,8 @@ public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
   private CnvEnmStr<?> crPuCnvEnmStr() {
     CnvEnmStr rz = new CnvEnmStr();
     this.convrts.put(CnvEnmStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvEnmStr.class.getSimpleName()
+      + " has been created.");
     return rz;
   }
 
@@ -168,6 +190,8 @@ public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
     rz.setHldFdNms(getHldFdNms());
     rz.setHldGets(getHldGets());
     this.convrts.put(CnvIdcStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvIdcStr.class.getSimpleName()
+      + " has been created.");
     return rz;
   }
 
@@ -181,6 +205,47 @@ public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
     rz.setHldNmFdCn(getHldNmFdCn());
     rz.setHldIdFdNm(getHldIdFdNm());
     this.convrts.put(CnvHsIdStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvHsIdStr.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvCostStr.</p>
+   * @return CnvCostStr
+   */
+  private CnvCostStr crPuCnvCostStr() {
+    CnvCostStr rz = new CnvCostStr();
+    rz.setNumStr(getNumStr());
+    this.convrts.put(CnvCostStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvCostStr.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvQuanStr.</p>
+   * @return CnvQuanStr
+   */
+  private CnvQuanStr crPuCnvQuanStr() {
+    CnvQuanStr rz = new CnvQuanStr();
+    rz.setNumStr(getNumStr());
+    this.convrts.put(CnvQuanStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvQuanStr.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvMaxStr.</p>
+   * @return CnvMaxStr
+   */
+  private CnvMaxStr crPuCnvMaxStr() {
+    CnvMaxStr rz = new CnvMaxStr();
+    rz.setNumStr(getNumStr());
+    this.convrts.put(CnvMaxStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvMaxStr.class.getSimpleName()
+      + " has been created.");
     return rz;
   }
 
@@ -192,6 +257,8 @@ public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
     CnvPriStr rz = new CnvPriStr();
     rz.setNumStr(getNumStr());
     this.convrts.put(CnvPriStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvPriStr.class.getSimpleName()
+      + " has been created.");
     return rz;
   }
 
@@ -202,6 +269,8 @@ public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
   private CnvBlnStr crPuCnvBlnStr() {
     CnvBlnStr rz = new CnvBlnStr();
     this.convrts.put(CnvBlnStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvBlnStr.class.getSimpleName()
+      + " has been created.");
     return rz;
   }
 
@@ -212,10 +281,28 @@ public class FctNmCnvStr implements IFctNm<IConv<?, String>> {
   private CnvSmpStr<?> crPuCnvSmpStr() {
     CnvSmpStr rz = new CnvSmpStr();
     this.convrts.put(CnvSmpStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvSmpStr.class.getSimpleName()
+      + " has been created.");
     return rz;
   }
 
   //Simple getters and setters:
+  /**
+   * <p>Getter for logStd.</p>
+   * @return ILog
+   **/
+  public final ILog getLogStd() {
+    return this.logStd;
+  }
+
+  /**
+   * <p>Setter for logStd.</p>
+   * @param pLogStd reference
+   **/
+  public final void setLogStd(final ILog pLogStd) {
+    this.logStd = pLogStd;
+  }
+
   /**
    * <p>Getter for numStr.</p>
    * @return INumStr

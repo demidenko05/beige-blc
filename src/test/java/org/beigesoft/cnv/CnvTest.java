@@ -40,8 +40,10 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.CmnPrf;
 import org.beigesoft.mdlp.UsPrf;
+import org.beigesoft.mdl.EStatus;
 import org.beigesoft.mdlp.DcSp;
 import org.beigesoft.mdlp.DcGrSp;
 import org.beigesoft.mdlp.UsTmc;
@@ -51,11 +53,11 @@ import org.beigesoft.mdlp.Department;
 import org.beigesoft.log.ILog;
 import org.beigesoft.fct.FctTst;
 import org.beigesoft.fct.FctBlc;
-import org.beigesoft.fct.FctNmCnvStr;
+import org.beigesoft.fct.FctNmCnToSt;
 import org.beigesoft.hld.HldNmCnvStr;
 import org.beigesoft.hnd.HndI18nRq;
+import org.beigesoft.prp.Setng;
 import org.beigesoft.prp.ISetng;
-import org.beigesoft.cnv.IConv;
 import org.beigesoft.srv.Reflect;
 import org.beigesoft.srv.IReflect;
 
@@ -76,8 +78,6 @@ public class CnvTest<RS> {
 
   private FctBlc<RS> fctApp;
 
-  private CnvStrDbl cnvStrDbl;
-
   private UsPrf upf;
 
   private CmnPrf cpf;
@@ -86,14 +86,19 @@ public class CnvTest<RS> {
 
   private HndI18nRq hndI18nRq;
 
+  private ILog logStd;
+
   public CnvTest() throws Exception {
+    this.rqVs = new HashMap<String, Object>();
     this.fctApp = new FctBlc<RS>();
     FctTst fctTst = new FctTst();
-    ILog logStd = (ILog) fctTst.laz(null, FctBlc.LOGSTDNM);
-    logStd.setDbgSh(true);
+    fctTst.setLogStdNm(CnvTest.class.getSimpleName());
+    this.logStd = (ILog) fctTst.laz(this.rqVs, FctBlc.LOGSTDNM);
+    this.logStd.setDbgSh(true);
+    this.logStd.setDbgFl(5001);
+    this.logStd.setDbgCl(7002);
     this.fctApp.setStgUvdDir("tstUvd");
     this.fctApp.setFctOut(fctTst);
-    this.cnvStrDbl = new CnvStrDbl();
     this.upf = new UsPrf();
     DcSp sp = new DcSp();
     sp.setIid(".");
@@ -103,46 +108,41 @@ public class CnvTest<RS> {
     gsp.setIid(",");
     gsp.setNme("Comma");
     this.upf.setDcGrSp(gsp);
-    this.hndI18nRq = (HndI18nRq) this.fctApp.laz(null, HndI18nRq.class.getSimpleName());
+    this.hndI18nRq = (HndI18nRq) this.fctApp.laz(this.rqVs, HndI18nRq.class.getSimpleName());
     this.cpf = this.hndI18nRq.revCmnPrf(this.upf);
-    this.rqVs = new HashMap<String, Object>();
     this.rqVs.put("cpf", this.cpf);
     this.rqVs.put("upf", this.upf);
   }
 
   @Test
   public void tst1() throws Exception {
-    Double dbVl = 12345.69;
-    String dbStVl = "123,45.69";
-    Double dbVlc = this.cnvStrDbl.conv(this.rqVs, dbStVl);
-    assertEquals(dbVl, dbVlc);
-  }
-  
-  @Test
-  public void tst2() throws Exception {
     HldNmCnvStr hldNmCnvStr = (HldNmCnvStr) this.fctApp.laz(null, HldNmCnvStr.class.getSimpleName());
-    FctNmCnvStr fctNmCnvStr = (FctNmCnvStr) this.fctApp.laz(null, FctNmCnvStr.class.getSimpleName());
+    FctNmCnToSt fctNmCnvStr = (FctNmCnToSt) this.fctApp.laz(null, FctNmCnToSt.class.getSimpleName());
     Reflect reflect = (Reflect) this.fctApp.laz(this.rqVs, IReflect.class.getSimpleName());
-    ISetng stgUvd = (ISetng) this.fctApp.laz(this.rqVs, this.fctApp.STGUVDNM);
-    PersistableHead ent = new PersistableHead();
-    ent.setIid(1L);
+    Setng stgUvd = (Setng) this.fctApp.laz(this.rqVs, this.fctApp.STGUVDNM);
+    stgUvd.lazConf();
+    stgUvd.lazFldPrp(PersistableHead.class, IHasId.IDNM, HldNmCnvStr.CNVTOSTRNM);
+    assertTrue(stgUvd.getClsFs().get(PersistableHead.class).size() == 1);
+    PersistableHead prsh = new PersistableHead();
+    prsh.setIid(1L);
     String dt = "2019-03-27T15:19";
-    ent.setItsDate(this.dateTimeNoTzFormatIso8601.parse(dt));
-    ent.setItsTotal(new BigDecimal("1234.56"));
+    prsh.setItsDate(this.dateTimeNoTzFormatIso8601.parse(dt));
+    prsh.setItsTotal(new BigDecimal("1234.56"));
     Department dep = new Department();
     dep.setIid(2L);
     dep.setNme("Dep1");
-    ent.setItsDepartment(dep);
+    prsh.setItsDepartment(dep);
     Map<String, String> rz = new HashMap<String, String>();
     for (String fdNm : stgUvd.lazFldNms(PersistableHead.class)) {
       String cnNm = hldNmCnvStr.get(PersistableHead.class, fdNm);
       IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
       Method gets = reflect.retGet(PersistableHead.class, fdNm);
-      Object fdVl = gets.invoke(ent);
+      Object fdVl = gets.invoke(prsh);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
-      System.out.println("Class/field/value: PersistableHead/" + fdNm + "/" + fdSvl);
+      this.logStd.test(null, CnvTest.class, "Class/field/value: PersistableHead/" + fdNm + "/" + fdSvl);
       rz.put(fdNm, fdSvl);
     }
+    assertNull(stgUvd.getClsFs().get(PersistableHead.class));
     assertEquals(Boolean.FALSE.toString(), rz.get("isNew"));
     assertEquals(dt, rz.get("itsDate"));
     assertEquals("1,234.56", rz.get("itsTotal"));
@@ -151,30 +151,60 @@ public class CnvTest<RS> {
     assertEquals("", rz.get("ver"));
     assertTrue(!rz.keySet().contains("persistableLines"));
     assertTrue(!rz.keySet().contains("tmpDescription"));
-  }
-  
-  @Test
-  public void tst3() throws Exception {
-    HldNmCnvStr hldNmCnvStr = (HldNmCnvStr) this.fctApp.laz(null, HldNmCnvStr.class.getSimpleName());
-    FctNmCnvStr fctNmCnvStr = (FctNmCnvStr) this.fctApp.laz(null, FctNmCnvStr.class.getSimpleName());
-    Reflect reflect = (Reflect) this.fctApp.laz(this.rqVs, IReflect.class.getSimpleName());
-    ISetng stgUvd = (ISetng) this.fctApp.laz(this.rqVs, this.fctApp.STGUVDNM);
-    UsRlTmc ent = new UsRlTmc();
-    ent.setRol("adminr");
+    UsRlTmc usRlTmc = new UsRlTmc();
+    usRlTmc.setRol("adminr");
     UsTmc usr = new UsTmc();
     usr.setIid("adminu");
-    ent.setUsr(usr);
-    Map<String, String> rz = new HashMap<String, String>();
+    usRlTmc.setUsr(usr);
     for (String fdNm : stgUvd.lazFldNms(UsRlTmc.class)) {
       String cnNm = hldNmCnvStr.get(UsRlTmc.class, fdNm);
       IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
       Method gets = reflect.retGet(UsRlTmc.class, fdNm);
-      Object fdVl = gets.invoke(ent);
+      Object fdVl = gets.invoke(usRlTmc);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
-      System.out.println("Class/field/value: UsRlTmc/" + fdNm + "/" + fdSvl);
+      this.logStd.test(null, CnvTest.class, "Class/field/value: UsRlTmc/" + fdNm + "/" + fdSvl);
       rz.put(fdNm, fdSvl);
     }
-    assertEquals(ent.getRol(), rz.get("rol"));
-    assertEquals(ent.getUsr().getUsr(), rz.get("usr"));
+    assertEquals("usr=adminu,rol=adminr", rz.get("iid"));
+    assertEquals(usRlTmc.getRol(), rz.get("rol"));
+    assertEquals(usRlTmc.getUsr().getUsr(), rz.get("usr"));
+    prsh = new PersistableHead();
+    prsh.setIid(3L);
+    prsh.setVer(124L);
+    prsh.setItsStatus(EStatus.STATUS_A);
+    prsh.setItsInteger(12397);
+    prsh.setItsLong(5674L);
+    prsh.setItsFloat(123.6934F);
+    prsh.setItsDouble(56325.5687);
+    dt = "2019-03-26T15:19";
+    prsh.setItsDate(this.dateTimeNoTzFormatIso8601.parse(dt));
+    prsh.setItsTotal(new BigDecimal("12345.6"));
+    dep = new Department();
+    dep.setIid(3L);
+    dep.setNme("Dep3");
+    prsh.setItsDepartment(dep);
+    for (String fdNm : stgUvd.lazFldNms(PersistableHead.class)) {
+      String cnNm = hldNmCnvStr.get(PersistableHead.class, fdNm);
+      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      Method gets = reflect.retGet(PersistableHead.class, fdNm);
+      Object fdVl = gets.invoke(prsh);
+      String fdSvl = cnv.conv(this.rqVs, fdVl);
+      this.logStd.test(null, CnvTest.class, "Class/field/value: PersistableHead/" + fdNm + "/" + fdSvl);
+      rz.put(fdNm, fdSvl);
+    }
+    assertNull(stgUvd.getClsFs().get(PersistableHead.class));
+    assertEquals(Boolean.FALSE.toString(), rz.get("isNew"));
+    assertEquals(dt, rz.get("itsDate"));
+    assertEquals("12,345.60", rz.get("itsTotal"));
+    assertEquals(prsh.getIid().toString(), rz.get("iid"));
+    assertEquals(prsh.getItsInteger().toString(), rz.get("itsInteger"));
+    assertEquals(prsh.getItsLong().toString(), rz.get("itsLong"));
+    assertEquals(prsh.getItsFloat().toString(), rz.get("itsFloat"));
+    assertEquals(prsh.getItsDouble().toString(), rz.get("itsDouble"));
+    assertEquals(prsh.getItsStatus().name(), rz.get("itsStatus"));
+    assertEquals("3", rz.get("itsDepartment"));
+    assertEquals("124", rz.get("ver"));
+    assertTrue(!rz.keySet().contains("persistableLines"));
+    assertTrue(!rz.keySet().contains("tmpDescription"));
   }
 }

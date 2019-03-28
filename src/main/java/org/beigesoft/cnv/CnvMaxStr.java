@@ -29,20 +29,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
+import java.math.BigDecimal;
 
 import org.beigesoft.mdl.CmnPrf;
 import org.beigesoft.mdlp.UsPrf;
 import org.beigesoft.srv.INumStr;
 
 /**
- * <p>Converter of a Long/Integer/Short to string representation with digital
- * group separator, null represents as "". It requires request scoped
- * digital preferences.</p>
+ * <p>Converter of a BigDecimal with maximum decimal places to string
+ * representation with digital separators, null represents as "".
+ * It requires request scoped digital preferences.</p>
  *
- * @param <T> object type
  * @author Yury Demidenko
  */
-public class CnvIntStr<T> implements IConv<T, String> {
+public class CnvMaxStr implements IConv<BigDecimal, String> {
 
   /**
    * <p>Number to string service.</p>
@@ -50,22 +50,22 @@ public class CnvIntStr<T> implements IConv<T, String> {
   private INumStr numStr;
 
   /**
-   * <p>Convert to string any standard object - Integer,  Long,  etc.</p>
+   * <p>Converts BigDecimal to string.</p>
    * @param pRqVs request scoped vars, must has upf - UsPrf, and cpf - CmnPrf
-   * @param pObj object
+   * @param pObj BigDecimal with maximum decimal places
    * @return string representation
    * @throws Exception - an exception
    **/
   @Override
   public final String conv(final Map<String, Object> pRqVs,
-    final T pObj) throws Exception {
+    final BigDecimal pObj) throws Exception {
     if (pObj == null) {
       return "";
     }
     CmnPrf cpf = (CmnPrf) pRqVs.get("cpf");
     UsPrf upf = (UsPrf) pRqVs.get("upf");
     return this.numStr.frmt(pObj.toString(), cpf.getDcSpv(),
-      cpf.getDcGrSpv(), 0, upf.getDgInGr());
+      cpf.getDcGrSpv(), cpf.getMaxDp(), upf.getDgInGr());
   }
 
   //Simple getters and setters:

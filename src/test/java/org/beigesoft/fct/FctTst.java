@@ -30,10 +30,11 @@ package org.beigesoft.fct;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.io.File;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.log.ILog;
-import org.beigesoft.log.LogSmp;
+import org.beigesoft.log.LogFile;
 import org.beigesoft.srv.IRdb;
 import org.beigesoft.srv.IOrm;
 
@@ -43,6 +44,11 @@ import org.beigesoft.srv.IOrm;
  * @author Yury Demidenko
  */
 public class FctTst implements IFctApp {
+
+  /**
+   * <p>Standard log file name.</p>
+   **/
+  private String logStdNm = "tst-blc";
 
   /**
    * <p>Beans map.</p>
@@ -67,7 +73,7 @@ public class FctTst implements IFctApp {
         rz = this.beans.get(pBnNm);
         if (rz == null) {
           if (FctBlc.LOGSTDNM.equals(pBnNm)) {
-            rz = lazLog();
+            rz = lazLogStd();
           }
         }
       }
@@ -76,14 +82,20 @@ public class FctTst implements IFctApp {
   }
 
   /**
-   * <p>Lazy getter Reflect.</p>
+   * <p>Lazy getter standard logger.</p>
    * @return Reflect
    */
-  private ILog lazLog() {
+  private ILog lazLogStd() {
     ILog rz = (ILog) this.beans.get(FctBlc.LOGSTDNM);
     if (rz == null) {
-      rz = new LogSmp();
+      LogFile log = new LogFile();
+      String currDir = System.getProperty("user.dir") + File.separator
+        + "target" + File.separator;
+      log.setPath(currDir + this.logStdNm);
+      log.setClsImm(true);
+      rz = log;
       this.beans.put(FctBlc.LOGSTDNM, rz);
+      rz.info(null, getClass(), FctBlc.LOGSTDNM + " has been created");
     }
     return rz;
   }
@@ -94,5 +106,22 @@ public class FctTst implements IFctApp {
    */
   public final synchronized void release() throws Exception {
     this.beans.clear();
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for logStdNm.</p>
+   * @return String
+   **/
+  public final String getLogStdNm() {
+    return this.logStdNm;
+  }
+
+  /**
+   * <p>Setter for logStdNm.</p>
+   * @param pLogStdNm reference
+   **/
+  public final void setLogStdNm(final String pLogStdNm) {
+    this.logStdNm = pLogStdNm;
   }
 }

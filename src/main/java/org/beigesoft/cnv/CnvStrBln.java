@@ -31,26 +31,28 @@ package org.beigesoft.cnv;
 import java.util.Map;
 
 /**
- * <p>Converter of Double from string representation, null represents as "".
- * String value must not be formatted, e.g. "1234.56789".</p>
+ * <p>Converter of Boolean from string representation,
+ * it's non-null value.</p>
  *
  * @author Yury Demidenko
  */
-public class CnvStrDbl implements IConv<String, Double> {
+public class CnvStrBln implements IConv<String, Boolean> {
 
   /**
-   * <p>Convert from string.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * <p>Converts Boolean from string.</p>
+   * @param pRqVs request scoped vars
    * @param pStrVal string representation
-   * @return Double value
+   * @return Boolean value
    * @throws Exception - an exception
    **/
   @Override
-  public final Double conv(final Map<String, Object> pRqVs,
+  public final Boolean conv(final Map<String, Object> pRqVs,
     final String pStrVal) throws Exception {
-    if (pStrVal == null || "".equals(pStrVal)) {
-      return null;
+    if (pStrVal == null // HTTP checkbox return nothing if unchecked
+      || "".equals(pStrVal) || "false".equals(pStrVal)
+        || "off".equals(pStrVal)) {
+      return Boolean.FALSE;
     }
-    return Double.valueOf(pStrVal);
+    return Boolean.TRUE;
   }
 }

@@ -40,19 +40,25 @@ import org.beigesoft.mdlp.Lng;
 public class CmnPrf  {
 
   /**
-   * <p>Cost decimal  places.</p>
+   * <p>Cost decimal places.</p>
    **/
   private Integer costDp = 2;
 
   /**
-   * <p>Price decimal  places.</p>
+   * <p>Price decimal places.</p>
    **/
   private Integer priDp = 2;
 
   /**
-   * <p>Quantity decimal  places.</p>
+   * <p>Quantity decimal places.</p>
    **/
   private Integer quanDp = 2;
+
+  /**
+   * <p>Maximum decimal places, same as in database. It's for properties
+   * like currency rate, page margins, etc.</p>
+   **/
+  private Integer maxDp = 4;
 
   /**
    * <p>Value of decimal separator, e.g. "\u00A0" for "SPACEID".</p>
@@ -107,6 +113,22 @@ public class CmnPrf  {
    **/
   public final void setPriDp(final Integer pPriDp) {
     this.priDp = pPriDp;
+  }
+
+  /**
+   * <p>Getter for maxDp.</p>
+   * @return Integer
+   **/
+  public final Integer getMaxDp() {
+    return this.maxDp;
+  }
+
+  /**
+   * <p>Setter for maxDp.</p>
+   * @param pMaxDp reference
+   **/
+  public final void setMaxDp(final Integer pMaxDp) {
+    this.maxDp = pMaxDp;
   }
 
   /**

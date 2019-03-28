@@ -81,7 +81,6 @@ public class HldNmCnvStr implements IHldNm<Class<?>, String> {
     this.stdCnvNms.put(Float.class, CnvSmpStr.class.getSimpleName());
     this.stdCnvNms.put(Double.class, CnvSmpStr.class.getSimpleName());
     this.stdCnvNms.put(Boolean.class, CnvBlnStr.class.getSimpleName());
-    //this.stdCnvNms.put(.class, CnvStr.class.getSimpleName());
   }
 
   /**

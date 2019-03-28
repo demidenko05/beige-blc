@@ -143,9 +143,11 @@ public class Setng implements ISetng {
   private Map<String, Map<Class<?>, String>> clsTyCs;
 
   /**
-   * <p>Class - Field name + setting name to setting props.</p>
+   * <p>Class - Field name + setting name to setting props.
+   * It may contains NULL properties - lazy loaded empty.
+   * It also emptied when any setting is revealed from it.</p>
    */
-  private Map<Class<?>, LnkPrps> clsFs;
+  private Map<Class<?>, Map<String, String>> clsFs;
 
   /**
    * <p>Setting name - Field type to FS properties.</p>
@@ -155,7 +157,7 @@ public class Setng implements ISetng {
   /**
    * <p>Setting name - Field name to FS properties.</p>
    */
-  private Map<String, LnkPrps> fldNmFs;
+  private Map<String, Map<String, String>> fldNmFs;
 
   /**
    * <p>Field name + Setting name - Field type to FS properties.</p>
@@ -304,9 +306,23 @@ public class Setng implements ISetng {
   public final synchronized String revFldStg(final Class<?> pCls,
     final String pFldNm, final String pStgNm) throws Exception {
     String kyFdSt = pFldNm + pStgNm;
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 6005 && this.log.getDbgCl() > 6003;
     if (this.clsFs != null && this.clsFs.get(pCls) != null
-      && this.clsFs.get(pCls).getOrdKeys().contains(kyFdSt)) {
-      return this.utlPrp.evPrpVl(this.clsFs.get(pCls), kyFdSt);
+      && this.clsFs.get(pCls).keySet().contains(kyFdSt)) {
+      String rz = this.clsFs.get(pCls).get(kyFdSt);
+      this.clsFs.get(pCls).remove(kyFdSt);
+      if (isDbgSh) {
+        this.log.debug(null, Setng.class, "clsFs deleted entry for cls/fd/stg: "
+          + pCls + "/" + pFldNm + "/" + pStgNm);
+      }
+      if (this.clsFs.get(pCls).size() == 0) {
+        this.clsFs.put(pCls, null);
+        if (isDbgSh) {
+          this.log.debug(null, Setng.class, "clsFs nulled for cls: " + pCls);
+        }
+      }
+      return rz;
     }
     if (this.fldNmClTyFs != null && this.fldNmClTyFs.get(kyFdSt) != null) {
       String trz = revStgByTy(this.fldNmClTyFs.get(kyFdSt), pCls);
@@ -322,8 +338,8 @@ public class Setng implements ISetng {
       }
     }
     if (this.fldNmFs != null && this.fldNmFs.get(pStgNm) != null
-      && this.fldNmFs.get(pStgNm).getOrdKeys().contains(pFldNm)) {
-      return this.utlPrp.evPrpVl(this.fldNmFs.get(pStgNm), pFldNm);
+      && this.fldNmFs.get(pStgNm).keySet().contains(pFldNm)) {
+      return this.fldNmFs.get(pStgNm).get(pFldNm);
     }
     if (this.fldTyFs != null && this.fldTyFs.get(pStgNm) != null) {
       Class<?> fdCls = this.hldFdCls.get(pCls, pFldNm);
@@ -331,6 +347,10 @@ public class Setng implements ISetng {
       if (!"".equals(trz)) {
         return trz;
       }
+    }
+    if (isDbgSh) {
+      this.log.debug(null, Setng.class, "Setting not found for cls/fd/stg: "
+        + pCls + "/" + pFldNm + "/" + pStgNm);
     }
     return null;
   }
@@ -344,11 +364,21 @@ public class Setng implements ISetng {
    **/
   public final synchronized String revStgByTy(
     final Map<Class<?>, String> pStgs, final Class<?> pTy) {
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 6004 && this.log.getDbgCl() > 6002;
     if (pStgs.keySet().contains(pTy)) {
+      if (isDbgSh) {
+        this.log.debug(null, Setng.class, "found exact type type/value: "
+          + pTy + "/" + pStgs.get(pTy));
+      }
       return pStgs.get(pTy);
     }
     for (Class<?> ky : pStgs.keySet()) {
       if (ky.isAssignableFrom(pTy)) {
+        if (isDbgSh) {
+          this.log.debug(null, Setng.class, "found sub-type type/value: "
+            + pTy + "/" + pStgs.get(pTy));
+        }
         return pStgs.get(pTy);
       }
     }
@@ -364,45 +394,54 @@ public class Setng implements ISetng {
    **/
   public final void lazFldPrp(final Class<?> pCls, final String pFldNm,
     final String pStgNm) throws Exception {
-    if (this.fldTyFs == null || this.fldTyFs.get(pStgNm) == null) {
+    if (this.clsFs == null || !this.clsFs.keySet().contains(pCls)) {
       synchronized (this) {
-        if (this.fldTyFs == null || this.fldTyFs.get(pStgNm) == null) {
-          String fiPa = "/" + this.dir + "/" + DIRFLDTYFS + "/" + pStgNm
-            + ".xml";
-          Map<Class<?>, String> flTyFsMp = ldClPrps(pStgNm, fiPa);
-          fiPa = "/" + this.dir + "/" + DIRFLDNMFS + "/" + pStgNm + ".xml";
-          LnkPrps flNmFsPr = ldPrps(pStgNm, fiPa);
-          String fdStNm = pFldNm + pStgNm;
-          fiPa = "/" + this.dir + "/" + DIRFLDNMTYFS + "/" + fdStNm + ".xml";
-          Map<Class<?>, String> flNmTyFsMp = ldClPrps(fdStNm, fiPa);
-          fiPa = "/" + this.dir + "/" + DIRFLDNMCLSTYFS + "/" + fdStNm + ".xml";
-          Map<Class<?>, String> flNmClTyFsMp = ldClPrps(fdStNm, fiPa);
-          fiPa = "/" + this.dir + "/" + DIRCLSFS + "/"
+        if (this.clsFs == null || !this.clsFs.keySet().contains(pCls)) {
+          String fiPa = "/" + this.dir + "/" + DIRCLSFS + "/"
             + pCls.getSimpleName() + ".xml";
-          LnkPrps clFsPr = ldPrps(pCls.getSimpleName(), fiPa);
-          //assigning fully initializing beans:
-          if (clFsPr != null) {
-            if (this.clsFs == null) {
-              this.clsFs = new HashMap<Class<?>, LnkPrps>();
+          Map<String, String> clFsPr = ldPrps(pCls.getSimpleName(), fiPa);
+          String fdStNm = pFldNm + pStgNm;
+          if (this.fldTyFs == null || !this.fldTyFs.keySet().contains(pStgNm)) {
+            fiPa = "/" + this.dir + "/" + DIRFLDTYFS + "/" + pStgNm
+              + ".xml";
+            Map<Class<?>, String> flTyFsMp = ldClPrps(pStgNm, fiPa);
+            if (this.fldTyFs == null) {
+              this.fldTyFs = new HashMap<String, Map<Class<?>, String>>();
             }
-            this.clsFs.put(pCls, clFsPr);
+            this.fldTyFs.put(pStgNm, flTyFsMp);
           }
-          if (this.fldNmFs == null) {
-            this.fldNmFs = new HashMap<String, LnkPrps>();
+          if (this.fldNmFs == null || !this.fldNmFs.keySet().contains(pStgNm)) {
+            fiPa = "/" + this.dir + "/" + DIRFLDNMFS + "/" + pStgNm + ".xml";
+            Map<String, String> flNmFsPr = ldPrps(pStgNm, fiPa);
+            if (this.fldNmFs == null) {
+              this.fldNmFs = new HashMap<String, Map<String, String>>();
+            }
+            this.fldNmFs.put(pStgNm, flNmFsPr);
           }
-          this.fldNmFs.put(pStgNm, flNmFsPr);
-          if (this.fldNmClTyFs == null) {
-            this.fldNmClTyFs = new HashMap<String, Map<Class<?>, String>>();
+          if (this.fldNmTyFs == null
+            || !this.fldNmTyFs.keySet().contains(fdStNm)) {
+            fiPa = "/" + this.dir + "/" + DIRFLDNMTYFS + "/" + fdStNm + ".xml";
+            Map<Class<?>, String> flNmTyFsMp = ldClPrps(fdStNm, fiPa);
+            if (this.fldNmTyFs == null) {
+              this.fldNmTyFs = new HashMap<String, Map<Class<?>, String>>();
+            }
+            this.fldNmTyFs.put(fdStNm, flNmTyFsMp);
           }
-          this.fldNmClTyFs.put(fdStNm, flNmClTyFsMp);
-          if (this.fldNmTyFs == null) {
-            this.fldNmTyFs = new HashMap<String, Map<Class<?>, String>>();
+          if (this.fldNmClTyFs == null
+            || !this.fldNmClTyFs.keySet().contains(fdStNm)) {
+            fiPa = "/" + this.dir + "/" + DIRFLDNMCLSTYFS + "/"
+              + fdStNm + ".xml";
+            Map<Class<?>, String> flNmClTyFsMp = ldClPrps(fdStNm, fiPa);
+            if (this.fldNmClTyFs == null) {
+              this.fldNmClTyFs = new HashMap<String, Map<Class<?>, String>>();
+            }
+            this.fldNmClTyFs.put(fdStNm, flNmClTyFsMp);
           }
-          this.fldNmTyFs.put(fdStNm, flNmTyFsMp);
-          if (this.fldTyFs == null) {
-            this.fldTyFs = new HashMap<String, Map<Class<?>, String>>();
+          //assigning fully initializing flagging bean:
+          if (this.clsFs == null) {
+            this.clsFs = new HashMap<Class<?>, Map<String, String>>();
           }
-          this.fldTyFs.put(pStgNm, flTyFsMp);
+          this.clsFs.put(pCls, clFsPr);
         }
       }
     }
@@ -491,14 +530,19 @@ public class Setng implements ISetng {
    * @return LnkPrps LnkPrps
    * @throws Exception - an exception
    **/
-  public final synchronized LnkPrps ldPrps(
+  public final synchronized Map<String, String> ldPrps(
     final String pKey, final String pFiNm) throws Exception {
-    LnkPrps rz = this.utlPrp.load(pFiNm);
-    if (rz != null) {
+    Map<String, String> rz = null;
+    LnkPrps prp = this.utlPrp.load(pFiNm);
+    if (prp != null) {
+      rz = new LinkedHashMap<String, String>();
+      for (String ky : prp.getOrdKeys()) {
+        rz.put(ky, this.utlPrp.evPrpVl(prp, ky));
+      }
       boolean isDbgSh = this.log.getDbgSh(this.getClass())
         && this.log.getDbgFl() < 6002 && this.log.getDbgCl() > 6000;
       if (isDbgSh) {
-        this.log.debug(null, Setng.class, "added setting file: " + pFiNm);
+        this.log.debug(null, Setng.class, "added setting BN file: " + pFiNm);
       }
     }
     return rz;
@@ -523,7 +567,7 @@ public class Setng implements ISetng {
       boolean isDbgSh = this.log.getDbgSh(this.getClass())
         && this.log.getDbgFl() < 6003 && this.log.getDbgCl() > 6001;
       if (isDbgSh) {
-        this.log.debug(null, Setng.class, "added setting file: " + pFiNm);
+        this.log.debug(null, Setng.class, "added setting BT file: " + pFiNm);
       }
     }
     return rz;
@@ -768,9 +812,9 @@ public class Setng implements ISetng {
 
   /**
    * <p>Getter for clsFs.</p>
-   * @return Map<Class<?>, LnkPrps>
+   * @return Map<Class<?>, Map<String, String>>
    **/
-  public final synchronized Map<Class<?>, LnkPrps> getClsFs() {
+  public final synchronized Map<Class<?>, Map<String, String>> getClsFs() {
     return this.clsFs;
   }
 
@@ -778,7 +822,8 @@ public class Setng implements ISetng {
    * <p>Setter for clsFs.</p>
    * @param pClsFs reference
    **/
-  public final synchronized void setClsFs(final Map<Class<?>, LnkPrps> pClsFs) {
+  public final synchronized void setClsFs(
+    final Map<Class<?>, Map<String, String>> pClsFs) {
     this.clsFs = pClsFs;
   }
 
@@ -801,9 +846,9 @@ public class Setng implements ISetng {
 
   /**
    * <p>Getter for fldNmFs.</p>
-   * @return Map<String, LnkPrps>
+   * @return Map<String, Map<String, String>>
    **/
-  public final synchronized Map<String, LnkPrps> getFldNmFs() {
+  public final synchronized Map<String, Map<String, String>> getFldNmFs() {
     return this.fldNmFs;
   }
 
@@ -812,7 +857,7 @@ public class Setng implements ISetng {
    * @param pFldNmFs reference
    **/
   public final synchronized void setFldNmFs(
-    final Map<String, LnkPrps> pFldNmFs) {
+    final Map<String, Map<String, String>> pFldNmFs) {
     this.fldNmFs = pFldNmFs;
   }
 

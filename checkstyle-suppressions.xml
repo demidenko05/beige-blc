@@ -6,5 +6,5 @@
 
 <suppressions>
   <suppress checks="MagicNumberCheck"
-    files="UtlXml|CsvWri|HldGets|HldSets|HldFldCls|FilEntRq|HndEntRq|HndI18nRq|NumStr|UsPrf|CsvRdr|HndSpam|Setng"/>
+    files="UtlXml|CsvWri|HldGets|HldSets|HldFldCls|FilEntRq|HndI18nRq|NumStr|UsPrf|CsvRdr|HndSpam|Setng|CmnPrf"/>
 </suppressions>

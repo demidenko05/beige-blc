@@ -31,7 +31,7 @@ package org.beigesoft.cnv;
 import java.util.Map;
 import java.lang.reflect.Method;
 
-import org.beigesoft.fct.IFctCls;
+import org.beigesoft.fct.IFctNm;
 import org.beigesoft.hld.IHldNm;
 
 /**
@@ -44,19 +44,19 @@ import org.beigesoft.hld.IHldNm;
 public class FilFldSmpStr implements IFilFld<String> {
 
   /**
-   * <p>Holder of an entity's field's class.</p>
-   **/
-  private IHldNm<Class<?>, Class<?>> hldFlCls;
-
-  /**
    * <p>Fields setters RAPI holder.</p>
    **/
   private IHldNm<Class<?>, Method> hldSets;
 
   /**
+   * <p>Fields converters names holder.</p>
+   **/
+  private IHldNm<Class<?>, String> hldNmFdCn;
+
+  /**
    * <p>Factory simple converters.</p>
    **/
-  private IFctCls<IConv<String, Object>> fctSmpCnv;
+  private IFctNm<IConv<String, ?>> fctCnvFld;
 
   /**
    * <p>Fills object's field.</p>
@@ -72,8 +72,10 @@ public class FilFldSmpStr implements IFilFld<String> {
     final String pStVl, final String pFlNm) throws Exception {
     Object val = null;
     if (pStVl != null && !"".equals(pStVl)) {
-      Class<?> flCls = hldFlCls.get(pObj.getClass(), pFlNm);
-      IConv<String, Object> flCnv = this.fctSmpCnv.laz(pRqVs, flCls);
+      String cnNm = this.hldNmFdCn.get(pObj.getClass(), pFlNm);
+      @SuppressWarnings("unchecked")
+      IConv<String, Object> flCnv =
+        (IConv<String, Object>) this.fctCnvFld.laz(pRqVs, cnNm);
       val = flCnv.conv(pRqVs, pStVl);
     }
     Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
@@ -81,22 +83,6 @@ public class FilFldSmpStr implements IFilFld<String> {
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Getter for hldFlCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
-   **/
-  public final IHldNm<Class<?>, Class<?>> getHldFlCls() {
-    return this.hldFlCls;
-  }
-
-  /**
-   * <p>Setter for hldFlCls.</p>
-   * @param pHldFlCls reference
-   **/
-  public final void setHldFlCls(final IHldNm<Class<?>, Class<?>> pHldFlCls) {
-    this.hldFlCls = pHldFlCls;
-  }
-
   /**
    * <p>Getter for hldSets.</p>
    * @return IHldNm<Class<?>, Method>
@@ -115,19 +101,35 @@ public class FilFldSmpStr implements IFilFld<String> {
 
 
   /**
-   * <p>Getter for fctSmpCnv.</p>
+   * <p>Getter for fctCnvFld.</p>
    * @return IFctCls<IConv<String, Object>
    **/
-  public final IFctCls<IConv<String, Object>> getFctSmpCnv() {
-    return this.fctSmpCnv;
+  public final IFctNm<IConv<String, ?>> getFctCnvFld() {
+    return this.fctCnvFld;
   }
 
   /**
-   * <p>Setter for fctSmpCnv.</p>
-   * @param pFctSmpCnv reference
+   * <p>Setter for fctCnvFld.</p>
+   * @param pFctCnvFld reference
    **/
-  public final void setFctSmpCnv(
-    final IFctCls<IConv<String, Object>> pFctSmpCnv) {
-    this.fctSmpCnv = pFctSmpCnv;
+  public final void setFctCnvFld(
+    final IFctNm<IConv<String, ?>> pFctCnvFld) {
+    this.fctCnvFld = pFctCnvFld;
+  }
+
+  /**
+   * <p>Getter for hldNmFdCn.</p>
+   * @return IHldNm<Class<?>, String>
+   **/
+  public final IHldNm<Class<?>, String> getHldNmFdCn() {
+    return this.hldNmFdCn;
+  }
+
+  /**
+   * <p>Setter for hldNmFdCn.</p>
+   * @param pHldNmFdCn reference
+   **/
+  public final void setHldNmFdCn(final IHldNm<Class<?>, String> pHldNmFdCn) {
+    this.hldNmFdCn = pHldNmFdCn;
   }
 }

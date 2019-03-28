@@ -31,26 +31,26 @@ package org.beigesoft.cnv;
 import java.util.Map;
 
 /**
- * <p>Converter of Double from string representation, null represents as "".
+ * <p>Converter of Long from string representation, null represents as "".
  * String value must not be formatted, e.g. "1234.56789".</p>
  *
  * @author Yury Demidenko
  */
-public class CnvStrDbl implements IConv<String, Double> {
+public class CnvStrLng implements IConv<String, Long> {
 
   /**
    * <p>Convert from string.</p>
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pStrVal string representation
-   * @return Double value
+   * @return Long value
    * @throws Exception - an exception
    **/
   @Override
-  public final Double conv(final Map<String, Object> pRqVs,
+  public final Long conv(final Map<String, Object> pRqVs,
     final String pStrVal) throws Exception {
     if (pStrVal == null || "".equals(pStrVal)) {
       return null;
     }
-    return Double.valueOf(pStrVal);
+    return Long.valueOf(pStrVal);
   }
 }
