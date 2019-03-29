@@ -45,7 +45,7 @@ public class FilFldEnmStr<E extends Enum<E>> implements IFilFld<String> {
   /**
    * <p>Holder of an entity's field's class.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFlCls;
+  private IHldNm<Class<?>, Class<?>> hldFdCls;
 
   /**
    * <p>Fields setters RAPI holder.</p>
@@ -67,7 +67,7 @@ public class FilFldEnmStr<E extends Enum<E>> implements IFilFld<String> {
     Enum<?> val = null;
     if (pStVl != null && !"".equals(pStVl)) {
       @SuppressWarnings("unchecked")
-      Class<E> flCls = (Class<E>) hldFlCls.get(pObj.getClass(), pFlNm);
+      Class<E> flCls = (Class<E>) hldFdCls.get(pObj.getClass(), pFlNm);
       val = Enum.valueOf(flCls, pStVl);
     }
     Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
@@ -76,19 +76,19 @@ public class FilFldEnmStr<E extends Enum<E>> implements IFilFld<String> {
 
   //Simple getters and setters:
   /**
-   * <p>Getter for hldFlCls.</p>
+   * <p>Getter for hldFdCls.</p>
    * @return IHldNm<Class<?>, Class<?>>
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFlCls() {
-    return this.hldFlCls;
+  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+    return this.hldFdCls;
   }
 
   /**
-   * <p>Setter for hldFlCls.</p>
-   * @param pHldFlCls reference
+   * <p>Setter for hldFdCls.</p>
+   * @param pHldFdCls reference
    **/
-  public final void setHldFlCls(final IHldNm<Class<?>, Class<?>> pHldFlCls) {
-    this.hldFlCls = pHldFlCls;
+  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+    this.hldFdCls = pHldFdCls;
   }
 
   /**

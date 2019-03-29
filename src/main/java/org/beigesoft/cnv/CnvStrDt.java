@@ -34,11 +34,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 /**
- * <p>Converter date to string  ISO8601 no time, e.g. "2001-07-04".</p>
+ * <p>Converter date from string  ISO8601 no time, e.g. "2001-07-04".</p>
  *
  * @author Yury Demidenko
  */
-public class CnvDtStr implements IConv<Date, String> {
+public class CnvStrDt implements IConv<String, Date> {
 
   /**
    * <p>Format date ISO8601 no time zone,
@@ -48,18 +48,18 @@ public class CnvDtStr implements IConv<Date, String> {
     new SimpleDateFormat("yyyy-MM-dd");
 
   /**
-   * <p>Converts Date to string.</p>
+   * <p>Convert Date from string.</p>
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pObj object
-   * @return string representation
+   * @param pStrVal string value
+   * @return date value
    * @throws Exception - an exception
    **/
   @Override
-  public final String conv(final Map<String, Object> pRqVs,
-    final Date pObj) throws Exception {
-    if (pObj == null) {
-      return "";
+  public final Date conv(final Map<String, Object> pRqVs,
+    final String pStrVal) throws Exception {
+    if (pStrVal == null || "".equals(pStrVal)) {
+      return null;
     }
-    return this.dateNoTzFormatIso8601.format(pObj);
+    return this.dateNoTzFormatIso8601.parse(pStrVal);
   }
 }

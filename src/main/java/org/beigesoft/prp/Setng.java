@@ -394,13 +394,27 @@ public class Setng implements ISetng {
    **/
   public final void lazFldPrp(final Class<?> pCls, final String pFldNm,
     final String pStgNm) throws Exception {
-    if (this.clsFs == null || !this.clsFs.keySet().contains(pCls)) {
+    String fdStNm = pFldNm + pStgNm;
+    if (this.clsFs == null || !this.clsFs.keySet().contains(pCls)
+      || !this.fldTyFs.keySet().contains(pStgNm)
+        || !this.fldNmFs.keySet().contains(pStgNm)
+          || !this.fldNmTyFs.keySet().contains(fdStNm)
+            || !this.fldNmClTyFs.keySet().contains(fdStNm)) {
       synchronized (this) {
-        if (this.clsFs == null || !this.clsFs.keySet().contains(pCls)) {
+        if (this.clsFs == null || !this.clsFs.keySet().contains(pCls)
+          || !this.fldTyFs.keySet().contains(pStgNm)
+            || !this.fldNmFs.keySet().contains(pStgNm)
+              || !this.fldNmTyFs.keySet().contains(fdStNm)
+                || !this.fldNmClTyFs.keySet().contains(fdStNm)) {
+          boolean isDbgSh = this.log.getDbgSh(this.getClass())
+            && this.log.getDbgFl() < 6006 && this.log.getDbgCl() > 6004;
+          if (isDbgSh) {
+            this.log.debug(null, Setng.class, "Try get XML prp for cls/fd/stg: "
+              + pCls + "/" + pFldNm + "/" + pStgNm);
+          }
           String fiPa = "/" + this.dir + "/" + DIRCLSFS + "/"
             + pCls.getSimpleName() + ".xml";
           Map<String, String> clFsPr = ldPrps(pCls.getSimpleName(), fiPa);
-          String fdStNm = pFldNm + pStgNm;
           if (this.fldTyFs == null || !this.fldTyFs.keySet().contains(pStgNm)) {
             fiPa = "/" + this.dir + "/" + DIRFLDTYFS + "/" + pStgNm
               + ".xml";
@@ -437,7 +451,6 @@ public class Setng implements ISetng {
             }
             this.fldNmClTyFs.put(fdStNm, flNmClTyFsMp);
           }
-          //assigning fully initializing flagging bean:
           if (this.clsFs == null) {
             this.clsFs = new HashMap<Class<?>, Map<String, String>>();
           }

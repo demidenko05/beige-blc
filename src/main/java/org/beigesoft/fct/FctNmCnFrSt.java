@@ -40,6 +40,9 @@ import org.beigesoft.cnv.CnvStrFlt;
 import org.beigesoft.cnv.CnvStrDbl;
 import org.beigesoft.cnv.CnvStrBln;
 import org.beigesoft.cnv.CnvStrBgd;
+import org.beigesoft.cnv.CnvStrDt;
+import org.beigesoft.cnv.CnvStrDtTm;
+import org.beigesoft.cnv.CnvStrStr;
 
 /**
  * <p>Factory of fields converters to string.</p>
@@ -50,7 +53,7 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
 
   //services:
   /**
-   * <p>Outside app-beans factory.</p>
+   * <p>Logger.</p>
    **/
   private ILog logStd;
 
@@ -77,6 +80,12 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
         if (rz == null) {
           if (CnvStrLng.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvStrLng();
+          } else if (CnvStrDt.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrDt();
+          } else if (CnvStrDtTm.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrDtTm();
+          } else if (CnvStrStr.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrStr();
           } else if (CnvStrInt.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvStrInt();
           } else if (CnvStrFlt.class.getSimpleName().equals(pCnNm)) {
@@ -104,6 +113,42 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
     CnvStrLng rz = new CnvStrLng();
     this.convrts.put(CnvStrLng.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvStrLng.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrDt.</p>
+   * @return CnvStrDt
+   */
+  private CnvStrDt crPuCnvStrDt() {
+    CnvStrDt rz = new CnvStrDt();
+    this.convrts.put(CnvStrDt.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrDt.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrDtTm.</p>
+   * @return CnvStrDtTm
+   */
+  private CnvStrDtTm crPuCnvStrDtTm() {
+    CnvStrDtTm rz = new CnvStrDtTm();
+    this.convrts.put(CnvStrDtTm.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrDtTm.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrStr.</p>
+   * @return CnvStrStr
+   */
+  private CnvStrStr crPuCnvStrStr() {
+    CnvStrStr rz = new CnvStrStr();
+    this.convrts.put(CnvStrStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrStr.class.getSimpleName()
       + " has been created.");
     return rz;
   }

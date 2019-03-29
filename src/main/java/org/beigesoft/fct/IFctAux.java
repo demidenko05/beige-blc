@@ -26,40 +26,33 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.cnv;
+package org.beigesoft.fct;
 
 import java.util.Map;
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 /**
- * <p>Converter date to string  ISO8601 no time, e.g. "2001-07-04".</p>
+ * <p>Abstraction of application beans auxiliary factory.
+ * It's only sub-factory of main application beans factory</p>
  *
  * @author Yury Demidenko
  */
-public class CnvDtStr implements IConv<Date, String> {
+public interface IFctAux {
 
   /**
-   * <p>Format date ISO8601 no time zone,
-   * e.g. 2001-07-04.</p>
-   **/
-  private final DateFormat dateNoTzFormatIso8601 =
-    new SimpleDateFormat("yyyy-MM-dd");
+   * <p>Creates requested bean and put into given main factory.
+   * The main factory is already synchronized when invokes this.</p>
+   * @param pRqVs request scoped vars
+   * @param pBnNm - bean name
+   * @param pFctApp main factory
+   * @return Object - requested bean
+   * @throws Exception - an exception, e.g. if bean name not found
+   */
+  Object crePut(Map<String, Object> pRqVs,
+    String pBnNm, IFctApp pFctApp) throws Exception;
 
   /**
-   * <p>Converts Date to string.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pObj object
-   * @return string representation
+   * <p>Releases state when main factory is releasing.</p>
    * @throws Exception - an exception
-   **/
-  @Override
-  public final String conv(final Map<String, Object> pRqVs,
-    final Date pObj) throws Exception {
-    if (pObj == null) {
-      return "";
-    }
-    return this.dateNoTzFormatIso8601.format(pObj);
-  }
+   */
+  void release() throws Exception;
 }

@@ -29,37 +29,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 /**
- * <p>Converter date to string  ISO8601 no time, e.g. "2001-07-04".</p>
+ * <p>Converter of string from string representation, null represents as "".</p>
  *
  * @author Yury Demidenko
  */
-public class CnvDtStr implements IConv<Date, String> {
+public class CnvStrStr implements IConv<String, String> {
 
   /**
-   * <p>Format date ISO8601 no time zone,
-   * e.g. 2001-07-04.</p>
-   **/
-  private final DateFormat dateNoTzFormatIso8601 =
-    new SimpleDateFormat("yyyy-MM-dd");
-
-  /**
-   * <p>Converts Date to string.</p>
+   * <p>Convert from string.</p>
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pObj object
-   * @return string representation
+   * @param pStrVal string representation
+   * @return String value
    * @throws Exception - an exception
    **/
   @Override
   public final String conv(final Map<String, Object> pRqVs,
-    final Date pObj) throws Exception {
-    if (pObj == null) {
-      return "";
+    final String pStrVal) throws Exception {
+    if (pStrVal == null || "".equals(pStrVal)) {
+      return null;
     }
-    return this.dateNoTzFormatIso8601.format(pObj);
+    return pStrVal;
   }
 }

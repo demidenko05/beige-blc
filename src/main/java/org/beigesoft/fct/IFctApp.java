@@ -44,7 +44,7 @@ import java.util.Map;
 public interface IFctApp {
 
   /**
-   * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
+   * <p>Gets bean in lazy mode (if bean is null then initialize it).</p>
    * @param pRqVs request scoped vars
    * @param pBnNm - bean name
    * @return Object - requested bean
@@ -53,7 +53,17 @@ public interface IFctApp {
   Object laz(Map<String, Object> pRqVs, String pBnNm) throws Exception;
 
   /**
-   * <p>Release beans (memory). This is "memory friendly" factory.</p>
+   * <p>Puts beans by external AUX factory.</p>
+   * @param pRqVs request scoped vars
+   * @param pBnNm - bean name
+   * @param pBean - bean
+   * @throws Exception - an exception
+   **/
+  void put(Map<String, Object> pRqVs,
+    String pBnNm, Object pBean) throws Exception;
+
+  /**
+   * <p>Releases beans (memory). This is memory friendly factory.</p>
    * @throws Exception - an exception
    */
   void release() throws Exception;

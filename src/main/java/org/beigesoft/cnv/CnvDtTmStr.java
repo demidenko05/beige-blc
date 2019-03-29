@@ -48,7 +48,7 @@ public class CnvDtTmStr implements IConv<Date, String> {
     new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
   /**
-   * <p>Convert to string any standard object - Integer,  Long,  etc.</p>
+   * <p>Converts Date to string.</p>
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pObj object
    * @return string representation

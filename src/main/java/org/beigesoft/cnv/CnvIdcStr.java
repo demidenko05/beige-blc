@@ -72,7 +72,7 @@ public class CnvIdcStr<T> implements IConv<T, String> {
   private IHldNm<Class<?>, String> hldNmFdCn;
 
   /**
-   * <p>Convert to string composite ID.</p>
+   * <p>Converts to string composite ID.</p>
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pCmId composite ID
    * @return string representation

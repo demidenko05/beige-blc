@@ -44,13 +44,13 @@ import org.beigesoft.prp.ISetng;
  *
  * @author Yury Demidenko
  */
-public class HldNmCnvStr implements IHldNm<Class<?>, String> {
+public class HldNmCnToSt implements IHldNm<Class<?>, String> {
 
   /**
    * <p>Setting name of converter to string.</p>
    **/
 
-  public static final String CNVTOSTRNM = "cnvStr";
+  public static final String CNVTOSTRNM = "cnToSt";
 
   /**
    * <p>Holder of an entity's field's class.</p>
@@ -72,7 +72,7 @@ public class HldNmCnvStr implements IHldNm<Class<?>, String> {
   /**
    * <p>Only constructor.</p>
    **/
-  public HldNmCnvStr() {
+  public HldNmCnToSt() {
     this.stdCnvNms = new HashMap<Class<?>, String>();
     this.stdCnvNms.put(Short.class, CnvSmpStr.class.getSimpleName());
     this.stdCnvNms.put(Integer.class, CnvSmpStr.class.getSimpleName());

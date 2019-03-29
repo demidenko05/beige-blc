@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * <p>Converter of Integer from string representation, null represents as "".
- * String value must not be formatted, e.g. "1234.56789".</p>
+ * String value must not be formatted, e.g. "12345678".</p>
  *
  * @author Yury Demidenko
  */

@@ -26,40 +26,57 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.cnv;
+package org.beigesoft.hld;
 
-import java.util.Map;
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
+import org.beigesoft.mdl.IHasId;
+import org.beigesoft.cnv.FilFldEnmStr;
+import org.beigesoft.cnv.FilFldSmpStr;
+import org.beigesoft.cnv.FilFldHsIdStr;
 /**
- * <p>Converter date to string  ISO8601 no time, e.g. "2001-07-04".</p>
+ * <p>Holder of names of fillers of fields values from string.
+ * Floats, Ints are represented as toString values without formatting.</p>
  *
  * @author Yury Demidenko
  */
-public class CnvDtStr implements IConv<Date, String> {
+public class HldNmFilFd implements IHldNm<Class<?>, String> {
 
   /**
-   * <p>Format date ISO8601 no time zone,
-   * e.g. 2001-07-04.</p>
+   * <p>Holder of an entity's field's class.</p>
    **/
-  private final DateFormat dateNoTzFormatIso8601 =
-    new SimpleDateFormat("yyyy-MM-dd");
+  private IHldNm<Class<?>, Class<?>> hldFdCls;
 
   /**
-   * <p>Converts Date to string.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pObj object
-   * @return string representation
-   * @throws Exception - an exception
+   * <p>Get filler name for given class and field name.</p>
+   * @param pCls a Class
+   * @param pFlNm Field Name
+   * @return filler from string name
    **/
   @Override
-  public final String conv(final Map<String, Object> pRqVs,
-    final Date pObj) throws Exception {
-    if (pObj == null) {
-      return "";
+  public final String get(final Class<?> pCls, final String pFlNm) {
+    Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
+    if (fdCls.isEnum()) {
+      return FilFldEnmStr.class.getSimpleName();
     }
-    return this.dateNoTzFormatIso8601.format(pObj);
+    if (IHasId.class.isAssignableFrom(fdCls)) {
+      return FilFldHsIdStr.class.getSimpleName();
+    }
+    return FilFldSmpStr.class.getSimpleName();
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for hldFdCls.</p>
+   * @return IHldNm<Class<?>, Class<?>>
+   **/
+  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+    return this.hldFdCls;
+  }
+
+  /**
+   * <p>Setter for hldFdCls.</p>
+   * @param pHldFdCls reference
+   **/
+  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+    this.hldFdCls = pHldFdCls;
   }
 }

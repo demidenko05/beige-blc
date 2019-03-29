@@ -61,7 +61,7 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
 
   //services:
   /**
-   * <p>Outside app-beans factory.</p>
+   * <p>Logger.</p>
    **/
   private ILog logStd;
 
@@ -184,7 +184,7 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    * @return CnvIdcStr
    */
   private CnvIdcStr<?> crPuCnvIdcStr() {
-    CnvIdcStr rz = new CnvIdcStr();
+    CnvIdcStr<Object> rz = new CnvIdcStr<Object>();
     rz.setFctCnvFld(this);
     rz.setHldNmFdCn(getHldNmFdCn());
     rz.setHldFdNms(getHldFdNms());
@@ -279,7 +279,7 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    * @return CnvSmpStr
    */
   private CnvSmpStr<?> crPuCnvSmpStr() {
-    CnvSmpStr rz = new CnvSmpStr();
+    CnvSmpStr<Object> rz = new CnvSmpStr<Object>();
     this.convrts.put(CnvSmpStr.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvSmpStr.class.getSimpleName()
       + " has been created.");

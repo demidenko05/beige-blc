@@ -33,79 +33,102 @@ import java.util.HashMap;
 import java.io.File;
 
 import org.beigesoft.exc.ExcCode;
+import org.beigesoft.mdlp.GoodsRating;
 import org.beigesoft.log.ILog;
 import org.beigesoft.log.LogFile;
+import org.beigesoft.hld.HldIdFdNm;
 import org.beigesoft.srv.IRdb;
 import org.beigesoft.srv.IOrm;
 
 /**
- * <p>Test auxiliary factory.</p>
+ * <p>Tests final configuration auxiliary factory.</p>
  *
  * @author Yury Demidenko
  */
-public class FctTst implements IFctApp {
+public class FctTst implements IFctAux {
 
+  //configuration data:
   /**
    * <p>Standard log file name.</p>
    **/
   private String logStdNm = "tst-blc";
 
+  //cached services/parts:
   /**
-   * <p>Beans map.</p>
+   * <p>Logger.</p>
    **/
-  private final Map<String, Object> beans = new HashMap<String, Object>();
+  private ILog logStd;
 
   /**
-   * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
+   * <p>Creates requested bean and put into given main factory.
+   * The main factory is already synchronized when invokes this.</p>
    * @param pRqVs request scoped vars
    * @param pBnNm - bean name
-   * @return Object - requested bean or NULL cause it's inner factory
-   * @throws Exception - an exception
+   * @param pFctApp main factory
+   * @return Object - requested bean
+   * @throws Exception - an exception, e.g. if bean name not found
    */
-  public final Object laz(final Map<String, Object> pRqVs,
-    final String pBnNm) throws Exception {
-    if (pBnNm == null) {
-      throw new ExcCode(ExcCode.WRPR, "Null bean name!!!");
-    }
-    Object rz = this.beans.get(pBnNm);
-    if (rz == null) {
-      synchronized (this) {
-        rz = this.beans.get(pBnNm);
-        if (rz == null) {
-          if (FctBlc.LOGSTDNM.equals(pBnNm)) {
-            rz = lazLogStd();
-          }
-        }
-      }
+  @Override
+  public final Object crePut(final Map<String, Object> pRqVs,
+    final String pBnNm, final IFctApp pFctApp) throws Exception {
+    Object rz = null;
+    if (FctBlc.LOGSTDNM.equals(pBnNm)) {
+      rz = lazLogStd(pRqVs, pFctApp);
+    } else if (HldIdFdNm.class.getSimpleName().equals(pBnNm)) {
+      rz = crPuHldIdFdNm(pRqVs, pFctApp);
+    //} else {
+      //throw new ExcCode(ExcCode.WRPR, "There is no bean: " + pBnNm);
     }
     return rz;
   }
 
   /**
-   * <p>Lazy getter standard logger.</p>
-   * @return Reflect
+   * <p>Releases state when main factory is releasing.</p>
+   * @throws Exception - an exception
    */
-  private ILog lazLogStd() {
-    ILog rz = (ILog) this.beans.get(FctBlc.LOGSTDNM);
-    if (rz == null) {
+  @Override
+  public final void release() throws Exception {
+    this.logStd = null;
+  }
+
+  /**
+   * <p>Lazy getter standard logger.</p>
+   * @param pRqVs request scoped vars
+   * @param pFctApp main factory
+   * @return Logger
+   * @throws Exception - an exception
+   */
+  private ILog lazLogStd(final Map<String, Object> pRqVs,
+    final IFctApp pFctApp) throws Exception {
+    if (this.logStd == null) {
       LogFile log = new LogFile();
       String currDir = System.getProperty("user.dir") + File.separator
         + "target" + File.separator;
       log.setPath(currDir + this.logStdNm);
       log.setClsImm(true);
-      rz = log;
-      this.beans.put(FctBlc.LOGSTDNM, rz);
-      rz.info(null, getClass(), FctBlc.LOGSTDNM + " has been created");
+      this.logStd = log;
+      pFctApp.put(pRqVs, FctBlc.LOGSTDNM, this.logStd);
+      this.logStd.info(pRqVs, getClass(), FctBlc.LOGSTDNM
+        + " has been created");
     }
-    return rz;
+    return this.logStd;
   }
 
   /**
-   * <p>Release beans (memory). This is "memory friendly" factory.</p>
+   * <p>Creates HldIdFdNm and puts into main factory.</p>
+   * @param pRqVs request scoped vars
+   * @param pFctApp main factory
+   * @return HldIdFdNm
    * @throws Exception - an exception
    */
-  public final synchronized void release() throws Exception {
-    this.beans.clear();
+  private HldIdFdNm crPuHldIdFdNm(final Map<String, Object> pRqVs,
+    final IFctApp pFctApp) throws Exception {
+    HldIdFdNm rz = new HldIdFdNm();
+    rz.getCstIdNms().put(GoodsRating.class, "goods");
+    pFctApp.put(pRqVs, HldIdFdNm.class.getSimpleName(), rz);
+    lazLogStd(pRqVs, pFctApp).info(null, getClass(), HldIdFdNm.class
+      .getSimpleName() + " has been created.");
+    return rz;
   }
 
   //Simple getters and setters:

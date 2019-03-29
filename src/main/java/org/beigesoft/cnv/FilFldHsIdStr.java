@@ -31,7 +31,7 @@ package org.beigesoft.cnv;
 import java.util.Map;
 import java.lang.reflect.Method;
 
-import org.beigesoft.fct.IFctCls;
+import org.beigesoft.fct.IFctNm;
 import org.beigesoft.hld.IHldNm;
 import org.beigesoft.mdl.IHasId;
 
@@ -47,9 +47,9 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
   implements IFilFld<String> {
 
   /**
-   * <p>Holder of an entity's field's class.</p>
+   * <p>Fields classes holder.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFlCls;
+  private IHldNm<Class<?>, Class<?>> hldFdCls;
 
   /**
    * <p>Fields setters RAPI holder.</p>
@@ -57,9 +57,14 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
   private IHldNm<Class<?>, Method> hldSets;
 
   /**
+   * <p>Holder of fillers fields names.</p>
+   **/
+  private IHldNm<Class<?>, String> hldFilFdNms;
+
+  /**
    * <p>Fillers fields factory.</p>
    */
-  private IFctCls<IFilFld<String>> fctFilFld;
+  private IFctNm<IFilFld<String>> fctFilFld;
 
   /**
    * <p>Fills object's field.</p>
@@ -76,32 +81,17 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
     E val = null;
     if (pStVl != null && !"".equals(pStVl)) {
       @SuppressWarnings("unchecked")
-      Class<E> flCls = (Class<E>) hldFlCls.get(pObj.getClass(), pFlNm);
-      IFilFld<String> idFlr =  this.fctFilFld.laz(pRqVs, flCls);
+      Class<E> flCls = (Class<E>) this.hldFdCls.get(pObj.getClass(), pFlNm);
       val = flCls.newInstance();
-      idFlr.fill(pRqVs, val, pStVl, IHasId.IDNM);
+      String filFdNm = this.hldFilFdNms.get(pObj.getClass(), IHasId.IDNM);
+      IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
+      filFl.fill(pRqVs, val, pStVl, IHasId.IDNM);
     }
     Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
     setr.invoke(pObj, val);
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Getter for hldFlCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
-   **/
-  public final IHldNm<Class<?>, Class<?>> getHldFlCls() {
-    return this.hldFlCls;
-  }
-
-  /**
-   * <p>Setter for hldFlCls.</p>
-   * @param pHldFlCls reference
-   **/
-  public final void setHldFlCls(final IHldNm<Class<?>, Class<?>> pHldFlCls) {
-    this.hldFlCls = pHldFlCls;
-  }
-
   /**
    * <p>Getter for hldSets.</p>
    * @return IHldNm<Class<?>, Method>
@@ -120,9 +110,9 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
 
   /**
    * <p>Getter for fctFilFld.</p>
-   * @return IFctCls<IFilFld<String>>
+   * @return IFctNm<IFilFld<String>>
    **/
-  public final IFctCls<IFilFld<String>> getFctFilFld() {
+  public final IFctNm<IFilFld<String>> getFctFilFld() {
     return this.fctFilFld;
   }
 
@@ -130,7 +120,40 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
    * <p>Setter for fctFilFld.</p>
    * @param pFctFilFld reference
    **/
-  public final void setFctFilFld(final IFctCls<IFilFld<String>> pFctFilFld) {
+  public final void setFctFilFld(final IFctNm<IFilFld<String>> pFctFilFld) {
     this.fctFilFld = pFctFilFld;
+  }
+
+  /**
+   * <p>Getter for hldFilFdNms.</p>
+   * @return IHldNm<Class<?>, String>
+   **/
+  public final IHldNm<Class<?>, String> getHldFilFdNms() {
+    return this.hldFilFdNms;
+  }
+
+  /**
+   * <p>Setter for hldFilFdNms.</p>
+   * @param pHldFilFdNms reference
+   **/
+  public final void setHldFilFdNms(
+    final IHldNm<Class<?>, String> pHldFilFdNms) {
+    this.hldFilFdNms = pHldFilFdNms;
+  }
+
+  /**
+   * <p>Getter for hldFdCls.</p>
+   * @return IHldNm<Class<?>, Class<?>>
+   **/
+  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+    return this.hldFdCls;
+  }
+
+  /**
+   * <p>Setter for hldFdCls.</p>
+   * @param pHldFdCls reference
+   **/
+  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+    this.hldFdCls = pHldFdCls;
   }
 }

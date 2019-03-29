@@ -45,17 +45,17 @@ import org.beigesoft.mdl.IReqDt;
 public class FilEntRq implements IFilEnt<IReqDt> {
 
   /**
-   * <p>Logger.</p>
+   * <p>Log.</p>
    **/
-  private ILog logger;
+  private ILog log;
 
   /**
    * <p>Holder of entities fields names. It's a delegate to UVD-settings.</p>
    **/
-  private IHld<Class<?>, Set<String>> hldFlNms;
+  private IHld<Class<?>, Set<String>> hldFdNms;
 
   /**
-   * <p>Holder of  fillersfields names.</p>
+   * <p>Holder of fillers fields names.</p>
    **/
   private IHldNm<Class<?>, String> hldFilFdNms;
 
@@ -75,16 +75,16 @@ public class FilEntRq implements IFilEnt<IReqDt> {
   @Override
   public final <T> void fill(final Map<String, Object> pRqVs,
     final T pEnt, final IReqDt pReq) throws Exception {
-    boolean isDbgSh = this.logger.getDbgSh(this.getClass())
-      && this.logger.getDbgFl() < 5001 && this.logger.getDbgCl() > 4999;
-    for (String flNm : this.hldFlNms.get(pEnt.getClass())) {
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 5001 && this.log.getDbgCl() > 4999;
+    for (String flNm : this.hldFdNms.get(pEnt.getClass())) {
       String valStr = pReq.getParam(pEnt.getClass().getSimpleName()
         + "." + flNm); // standard
       if (valStr != null) { // e.g. Boolean checkbox or none-editable
         String filFdNm = this.hldFilFdNms.get(pEnt.getClass(), flNm);
         IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
         if (isDbgSh) {
-          this.logger.debug(pRqVs, FilEntRq.class,
+          this.log.debug(pRqVs, FilEntRq.class,
         "Filling fieldNm/inClass/value/filler: " + flNm + "/" + pEnt.getClass()
       .getSimpleName() + "/" + valStr + "/" + filFl.getClass().getSimpleName());
         }
@@ -95,19 +95,19 @@ public class FilEntRq implements IFilEnt<IReqDt> {
 
   //Simple getters and setters:
   /**
-   * <p>Getter for logger.</p>
+   * <p>Getter for log.</p>
    * @return ILog
    **/
-  public final ILog getLogger() {
-    return this.logger;
+  public final ILog getLog() {
+    return this.log;
   }
 
   /**
-   * <p>Setter for logger.</p>
-   * @param pLogger reference
+   * <p>Setter for log.</p>
+   * @param pLog reference
    **/
-  public final void setLogger(final ILog pLogger) {
-    this.logger = pLogger;
+  public final void setLog(final ILog pLog) {
+    this.log = pLog;
   }
 
   /**
@@ -144,18 +144,18 @@ public class FilEntRq implements IFilEnt<IReqDt> {
   }
 
   /**
-   * <p>Getter for hldFlNms.</p>
+   * <p>Getter for hldFdNms.</p>
    * @return IHld<Class<?>, Set<String>>
    **/
-  public final IHld<Class<?>, Set<String>> getHldFlNms() {
-    return this.hldFlNms;
+  public final IHld<Class<?>, Set<String>> getHldFdNms() {
+    return this.hldFdNms;
   }
 
   /**
-   * <p>Setter for hldFlNms.</p>
-   * @param pHldFlNms reference
+   * <p>Setter for hldFdNms.</p>
+   * @param pHldFdNms reference
    **/
-  public final void setHldFlNms(final IHld<Class<?>, Set<String>> pHldFlNms) {
-    this.hldFlNms = pHldFlNms;
+  public final void setHldFdNms(final IHld<Class<?>, Set<String>> pHldFdNms) {
+    this.hldFdNms = pHldFdNms;
   }
 }
