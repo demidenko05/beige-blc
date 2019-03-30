@@ -28,24 +28,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.cnv;
 
+import java.util.Set;
 import java.util.Map;
 import java.lang.reflect.Method;
 
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.hld.IHld;
 import org.beigesoft.hld.IHldNm;
-import org.beigesoft.mdl.IHasId;
 
 /**
- * <p>Standard service that fills/converts object's field of type IHasId from
- * given string value (HTML parameter). It's an owned entity converter.</p>
+ * <p>Filler of an entity composite ID from string representation.
+ * String value is comma separated field name=value set,
+ * e.g. ID user-role tomcat UsRlTmcId:
+ * <pre>
+ *  usr=admin,rol=admin
+ * </pre>
+ * Complex ID can't has entity with complex ID, in example above "usr" is
+ * UsTmc, "rol" is RlTmc.</p>
  *
- * @param <E> owned entity type
- * @param <ID> owned entity ID type
+ * @param <ID> ID type
  * @author Yury Demidenko
  */
-public class FilFldHsIdStr<E extends IHasId<ID>, ID>
-  implements IFilFld<String> {
+public class FilFldIdcStr<ID> implements IFilFld<String> {
+
+  /**
+   * <p>Holder of composite ID's fields names.</p>
+   **/
+  private IHld<Class<?>, Set<String>> hldFdNms;
 
   /**
    * <p>Fields classes holder.</p>
@@ -68,11 +77,6 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
   private IFctNm<IFilFld<String>> fctFilFld;
 
   /**
-   * <p>ID Fields names holder.</p>
-   **/
-  private IHld<Class<?>, String> hldIdFdNm;
-
-  /**
    * <p>Fills object's field.</p>
    * @param <T> object type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
@@ -84,21 +88,38 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
   @Override
   public final <T> void fill(final Map<String, Object> pRqVs, final T pObj,
     final String pStVl, final String pFlNm) throws Exception {
-    E val = null;
+    ID val = null;
     if (pStVl != null && !"".equals(pStVl)) {
       @SuppressWarnings("unchecked")
-      Class<E> flCls = (Class<E>) this.hldFdCls.get(pObj.getClass(), pFlNm);
+      Class<ID> flCls = (Class<ID>) this.hldFdCls.get(pObj.getClass(), pFlNm);
       val = flCls.newInstance();
-      String fdIdNm = this.hldIdFdNm.get(flCls);
-      String filFdNm = this.hldFilFdNms.get(flCls, fdIdNm);
-      IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
-      filFl.fill(pRqVs, val, pStVl, fdIdNm);
+      for (String fdNm : this.hldFdNms.get(flCls)) {
+        String filFdNm = this.hldFilFdNms.get(flCls, fdNm);
+        IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
+        filFl.fill(pRqVs, val, pStVl, fdNm);
+      }
     }
     Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
     setr.invoke(pObj, val);
   }
 
   //Simple getters and setters:
+  /**
+   * <p>Getter for hldFdNms.</p>
+   * @return IHld<Class<?>, Set<String>>
+   **/
+  public final IHld<Class<?>, Set<String>> getHldFdNms() {
+    return this.hldFdNms;
+  }
+
+  /**
+   * <p>Setter for hldFdNms.</p>
+   * @param pHldFdNms reference
+   **/
+  public final void setHldFdNms(final IHld<Class<?>, Set<String>> pHldFdNms) {
+    this.hldFdNms = pHldFdNms;
+  }
+
   /**
    * <p>Getter for hldSets.</p>
    * @return IHldNm<Class<?>, Method>
@@ -162,21 +183,5 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
    **/
   public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
     this.hldFdCls = pHldFdCls;
-  }
-
-  /**
-   * <p>Getter for hldIdFdNm.</p>
-   * @return IHld<Class<?>, String>
-   **/
-  public final IHld<Class<?>, String> getHldIdFdNm() {
-    return this.hldIdFdNm;
-  }
-
-  /**
-   * <p>Setter for hldIdFdNm.</p>
-   * @param pHldIdFdNm reference
-   **/
-  public final void setHldIdFdNm(final IHld<Class<?>, String> pHldIdFdNm) {
-    this.hldIdFdNm = pHldIdFdNm;
   }
 }

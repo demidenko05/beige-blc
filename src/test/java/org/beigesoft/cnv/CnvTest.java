@@ -177,6 +177,17 @@ public class CnvTest<RS> {
     assertEquals("usr=adminu,rol=adminr", reqDt.getParam(parPref + "iid"));
     assertEquals(usRlTmc.getRol(), reqDt.getParam(parPref + "rol"));
     assertEquals(usRlTmc.getUsr().getUsr(), reqDt.getParam(parPref + "usr"));
+    assertNotNull(stgUvd.getClsFs().get(UsRlTmc.class));
+    //fill:
+    UsRlTmc usRlTmcf = new UsRlTmc();
+    filEntRq.fill(this.rqVs, usRlTmcf, reqDt);
+    assertEquals(usRlTmc.getIid().getRol(), usRlTmcf.getIid().getRol());
+    assertEquals(usRlTmc.getIid().getUsr().getIid(), usRlTmcf.getIid().getUsr().getIid());
+    assertEquals(usRlTmc.getIsNew(), usRlTmcf.getIsNew());
+    assertEquals(usRlTmc.getUsr().getIid(), usRlTmcf.getUsr().getIid());
+    assertEquals(usRlTmc.getRol(), usRlTmcf.getRol());
+    assertNull(stgUvd.getClsFs().get(UsRlTmc.class));
+    //write:
     prsh = new PersistableHead();
     prsh.setIid(3L);
     prsh.setVer(124L);
@@ -222,10 +233,10 @@ public class CnvTest<RS> {
     filEntRq.fill(this.rqVs, prshf, reqDt);
     assertEquals(prsh.getIid(), prshf.getIid());
     assertEquals(prsh.getIsNew(), prshf.getIsNew());
+    assertEquals(prsh.getVer(), prshf.getVer());
     assertEquals(prsh.getItsDate(), prshf.getItsDate());
     assertEquals(prsh.getItsDepartment().getIid(), prshf.getItsDepartment().getIid());
     assertEquals(prsh.getItsTotal(), prshf.getItsTotal());
-    assertEquals(prsh.getVer(), prshf.getVer());
     assertEquals(prsh.getItsStatus(), prshf.getItsStatus());
     assertEquals(prsh.getItsInteger(), prshf.getItsInteger());
     assertEquals(prsh.getItsFloat(), prshf.getItsFloat());
@@ -249,5 +260,12 @@ public class CnvTest<RS> {
     }
     assertEquals(gvt.getIid().toString(), reqDt.getParam(parPref + "goods"));
     assertEquals(goodsRating.getAverageRating().toString(), reqDt.getParam(parPref + "averageRating"));
+    //fill:
+    GoodsRating goodsRatingf = new GoodsRating();
+    filEntRq.fill(this.rqVs, goodsRatingf, reqDt);
+    assertEquals(goodsRating.getIid().getIid(), goodsRatingf.getIid().getIid());
+    assertEquals(goodsRating.getIsNew(), goodsRatingf.getIsNew());
+    assertEquals(goodsRating.getGoods().getIid(), goodsRatingf.getGoods().getIid());
+    assertEquals(goodsRating.getAverageRating(), goodsRatingf.getAverageRating());
   }
 }

@@ -28,16 +28,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.fct;
 
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.lang.reflect.Method;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.log.ILog;
+import org.beigesoft.hld.IHld;
 import org.beigesoft.hld.IHldNm;
 import org.beigesoft.cnv.IConv;
 import org.beigesoft.cnv.IFilFld;
 import org.beigesoft.cnv.FilFldEnmStr;
+import org.beigesoft.cnv.FilFldIdcStr;
 import org.beigesoft.cnv.FilFldHsIdStr;
 import org.beigesoft.cnv.FilFldSmpStr;
 
@@ -46,7 +49,7 @@ import org.beigesoft.cnv.FilFldSmpStr;
  *
  * @author Yury Demidenko
  */
-public class FctNmFilFd implements IFctNm<IFilFld<String>> {
+public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
 
   //services:
   /**
@@ -80,6 +83,16 @@ public class FctNmFilFd implements IFctNm<IFilFld<String>> {
    **/
   private IHldNm<Class<?>, String> hldFilFdNms;
 
+  /**
+   * <p>Holder of composite ID's fields names.</p>
+   **/
+  private IHld<Class<?>, Set<String>> hldFdNms;
+
+  /**
+   * <p>ID Fields names holder.</p>
+   **/
+  private IHld<Class<?>, String> hldIdFdNm;
+
   //requested data:
   /**
    * <p>Fillers map.</p>
@@ -103,6 +116,8 @@ public class FctNmFilFd implements IFctNm<IFilFld<String>> {
         if (rz == null) {
           if (FilFldEnmStr.class.getSimpleName().equals(pFiNm)) {
             rz = crPuFilFldEnmStr();
+          } else if (FilFldIdcStr.class.getSimpleName().equals(pFiNm)) {
+            rz = crPuFilFldIdcStr();
           } else if (FilFldHsIdStr.class.getSimpleName().equals(pFiNm)) {
             rz = crPuFilFldHsIdStr();
           } else if (FilFldSmpStr.class.getSimpleName().equals(pFiNm)) {
@@ -131,6 +146,23 @@ public class FctNmFilFd implements IFctNm<IFilFld<String>> {
   }
 
   /**
+   * <p>Create and put into the Map FilFldIdcStr.</p>
+   * @return FilFldIdcStr
+   */
+  private FilFldIdcStr crPuFilFldIdcStr() {
+    FilFldIdcStr rz = new FilFldIdcStr();
+    rz.setHldFdNms(getHldFdNms());
+    rz.setHldSets(getHldSets());
+    rz.setHldFilFdNms(getHldFilFdNms());
+    rz.setHldFdCls(getHldFdCls());
+    rz.setFctFilFld(this);
+    this.fillers.put(FilFldIdcStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), FilFldIdcStr.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
    * <p>Create and put into the Map FilFldHsIdStr.</p>
    * @return FilFldHsIdStr
    */
@@ -138,6 +170,7 @@ public class FctNmFilFd implements IFctNm<IFilFld<String>> {
     FilFldHsIdStr rz = new FilFldHsIdStr();
     rz.setHldSets(getHldSets());
     rz.setHldFilFdNms(getHldFilFdNms());
+    rz.setHldIdFdNm(getHldIdFdNm());
     rz.setHldFdCls(getHldFdCls());
     rz.setFctFilFld(this);
     this.fillers.put(FilFldHsIdStr.class.getSimpleName(), rz);
@@ -259,5 +292,37 @@ public class FctNmFilFd implements IFctNm<IFilFld<String>> {
   public final void setHldFilFdNms(
     final IHldNm<Class<?>, String> pHldFilFdNms) {
     this.hldFilFdNms = pHldFilFdNms;
+  }
+
+  /**
+   * <p>Getter for hldFdNms.</p>
+   * @return IHld<Class<?>, Set<String>>
+   **/
+  public final IHld<Class<?>, Set<String>> getHldFdNms() {
+    return this.hldFdNms;
+  }
+
+  /**
+   * <p>Setter for hldFdNms.</p>
+   * @param pHldFdNms reference
+   **/
+  public final void setHldFdNms(final IHld<Class<?>, Set<String>> pHldFdNms) {
+    this.hldFdNms = pHldFdNms;
+  }
+
+  /**
+   * <p>Getter for hldIdFdNm.</p>
+   * @return IHld<Class<?>, String>
+   **/
+  public final IHld<Class<?>, String> getHldIdFdNm() {
+    return this.hldIdFdNm;
+  }
+
+  /**
+   * <p>Setter for hldIdFdNm.</p>
+   * @param pHldIdFdNm reference
+   **/
+  public final void setHldIdFdNm(final IHld<Class<?>, String> pHldIdFdNm) {
+    this.hldIdFdNm = pHldIdFdNm;
   }
 }

@@ -36,7 +36,7 @@ import org.beigesoft.hld.HldFldCls;
 import org.beigesoft.hld.HldIdFdNm;
 import org.beigesoft.hld.HldGets;
 import org.beigesoft.hld.HldSets;
-import org.beigesoft.hld.HldNmFilFd;
+import org.beigesoft.hld.HldNmFilFdSt;
 import org.beigesoft.hld.HldNmCnFrSt;
 import org.beigesoft.hld.HldNmCnToSt;
 import org.beigesoft.hnd.HndI18nRq;
@@ -52,8 +52,8 @@ import org.beigesoft.srv.IRdb;
 import org.beigesoft.srv.IOrm;
 
 /**
- * <p>Application beans factory of beige-blc beans. It's inner factory
- * inside final application beans factory.</p>
+ * <p>Main application beans factory. All configuration dependent inner
+ * factories must be inside "fctConf".</p>
  *
  * @param <RS> platform dependent RDBMS recordset
  * @author Yury Demidenko
@@ -69,6 +69,11 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Standard logger name.</p>
    **/
   public static final String LOGSTDNM = "logStd";
+
+  /**
+   * <p>Secure logger name.</p>
+   **/
+  public static final String LOGSECNM = "logSec";
 
   //configuration data:
   /**
@@ -127,14 +132,14 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazHldFldCls(pRqVs);
           } else if (FctNmCnFrSt.class.getSimpleName().equals(pBnNm)) {
             rz = lazFctNmCnFrSt(pRqVs);
-          } else if (FctNmFilFd.class.getSimpleName().equals(pBnNm)) {
+          } else if (FctNmFilFdSt.class.getSimpleName().equals(pBnNm)) {
             rz = lazFctNmFilFd(pRqVs);
           } else if (FctNmCnToSt.class.getSimpleName().equals(pBnNm)) {
             rz = lazFctNmCnToSt(pRqVs);
           } else if (FilEntRq.class.getSimpleName().equals(pBnNm)) {
             rz = lazFilEntRq(pRqVs);
-          } else if (HldNmFilFd.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldNmFilFd(pRqVs);
+          } else if (HldNmFilFdSt.class.getSimpleName().equals(pBnNm)) {
+            rz = lazHldNmFilFdSt(pRqVs);
           } else if (HldNmCnFrSt.class.getSimpleName().equals(pBnNm)) {
             rz = lazHldNmCnFrSt(pRqVs);
           } else if (HldNmCnToSt.class.getSimpleName().equals(pBnNm)) {
@@ -184,6 +189,7 @@ public class FctBlc<RS> implements IFctApp {
     this.fctConf.release();
   }
 
+  //Request handlers:
   /**
    * <p>Lazy getter HndI18nRq.</p>
    * @param pRqVs request scoped vars
@@ -211,6 +217,7 @@ public class FctBlc<RS> implements IFctApp {
     return rz;
   }
 
+  //UVD:
   /**
    * <p>Lazy getter Setng.</p>
    * @param pRqVs request scoped vars
@@ -246,7 +253,7 @@ public class FctBlc<RS> implements IFctApp {
       rz = new FilEntRq();
       rz.setLog(lazLogStd(pRqVs));
       rz.setHldFdNms(lazStgUvd(pRqVs));
-      rz.setHldFilFdNms(lazHldNmFilFd(pRqVs));
+      rz.setHldFilFdNms(lazHldNmFilFdSt(pRqVs));
       rz.setFctFilFld(lazFctNmFilFd(pRqVs));
       this.beans.put(FilEntRq.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), FilEntRq.class.getSimpleName()
@@ -256,21 +263,22 @@ public class FctBlc<RS> implements IFctApp {
   }
 
   /**
-   * <p>Lazy getter HldNmFilFd.</p>
+   * <p>Lazy getter HldNmFilFdSt.</p>
    * @param pRqVs request scoped vars
-   * @return HldNmFilFd
+   * @return HldNmFilFdSt
    * @throws Exception - an exception
    */
-  private HldNmFilFd lazHldNmFilFd(
+  private HldNmFilFdSt lazHldNmFilFdSt(
     final Map<String, Object> pRqVs) throws Exception {
-    HldNmFilFd rz = (HldNmFilFd) this.beans
-      .get(HldNmFilFd.class.getSimpleName());
+    HldNmFilFdSt rz = (HldNmFilFdSt) this.beans
+      .get(HldNmFilFdSt.class.getSimpleName());
     if (rz == null) {
-      rz = new HldNmFilFd();
+      rz = new HldNmFilFdSt();
       rz.setHldFdCls(lazHldFldCls(pRqVs));
-      this.beans.put(HldNmFilFd.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HldNmFilFd.class.getSimpleName()
-        + " has been created.");
+      rz.setSetng(lazStgUvd(pRqVs));
+      this.beans.put(HldNmFilFdSt.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(),
+        HldNmFilFdSt.class.getSimpleName() + " has been created.");
     }
     return rz;
   }
@@ -317,6 +325,79 @@ public class FctBlc<RS> implements IFctApp {
     return rz;
   }
 
+  /**
+   * <p>Lazy getter FctNmCnFrSt.</p>
+   * @param pRqVs request scoped vars
+   * @return FctNmCnFrSt
+   * @throws Exception - an exception
+   */
+  private FctNmCnFrSt lazFctNmCnFrSt(
+    final Map<String, Object> pRqVs) throws Exception {
+    FctNmCnFrSt rz = (FctNmCnFrSt) this.beans
+      .get(FctNmCnFrSt.class.getSimpleName());
+    if (rz == null) {
+      rz = new FctNmCnFrSt();
+      rz.setLogStd(lazLogStd(pRqVs));
+      this.beans.put(FctNmCnFrSt.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), FctNmCnFrSt.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter FctNmFilFdSt.</p>
+   * @param pRqVs request scoped vars
+   * @return FctNmFilFdSt
+   * @throws Exception - an exception
+   */
+  private FctNmFilFdSt lazFctNmFilFd(
+    final Map<String, Object> pRqVs) throws Exception {
+    FctNmFilFdSt rz = (FctNmFilFdSt) this.beans
+      .get(FctNmFilFdSt.class.getSimpleName());
+    if (rz == null) {
+      rz = new FctNmFilFdSt();
+      rz.setLogStd(lazLogStd(pRqVs));
+      rz.setHldSets(lazHldSets(pRqVs));
+      rz.setHldFdNms(lazStgUvd(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setHldNmFdCn(lazHldNmCnFrSt(pRqVs));
+      rz.setHldIdFdNm((HldIdFdNm) laz(pRqVs, HldIdFdNm.class.getSimpleName()));
+      rz.setFctCnvFld(lazFctNmCnFrSt(pRqVs));
+      rz.setHldFilFdNms(lazHldNmFilFdSt(pRqVs));
+      this.beans.put(FctNmFilFdSt.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(),
+        FctNmFilFdSt.class.getSimpleName() + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter FctNmCnToSt.</p>
+   * @param pRqVs request scoped vars
+   * @return FctNmCnToSt
+   * @throws Exception - an exception
+   */
+  private FctNmCnToSt lazFctNmCnToSt(
+    final Map<String, Object> pRqVs) throws Exception {
+    FctNmCnToSt rz = (FctNmCnToSt) this.beans
+      .get(FctNmCnToSt.class.getSimpleName());
+    if (rz == null) {
+      rz = new FctNmCnToSt();
+      rz.setNumStr(lazNumStr(pRqVs));
+      rz.setHldNmFdCn(lazHldNmCnToSt(pRqVs));
+      rz.setHldGets(lazHldGets(pRqVs));
+      rz.setHldIdFdNm((HldIdFdNm) laz(pRqVs, HldIdFdNm.class.getSimpleName()));
+      rz.setHldFdNms(lazStgUvd(pRqVs));
+      rz.setLogStd(lazLogStd(pRqVs));
+      this.beans.put(FctNmCnToSt.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), FctNmCnToSt.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  //Common parts:
   /**
    * <p>Lazy getter HldSets.</p>
    * @param pRqVs request scoped vars
@@ -370,76 +451,6 @@ public class FctBlc<RS> implements IFctApp {
       rz.setReflect(lazReflect(pRqVs));
       this.beans.put(HldFldCls.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), HldFldCls.class.getSimpleName()
-        + " has been created.");
-    }
-    return rz;
-  }
-
-  /**
-   * <p>Lazy getter FctNmCnFrSt.</p>
-   * @param pRqVs request scoped vars
-   * @return FctNmCnFrSt
-   * @throws Exception - an exception
-   */
-  private FctNmCnFrSt lazFctNmCnFrSt(
-    final Map<String, Object> pRqVs) throws Exception {
-    FctNmCnFrSt rz = (FctNmCnFrSt) this.beans
-      .get(FctNmCnFrSt.class.getSimpleName());
-    if (rz == null) {
-      rz = new FctNmCnFrSt();
-      rz.setLogStd(lazLogStd(pRqVs));
-      this.beans.put(FctNmCnFrSt.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), FctNmCnFrSt.class.getSimpleName()
-        + " has been created.");
-    }
-    return rz;
-  }
-
-  /**
-   * <p>Lazy getter FctNmFilFd.</p>
-   * @param pRqVs request scoped vars
-   * @return FctNmFilFd
-   * @throws Exception - an exception
-   */
-  private FctNmFilFd lazFctNmFilFd(
-    final Map<String, Object> pRqVs) throws Exception {
-    FctNmFilFd rz = (FctNmFilFd) this.beans
-      .get(FctNmFilFd.class.getSimpleName());
-    if (rz == null) {
-      rz = new FctNmFilFd();
-      rz.setLogStd(lazLogStd(pRqVs));
-      rz.setHldSets(lazHldSets(pRqVs));
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
-      rz.setHldNmFdCn(lazHldNmCnFrSt(pRqVs));
-      rz.setFctCnvFld(lazFctNmCnFrSt(pRqVs));
-      rz.setHldFilFdNms(lazHldNmFilFd(pRqVs));
-      this.beans.put(FctNmFilFd.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), FctNmFilFd.class.getSimpleName()
-        + " has been created.");
-    }
-    return rz;
-  }
-
-  /**
-   * <p>Lazy getter FctNmCnToSt.</p>
-   * @param pRqVs request scoped vars
-   * @return FctNmCnToSt
-   * @throws Exception - an exception
-   */
-  private FctNmCnToSt lazFctNmCnToSt(
-    final Map<String, Object> pRqVs) throws Exception {
-    FctNmCnToSt rz = (FctNmCnToSt) this.beans
-      .get(FctNmCnToSt.class.getSimpleName());
-    if (rz == null) {
-      rz = new FctNmCnToSt();
-      rz.setNumStr(lazNumStr(pRqVs));
-      rz.setHldNmFdCn(lazHldNmCnToSt(pRqVs));
-      rz.setHldGets(lazHldGets(pRqVs));
-      rz.setHldIdFdNm((HldIdFdNm) laz(pRqVs, HldIdFdNm.class.getSimpleName()));
-      rz.setHldFdNms(lazStgUvd(pRqVs));
-      rz.setLogStd(lazLogStd(pRqVs));
-      this.beans.put(FctNmCnToSt.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), FctNmCnToSt.class.getSimpleName()
         + " has been created.");
     }
     return rz;

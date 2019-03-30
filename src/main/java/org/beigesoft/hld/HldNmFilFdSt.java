@@ -30,29 +30,27 @@ package org.beigesoft.hld;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Date;
 import java.math.BigDecimal;
 
-import org.beigesoft.cnv.CnvStrBln;
-import org.beigesoft.cnv.CnvStrBgd;
-import org.beigesoft.cnv.CnvStrDbl;
-import org.beigesoft.cnv.CnvStrFlt;
-import org.beigesoft.cnv.CnvStrInt;
-import org.beigesoft.cnv.CnvStrLng;
-import org.beigesoft.cnv.CnvStrStr;
+import org.beigesoft.mdl.IHasId;
+import org.beigesoft.cnv.FilFldEnmStr;
+import org.beigesoft.cnv.FilFldSmpStr;
+import org.beigesoft.cnv.FilFldHsIdStr;
 import org.beigesoft.prp.ISetng;
 /**
- * <p>Holder of names of converters of fields values from string.
+ * <p>Holder of names of fillers of fields values from string.
  * Floats, Ints are represented as toString values without formatting.</p>
  *
  * @author Yury Demidenko
  */
-public class HldNmCnFrSt implements IHldNm<Class<?>, String> {
+public class HldNmFilFdSt implements IHldNm<Class<?>, String> {
 
   /**
-   * <p>Setting name of converter from string.</p>
+   * <p>Setting name of filler from string.</p>
    **/
 
-  public static final String CNVFRSTRNM = "cnFrSt";
+  public static final String FILFDSTRNM = "filFdSt";
 
   /**
    * <p>Holder of an entity's field's class.</p>
@@ -60,54 +58,61 @@ public class HldNmCnFrSt implements IHldNm<Class<?>, String> {
   private IHldNm<Class<?>, Class<?>> hldFdCls;
 
   /**
-   * <p>Holder of custom field's converters. It's a settings service.</p>
+   * <p>Holder of custom field's fillers. It's a settings service.</p>
    **/
   private ISetng setng;
 
   /**
-   * <p>Map of names of standard converters of fields values from string.
-   * It's hard coded map Fields standard type - standard converter name.
-   * Fields like Date requires manual format.</p>
+   * <p>Map of names of standard fillers of fields values from string.
+   * It's hard coded map Fields standard type - standard filler name.
+   * Fields like Entity, Enum, Composite ID requires manual format.</p>
    **/
-  private final Map<Class<?>, String> stdCnvNms;
+  private final Map<Class<?>, String> stdFilNms;
 
   /**
    * <p>Only constructor.</p>
    **/
-  public HldNmCnFrSt() {
-    this.stdCnvNms = new HashMap<Class<?>, String>();
-    this.stdCnvNms.put(Integer.class, CnvStrInt.class.getSimpleName());
-    this.stdCnvNms.put(Long.class, CnvStrLng.class.getSimpleName());
-    this.stdCnvNms.put(String.class, CnvStrStr.class.getSimpleName());
-    this.stdCnvNms.put(Float.class, CnvStrFlt.class.getSimpleName());
-    this.stdCnvNms.put(Double.class, CnvStrDbl.class.getSimpleName());
-    this.stdCnvNms.put(Boolean.class, CnvStrBln.class.getSimpleName());
-    this.stdCnvNms.put(BigDecimal.class, CnvStrBgd.class.getSimpleName());
+  public HldNmFilFdSt() {
+    this.stdFilNms = new HashMap<Class<?>, String>();
+    this.stdFilNms.put(Integer.class, FilFldSmpStr.class.getSimpleName());
+    this.stdFilNms.put(Long.class, FilFldSmpStr.class.getSimpleName());
+    this.stdFilNms.put(String.class, FilFldSmpStr.class.getSimpleName());
+    this.stdFilNms.put(Float.class, FilFldSmpStr.class.getSimpleName());
+    this.stdFilNms.put(Double.class, FilFldSmpStr.class.getSimpleName());
+    this.stdFilNms.put(Boolean.class, FilFldSmpStr.class.getSimpleName());
+    this.stdFilNms.put(BigDecimal.class, FilFldSmpStr.class.getSimpleName());
+    this.stdFilNms.put(Date.class, FilFldSmpStr.class.getSimpleName());
   }
 
   /**
-   * <p>Get converter name for given class and field name.</p>
+   * <p>Get filler name for given class and field name.</p>
    * @param pCls a Class
    * @param pFlNm Field Name
-   * @return converter from string name
+   * @return filler from string name
    **/
   @Override
   public final String get(final Class<?> pCls, final String pFlNm) {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
-    String rez = this.stdCnvNms.get(fdCls);
+    if (fdCls.isEnum()) {
+      return FilFldEnmStr.class.getSimpleName();
+    }
+    if (IHasId.class.isAssignableFrom(fdCls)) {
+      return FilFldHsIdStr.class.getSimpleName();
+    }
+    String rez = this.stdFilNms.get(fdCls);
     if (rez == null) {
       if (this.setng == null) {
-    throw new RuntimeException("Not set holder CNV FLD FR STR! enCl/flNm/fdCl: "
+    throw new RuntimeException("Not set holder FIL FLD FR STR! enCl/flNm/fdCl: "
   + pCls.getSimpleName() + "/" + pFlNm + "/" + fdCls.getSimpleName());
       }
       try {
-        rez = this.setng.lazFldStg(pCls, pFlNm, CNVFRSTRNM);
+        rez = this.setng.lazFldStg(pCls, pFlNm, FILFDSTRNM);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
       if (rez == null) {
         throw new RuntimeException(
-          "Custom holder has no CNV FLD FR STR enCl/fdNm/fdCl: "
+          "Custom holder has no FIL FLD FR STR enCl/fdNm/fdCl: "
             + pCls.getSimpleName() + "/" + pFlNm + "/" + fdCls.getSimpleName());
       }
     }

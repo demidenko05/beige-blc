@@ -26,57 +26,33 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.hld;
+package org.beigesoft.prc;
 
+import java.util.Map;
+
+import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IHasId;
-import org.beigesoft.cnv.FilFldEnmStr;
-import org.beigesoft.cnv.FilFldSmpStr;
-import org.beigesoft.cnv.FilFldHsIdStr;
+
 /**
- * <p>Holder of names of fillers of fields values from string.
- * Floats, Ints are represented as toString values without formatting.</p>
+ * <p>Abstraction of service that processes a request for an entity,
+ * e.g. "save entity".
+ * This service maybe dedicated to either concrete entity or set of
+ * super types.</p>
  *
+ * @param <T> entity type
+ * @param <ID> entity ID type
  * @author Yury Demidenko
  */
-public class HldNmFilFd implements IHldNm<Class<?>, String> {
+public interface IPrcEnt<T extends IHasId<ID>, ID> {
 
   /**
-   * <p>Holder of an entity's field's class.</p>
+   * <p>Process entity request.</p>
+   * @param pRqVs request scoped vars, e.g. return this line's
+   * owner(document) in "nextEntity" for farther processing
+   * @param pRqDt Request Data
+   * @param pEnt Entity to process
+   * @return Entity processed for farther process or null
+   * @throws Exception - an exception
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
-
-  /**
-   * <p>Get filler name for given class and field name.</p>
-   * @param pCls a Class
-   * @param pFlNm Field Name
-   * @return filler from string name
-   **/
-  @Override
-  public final String get(final Class<?> pCls, final String pFlNm) {
-    Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
-    if (fdCls.isEnum()) {
-      return FilFldEnmStr.class.getSimpleName();
-    }
-    if (IHasId.class.isAssignableFrom(fdCls)) {
-      return FilFldHsIdStr.class.getSimpleName();
-    }
-    return FilFldSmpStr.class.getSimpleName();
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
-   **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
-    return this.hldFdCls;
-  }
-
-  /**
-   * <p>Setter for hldFdCls.</p>
-   * @param pHldFdCls reference
-   **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
-    this.hldFdCls = pHldFdCls;
-  }
+   T process(Map<String, Object> pRqVs, T pEnt, IReqDt pRqDt) throws Exception;
 }

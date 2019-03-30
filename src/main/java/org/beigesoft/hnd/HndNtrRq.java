@@ -26,33 +26,65 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.prc;
+package org.beigesoft.hnd;
 
 import java.util.Map;
 
 import org.beigesoft.mdl.IReqDt;
-import org.beigesoft.mdl.IHasId;
+import org.beigesoft.fct.IFctNm;
+import org.beigesoft.prc.IPrc;
 
 /**
- * <p>Abstraction of service that processes a request for an entity,
- * e.g. "save entity".
- * This service maybe dedicated to either concrete entity or set of
- * super types.</p>
+ * <p>Simple non-transactional request handler.
+ * It delegate request to processor that should handle transaction management
+ * if it's need. Transaction management maybe also handled by other
+ * handlers in chain or by JEE request filters.</p>
  *
- * @param <T> entity type
- * @param <ID> entity ID type
  * @author Yury Demidenko
  */
-public interface IEntPrc<T extends IHasId<ID>, ID> {
+public class HndNtrRq implements IHndRq {
 
   /**
-   * <p>Process entity request.</p>
-   * @param pRqVs request scoped vars, e.g. return this line's
-   * owner(document) in "nextEntity" for farther processing
-   * @param pRqDt Request Data
-   * @param pEnt Entity to process
-   * @return Entity processed for farther process or null
-   * @throws Exception - an exception
+   * <p>Processors factory.</p>
    **/
-   T process(Map<String, Object> pRqVs, T pEnt, IReqDt pRqDt) throws Exception;
+  private IFctNm<IPrc> fctPrc;
+
+  /**
+   * <p>Handle request.
+   * WHandlerAndJsp requires handle NULL request, so if parameter
+   * "nmPrc" is null then do nothing.
+   * </p>
+   * @param pRqVs Request scoped variables
+   * @param pRqDt Request Data
+   * @throws Exception - an exception
+   */
+  @Override
+  public final void handle(final Map<String, Object> pRqVs,
+    final IReqDt pRqDt) throws Exception {
+    String nmPrc = pRqDt.getParam("nmPrc");
+    if (nmPrc == null) {
+      //WHandlerAndJsp requires handle NULL request:
+      return;
+    }
+    IPrc proc = this.fctPrc.laz(pRqVs, nmPrc);
+    proc.process(pRqVs, pRqDt);
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for fctPrc.</p>
+   * @return IFctNm<IPrc>
+   **/
+  public final IFctNm<IPrc> getFctPrc() {
+    return this.fctPrc;
+  }
+
+  /**
+   * <p>Setter for fctPrc.</p>
+   * @param pFctPrc reference
+   **/
+  public final void setFctPrc(
+    final IFctNm<IPrc> pFctPrc) {
+    this.fctPrc = pFctPrc;
+  }
 }

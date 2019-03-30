@@ -368,7 +368,7 @@ public class Setng implements ISetng {
       && this.log.getDbgFl() < 6004 && this.log.getDbgCl() > 6002;
     if (pStgs.keySet().contains(pTy)) {
       if (isDbgSh) {
-        this.log.debug(null, Setng.class, "found exact type type/value: "
+        this.log.debug(null, Setng.class, "found exact type/value: "
           + pTy + "/" + pStgs.get(pTy));
       }
       return pStgs.get(pTy);
@@ -376,8 +376,8 @@ public class Setng implements ISetng {
     for (Class<?> ky : pStgs.keySet()) {
       if (ky.isAssignableFrom(pTy)) {
         if (isDbgSh) {
-          this.log.debug(null, Setng.class, "found sub-type type/value: "
-            + pTy + "/" + pStgs.get(pTy));
+          this.log.debug(null, Setng.class, "found sub-type/type/value: "
+            + pTy + "/" + ky + "/" + pStgs.get(pTy));
         }
         return pStgs.get(pTy);
       }
@@ -412,9 +412,16 @@ public class Setng implements ISetng {
             this.log.debug(null, Setng.class, "Try get XML prp for cls/fd/stg: "
               + pCls + "/" + pFldNm + "/" + pStgNm);
           }
-          String fiPa = "/" + this.dir + "/" + DIRCLSFS + "/"
-            + pCls.getSimpleName() + ".xml";
-          Map<String, String> clFsPr = ldPrps(pCls.getSimpleName(), fiPa);
+          String fiPa;
+          if (this.clsFs == null || !this.clsFs.keySet().contains(pCls)) {
+            fiPa = "/" + this.dir + "/" + DIRCLSFS + "/"
+              + pCls.getSimpleName() + ".xml";
+            Map<String, String> clFsPr = ldPrps(pCls.getSimpleName(), fiPa);
+            if (this.clsFs == null) {
+              this.clsFs = new HashMap<Class<?>, Map<String, String>>();
+            }
+            this.clsFs.put(pCls, clFsPr);
+          }
           if (this.fldTyFs == null || !this.fldTyFs.keySet().contains(pStgNm)) {
             fiPa = "/" + this.dir + "/" + DIRFLDTYFS + "/" + pStgNm
               + ".xml";
@@ -451,10 +458,6 @@ public class Setng implements ISetng {
             }
             this.fldNmClTyFs.put(fdStNm, flNmClTyFsMp);
           }
-          if (this.clsFs == null) {
-            this.clsFs = new HashMap<Class<?>, Map<String, String>>();
-          }
-          this.clsFs.put(pCls, clFsPr);
         }
       }
     }
