@@ -26,61 +26,55 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.hnd;
+package org.beigesoft.cnv;
 
 import java.util.Map;
 
-import org.beigesoft.mdl.IReqDt;
-import org.beigesoft.fct.IFctNm;
-import org.beigesoft.prc.IPrc;
+import org.beigesoft.srv.IUtlXml;
 
 /**
- * <p>Simple non-transactional request handler.
- * It delegate request to processor that should handle transaction management
- * if it's need. Transaction management maybe also handled by other
- * handlers in chain or by JEE request filters.</p>
+ * <p>Converter of string to XML escaped string representation,
+ * null represents as "".</p>
  *
  * @author Yury Demidenko
  */
-public class HndNtrRq implements IHndRq {
+public class CnvStrToStrXml implements IConv<String, String> {
 
   /**
-   * <p>Processors factory.</p>
+   * <p>XML service.</p>
    **/
-  private IFctNm<IPrc> fctPrc;
+  private IUtlXml utlXml;
 
   /**
-   * <p>Handle request.
-   * WHandlerAndJsp requires handle NULL request, so if parameter
-   * "nmPrc" is null then do nothing.
-   * </p>
-   * @param pRqVs Request scoped variables
-   * @param pRqDt Request Data
+   * <p>Convert to XML string.</p>
+   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pStrVal string representation
+   * @return String value
    * @throws Exception - an exception
-   */
+   **/
   @Override
-  public final void handle(final Map<String, Object> pRqVs,
-    final IReqDt pRqDt) throws Exception {
-    String nmPrc = pRqDt.getParam("nmPrc");
-    IPrc proc = this.fctPrc.laz(pRqVs, nmPrc);
-    proc.process(pRqVs, pRqDt);
+  public final String conv(final Map<String, Object> pRqVs,
+    final String pStrVal) throws Exception {
+    if (pStrVal == null || "".equals(pStrVal)) {
+      return "";
+    }
+    return this.utlXml.escStr(pStrVal);
   }
 
   //Simple getters and setters:
   /**
-   * <p>Getter for fctPrc.</p>
-   * @return IFctNm<IPrc>
+   * <p>Getter for utlXml.</p>
+   * @return IUtlXml
    **/
-  public final IFctNm<IPrc> getFctPrc() {
-    return this.fctPrc;
+  public final IUtlXml getUtlXml() {
+    return this.utlXml;
   }
 
   /**
-   * <p>Setter for fctPrc.</p>
-   * @param pFctPrc reference
+   * <p>Setter for utlXml.</p>
+   * @param pUtlXml reference
    **/
-  public final void setFctPrc(
-    final IFctNm<IPrc> pFctPrc) {
-    this.fctPrc = pFctPrc;
+  public final void setUtlXml(final IUtlXml pUtlXml) {
+    this.utlXml = pUtlXml;
   }
 }

@@ -42,6 +42,8 @@ import org.beigesoft.cnv.IConv;
 import org.beigesoft.cnv.CnvDtStr;
 import org.beigesoft.cnv.CnvDtTmStr;
 import org.beigesoft.cnv.CnvEnmStr;
+import org.beigesoft.cnv.CnvDtStrMs;
+import org.beigesoft.cnv.CnvStrToStrXml;
 import org.beigesoft.cnv.CnvSmpStr;
 import org.beigesoft.cnv.CnvBlnStr;
 import org.beigesoft.cnv.CnvHsIdStr;
@@ -51,6 +53,7 @@ import org.beigesoft.cnv.CnvPriStr;
 import org.beigesoft.cnv.CnvQuanStr;
 import org.beigesoft.cnv.CnvCostStr;
 import org.beigesoft.srv.INumStr;
+import org.beigesoft.srv.IUtlXml;
 
 /**
  * <p>Factory of fields converters to string.</p>
@@ -91,6 +94,11 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    **/
   private IHld<Class<?>, String> hldIdFdNm;
 
+  /**
+   * <p>XML utility.</p>
+   **/
+  private IUtlXml utlXml;
+
   //requested data:
   /**
    * <p>Converters map.</p>
@@ -114,6 +122,10 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
         if (rz == null) {
           if (CnvSmpStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvSmpStr();
+          } else if (CnvDtStrMs.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvDtStrMs();
+          } else if (CnvStrToStrXml.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrToStrXml();
           } else if (CnvDtStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvDtStr();
           } else if (CnvDtTmStr.class.getSimpleName().equals(pCnNm)) {
@@ -275,6 +287,31 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
   }
 
   /**
+   * <p>Create and put into the Map CnvDtStrMs.</p>
+   * @return CnvDtStrMs
+   */
+  private CnvDtStrMs crPuCnvDtStrMs() {
+    CnvDtStrMs rz = new CnvDtStrMs();
+    this.convrts.put(CnvDtStrMs.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvDtStrMs.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrToStrXml.</p>
+   * @return CnvStrToStrXml
+   */
+  private CnvStrToStrXml crPuCnvStrToStrXml() {
+    CnvStrToStrXml rz = new CnvStrToStrXml();
+    rz.setUtlXml(getUtlXml());
+    this.convrts.put(CnvStrToStrXml.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrToStrXml.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
    * <p>Create and put into the Map CnvSmpStr.</p>
    * @return CnvSmpStr
    */
@@ -381,5 +418,21 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    **/
   public final void setHldIdFdNm(final IHld<Class<?>, String> pHldIdFdNm) {
     this.hldIdFdNm = pHldIdFdNm;
+  }
+
+  /**
+   * <p>Getter for utlXml.</p>
+   * @return IUtlXml
+   **/
+  public final IUtlXml getUtlXml() {
+    return this.utlXml;
+  }
+
+  /**
+   * <p>Setter for utlXml.</p>
+   * @param pUtlXml reference
+   **/
+  public final void setUtlXml(final IUtlXml pUtlXml) {
+    this.utlXml = pUtlXml;
   }
 }

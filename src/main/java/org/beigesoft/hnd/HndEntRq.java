@@ -139,10 +139,6 @@ public class HndEntRq<RS> implements IHndRq {
   public final void handle(final Map<String, Object> pRqVs,
     final IReqDt pRqDt) throws Exception {
     String nmEnt = pRqDt.getParam("nmEnt");
-    if (nmEnt == null) {
-      //WHandlerAndJsp requires handle NULL request, e.g. only JSP:
-      return;
-    }
     Class<?> cls = this.entMap.get(nmEnt);
     if (cls == null) {
       this.logSec.error(pRqVs, HndEntRq.class,

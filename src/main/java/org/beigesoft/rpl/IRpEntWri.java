@@ -26,61 +26,26 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.hnd;
+package org.beigesoft.rpl;
 
 import java.util.Map;
-
-import org.beigesoft.mdl.IReqDt;
-import org.beigesoft.fct.IFctNm;
-import org.beigesoft.prc.IPrc;
+import java.io.Writer;
 
 /**
- * <p>Simple non-transactional request handler.
- * It delegate request to processor that should handle transaction management
- * if it's need. Transaction management maybe also handled by other
- * handlers in chain or by JEE request filters.</p>
+ * <p>Service to writes given entity into given stream (writer).</p>
  *
+ * @param <T> entity type
  * @author Yury Demidenko
  */
-public class HndNtrRq implements IHndRq {
+public interface IRpEntWri<T> {
 
   /**
-   * <p>Processors factory.</p>
-   **/
-  private IFctNm<IPrc> fctPrc;
-
-  /**
-   * <p>Handle request.
-   * WHandlerAndJsp requires handle NULL request, so if parameter
-   * "nmPrc" is null then do nothing.
-   * </p>
-   * @param pRqVs Request scoped variables
-   * @param pRqDt Request Data
+   * <p>Writes entity into given stream (writer).</p>
+   * @param pRqVs request scoped vars (e.g. exclude fields set)
+   * @param pEnt object
+   * @param pWri writer
    * @throws Exception - an exception
-   */
-  @Override
-  public final void handle(final Map<String, Object> pRqVs,
-    final IReqDt pRqDt) throws Exception {
-    String nmPrc = pRqDt.getParam("nmPrc");
-    IPrc proc = this.fctPrc.laz(pRqVs, nmPrc);
-    proc.process(pRqVs, pRqDt);
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for fctPrc.</p>
-   * @return IFctNm<IPrc>
    **/
-  public final IFctNm<IPrc> getFctPrc() {
-    return this.fctPrc;
-  }
-
-  /**
-   * <p>Setter for fctPrc.</p>
-   * @param pFctPrc reference
-   **/
-  public final void setFctPrc(
-    final IFctNm<IPrc> pFctPrc) {
-    this.fctPrc = pFctPrc;
-  }
+  void write(Map<String, Object> pRqVs,
+    T pEnt, Writer pWri) throws Exception;
 }

@@ -543,7 +543,7 @@ public class Setng implements ISetng {
    * @param pKey setting file name - setting name or
    *  field name + setting name or class name
    * @param pFiNm File Name
-   * @return LnkPrps LnkPrps
+   * @return Map<String, String> properties
    * @throws Exception - an exception
    **/
   public final synchronized Map<String, String> ldPrps(

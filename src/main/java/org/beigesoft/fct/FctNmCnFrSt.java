@@ -40,22 +40,31 @@ import org.beigesoft.cnv.CnvStrFlt;
 import org.beigesoft.cnv.CnvStrDbl;
 import org.beigesoft.cnv.CnvStrBln;
 import org.beigesoft.cnv.CnvStrBgd;
+import org.beigesoft.cnv.CnvStrBgdNf;
 import org.beigesoft.cnv.CnvStrDt;
 import org.beigesoft.cnv.CnvStrDtTm;
 import org.beigesoft.cnv.CnvStrStr;
+import org.beigesoft.cnv.CnvStrDtMs;
+import org.beigesoft.cnv.CnvStrFrStrXml;
+import org.beigesoft.srv.IUtlXml;
 
 /**
- * <p>Factory of fields converters to string.</p>
+ * <p>Factory of fields converters from string.</p>
  *
  * @author Yury Demidenko
  */
 public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
 
-  //services:
+  //services/parts:
   /**
    * <p>Logger.</p>
    **/
   private ILog logStd;
+
+  /**
+   * <p>XML utility.</p>
+   **/
+  private IUtlXml utlXml;
 
   //requested data:
   /**
@@ -86,6 +95,10 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
             rz = crPuCnvStrDtTm();
           } else if (CnvStrStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvStrStr();
+          } else if (CnvStrDtMs.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrDtMs();
+          } else if (CnvStrFrStrXml.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrFrStrXml();
           } else if (CnvStrInt.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvStrInt();
           } else if (CnvStrFlt.class.getSimpleName().equals(pCnNm)) {
@@ -94,6 +107,8 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
             rz = crPuCnvStrDbl();
           } else if (CnvStrBln.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvStrBln();
+          } else if (CnvStrBgdNf.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrBgdNf();
           } else if (CnvStrBgd.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvStrBgd();
           } else {
@@ -137,6 +152,31 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
     CnvStrDtTm rz = new CnvStrDtTm();
     this.convrts.put(CnvStrDtTm.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvStrDtTm.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrDtMs.</p>
+   * @return CnvStrDtMs
+   */
+  private CnvStrDtMs crPuCnvStrDtMs() {
+    CnvStrDtMs rz = new CnvStrDtMs();
+    this.convrts.put(CnvStrDtMs.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrDtMs.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrFrStrXml.</p>
+   * @return CnvStrFrStrXml
+   */
+  private CnvStrFrStrXml crPuCnvStrFrStrXml() {
+    CnvStrFrStrXml rz = new CnvStrFrStrXml();
+    rz.setUtlXml(getUtlXml());
+    this.convrts.put(CnvStrFrStrXml.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrFrStrXml.class.getSimpleName()
       + " has been created.");
     return rz;
   }
@@ -202,6 +242,18 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
   }
 
   /**
+   * <p>Create and put into the Map CnvStrBgdNf.</p>
+   * @return CnvStrBgdNf
+   */
+  private CnvStrBgdNf crPuCnvStrBgdNf() {
+    CnvStrBgdNf rz = new CnvStrBgdNf();
+    this.convrts.put(CnvStrBgdNf.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrBgdNf.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
    * <p>Create and put into the Map CnvStrBgd.</p>
    * @return CnvStrBgd
    */
@@ -228,5 +280,21 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
    **/
   public final void setLogStd(final ILog pLogStd) {
     this.logStd = pLogStd;
+  }
+
+  /**
+   * <p>Getter for utlXml.</p>
+   * @return IUtlXml
+   **/
+  public final IUtlXml getUtlXml() {
+    return this.utlXml;
+  }
+
+  /**
+   * <p>Setter for utlXml.</p>
+   * @param pUtlXml reference
+   **/
+  public final void setUtlXml(final IUtlXml pUtlXml) {
+    this.utlXml = pUtlXml;
   }
 }

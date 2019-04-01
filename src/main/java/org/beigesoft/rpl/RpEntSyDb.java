@@ -26,61 +26,66 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.hnd;
+package org.beigesoft.rpl;
 
 import java.util.Map;
+import java.util.HashMap;
 
-import org.beigesoft.mdl.IReqDt;
-import org.beigesoft.fct.IFctNm;
-import org.beigesoft.prc.IPrc;
+import org.beigesoft.mdl.IHasVr;
+import org.beigesoft.srv.IOrm;
 
 /**
- * <p>Simple non-transactional request handler.
- * It delegate request to processor that should handle transaction management
- * if it's need. Transaction management maybe also handled by other
- * handlers in chain or by JEE request filters.</p>
+ * <p>Standard service that synchronizes just read foreign entity with home one.
+ * All persistable entities must has version, so it checks if entity exists
+ * in home database, if does then fills it with home version.</p>
  *
+ * @param <RS> platform dependent record set type
+ * @param <T> entity type
  * @author Yury Demidenko
  */
-public class HndNtrRq implements IHndRq {
+public class RpEntSyDb<RS, T extends IHasVr> implements IRpEntSync<T> {
 
   /**
-   * <p>Processors factory.</p>
+   * <p>ORM service.</p>
    **/
-  private IFctNm<IPrc> fctPrc;
+  private IOrm<RS> orm;
 
   /**
-   * <p>Handle request.
-   * WHandlerAndJsp requires handle NULL request, so if parameter
-   * "nmPrc" is null then do nothing.
-   * </p>
-   * @param pRqVs Request scoped variables
-   * @param pRqDt Request Data
+   * <p>Just checks if entity exists in home database.</p>
+   * @param pRqVs request scoped vars
+   * @param pEnt object
+   * @return if entity exists in database (needs to update)
    * @throws Exception - an exception
-   */
+   **/
   @Override
-  public final void handle(final Map<String, Object> pRqVs,
-    final IReqDt pRqDt) throws Exception {
-    String nmPrc = pRqDt.getParam("nmPrc");
-    IPrc proc = this.fctPrc.laz(pRqVs, nmPrc);
-    proc.process(pRqVs, pRqDt);
+  public final boolean sync(final Map<String, Object> pRqVs,
+    final T pEnt) throws Exception {
+    Map<String, Object> vs = new HashMap<String, Object>();
+    String[] ndFds = new String[] {"iid", "ver"};
+    vs.put("ndFds", ndFds);
+    T entDb = getOrm().retEnt(pRqVs, vs, pEnt);
+    if (entDb != null) {
+      pEnt.setVer(entDb.getVer());
+      return false;
+    } else {
+      return true;
+    }
   }
 
   //Simple getters and setters:
   /**
-   * <p>Getter for fctPrc.</p>
-   * @return IFctNm<IPrc>
+   * <p>Getter for orm.</p>
+   * @return IOrm<RS>
    **/
-  public final IFctNm<IPrc> getFctPrc() {
-    return this.fctPrc;
+  public final IOrm<RS> getOrm() {
+    return this.orm;
   }
 
   /**
-   * <p>Setter for fctPrc.</p>
-   * @param pFctPrc reference
+   * <p>Setter for orm.</p>
+   * @param pOrm reference
    **/
-  public final void setFctPrc(
-    final IFctNm<IPrc> pFctPrc) {
-    this.fctPrc = pFctPrc;
+  public final void setOrm(final IOrm<RS> pOrm) {
+    this.orm = pOrm;
   }
 }

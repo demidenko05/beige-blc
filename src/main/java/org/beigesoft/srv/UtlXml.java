@@ -148,7 +148,7 @@ public class UtlXml implements IUtlXml {
   /**
    * <p>
    * Read attributes from stream. Start the XML element
-   * must be read out.
+   * must be read already.
    * </p>
    * @param pReader reader.
    * @param pAddParam additional params
@@ -186,13 +186,13 @@ public class UtlXml implements IUtlXml {
           sb.append(ch);
           break;
       }
-      evalAttributes(sb, attributesMap);
+      evAttrs(sb, attributesMap);
     }
     return attributesMap;
   }
 
   /**
-   * <p>Try to eval content of string buffer if it's an attribute
+   * <p>Try to evaluate content of string buffer if it's an attribute
    * with value then fill map and clear buffer.
    * For improving performance unescStr should invoked
    * explicitly when it's need (for field like itsName or description).</p>
@@ -200,7 +200,7 @@ public class UtlXml implements IUtlXml {
    * @param pAttributesMap Attributes Map
    * @throws Exception - an exception
    **/
-  public final void evalAttributes(final StringBuffer pSb,
+  public final void evAttrs(final StringBuffer pSb,
     final Map<String, String> pAttributesMap) throws Exception {
     String str = pSb.toString().trim();
     if (str.length() > 3 //minimum is a=""

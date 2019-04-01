@@ -26,61 +26,32 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.hnd;
+package org.beigesoft.cnv;
 
 import java.util.Map;
-
-import org.beigesoft.mdl.IReqDt;
-import org.beigesoft.fct.IFctNm;
-import org.beigesoft.prc.IPrc;
+import java.math.BigDecimal;
 
 /**
- * <p>Simple non-transactional request handler.
- * It delegate request to processor that should handle transaction management
- * if it's need. Transaction management maybe also handled by other
- * handlers in chain or by JEE request filters.</p>
+ * <p>Converter of BigDecimal from string representation,
+ * null represents as "". String value must not be formatted e.g. "1234.56".</p>
  *
  * @author Yury Demidenko
  */
-public class HndNtrRq implements IHndRq {
+public class CnvStrBgdNf implements IConv<String, BigDecimal> {
 
   /**
-   * <p>Processors factory.</p>
-   **/
-  private IFctNm<IPrc> fctPrc;
-
-  /**
-   * <p>Handle request.
-   * WHandlerAndJsp requires handle NULL request, so if parameter
-   * "nmPrc" is null then do nothing.
-   * </p>
-   * @param pRqVs Request scoped variables
-   * @param pRqDt Request Data
+   * <p>Converts BigDecimal from string.</p>
+   * @param pRqVs request scoped vars
+   * @param pStrVal string representation
+   * @return BigDecimal value
    * @throws Exception - an exception
-   */
+   **/
   @Override
-  public final void handle(final Map<String, Object> pRqVs,
-    final IReqDt pRqDt) throws Exception {
-    String nmPrc = pRqDt.getParam("nmPrc");
-    IPrc proc = this.fctPrc.laz(pRqVs, nmPrc);
-    proc.process(pRqVs, pRqDt);
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for fctPrc.</p>
-   * @return IFctNm<IPrc>
-   **/
-  public final IFctNm<IPrc> getFctPrc() {
-    return this.fctPrc;
-  }
-
-  /**
-   * <p>Setter for fctPrc.</p>
-   * @param pFctPrc reference
-   **/
-  public final void setFctPrc(
-    final IFctNm<IPrc> pFctPrc) {
-    this.fctPrc = pFctPrc;
+  public final BigDecimal conv(final Map<String, Object> pRqVs,
+    final String pStrVal) throws Exception {
+    if (pStrVal == null || "".equals(pStrVal)) {
+      return null;
+    }
+    return new BigDecimal(pStrVal);
   }
 }
