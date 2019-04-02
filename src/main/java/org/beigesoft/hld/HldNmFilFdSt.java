@@ -36,7 +36,6 @@ import java.math.BigDecimal;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.cnv.FilFldEnmStr;
 import org.beigesoft.cnv.FilFldSmpStr;
-import org.beigesoft.cnv.FilFldHsIdStr;
 import org.beigesoft.prp.ISetng;
 /**
  * <p>Holder of names of fillers of fields values from string.
@@ -52,6 +51,13 @@ public class HldNmFilFdSt implements IHldNm<Class<?>, String> {
 
   public static final String FILFDSTRNM = "filFdSt";
 
+  //Setting:
+  /**
+   * <p>Filler owned entity name.</p>
+   **/
+  private String filHasIdNm;
+
+  //Services:
   /**
    * <p>Holder of an entity's field's class.</p>
    **/
@@ -97,7 +103,7 @@ public class HldNmFilFdSt implements IHldNm<Class<?>, String> {
       return FilFldEnmStr.class.getSimpleName();
     }
     if (IHasId.class.isAssignableFrom(fdCls)) {
-      return FilFldHsIdStr.class.getSimpleName();
+      return this.filHasIdNm;
     }
     String rez = this.stdFilNms.get(fdCls);
     if (rez == null) {
@@ -150,5 +156,21 @@ public class HldNmFilFdSt implements IHldNm<Class<?>, String> {
    **/
   public final void setSetng(final ISetng pSetng) {
     this.setng = pSetng;
+  }
+
+  /**
+   * <p>Getter for filHasIdNm.</p>
+   * @return String
+   **/
+  public final String getFilHasIdNm() {
+    return this.filHasIdNm;
+  }
+
+  /**
+   * <p>Setter for filHasIdNm.</p>
+   * @param pFilHasIdNm reference
+   **/
+  public final void setFilHasIdNm(final String pFilHasIdNm) {
+    this.filHasIdNm = pFilHasIdNm;
   }
 }

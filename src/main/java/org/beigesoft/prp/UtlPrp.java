@@ -41,15 +41,6 @@ import java.net.URL;
  */
 public class UtlPrp {
 
-  // Constants:
-  /**
-   * <p>Null value string constant.</p>
-   * @return null
-   **/
-  public final String constNull() {
-    return "null";
-  }
-
   // Utils:
   /**
    * <p>Evaluate string array(include non-unique) properties
@@ -96,7 +87,7 @@ public class UtlPrp {
   }
 
   /**
-   * <p>Evaluate null if value is string "null".</p>
+   * <p>Evaluate null if value is empty string "".</p>
    * @param pPrps properties
    * @param pPrpNm properties
    * @return String string or NULL
@@ -104,7 +95,7 @@ public class UtlPrp {
   public final String evPrpVl(final LnkPrps pPrps,
     final String pPrpNm) {
     String result = pPrps.getProperty(pPrpNm);
-    if (constNull().equals(result)) {
+    if ("".equals(result)) {
       return null;
     }
     return result;

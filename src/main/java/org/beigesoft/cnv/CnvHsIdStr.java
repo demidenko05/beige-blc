@@ -28,12 +28,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.cnv;
 
+import java.util.List;
 import java.util.Map;
 
+import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.hld.IHldNm;
-import org.beigesoft.hld.IHld;
+import org.beigesoft.prp.ISetng;
 
 /**
  * <p>Converter of an owned entity to string.
@@ -56,9 +58,9 @@ public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
   private IHldNm<Class<?>, String> hldNmFdCn;
 
   /**
-   * <p>ID Fields names holder.</p>
+   * <p>Settings service.</p>
    **/
-  private IHld<Class<?>, String> hldIdFdNm;
+  private ISetng setng;
 
   /**
    * <p>Converts any entity to string (ID).</p>
@@ -73,8 +75,11 @@ public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
     if (pHsId == null) {
       return "";
     }
-    String cnNm = this.hldNmFdCn.get(pHsId.getClass(),
-      this.hldIdFdNm.get(pHsId.getClass()));
+    List<String> fdIdNms = this.setng.lazIdFldNms(pHsId.getClass());
+    if (fdIdNms.size() > 1) {
+      throw new ExcCode(ExcCode.NYI, "NYI");
+    }
+    String cnNm = this.hldNmFdCn.get(pHsId.getClass(), fdIdNms.get(0));
     @SuppressWarnings("unchecked")
     IConv<Object, String> flCn = (IConv<Object, String>) this.fctCnvFld
       .laz(pRqVs, cnNm);
@@ -116,18 +121,18 @@ public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
   }
 
   /**
-   * <p>Getter for hldIdFdNm.</p>
-   * @return IHld<Class<?>, String>
+   * <p>Getter for setng.</p>
+   * @return ISetng
    **/
-  public final IHld<Class<?>, String> getHldIdFdNm() {
-    return this.hldIdFdNm;
+  public final ISetng getSetng() {
+    return this.setng;
   }
 
   /**
-   * <p>Setter for hldIdFdNm.</p>
-   * @param pHldIdFdNm reference
+   * <p>Setter for setng.</p>
+   * @param pSetng reference
    **/
-  public final void setHldIdFdNm(final IHld<Class<?>, String> pHldIdFdNm) {
-    this.hldIdFdNm = pHldIdFdNm;
+  public final void setSetng(final ISetng pSetng) {
+    this.setng = pSetng;
   }
 }

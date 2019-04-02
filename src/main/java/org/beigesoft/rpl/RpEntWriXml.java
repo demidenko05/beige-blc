@@ -28,7 +28,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.rpl;
 
-import java.util.Set;
 import java.util.Map;
 import java.io.Writer;
 import java.lang.reflect.Method;
@@ -36,7 +35,7 @@ import java.lang.reflect.Method;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHldNm;
-import org.beigesoft.hld.IHld;
+import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.IConv;
 
 /**
@@ -57,9 +56,9 @@ public class RpEntWriXml<T> implements IRpEntWri<T> {
   private ILog log;
 
   /**
-   * <p>Holder of entities fields names. It's a delegate to settings.</p>
+   * <p>Settings service.</p>
    **/
-  private IHld<Class<?>, Set<String>> hldFdNms;
+  private ISetng setng;
 
   /**
    * <p>Converters fields factory.</p>
@@ -94,22 +93,38 @@ public class RpEntWriXml<T> implements IRpEntWri<T> {
     }
     pWri.write("<entity class=\"" + pEnt.getClass().getCanonicalName()
       + "\"\n");
-    for (String fdNm : this.hldFdNms.get(pEnt.getClass())) {
-      Method getter = this.hldGets.get(pEnt.getClass(), fdNm);
-      Object fdVl = getter.invoke(pEnt);
-      String fdVlSt;
-      if (fdVl == null) {
-        fdVlSt = "";
-      } else {
-        String cnNm = this.hldNmFdCn.get(pEnt.getClass(), fdNm);
-        @SuppressWarnings("unchecked")
-        IConv<Object, String> flCn = (IConv<Object, String>) this.fctCnvFld
-          .laz(pRqVs, cnNm);
-        fdVlSt = flCn.conv(pRqVs, fdVl);
-      }
-      pWri.write(" " + fdNm + "=\"" + fdVlSt + "\"\n");
+    for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
+      writeFld(pRqVs, pEnt, pWri, fdNm);
+    }
+    for (String fdNm : this.setng.lazFldNms(pEnt.getClass())) {
+      writeFld(pRqVs, pEnt, pWri, fdNm);
     }
     pWri.write("/>\n");
+  }
+
+  /**
+   * <p>Writes given field into given stream (writer) in XML format.</p>
+   * @param pRqVs request scoped vars
+   * @param pEnt object
+   * @param pWri writer
+   * @param pFdNm field name
+   * @throws Exception - an exception
+   **/
+  private void writeFld(final Map<String, Object> pRqVs,
+    final T pEnt, final Writer pWri, final String pFdNm) throws Exception {
+    Method getter = this.hldGets.get(pEnt.getClass(), pFdNm);
+    Object fdVl = getter.invoke(pEnt);
+    String fdVlSt;
+    if (fdVl == null) {
+      fdVlSt = "";
+    } else {
+      String cnNm = this.hldNmFdCn.get(pEnt.getClass(), pFdNm);
+      @SuppressWarnings("unchecked")
+      IConv<Object, String> flCn = (IConv<Object, String>) this.fctCnvFld
+        .laz(pRqVs, cnNm);
+      fdVlSt = flCn.conv(pRqVs, fdVl);
+    }
+    pWri.write(" " + pFdNm + "=\"" + fdVlSt + "\"\n");
   }
 
   //Simple getters and setters:
@@ -130,19 +145,19 @@ public class RpEntWriXml<T> implements IRpEntWri<T> {
   }
 
   /**
-   * <p>Getter for hldFdNms.</p>
-   * @return IHld<Class<?>, Set<String>>
+   * <p>Getter for setng.</p>
+   * @return ISetng
    **/
-  public final IHld<Class<?>, Set<String>> getHldFdNms() {
-    return this.hldFdNms;
+  public final ISetng getSetng() {
+    return this.setng;
   }
 
   /**
-   * <p>Setter for hldFdNms.</p>
-   * @param pHldFdNms reference
+   * <p>Setter for setng.</p>
+   * @param pSetng reference
    **/
-  public final void setHldFdNms(final IHld<Class<?>, Set<String>> pHldFdNms) {
-    this.hldFdNms = pHldFdNms;
+  public final void setSetng(final ISetng pSetng) {
+    this.setng = pSetng;
   }
 
   /**

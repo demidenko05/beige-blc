@@ -44,9 +44,7 @@ import org.beigesoft.exc.ExcCode;
 public class UtlXml implements IUtlXml {
 
   /**
-   * <p>
-   * Escape XML for given string.
-   * </p>
+   * <p>Escape XML for given string.</p>
    * @param pSource source
    * @return escaped string
    * @throws Exception - an exception
@@ -62,9 +60,7 @@ public class UtlXml implements IUtlXml {
   }
 
   /**
-   * <p>
-   * Escape XML for given char.
-   * </p>
+   * <p>Escape XML for given char.</p>
    * @param pChar char
    * @return escaped string
    * @throws Exception - an exception
@@ -121,9 +117,7 @@ public class UtlXml implements IUtlXml {
   }
 
   /**
-   * <p>
-   * Unescape XML for given string.
-   * </p>
+   * <p>Unescape XML for given string.</p>
    * @param pEscaped Escaped
    * @return unescaped char
    * @throws Exception - an exception
@@ -151,13 +145,13 @@ public class UtlXml implements IUtlXml {
    * must be read already.
    * </p>
    * @param pReader reader.
-   * @param pAddParam additional params
+   * @param pRqVs additional params
    * @return attributes map
    * @throws Exception - an exception
    **/
   @Override
-  public final Map<String, String> readAttrs(final Reader pReader,
-    final Map<String, Object> pAddParam) throws Exception {
+  public final Map<String, String> readAttrs(final Map<String, Object> pRqVs,
+    final Reader pReader) throws Exception {
     Map<String, String> attributesMap = new HashMap<String, String>();
     StringBuffer sb = new StringBuffer();
     int chi;
@@ -217,9 +211,7 @@ public class UtlXml implements IUtlXml {
   }
 
   /**
-   * <p>
-   * Read stream until start given element e.g. &lt;message.
-   * </p>
+   * <p>Read stream until start given element e.g. &lt;message. </p>
    * @param pReader reader.
    * @param pElement element
    * @return true if start element is happen, false if end of stream

@@ -80,8 +80,8 @@ public interface IUtlXml {
    * @return attributes map
    * @throws Exception - an exception
    **/
-  Map<String, String> readAttrs(Reader pReader,
-    Map<String, Object> pRqVs) throws Exception;
+  Map<String, String> readAttrs(Map<String, Object> pRqVs,
+    Reader pReader) throws Exception;
 
 
   /**

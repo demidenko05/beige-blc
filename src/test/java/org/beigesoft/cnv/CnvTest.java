@@ -125,8 +125,6 @@ public class CnvTest<RS> {
     FilEntRq filEntRq = (FilEntRq) this.fctApp.laz(this.rqVs, FilEntRq.class.getSimpleName());
     Setng stgUvd = (Setng) this.fctApp.laz(this.rqVs, this.fctApp.STGUVDNM);
     stgUvd.lazConf();
-    stgUvd.lazFldPrp(PersistableHead.class, IHasId.IDNM, HldNmCnToSt.CNVTOSTRNM);
-    assertTrue(stgUvd.getClsFs().get(PersistableHead.class).size() == 1);
     //write:
     PersistableHead prsh = new PersistableHead();
     prsh.setIid(1L);
@@ -139,6 +137,17 @@ public class CnvTest<RS> {
     prsh.setItsDepartment(dep);
     ReqDtTst reqDt = new ReqDtTst();
     String parPref = PersistableHead.class.getSimpleName() + ".";
+    stgUvd.lazFldPrp(PersistableHead.class, "itsTotal", HldNmCnToSt.CNVTOSTRNM);
+    assertTrue(stgUvd.getClsFs().get(PersistableHead.class).size() == 1);
+    for (String fdNm : stgUvd.lazIdFldNms(PersistableHead.class)) {
+      String cnNm = hldNmCnvStr.get(PersistableHead.class, fdNm);
+      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      Method gets = reflect.retGet(PersistableHead.class, fdNm);
+      Object fdVl = gets.invoke(prsh);
+      String fdSvl = cnv.conv(this.rqVs, fdVl);
+      this.logStd.test(null, CnvTest.class, "Class/fieldId/value: PersistableHead/" + fdNm + "/" + fdSvl);
+      reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
+    }
     for (String fdNm : stgUvd.lazFldNms(PersistableHead.class)) {
       String cnNm = hldNmCnvStr.get(PersistableHead.class, fdNm);
       IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
@@ -165,6 +174,15 @@ public class CnvTest<RS> {
     usRlTmc.setUsr(usr);
     reqDt = new ReqDtTst();
     parPref = UsRlTmc.class.getSimpleName() + ".";
+    for (String fdNm : stgUvd.lazIdFldNms(UsRlTmc.class)) {
+      String cnNm = hldNmCnvStr.get(UsRlTmc.class, fdNm);
+      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      Method gets = reflect.retGet(UsRlTmc.class, fdNm);
+      Object fdVl = gets.invoke(usRlTmc);
+      String fdSvl = cnv.conv(this.rqVs, fdVl);
+      this.logStd.test(null, CnvTest.class, "Class/fieldId/value: UsRlTmc/" + fdNm + "/" + fdSvl);
+      reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
+    }
     for (String fdNm : stgUvd.lazFldNms(UsRlTmc.class)) {
       String cnNm = hldNmCnvStr.get(UsRlTmc.class, fdNm);
       IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
@@ -174,19 +192,17 @@ public class CnvTest<RS> {
       this.logStd.test(null, CnvTest.class, "Class/field/value: UsRlTmc/" + fdNm + "/" + fdSvl);
       reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
     }
-    assertEquals("usr=adminu,rol=adminr", reqDt.getParam(parPref + "iid"));
+    //assertEquals("usr=adminu,rol=adminr", reqDt.getParam(parPref + "iid"));
     assertEquals(usRlTmc.getRol(), reqDt.getParam(parPref + "rol"));
     assertEquals(usRlTmc.getUsr().getUsr(), reqDt.getParam(parPref + "usr"));
-    assertNotNull(stgUvd.getClsFs().get(UsRlTmc.class));
     //fill:
     UsRlTmc usRlTmcf = new UsRlTmc();
     filEntRq.fill(this.rqVs, usRlTmcf, reqDt);
+    assertEquals(usRlTmc.getIsNew(), usRlTmcf.getIsNew());
+    assertEquals(usRlTmc.getRol(), usRlTmcf.getRol());
+    assertEquals(usRlTmc.getUsr().getIid(), usRlTmcf.getUsr().getIid());
     assertEquals(usRlTmc.getIid().getRol(), usRlTmcf.getIid().getRol());
     assertEquals(usRlTmc.getIid().getUsr().getIid(), usRlTmcf.getIid().getUsr().getIid());
-    assertEquals(usRlTmc.getIsNew(), usRlTmcf.getIsNew());
-    assertEquals(usRlTmc.getUsr().getIid(), usRlTmcf.getUsr().getIid());
-    assertEquals(usRlTmc.getRol(), usRlTmcf.getRol());
-    assertNull(stgUvd.getClsFs().get(UsRlTmc.class));
     //write:
     prsh = new PersistableHead();
     prsh.setIid(3L);
@@ -205,6 +221,15 @@ public class CnvTest<RS> {
     prsh.setItsDepartment(dep);
     reqDt = new ReqDtTst();
     parPref = PersistableHead.class.getSimpleName() + ".";
+    for (String fdNm : stgUvd.lazIdFldNms(PersistableHead.class)) {
+      String cnNm = hldNmCnvStr.get(PersistableHead.class, fdNm);
+      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      Method gets = reflect.retGet(PersistableHead.class, fdNm);
+      Object fdVl = gets.invoke(prsh);
+      String fdSvl = cnv.conv(this.rqVs, fdVl);
+      this.logStd.test(null, CnvTest.class, "Class/fieldId/value: PersistableHead/" + fdNm + "/" + fdSvl);
+      reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
+    }
     for (String fdNm : stgUvd.lazFldNms(PersistableHead.class)) {
       String cnNm = hldNmCnvStr.get(PersistableHead.class, fdNm);
       IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
@@ -249,6 +274,15 @@ public class CnvTest<RS> {
     gvt.setIid(5L);
     goodsRating.setIid(gvt);
     parPref = GoodsRating.class.getSimpleName() + ".";
+    for (String fdNm : stgUvd.lazIdFldNms(GoodsRating.class)) {
+      String cnNm = hldNmCnvStr.get(GoodsRating.class, fdNm);
+      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      Method gets = reflect.retGet(GoodsRating.class, fdNm);
+      Object fdVl = gets.invoke(goodsRating);
+      String fdSvl = cnv.conv(this.rqVs, fdVl);
+      this.logStd.test(null, CnvTest.class, "Class/fieldId/value: GoodsRating/" + fdNm + "/" + fdSvl);
+      reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
+    }
     for (String fdNm : stgUvd.lazFldNms(GoodsRating.class)) {
       String cnNm = hldNmCnvStr.get(GoodsRating.class, fdNm);
       IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);

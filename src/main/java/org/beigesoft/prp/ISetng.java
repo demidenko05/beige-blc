@@ -28,9 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.prp;
 
-import java.util.Set;
-
-import org.beigesoft.hld.IHld;
+import java.util.List;
 
 /**
  * <p>Abstraction of service that loads classes and their fields settings
@@ -48,12 +46,11 @@ import org.beigesoft.hld.IHld;
  * 4. fldNmFs - field name to settings
  * 5. fldTyFs - field type to settings
  * </pre>
- * It is also holder of involved classes involved fields names.
  * </p>
  *
  * @author Yury Demidenko
  */
-public interface ISetng extends IHld<Class<?>, Set<String>> {
+public interface ISetng {
 
   //Keys for configuration file:
   /**
@@ -75,6 +72,11 @@ public interface ISetng extends IHld<Class<?>, Set<String>> {
    * <p>Key name for exclude fields.</p>
    **/
   String KEYEXLFLDS = "exlFlds";
+
+  /**
+   * <p>Key name for ID fields.</p>
+   **/
+  String KEYIDFLDS = "idFlds";
 
   //Files, dirs names:
     //Configuration:
@@ -127,9 +129,8 @@ public interface ISetng extends IHld<Class<?>, Set<String>> {
   String DIRCLSFS = "clsFs";
 
   /**
-   * <p>Lazy gets fields setting by given name. Maybe NULL, e.g. converter
-   * name for fields of standard type (resource friendly approach).
-   * It's also maybe only class settings configuration.</p>
+   * <p>Lazy gets field's setting for given class, field and name.
+   * Maybe NULL.</p>
    * @param pCls class
    * @param pFldNm field name
    * @param pStgNm setting name
@@ -140,13 +141,30 @@ public interface ISetng extends IHld<Class<?>, Set<String>> {
     String pStgNm) throws Exception;
 
   /**
-   * <p>Lazy gets fields names for given name excluding collections and
+   * <p>Lazy gets class's setting for given class and name. Maybe NULL.</p>
+   * @param pCls class
+   * @param pStgNm setting name
+   * @return String setting, maybe NULL
+   * @throws Exception - an exception
+   **/
+  String lazClsStg(Class<?> pCls, String pStgNm) throws Exception;
+
+  /**
+   * <p>Lazy gets fields names for given class excluding ID, collections and
    * excluded fields by XML file.</p>
    * @param pCls class
    * @return fields names set
    * @throws Exception - an exception
    **/
-  Set<String> lazFldNms(Class<?> pCls) throws Exception;
+  List<String> lazFldNms(Class<?> pCls) throws Exception;
+
+  /**
+   * <p>Lazy gets ID fields names for given class.</p>
+   * @param pCls class
+   * @return fields names set
+   * @throws Exception - an exception
+   **/
+  List<String> lazIdFldNms(Class<?> pCls) throws Exception;
 
   /**
    * <p>Releases beans (memory).</p>

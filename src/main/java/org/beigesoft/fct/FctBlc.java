@@ -33,7 +33,6 @@ import java.util.HashMap;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.hld.HldFldCls;
-import org.beigesoft.hld.HldIdFdNm;
 import org.beigesoft.hld.HldGets;
 import org.beigesoft.hld.HldSets;
 import org.beigesoft.hld.HldNmFilFdSt;
@@ -47,6 +46,7 @@ import org.beigesoft.prp.Setng;
 import org.beigesoft.log.ILog;
 import org.beigesoft.cnv.FilEntRq;
 import org.beigesoft.rpl.RpEntWriXml;
+import org.beigesoft.rpl.RpEntReadXml;
 import org.beigesoft.srv.INumStr;
 import org.beigesoft.srv.NumStr;
 import org.beigesoft.srv.IReflect;
@@ -66,9 +66,24 @@ import org.beigesoft.srv.IUtlXml;
 public class FctBlc<RS> implements IFctApp {
 
   /**
+   * <p>UVD holder field fillers names name.</p>
+   **/
+  public static final String HLFILFDNMUVD = "hlFiFdNmUvd";
+
+  /**
+   * <p>DB-Copy holder field fillers names name.</p>
+   **/
+  public static final String HLFILFDNMDBCP = "hlFiFdNmDbCp";
+
+  /**
    * <p>DB-Copy entity writer service name.</p>
    **/
   public static final String ENWRDBCPNM = "enWrDbCp";
+
+  /**
+   * <p>DB-Copy entity reader service name.</p>
+   **/
+  public static final String ENRDDBCPNM = "enRdDbCp";
 
   /**
    * <p>DB-Copy Setting service name.</p>
@@ -146,6 +161,8 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazFilEntRq(pRqVs);
           } else if (ENWRDBCPNM.equals(pBnNm)) {
             rz = lazRpEntWriXmlDbCp(pRqVs);
+          } else if (ENRDDBCPNM.equals(pBnNm)) {
+            rz = lazRpEntReadXmlDbCp(pRqVs);
           } else if (STGDBCPNM.equals(pBnNm)) {
             rz = lazStgDbCp(pRqVs);
           } else if (STGUVDNM.equals(pBnNm)) {
@@ -156,8 +173,10 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazFctNmFilFd(pRqVs);
           } else if (FctNmCnToSt.class.getSimpleName().equals(pBnNm)) {
             rz = lazFctNmCnToSt(pRqVs);
-          } else if (HldNmFilFdSt.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldNmFilFdSt(pRqVs);
+          } else if (HLFILFDNMUVD.equals(pBnNm)) {
+            rz = lazHldNmFilFdStUvd(pRqVs);
+          } else if (HLFILFDNMDBCP.equals(pBnNm)) {
+            rz = lazHldNmFilFdStDbCp(pRqVs);
           } else if (HldNmCnToStXml.class.getSimpleName().equals(pBnNm)) {
             rz = lazHldNmCnToStXml(pRqVs);
           } else if (HldNmCnFrStXml.class.getSimpleName().equals(pBnNm)) {
@@ -249,6 +268,29 @@ public class FctBlc<RS> implements IFctApp {
 
   //Database full copy:
   /**
+   * <p>Lazy getter RpEntReadXmlDbCp.</p>
+   * @param pRqVs request scoped vars
+   * @return RpEntReadXmlDbCp
+   * @throws Exception - an exception
+   */
+  private RpEntReadXml lazRpEntReadXmlDbCp(
+    final Map<String, Object> pRqVs) throws Exception {
+    RpEntReadXml rz = (RpEntReadXml) this.beans.get(ENRDDBCPNM);
+    if (rz == null) {
+      rz = new RpEntReadXml();
+      rz.setLog(lazLogStd(pRqVs));
+      rz.setSetng(lazStgDbCp(pRqVs));
+      rz.setHldFilFdNms(lazHldNmFilFdStDbCp(pRqVs));
+      rz.setUtlXml(lazUtlXml(pRqVs));
+      rz.setFctFilFld(lazFctNmFilFd(pRqVs));
+      this.beans.put(ENWRDBCPNM, rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), ENRDDBCPNM
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
    * <p>Lazy getter RpEntWriXmlDbCp.</p>
    * @param pRqVs request scoped vars
    * @return RpEntWriXmlDbCp
@@ -261,7 +303,7 @@ public class FctBlc<RS> implements IFctApp {
     if (rz == null) {
       rz = new RpEntWriXml<Object>();
       rz.setLog(lazLogStd(pRqVs));
-      rz.setHldFdNms(lazStgDbCp(pRqVs));
+      rz.setSetng(lazStgDbCp(pRqVs));
       rz.setHldGets(lazHldGets(pRqVs));
       rz.setHldNmFdCn(lazHldNmCnToStXml(pRqVs));
       rz.setFctCnvFld(lazFctNmCnToSt(pRqVs));
@@ -294,7 +336,28 @@ public class FctBlc<RS> implements IFctApp {
     return rz;
   }
 
-  //Shared replication services:
+  /**
+   * <p>Lazy getter DBCP HldNmFilFdSt.</p>
+   * @param pRqVs request scoped vars
+   * @return HldNmFilFdSt
+   * @throws Exception - an exception
+   */
+  private HldNmFilFdSt lazHldNmFilFdStDbCp(
+    final Map<String, Object> pRqVs) throws Exception {
+    HldNmFilFdSt rz = (HldNmFilFdSt) this.beans
+      .get(HLFILFDNMDBCP);
+    if (rz == null) {
+      rz = new HldNmFilFdSt();
+      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setFilHasIdNm(FctNmFilFdSt.FILHSIDSTDBCPNM);
+      rz.setSetng(lazStgDbCp(pRqVs));
+      this.beans.put(HLFILFDNMDBCP, rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(),
+        HLFILFDNMDBCP + " has been created.");
+    }
+    return rz;
+  }
+
   /**
    * <p>Lazy getter HldNmCnToStXml.</p>
    * @param pRqVs request scoped vars
@@ -308,6 +371,7 @@ public class FctBlc<RS> implements IFctApp {
     if (rz == null) {
       rz = new HldNmCnToStXml();
       rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setCnHsIdToStNm(FctNmCnToSt.CNHSIDSTDBCPNM);
       this.beans.put(HldNmCnToStXml.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), HldNmCnToStXml.class
         .getSimpleName() + " has been created.");
@@ -315,6 +379,7 @@ public class FctBlc<RS> implements IFctApp {
     return rz;
   }
 
+  //Shared replication services:
   /**
    * <p>Lazy getter HldNmCnFrStXml.</p>
    * @param pRqVs request scoped vars
@@ -370,8 +435,8 @@ public class FctBlc<RS> implements IFctApp {
     if (rz == null) {
       rz = new FilEntRq();
       rz.setLog(lazLogStd(pRqVs));
-      rz.setHldFdNms(lazStgUvd(pRqVs));
-      rz.setHldFilFdNms(lazHldNmFilFdSt(pRqVs));
+      rz.setSetng(lazStgUvd(pRqVs));
+      rz.setHldFilFdNms(lazHldNmFilFdStUvd(pRqVs));
       rz.setFctFilFld(lazFctNmFilFd(pRqVs));
       this.beans.put(FilEntRq.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), FilEntRq.class.getSimpleName()
@@ -381,22 +446,23 @@ public class FctBlc<RS> implements IFctApp {
   }
 
   /**
-   * <p>Lazy getter HldNmFilFdSt.</p>
+   * <p>Lazy getter UVD HldNmFilFdSt.</p>
    * @param pRqVs request scoped vars
    * @return HldNmFilFdSt
    * @throws Exception - an exception
    */
-  private HldNmFilFdSt lazHldNmFilFdSt(
+  private HldNmFilFdSt lazHldNmFilFdStUvd(
     final Map<String, Object> pRqVs) throws Exception {
     HldNmFilFdSt rz = (HldNmFilFdSt) this.beans
-      .get(HldNmFilFdSt.class.getSimpleName());
+      .get(HLFILFDNMUVD);
     if (rz == null) {
       rz = new HldNmFilFdSt();
       rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setFilHasIdNm(FctNmFilFdSt.FILHSIDSTUVDNM);
       rz.setSetng(lazStgUvd(pRqVs));
-      this.beans.put(HldNmFilFdSt.class.getSimpleName(), rz);
+      this.beans.put(HLFILFDNMUVD, rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(),
-        HldNmFilFdSt.class.getSimpleName() + " has been created.");
+        HLFILFDNMUVD + " has been created.");
     }
     return rz;
   }
@@ -435,6 +501,7 @@ public class FctBlc<RS> implements IFctApp {
     if (rz == null) {
       rz = new HldNmCnToSt();
       rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setCnHsIdToStNm(FctNmCnToSt.CNHSIDSTUVDNM);
       rz.setSetng(lazStgUvd(pRqVs));
       this.beans.put(HldNmCnToSt.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), HldNmCnToSt.class.getSimpleName()
@@ -478,12 +545,13 @@ public class FctBlc<RS> implements IFctApp {
       rz = new FctNmFilFdSt();
       rz.setLogStd(lazLogStd(pRqVs));
       rz.setHldSets(lazHldSets(pRqVs));
-      rz.setHldFdNms(lazStgUvd(pRqVs));
+      rz.setStgUvd(lazStgUvd(pRqVs));
+      rz.setStgDbCp(lazStgDbCp(pRqVs));
       rz.setHldFdCls(lazHldFldCls(pRqVs));
       rz.setHldNmFdCn(lazHldNmCnFrSt(pRqVs));
-      rz.setHldIdFdNm((HldIdFdNm) laz(pRqVs, HldIdFdNm.class.getSimpleName()));
       rz.setFctCnvFld(lazFctNmCnFrSt(pRqVs));
-      rz.setHldFilFdNms(lazHldNmFilFdSt(pRqVs));
+      rz.setHldFilFdNmsUvd(lazHldNmFilFdStUvd(pRqVs));
+      rz.setHldFilFdNmsDbCp(lazHldNmFilFdStDbCp(pRqVs));
       this.beans.put(FctNmFilFdSt.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(),
         FctNmFilFdSt.class.getSimpleName() + " has been created.");
@@ -507,8 +575,8 @@ public class FctBlc<RS> implements IFctApp {
       rz.setNumStr(lazNumStr(pRqVs));
       rz.setHldNmFdCn(lazHldNmCnToSt(pRqVs));
       rz.setHldGets(lazHldGets(pRqVs));
-      rz.setHldIdFdNm((HldIdFdNm) laz(pRqVs, HldIdFdNm.class.getSimpleName()));
-      rz.setHldFdNms(lazStgUvd(pRqVs));
+      rz.setStgUvd(lazStgUvd(pRqVs));
+      rz.setStgDbCp(lazStgDbCp(pRqVs));
       rz.setLogStd(lazLogStd(pRqVs));
       this.beans.put(FctNmCnToSt.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), FctNmCnToSt.class.getSimpleName()

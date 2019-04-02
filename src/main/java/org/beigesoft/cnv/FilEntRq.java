@@ -29,13 +29,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
-import java.util.Set;
 
+import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.log.ILog;
 import org.beigesoft.fct.IFctNm;
-import org.beigesoft.hld.IHld;
 import org.beigesoft.hld.IHldNm;
-import org.beigesoft.mdl.IReqDt;
+import org.beigesoft.prp.ISetng;
 
 /**
  * <p>Service that fill object(entity) from HTTP request.</p>
@@ -50,13 +49,13 @@ public class FilEntRq implements IFilEnt<IReqDt> {
   private ILog log;
 
   /**
-   * <p>Holder of entities fields names. It's a delegate to UVD-settings.</p>
+   * <p>Settings service.</p>
    **/
-  private IHld<Class<?>, Set<String>> hldFdNms;
+  private ISetng setng;
 
   /**
    * <p>Holder of fillers fields names.</p>
-   **/
+  **/
   private IHldNm<Class<?>, String> hldFilFdNms;
 
   /**
@@ -65,31 +64,50 @@ public class FilEntRq implements IFilEnt<IReqDt> {
   private IFctNm<IFilFld<String>> fctFilFld;
 
   /**
-   * <p>Fill entity from pequest.</p>
-   * @param T entity type
+   * <p>Fill entity from request.</p>
+   * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pEnt Entity to fill
-   * @param pReq - request
+   * @param pRqDt - request data
    * @throws Exception - an exception
    **/
   @Override
   public final <T> void fill(final Map<String, Object> pRqVs,
-    final T pEnt, final IReqDt pReq) throws Exception {
+    final T pEnt, final IReqDt pRqDt) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 5001 && this.log.getDbgCl() > 4999;
-    for (String flNm : this.hldFdNms.get(pEnt.getClass())) {
-      String valStr = pReq.getParam(pEnt.getClass().getSimpleName()
-        + "." + flNm); // standard
-      if (valStr != null) { // e.g. Boolean checkbox or none-editable
-        String filFdNm = this.hldFilFdNms.get(pEnt.getClass(), flNm);
-        IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
-        if (isDbgSh) {
-          this.log.debug(pRqVs, FilEntRq.class,
-        "Filling fieldNm/inClass/value/filler: " + flNm + "/" + pEnt.getClass()
-      .getSimpleName() + "/" + valStr + "/" + filFl.getClass().getSimpleName());
-        }
-        filFl.fill(pRqVs, pEnt, valStr, flNm);
+    for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
+      fillFld(pRqVs, pEnt, pRqDt, fdNm, isDbgSh);
+    }
+    for (String fdNm : this.setng.lazFldNms(pEnt.getClass())) {
+      fillFld(pRqVs, pEnt, pRqDt, fdNm, isDbgSh);
+    }
+  }
+
+  /**
+   * <p>Fill entity field from request.</p>
+   * @param <T> entity type
+   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pEnt Entity to fill
+   * @param pRqDt - request data
+   * @param pFdNm field name
+   * @param pIsDbgSh show debug msgs
+   * @throws Exception - an exception
+   **/
+  private <T> void fillFld(final Map<String, Object> pRqVs,
+    final T pEnt, final IReqDt pRqDt, final String pFdNm,
+      final boolean pIsDbgSh) throws Exception {
+    String valStr = pRqDt.getParam(pEnt.getClass().getSimpleName()
+      + "." + pFdNm); // standard
+    if (valStr != null) { // e.g. Boolean checkbox or none-editable
+      String filFdNm = this.hldFilFdNms.get(pEnt.getClass(), pFdNm);
+      IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
+      if (pIsDbgSh) {
+        this.log.debug(pRqVs, FilEntRq.class,
+      "Filling fdNm/cls/val/filler: " + pFdNm + "/" + pEnt.getClass()
+    .getSimpleName() + "/" + valStr + "/" + filFl.getClass().getSimpleName());
       }
+      filFl.fill(pRqVs, pEnt, valStr, pFdNm);
     }
   }
 
@@ -144,18 +162,18 @@ public class FilEntRq implements IFilEnt<IReqDt> {
   }
 
   /**
-   * <p>Getter for hldFdNms.</p>
-   * @return IHld<Class<?>, Set<String>>
+   * <p>Getter for setng.</p>
+   * @return ISetng
    **/
-  public final IHld<Class<?>, Set<String>> getHldFdNms() {
-    return this.hldFdNms;
+  public final ISetng getSetng() {
+    return this.setng;
   }
 
   /**
-   * <p>Setter for hldFdNms.</p>
-   * @param pHldFdNms reference
+   * <p>Setter for setng.</p>
+   * @param pSetng reference
    **/
-  public final void setHldFdNms(final IHld<Class<?>, Set<String>> pHldFdNms) {
-    this.hldFdNms = pHldFdNms;
+  public final void setSetng(final ISetng pSetng) {
+    this.setng = pSetng;
   }
 }

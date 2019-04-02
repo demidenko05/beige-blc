@@ -28,13 +28,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.cnv;
 
+import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Method;
 
-import org.beigesoft.fct.IFctNm;
-import org.beigesoft.hld.IHld;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
+import org.beigesoft.fct.IFctNm;
+import org.beigesoft.hld.IHldNm;
+import org.beigesoft.prp.ISetng;
 
 /**
  * <p>Standard service that fills/converts object's field of type IHasId from
@@ -68,9 +70,9 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
   private IFctNm<IFilFld<String>> fctFilFld;
 
   /**
-   * <p>ID Fields names holder.</p>
+   * <p>Settings service.</p>
    **/
-  private IHld<Class<?>, String> hldIdFdNm;
+  private ISetng setng;
 
   /**
    * <p>Fills object's field.</p>
@@ -89,10 +91,13 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
       @SuppressWarnings("unchecked")
       Class<E> flCls = (Class<E>) this.hldFdCls.get(pObj.getClass(), pFlNm);
       val = flCls.newInstance();
-      String fdIdNm = this.hldIdFdNm.get(flCls);
-      String filFdNm = this.hldFilFdNms.get(flCls, fdIdNm);
+      List<String> fdIdNms = this.setng.lazIdFldNms(flCls);
+      if (fdIdNms.size() > 1) {
+        throw new ExcCode(ExcCode.NYI, "NYI");
+      }
+      String filFdNm = this.hldFilFdNms.get(flCls, fdIdNms.get(0));
       IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
-      filFl.fill(pRqVs, val, pStVl, fdIdNm);
+      filFl.fill(pRqVs, val, pStVl, fdIdNms.get(0));
     }
     Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
     setr.invoke(pObj, val);
@@ -165,18 +170,18 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
   }
 
   /**
-   * <p>Getter for hldIdFdNm.</p>
-   * @return IHld<Class<?>, String>
+   * <p>Getter for setng.</p>
+   * @return ISetng
    **/
-  public final IHld<Class<?>, String> getHldIdFdNm() {
-    return this.hldIdFdNm;
+  public final ISetng getSetng() {
+    return this.setng;
   }
 
   /**
-   * <p>Setter for hldIdFdNm.</p>
-   * @param pHldIdFdNm reference
+   * <p>Setter for setng.</p>
+   * @param pSetng reference
    **/
-  public final void setHldIdFdNm(final IHld<Class<?>, String> pHldIdFdNm) {
-    this.hldIdFdNm = pHldIdFdNm;
+  public final void setSetng(final ISetng pSetng) {
+    this.setng = pSetng;
   }
 }

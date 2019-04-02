@@ -16,7 +16,7 @@ See LICENSE in base folder
   org.beigesoft.mdlp.UsTmc,
   org.beigesoft.mdlp.UsRlTmc,
   org.beigesoft.mdlp.UsRlTmcId</entry>
-<entry key="stgClsNms">exlFlds</entry>
+<entry key="stgClsNms">exlFlds,idFlds</entry>
 <entry key="stgFldNms"></entry>
-<entry key="exlFlds">tmpDescription</entry>
+<entry key="exlFlds">tmpDescription,isNew</entry>
 </properties>

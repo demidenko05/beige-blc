@@ -28,19 +28,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.fct;
 
-import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.lang.reflect.Method;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHld;
 import org.beigesoft.hld.IHldNm;
+import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.IConv;
 import org.beigesoft.cnv.IFilFld;
 import org.beigesoft.cnv.FilFldEnmStr;
-import org.beigesoft.cnv.FilFldIdcStr;
 import org.beigesoft.cnv.FilFldHsIdStr;
 import org.beigesoft.cnv.FilFldSmpStr;
 
@@ -50,6 +48,16 @@ import org.beigesoft.cnv.FilFldSmpStr;
  * @author Yury Demidenko
  */
 public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
+
+  /**
+   * <p>DB-Copy filler owned entity from string name.</p>
+   **/
+  public static final String FILHSIDSTDBCPNM = "flHsIdStDbCp";
+
+  /**
+   * <p>UVD filler owned entity from string name.</p>
+   **/
+  public static final String FILHSIDSTUVDNM = "flHsIdStUvd";
 
   //services:
   /**
@@ -79,19 +87,24 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
   private IFctNm<IConv<String, ?>> fctCnvFld;
 
   /**
-   * <p>Holder of fillers fields names.</p>
+   * <p>Holder of fillers fields names UVD.</p>
    **/
-  private IHldNm<Class<?>, String> hldFilFdNms;
+  private IHldNm<Class<?>, String> hldFilFdNmsUvd;
 
   /**
-   * <p>Holder of composite ID's fields names.</p>
+   * <p>Holder of fillers fields names DBCP.</p>
    **/
-  private IHld<Class<?>, Set<String>> hldFdNms;
+  private IHldNm<Class<?>, String> hldFilFdNmsDbCp;
 
   /**
-   * <p>ID Fields names holder.</p>
+   * <p>Settings service UVD.</p>
    **/
-  private IHld<Class<?>, String> hldIdFdNm;
+  private ISetng stgUvd;
+
+  /**
+   * <p>Settings service DBCP.</p>
+   **/
+  private ISetng stgDbCp;
 
   //requested data:
   /**
@@ -116,10 +129,10 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
         if (rz == null) {
           if (FilFldEnmStr.class.getSimpleName().equals(pFiNm)) {
             rz = crPuFilFldEnmStr();
-          } else if (FilFldIdcStr.class.getSimpleName().equals(pFiNm)) {
-            rz = crPuFilFldIdcStr();
-          } else if (FilFldHsIdStr.class.getSimpleName().equals(pFiNm)) {
-            rz = crPuFilFldHsIdStr();
+          } else if (FILHSIDSTDBCPNM.equals(pFiNm)) {
+            rz = crPuFilFldHsIdStrDbCp();
+          } else if (FILHSIDSTUVDNM.equals(pFiNm)) {
+            rz = crPuFilFldHsIdStrUvd();
           } else if (FilFldSmpStr.class.getSimpleName().equals(pFiNm)) {
             rz = crPuFilFldSmpStr();
           } else {
@@ -146,36 +159,34 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
   }
 
   /**
-   * <p>Create and put into the Map FilFldIdcStr.</p>
-   * @return FilFldIdcStr
+   * <p>Create and put into the Map UVD FilFldHsIdStr.</p>
+   * @return UVD FilFldHsIdStr
    */
-  private FilFldIdcStr crPuFilFldIdcStr() {
-    FilFldIdcStr rz = new FilFldIdcStr();
-    rz.setHldFdNms(getHldFdNms());
+  private FilFldHsIdStr crPuFilFldHsIdStrUvd() {
+    FilFldHsIdStr rz = new FilFldHsIdStr();
     rz.setHldSets(getHldSets());
-    rz.setHldFilFdNms(getHldFilFdNms());
+    rz.setHldFilFdNms(getHldFilFdNmsUvd());
+    rz.setSetng(getStgUvd());
     rz.setHldFdCls(getHldFdCls());
     rz.setFctFilFld(this);
-    this.fillers.put(FilFldIdcStr.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), FilFldIdcStr.class.getSimpleName()
-      + " has been created.");
+    this.fillers.put(FILHSIDSTUVDNM, rz);
+    getLogStd().info(null, getClass(), FILHSIDSTUVDNM + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map FilFldHsIdStr.</p>
-   * @return FilFldHsIdStr
+   * <p>Create and put into the Map DBCP FilFldHsIdStr.</p>
+   * @return DBCP FilFldHsIdStr
    */
-  private FilFldHsIdStr crPuFilFldHsIdStr() {
+  private FilFldHsIdStr crPuFilFldHsIdStrDbCp() {
     FilFldHsIdStr rz = new FilFldHsIdStr();
     rz.setHldSets(getHldSets());
-    rz.setHldFilFdNms(getHldFilFdNms());
-    rz.setHldIdFdNm(getHldIdFdNm());
+    rz.setHldFilFdNms(getHldFilFdNmsUvd());
+    rz.setSetng(getStgDbCp());
     rz.setHldFdCls(getHldFdCls());
     rz.setFctFilFld(this);
-    this.fillers.put(FilFldHsIdStr.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), FilFldHsIdStr.class.getSimpleName()
-      + " has been created.");
+    this.fillers.put(FILHSIDSTDBCPNM, rz);
+    getLogStd().info(null, getClass(), FILHSIDSTDBCPNM + " has been created.");
     return rz;
   }
 
@@ -278,51 +289,68 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
   }
 
   /**
-   * <p>Getter for hldFilFdNms.</p>
+   * <p>Getter for UVD hldFilFdNms.</p>
+   * @return UVD IHldNm<Class<?>, String>
+   **/
+  public final IHldNm<Class<?>, String> getHldFilFdNmsUvd() {
+    return this.hldFilFdNmsUvd;
+  }
+
+  /**
+   * <p>Setter for UVD hldFilFdNms.</p>
+   * @param pHldFilFdNmsUvd reference
+   **/
+  public final void setHldFilFdNmsUvd(
+    final IHldNm<Class<?>, String> pHldFilFdNmsUvd) {
+    this.hldFilFdNmsUvd = pHldFilFdNmsUvd;
+  }
+
+  /**
+   * <p>Getter for DBCP hldFilFdNms.</p>
    * @return IHldNm<Class<?>, String>
    **/
-  public final IHldNm<Class<?>, String> getHldFilFdNms() {
-    return this.hldFilFdNms;
+  public final IHldNm<Class<?>, String> getHldFilFdNmsDbCp() {
+    return this.hldFilFdNmsDbCp;
   }
 
   /**
-   * <p>Setter for hldFilFdNms.</p>
-   * @param pHldFilFdNms reference
+   * <p>Setter for DBCP hldFilFdNms.</p>
+   * @param pHldFilFdNmsDbCp reference
    **/
-  public final void setHldFilFdNms(
-    final IHldNm<Class<?>, String> pHldFilFdNms) {
-    this.hldFilFdNms = pHldFilFdNms;
+  public final void setHldFilFdNmsDbCp(
+    final IHldNm<Class<?>, String> pHldFilFdNmsDbCp) {
+    this.hldFilFdNmsDbCp = pHldFilFdNmsDbCp;
   }
 
   /**
-   * <p>Getter for hldFdNms.</p>
-   * @return IHld<Class<?>, Set<String>>
+   * <p>Getter for stgUvd.</p>
+   * @return ISetng
    **/
-  public final IHld<Class<?>, Set<String>> getHldFdNms() {
-    return this.hldFdNms;
+  public final ISetng getStgUvd() {
+    return this.stgUvd;
   }
 
   /**
-   * <p>Setter for hldFdNms.</p>
-   * @param pHldFdNms reference
+   * <p>Setter for stgUvd.</p>
+   * @param pStgUvd reference
    **/
-  public final void setHldFdNms(final IHld<Class<?>, Set<String>> pHldFdNms) {
-    this.hldFdNms = pHldFdNms;
+  public final void setStgUvd(final ISetng pStgUvd) {
+    this.stgUvd = pStgUvd;
   }
 
   /**
-   * <p>Getter for hldIdFdNm.</p>
-   * @return IHld<Class<?>, String>
+   * <p>Getter for stgDbCp.</p>
+   * @return ISetng
    **/
-  public final IHld<Class<?>, String> getHldIdFdNm() {
-    return this.hldIdFdNm;
+  public final ISetng getStgDbCp() {
+    return this.stgDbCp;
   }
 
   /**
-   * <p>Setter for hldIdFdNm.</p>
-   * @param pHldIdFdNm reference
+   * <p>Setter for stgDbCp.</p>
+   * @param pStgDbCp reference
    **/
-  public final void setHldIdFdNm(final IHld<Class<?>, String> pHldIdFdNm) {
-    this.hldIdFdNm = pHldIdFdNm;
+  public final void setStgDbCp(final ISetng pStgDbCp) {
+    this.stgDbCp = pStgDbCp;
   }
 }

@@ -33,10 +33,8 @@ import java.util.HashMap;
 import java.io.File;
 
 import org.beigesoft.exc.ExcCode;
-import org.beigesoft.mdlp.GoodsRating;
 import org.beigesoft.log.ILog;
 import org.beigesoft.log.LogFile;
-import org.beigesoft.hld.HldIdFdNm;
 import org.beigesoft.srv.IRdb;
 import org.beigesoft.srv.IOrm;
 
@@ -74,8 +72,6 @@ public class FctTst implements IFctAux {
     Object rz = null;
     if (FctBlc.LOGSTDNM.equals(pBnNm)) {
       rz = lazLogStd(pRqVs, pFctApp);
-    } else if (HldIdFdNm.class.getSimpleName().equals(pBnNm)) {
-      rz = crPuHldIdFdNm(pRqVs, pFctApp);
     //} else {
       //throw new ExcCode(ExcCode.WRPR, "There is no bean: " + pBnNm);
     }
@@ -112,23 +108,6 @@ public class FctTst implements IFctAux {
         + " has been created");
     }
     return this.logStd;
-  }
-
-  /**
-   * <p>Creates HldIdFdNm and puts into main factory.</p>
-   * @param pRqVs request scoped vars
-   * @param pFctApp main factory
-   * @return HldIdFdNm
-   * @throws Exception - an exception
-   */
-  private HldIdFdNm crPuHldIdFdNm(final Map<String, Object> pRqVs,
-    final IFctApp pFctApp) throws Exception {
-    HldIdFdNm rz = new HldIdFdNm();
-    rz.getCstIdNms().put(GoodsRating.class, "goods");
-    pFctApp.put(pRqVs, HldIdFdNm.class.getSimpleName(), rz);
-    lazLogStd(pRqVs, pFctApp).info(null, getClass(), HldIdFdNm.class
-      .getSimpleName() + " has been created.");
-    return rz;
   }
 
   //Simple getters and setters:

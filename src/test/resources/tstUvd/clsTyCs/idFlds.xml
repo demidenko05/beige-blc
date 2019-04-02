@@ -8,6 +8,4 @@ See LICENSE in base folder
 <properties>
 <comment>Correspondence of class types to its ID names. ORDER is essential, the LAST value will be used.</comment>
 <entry key="java.lang.Object">iid</entry>
-<entry key="org.beigesoft.mdlp.DbInf">dbId</entry>
-<entry key="org.beigesoft.mdlp.UsTmc">usr</entry>
 </properties>

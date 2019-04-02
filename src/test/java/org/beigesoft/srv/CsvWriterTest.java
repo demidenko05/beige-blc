@@ -187,7 +187,7 @@ public class CsvWriterTest {
     dataRow2.add(Integer.valueOf(5));
     dataRow3.add(null);
     dataRow3.add(null);
-    File file = new File("persistableLines.csv");
+    File file = new File("target" + File.separator + "persistableLines.csv");
     this.csvWriter.write(null, data, this.csvMethod, new FileOutputStream(file));
   }
 }

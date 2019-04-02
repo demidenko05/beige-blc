@@ -35,7 +35,6 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.cnv.CnvSmpStr;
 import org.beigesoft.cnv.CnvBlnStr;
 import org.beigesoft.cnv.CnvEnmStr;
-import org.beigesoft.cnv.CnvHsIdStr;
 import org.beigesoft.prp.ISetng;
 
 /**
@@ -52,6 +51,13 @@ public class HldNmCnToSt implements IHldNm<Class<?>, String> {
 
   public static final String CNVTOSTRNM = "cnToSt";
 
+  //Setting:
+  /**
+   * <p>Converter owned entity name.</p>
+   **/
+  private String cnHsIdToStNm;
+
+  //Services:
   /**
    * <p>Holder of an entity's field's class.</p>
    **/
@@ -62,6 +68,7 @@ public class HldNmCnToSt implements IHldNm<Class<?>, String> {
    **/
   private ISetng setng;
 
+  //Data:
   /**
    * <p>Map of names of standard converters of fields values to string.
    * It's hard coded map Fields standard type - standard converter name.
@@ -96,7 +103,7 @@ public class HldNmCnToSt implements IHldNm<Class<?>, String> {
       return CnvEnmStr.class.getSimpleName();
     }
     if (IHasId.class.isAssignableFrom(fdCls)) {
-      return CnvHsIdStr.class.getSimpleName();
+      return this.cnHsIdToStNm;
     }
     String rez = this.stdCnvNms.get(fdCls);
     if (rez == null) {
@@ -149,5 +156,21 @@ public class HldNmCnToSt implements IHldNm<Class<?>, String> {
    **/
   public final void setSetng(final ISetng pSetng) {
     this.setng = pSetng;
+  }
+
+  /**
+   * <p>Getter for cnHsIdToStNm.</p>
+   * @return String
+   **/
+  public final String getCnHsIdToStNm() {
+    return this.cnHsIdToStNm;
+  }
+
+  /**
+   * <p>Setter for cnHsIdToStNm.</p>
+   * @param pCnHsIdToStNm reference
+   **/
+  public final void setCnHsIdToStNm(final String pCnHsIdToStNm) {
+    this.cnHsIdToStNm = pCnHsIdToStNm;
   }
 }

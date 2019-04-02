@@ -28,7 +28,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.fct;
 
-import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.lang.reflect.Method;
@@ -36,8 +35,8 @@ import java.lang.reflect.Method;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHld;
 import org.beigesoft.hld.IHldNm;
+import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.IConv;
 import org.beigesoft.cnv.CnvDtStr;
 import org.beigesoft.cnv.CnvDtTmStr;
@@ -47,7 +46,6 @@ import org.beigesoft.cnv.CnvStrToStrXml;
 import org.beigesoft.cnv.CnvSmpStr;
 import org.beigesoft.cnv.CnvBlnStr;
 import org.beigesoft.cnv.CnvHsIdStr;
-import org.beigesoft.cnv.CnvIdcStr;
 import org.beigesoft.cnv.CnvMaxStr;
 import org.beigesoft.cnv.CnvPriStr;
 import org.beigesoft.cnv.CnvQuanStr;
@@ -61,6 +59,16 @@ import org.beigesoft.srv.IUtlXml;
  * @author Yury Demidenko
  */
 public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
+
+  /**
+   * <p>DB-Copy converter owned entity to string name.</p>
+   **/
+  public static final String CNHSIDSTDBCPNM = "cnHsIdStDbCp";
+
+  /**
+   * <p>UVD converter owned entity to string name.</p>
+   **/
+  public static final String CNHSIDSTUVDNM = "cnHsIdStUvd";
 
   //services:
   /**
@@ -80,19 +88,19 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
   private IHldNm<Class<?>, String> hldNmFdCn;
 
   /**
-   * <p>Holder of class fields names.</p>
-   **/
-  private IHld<Class<?>, Set<String>> hldFdNms;
-
-  /**
    * <p>Fields getters RAPI holder.</p>
    **/
   private IHldNm<Class<?>, Method> hldGets;
 
   /**
-   * <p>ID Fields names holder.</p>
+   * <p>Settings service UVD.</p>
    **/
-  private IHld<Class<?>, String> hldIdFdNm;
+  private ISetng stgUvd;
+
+  /**
+   * <p>Settings service DBCP.</p>
+   **/
+  private ISetng stgDbCp;
 
   /**
    * <p>XML utility.</p>
@@ -132,10 +140,10 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
             rz = crPuCnvDtTmStr();
           } else if (CnvEnmStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvEnmStr();
-          } else if (CnvIdcStr.class.getSimpleName().equals(pCnNm)) {
-            rz = crPuCnvIdcStr();
-          } else if (CnvHsIdStr.class.getSimpleName().equals(pCnNm)) {
-            rz = crPuCnvHsIdStr();
+          } else if (CNHSIDSTUVDNM.equals(pCnNm)) {
+            rz = crPuCnvHsIdStrUvd();
+          } else if (CNHSIDSTDBCPNM.equals(pCnNm)) {
+            rz = crPuCnvHsIdStrDbCp();
           } else if (CnvCostStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvCostStr();
           } else if (CnvQuanStr.class.getSimpleName().equals(pCnNm)) {
@@ -192,33 +200,30 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
   }
 
   /**
-   * <p>Create and put into the Map CnvIdcStr.</p>
-   * @return CnvIdcStr
+   * <p>Create and put into the Map UVD CnvHsIdStr.</p>
+   * @return UVD CnvHsIdStr
    */
-  private CnvIdcStr<?> crPuCnvIdcStr() {
-    CnvIdcStr<Object> rz = new CnvIdcStr<Object>();
+  private CnvHsIdStr<IHasId<?>> crPuCnvHsIdStrUvd() {
+    CnvHsIdStr<IHasId<?>> rz = new CnvHsIdStr<IHasId<?>>();
     rz.setFctCnvFld(this);
     rz.setHldNmFdCn(getHldNmFdCn());
-    rz.setHldFdNms(getHldFdNms());
-    rz.setHldGets(getHldGets());
-    this.convrts.put(CnvIdcStr.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvIdcStr.class.getSimpleName()
-      + " has been created.");
+    rz.setSetng(getStgUvd());
+    this.convrts.put(CNHSIDSTUVDNM, rz);
+    getLogStd().info(null, getClass(), CNHSIDSTUVDNM + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvHsIdStr.</p>
-   * @return CnvHsIdStr
+   * <p>Create and put into the Map DBCP CnvHsIdStr.</p>
+   * @return DBCP CnvHsIdStr
    */
-  private CnvHsIdStr<IHasId<?>> crPuCnvHsIdStr() {
+  private CnvHsIdStr<IHasId<?>> crPuCnvHsIdStrDbCp() {
     CnvHsIdStr<IHasId<?>> rz = new CnvHsIdStr<IHasId<?>>();
     rz.setFctCnvFld(this);
     rz.setHldNmFdCn(getHldNmFdCn());
-    rz.setHldIdFdNm(getHldIdFdNm());
-    this.convrts.put(CnvHsIdStr.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvHsIdStr.class.getSimpleName()
-      + " has been created.");
+    rz.setSetng(getStgDbCp());
+    this.convrts.put(CNHSIDSTDBCPNM, rz);
+    getLogStd().info(null, getClass(), CNHSIDSTDBCPNM + " has been created.");
     return rz;
   }
 
@@ -373,22 +378,6 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
   }
 
   /**
-   * <p>Getter for hldFdNms.</p>
-   * @return IHld<Class<?>, Set<String>>
-   **/
-  public final IHld<Class<?>, Set<String>> getHldFdNms() {
-    return this.hldFdNms;
-  }
-
-  /**
-   * <p>Setter for hldFdNms.</p>
-   * @param pHldFdNms reference
-   **/
-  public final void setHldFdNms(final IHld<Class<?>, Set<String>> pHldFdNms) {
-    this.hldFdNms = pHldFdNms;
-  }
-
-  /**
    * <p>Getter for hldGets.</p>
    * @return IHldNm<Class<?>, Method>
    **/
@@ -405,22 +394,6 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
   }
 
   /**
-   * <p>Getter for hldIdFdNm.</p>
-   * @return IHld<Class<?>, String>
-   **/
-  public final IHld<Class<?>, String> getHldIdFdNm() {
-    return this.hldIdFdNm;
-  }
-
-  /**
-   * <p>Setter for hldIdFdNm.</p>
-   * @param pHldIdFdNm reference
-   **/
-  public final void setHldIdFdNm(final IHld<Class<?>, String> pHldIdFdNm) {
-    this.hldIdFdNm = pHldIdFdNm;
-  }
-
-  /**
    * <p>Getter for utlXml.</p>
    * @return IUtlXml
    **/
@@ -434,5 +407,36 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    **/
   public final void setUtlXml(final IUtlXml pUtlXml) {
     this.utlXml = pUtlXml;
+  }
+  /**
+   * <p>Getter for stgUvd.</p>
+   * @return ISetng
+   **/
+  public final ISetng getStgUvd() {
+    return this.stgUvd;
+  }
+
+  /**
+   * <p>Setter for stgUvd.</p>
+   * @param pStgUvd reference
+   **/
+  public final void setStgUvd(final ISetng pStgUvd) {
+    this.stgUvd = pStgUvd;
+  }
+
+  /**
+   * <p>Getter for stgDbCp.</p>
+   * @return ISetng
+   **/
+  public final ISetng getStgDbCp() {
+    return this.stgDbCp;
+  }
+
+  /**
+   * <p>Setter for stgDbCp.</p>
+   * @param pStgDbCp reference
+   **/
+  public final void setStgDbCp(final ISetng pStgDbCp) {
+    this.stgDbCp = pStgDbCp;
   }
 }

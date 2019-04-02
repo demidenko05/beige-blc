@@ -28,7 +28,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.rpl;
 
-import java.util.Set;
 import java.util.Map;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
@@ -36,7 +35,7 @@ import java.lang.reflect.Constructor;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHld;
+import org.beigesoft.prp.ISetng;
 import org.beigesoft.hld.IHldNm;
 import org.beigesoft.cnv.IFilFld;
 import org.beigesoft.srv.IUtlXml;
@@ -54,9 +53,9 @@ public class RpEntReadXml implements IRpEntRead<Object> {
   private ILog log;
 
   /**
-   * <p>Holder of entities fields names. It's a delegate to settings.</p>
+   * <p>Settings service.</p>
    **/
-  private IHld<Class<?>, Set<String>> hldFdNms;
+  private ISetng setng;
 
   /**
    * <p>Holder of fillers fields names.</p>
@@ -83,7 +82,7 @@ public class RpEntReadXml implements IRpEntRead<Object> {
   @Override
   public final Object read(final Map<String, Object> pRqVs,
     final Reader pReader) throws Exception {
-    Map<String, String> attrs = this.utlXml.readAttrs(pReader, pRqVs);
+    Map<String, String> attrs = this.utlXml.readAttrs(pRqVs, pReader);
     if (attrs.get("class") == null) {
      throw new ExcCode(ExcCode.WRCN, "There is no class attribute for entity!");
     }
@@ -97,7 +96,12 @@ public class RpEntReadXml implements IRpEntRead<Object> {
       this.log.debug(pRqVs, RpEntReadXml.class, "Filling entity from XML: "
         + cls);
     }
-    for (String flNm : this.hldFdNms.get(cls)) {
+    for (String flNm : this.setng.lazIdFldNms(cls)) {
+      String filFdNm = this.hldFilFdNms.get(cls, flNm);
+      IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
+      filFl.fill(pRqVs, ent, attrs.get(flNm), flNm);
+    }
+    for (String flNm : this.setng.lazFldNms(cls)) {
       String filFdNm = this.hldFilFdNms.get(cls, flNm);
       IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
       filFl.fill(pRqVs, ent, attrs.get(flNm), flNm);
@@ -123,19 +127,19 @@ public class RpEntReadXml implements IRpEntRead<Object> {
   }
 
   /**
-   * <p>Getter for hldFdNms.</p>
-   * @return IHld<Class<?>, Set<String>>
+   * <p>Getter for setng.</p>
+   * @return ISetng
    **/
-  public final IHld<Class<?>, Set<String>> getHldFdNms() {
-    return this.hldFdNms;
+  public final ISetng getSetng() {
+    return this.setng;
   }
 
   /**
-   * <p>Setter for hldFdNms.</p>
-   * @param pHldFdNms reference
+   * <p>Setter for setng.</p>
+   * @param pSetng reference
    **/
-  public final void setHldFdNms(final IHld<Class<?>, Set<String>> pHldFdNms) {
-    this.hldFdNms = pHldFdNms;
+  public final void setSetng(final ISetng pSetng) {
+    this.setng = pSetng;
   }
 
   /**
