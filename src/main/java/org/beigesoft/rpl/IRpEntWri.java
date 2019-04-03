@@ -34,18 +34,18 @@ import java.io.Writer;
 /**
  * <p>Service to writes given entity into given stream (writer).</p>
  *
- * @param <T> entity type
  * @author Yury Demidenko
  */
-public interface IRpEntWri<T> {
+public interface IRpEntWri {
 
   /**
    * <p>Writes entity into given stream (writer).</p>
+   * @param <T> entity type
    * @param pRqVs request scoped vars (e.g. exclude fields set)
    * @param pEnt object
    * @param pWri writer
    * @throws Exception - an exception
    **/
-  void write(Map<String, Object> pRqVs,
+  <T> void write(Map<String, Object> pRqVs,
     T pEnt, Writer pWri) throws Exception;
 }

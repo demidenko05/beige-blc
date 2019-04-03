@@ -33,7 +33,7 @@ import java.util.HashMap;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdlp.IOrId;
-import org.beigesoft.srv.IOrm;
+import org.beigesoft.rdb.IOrm;
 
 /**
  * <p>Service that synchronizes IOrId {iid, idOr and dbOr}.</p>

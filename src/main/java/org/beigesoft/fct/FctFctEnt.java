@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.beigesoft.mdlp.IOrId;
-import org.beigesoft.srv.IRdb;
+import org.beigesoft.rdb.IRdb;
 
 /**
  * <p>Entities factories factory.</p>

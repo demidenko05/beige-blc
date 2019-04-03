@@ -33,7 +33,7 @@ import java.util.Map;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.prc.IPrc;
-import org.beigesoft.srv.IRdb;
+import org.beigesoft.rdb.IRdb;
 
 /**
  * <p>Transactional handler for any requests,

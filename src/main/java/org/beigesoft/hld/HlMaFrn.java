@@ -30,9 +30,9 @@ package org.beigesoft.hld;
 
 import java.util.Map;
 
-import org.beigesoft.srv.IOrm;
 import org.beigesoft.mdlp.MaFrn;
 import org.beigesoft.mdlp.MaFrnLn;
+import org.beigesoft.rdb.IOrm;
 
 /**
  * <p>Retriever Match Foreign from database.</p>

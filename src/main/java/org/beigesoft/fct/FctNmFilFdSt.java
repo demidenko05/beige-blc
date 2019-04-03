@@ -59,6 +59,16 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
    **/
   public static final String FILHSIDSTUVDNM = "flHsIdStUvd";
 
+  /**
+   * <p>DB-Copy filler simple from string name.</p>
+   **/
+  public static final String FILSMPSTDBCPNM = "flSmpStDbCp";
+
+  /**
+   * <p>UVD filler owned entity from string name.</p>
+   **/
+  public static final String FILSMPSTUVDNM = "flSmpStUvd";
+
   //services:
   /**
    * <p>Logger.</p>
@@ -77,9 +87,14 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
   private IHldNm<Class<?>, Class<?>> hldFdCls;
 
   /**
-   * <p>Fields converters names holder.</p>
+   * <p>Fields converters names holder DBCP.</p>
    **/
-  private IHldNm<Class<?>, String> hldNmFdCn;
+  private IHldNm<Class<?>, String> hldNmFdCnDbCp;
+
+  /**
+   * <p>Fields converters names holder UVD.</p>
+   **/
+  private IHldNm<Class<?>, String> hldNmFdCnUvd;
 
   /**
    * <p>Factory simple converters.</p>
@@ -133,8 +148,10 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
             rz = crPuFilFldHsIdStrDbCp();
           } else if (FILHSIDSTUVDNM.equals(pFiNm)) {
             rz = crPuFilFldHsIdStrUvd();
-          } else if (FilFldSmpStr.class.getSimpleName().equals(pFiNm)) {
-            rz = crPuFilFldSmpStr();
+          } else if (FILSMPSTDBCPNM.equals(pFiNm)) {
+            rz = crPuFilFldSmpStrDbCp();
+          } else if (FILSMPSTUVDNM.equals(pFiNm)) {
+            rz = crPuFilFldSmpStrUvd();
           } else {
             throw new ExcCode(ExcCode.WRCN, "There is no FIL FR STR: " + pFiNm);
           }
@@ -191,17 +208,30 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
   }
 
   /**
-   * <p>Create and put into the Map FilFldSmpStr.</p>
-   * @return FilFldSmpStr
+   * <p>Create and put into the Map DBCP FilFldSmpStr.</p>
+   * @return DBCP FilFldSmpStr
    */
-  private FilFldSmpStr crPuFilFldSmpStr() {
+  private FilFldSmpStr crPuFilFldSmpStrDbCp() {
     FilFldSmpStr rz = new FilFldSmpStr();
     rz.setHldSets(getHldSets());
-    rz.setHldNmFdCn(getHldNmFdCn());
+    rz.setHldNmFdCn(getHldNmFdCnDbCp());
     rz.setFctCnvFld(getFctCnvFld());
-    this.fillers.put(FilFldSmpStr.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), FilFldSmpStr.class.getSimpleName()
-      + " has been created.");
+    this.fillers.put(FILSMPSTDBCPNM, rz);
+    getLogStd().info(null, getClass(), FILSMPSTDBCPNM + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map UVD FilFldSmpStr.</p>
+   * @return UVD FilFldSmpStr
+   */
+  private FilFldSmpStr crPuFilFldSmpStrUvd() {
+    FilFldSmpStr rz = new FilFldSmpStr();
+    rz.setHldSets(getHldSets());
+    rz.setHldNmFdCn(getHldNmFdCnUvd());
+    rz.setFctCnvFld(getFctCnvFld());
+    this.fillers.put(FILSMPSTUVDNM, rz);
+    getLogStd().info(null, getClass(), FILSMPSTUVDNM + " has been created.");
     return rz;
   }
 
@@ -257,19 +287,35 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
   }
 
   /**
-   * <p>Getter for hldNmFdCn.</p>
+   * <p>Getter for DBCP hldNmFdCn.</p>
    * @return IHldNm<Class<?>, String>
    **/
-  public final IHldNm<Class<?>, String> getHldNmFdCn() {
-    return this.hldNmFdCn;
+  public final IHldNm<Class<?>, String> getHldNmFdCnDbCp() {
+    return this.hldNmFdCnDbCp;
   }
 
   /**
-   * <p>Setter for hldNmFdCn.</p>
-   * @param pHldNmFdCn reference
+   * <p>Setter for DBCP hldNmFdCn.</p>
+   * @param pHlNmFdCn DBCP reference
    **/
-  public final void setHldNmFdCn(final IHldNm<Class<?>, String> pHldNmFdCn) {
-    this.hldNmFdCn = pHldNmFdCn;
+  public final void setHldNmFdCnDbCp(final IHldNm<Class<?>, String> pHlNmFdCn) {
+    this.hldNmFdCnDbCp = pHlNmFdCn;
+  }
+
+  /**
+   * <p>Getter for UVD hldNmFdCn.</p>
+   * @return IHldNm<Class<?>, String>
+   **/
+  public final IHldNm<Class<?>, String> getHldNmFdCnUvd() {
+    return this.hldNmFdCnUvd;
+  }
+
+  /**
+   * <p>Setter for UVD hldNmFdCn.</p>
+   * @param pHldNmFdCn UVD reference
+   **/
+  public final void setHldNmFdCnUvd(final IHldNm<Class<?>, String> pHldNmFdCn) {
+    this.hldNmFdCnUvd = pHldNmFdCn;
   }
 
   /**

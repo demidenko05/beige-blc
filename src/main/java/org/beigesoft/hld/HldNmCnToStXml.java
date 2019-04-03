@@ -105,6 +105,9 @@ public class HldNmCnToStXml implements IHldNm<Class<?>, String> {
       return CnvEnmStr.class.getSimpleName();
     }
     if (IHasId.class.isAssignableFrom(fdCls)) {
+      if (this.cnHsIdToStNm == null) {
+        throw new RuntimeException("Non-configured cnHsIdToStNm!");
+      }
       return this.cnHsIdToStNm;
     }
     String rez = this.stdCnvNms.get(fdCls);

@@ -35,7 +35,6 @@ import java.math.BigDecimal;
 
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.cnv.FilFldEnmStr;
-import org.beigesoft.cnv.FilFldSmpStr;
 import org.beigesoft.prp.ISetng;
 /**
  * <p>Holder of names of fillers of fields values from string.
@@ -57,6 +56,11 @@ public class HldNmFilFdSt implements IHldNm<Class<?>, String> {
    **/
   private String filHasIdNm;
 
+  /**
+   * <p>Filler simple name.</p>
+   **/
+  private String filSmpNm;
+
   //Services:
   /**
    * <p>Holder of an entity's field's class.</p>
@@ -73,22 +77,7 @@ public class HldNmFilFdSt implements IHldNm<Class<?>, String> {
    * It's hard coded map Fields standard type - standard filler name.
    * Fields like Entity, Enum, Composite ID requires manual format.</p>
    **/
-  private final Map<Class<?>, String> stdFilNms;
-
-  /**
-   * <p>Only constructor.</p>
-   **/
-  public HldNmFilFdSt() {
-    this.stdFilNms = new HashMap<Class<?>, String>();
-    this.stdFilNms.put(Integer.class, FilFldSmpStr.class.getSimpleName());
-    this.stdFilNms.put(Long.class, FilFldSmpStr.class.getSimpleName());
-    this.stdFilNms.put(String.class, FilFldSmpStr.class.getSimpleName());
-    this.stdFilNms.put(Float.class, FilFldSmpStr.class.getSimpleName());
-    this.stdFilNms.put(Double.class, FilFldSmpStr.class.getSimpleName());
-    this.stdFilNms.put(Boolean.class, FilFldSmpStr.class.getSimpleName());
-    this.stdFilNms.put(BigDecimal.class, FilFldSmpStr.class.getSimpleName());
-    this.stdFilNms.put(Date.class, FilFldSmpStr.class.getSimpleName());
-  }
+  private Map<Class<?>, String> stdFilNms;
 
   /**
    * <p>Get filler name for given class and field name.</p>
@@ -98,6 +87,13 @@ public class HldNmFilFdSt implements IHldNm<Class<?>, String> {
    **/
   @Override
   public final String get(final Class<?> pCls, final String pFlNm) {
+    if (this.stdFilNms == null) {
+      synchronized (this) {
+        if (this.stdFilNms == null) {
+          init();
+        }
+      }
+    }
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
     if (fdCls.isEnum()) {
       return FilFldEnmStr.class.getSimpleName();
@@ -123,6 +119,27 @@ public class HldNmFilFdSt implements IHldNm<Class<?>, String> {
       }
     }
     return rez;
+  }
+
+  /**
+   * <p>Initializes standard fillers map, unsynchronized.</p>
+   **/
+  private void init() {
+    if (this.filSmpNm == null || this.filHasIdNm == null) {
+      throw new RuntimeException("Non-configured fillers names: FILHSID/FILSMP"
+        + this.filHasIdNm + "/" + this.filSmpNm);
+    }
+    Map<Class<?>, String> sfm = new HashMap<Class<?>, String>();
+    sfm.put(Integer.class, this.filSmpNm);
+    sfm.put(Long.class, this.filSmpNm);
+    sfm.put(String.class, this.filSmpNm);
+    sfm.put(Float.class, this.filSmpNm);
+    sfm.put(Double.class, this.filSmpNm);
+    sfm.put(Boolean.class, this.filSmpNm);
+    sfm.put(BigDecimal.class, this.filSmpNm);
+    sfm.put(Date.class, this.filSmpNm);
+    //assign fully initialized:
+    this.stdFilNms = sfm;
   }
 
   //Simple getters and setters:
@@ -172,5 +189,21 @@ public class HldNmFilFdSt implements IHldNm<Class<?>, String> {
    **/
   public final void setFilHasIdNm(final String pFilHasIdNm) {
     this.filHasIdNm = pFilHasIdNm;
+  }
+
+  /**
+   * <p>Getter for filSmpNm.</p>
+   * @return String
+   **/
+  public final String getFilSmpNm() {
+    return this.filSmpNm;
+  }
+
+  /**
+   * <p>Setter for filSmpNm.</p>
+   * @param pFilSmpNm reference
+   **/
+  public final void setFilSmpNm(final String pFilSmpNm) {
+    this.filSmpNm = pFilSmpNm;
   }
 }

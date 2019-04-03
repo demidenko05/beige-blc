@@ -37,8 +37,8 @@ import org.beigesoft.fct.IFctRq;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.fct.IFctCls;
 import org.beigesoft.cnv.IFilEnt;
+import org.beigesoft.rdb.IRdb;
 import org.beigesoft.srv.IEntFlRp;
-import org.beigesoft.srv.IRdb;
 
 /**
  * <p>Handler that makes file-report entity, e.g. PDF.</p>

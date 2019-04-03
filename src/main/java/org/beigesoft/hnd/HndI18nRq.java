@@ -39,8 +39,8 @@ import org.beigesoft.mdlp.DcSp;
 import org.beigesoft.mdlp.DcGrSp;
 import org.beigesoft.mdlp.UsPrf;
 import org.beigesoft.log.ILog;
-import org.beigesoft.srv.IRdb;
-import org.beigesoft.srv.IOrm;
+import org.beigesoft.rdb.IRdb;
+import org.beigesoft.rdb.IOrm;
 
 /**
  * <p>It handles request internationalization and other preferences.</p>

@@ -126,8 +126,7 @@ public class WriReXmlTest<RS> {
     //fill:
     UsRlTmc usRlTmcf = null;
     RpEntReadXml rpEntReadXml = (RpEntReadXml) this.fctApp.laz(this.rqVs, FctBlc.ENRDDBCPNM);
-    InputStreamReader isr = new InputStreamReader(
-      new FileInputStream(fl), Charset.forName("UTF-8").newDecoder());
+    InputStreamReader isr = new InputStreamReader(new FileInputStream(fl), Charset.forName("UTF-8").newDecoder());
     try {
       utlXml.readUntilStart(isr, "data");
       attributesMap = utlXml.readAttrs(this.rqVs, isr);
@@ -157,10 +156,39 @@ public class WriReXmlTest<RS> {
     prsh.setItsTotal(new BigDecimal("12345.60"));
     Department dep = new Department();
     dep.setIid(3L);
-    dep.setNme("Dep3");
+    dep.setNme(" Bob's pizza List<String> lst = \"alfa\" & b=a \n nstr");
     prsh.setItsDepartment(dep);
+    fl = new File("target" + File.separator + "PersHeadDepart.xml");
+    wri = new OutputStreamWriter(
+      new FileOutputStream(fl), Charset.forName("UTF-8").newEncoder());
+    try {
+      wri.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+      wri.write("<data sourceId=\"127\">\n");
+      rpEntWriXml.write(this.rqVs, dep, wri);
+      rpEntWriXml.write(this.rqVs, prsh, wri);
+      wri.write("</data>\n");
+    } finally {
+      if (wri != null) {
+        wri.close();
+      }
+    }
     //fill:
-    /*PersistableHead prshf = new PersistableHead();
+    PersistableHead prshf = null;
+    Department depf = null;
+    isr = new InputStreamReader(new FileInputStream(fl), Charset.forName("UTF-8").newDecoder());
+    try {
+      utlXml.readUntilStart(isr, "data");
+      attributesMap = utlXml.readAttrs(this.rqVs, isr);
+      assertEquals("127", attributesMap.get("sourceId")); 
+      utlXml.readUntilStart(isr, "entity");
+      depf = (Department) rpEntReadXml.read(this.rqVs, isr);
+      utlXml.readUntilStart(isr, "entity");
+      prshf = (PersistableHead) rpEntReadXml.read(this.rqVs, isr);
+    } finally {
+      if (isr != null) {
+        isr.close();
+      }
+    }
     assertEquals(prsh.getIid(), prshf.getIid());
     assertEquals(prsh.getIsNew(), prshf.getIsNew());
     assertEquals(prsh.getVer(), prshf.getVer());
@@ -171,19 +199,47 @@ public class WriReXmlTest<RS> {
     assertEquals(prsh.getItsInteger(), prshf.getItsInteger());
     assertEquals(prsh.getItsFloat(), prshf.getItsFloat());
     assertEquals(prsh.getItsDouble(), prshf.getItsDouble());
-    assertEquals(prsh.getItsLong(), prshf.getItsLong());*/
+    assertEquals(prsh.getItsLong(), prshf.getItsLong());
+    assertEquals(dep.getIid(), depf.getIid());
+    assertEquals(dep.getNme(), depf.getNme());
+    assertEquals(dep.getVer(), depf.getVer());
+    assertNull(depf.getVer());
     //write:
     GoodsRating goodsRating = new GoodsRating();
     goodsRating.setAverageRating(357);
     GoodVersionTime gvt = new GoodVersionTime();
     gvt.setIid(5L);
     goodsRating.setIid(gvt);
+    fl = new File("target" + File.separator + "GoodsRating.xml");
+    wri = new OutputStreamWriter(
+      new FileOutputStream(fl), Charset.forName("UTF-8").newEncoder());
+    try {
+      wri.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+      wri.write("<data sourceId=\"127\">\n");
+      rpEntWriXml.write(this.rqVs, goodsRating, wri);
+      wri.write("</data>\n");
+    } finally {
+      if (wri != null) {
+        wri.close();
+      }
+    }
     //fill:
-    /*GoodsRating goodsRatingf = new GoodsRating();
-    filEntRq.fill(this.rqVs, goodsRatingf, reqDt);
+    GoodsRating goodsRatingf = null;
+    isr = new InputStreamReader(new FileInputStream(fl), Charset.forName("UTF-8").newDecoder());
+    try {
+      utlXml.readUntilStart(isr, "data");
+      attributesMap = utlXml.readAttrs(this.rqVs, isr);
+      assertEquals("127", attributesMap.get("sourceId")); 
+      utlXml.readUntilStart(isr, "entity");
+      goodsRatingf = (GoodsRating) rpEntReadXml.read(this.rqVs, isr);
+    } finally {
+      if (isr != null) {
+        isr.close();
+      }
+    }
     assertEquals(goodsRating.getIid().getIid(), goodsRatingf.getIid().getIid());
     assertEquals(goodsRating.getIsNew(), goodsRatingf.getIsNew());
     assertEquals(goodsRating.getGoods().getIid(), goodsRatingf.getGoods().getIid());
-    assertEquals(goodsRating.getAverageRating(), goodsRatingf.getAverageRating());*/
+    assertEquals(goodsRating.getAverageRating(), goodsRatingf.getAverageRating());
   }
 }

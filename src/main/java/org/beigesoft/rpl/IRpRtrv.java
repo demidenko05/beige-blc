@@ -32,8 +32,8 @@ import java.util.Map;
 import java.io.Writer;
 
 /**
- * <p>Service that retrieves entities from source (e.g. DB) then writes
- * them into stream (file or network connection) by given writer
+ * <p>Service that retrieves entities of given type from source (e.g. DB)
+ * then writes them into stream (file or network connection) by given writer
  * in XML/JSON/... format.</p>
  *
  * @author Yury Demidenko

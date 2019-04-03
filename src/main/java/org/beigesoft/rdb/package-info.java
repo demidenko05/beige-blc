@@ -27,9 +27,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /**
- * <p>Represents abstractions and some implementations of common
- * services for internationalization, reflection, XML, etc.</p>
+ * <p>Consists of relational database services including ORM.</p>
  *
  * @author Yury Demidenko
  */
-package org.beigesoft.srv;
+package org.beigesoft.rdb;

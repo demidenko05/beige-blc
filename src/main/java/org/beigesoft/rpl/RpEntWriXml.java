@@ -45,10 +45,9 @@ import org.beigesoft.cnv.IConv;
  * except String non-null values are XML escaped
  * and date is in milliseconds, BigDecimal is also non-formatted.</p>
  *
- * @param <T> entity type
  * @author Yury Demidenko
  */
-public class RpEntWriXml<T> implements IRpEntWri<T> {
+public class RpEntWriXml implements IRpEntWri {
 
   /**
    * <p>Log.</p>
@@ -83,7 +82,7 @@ public class RpEntWriXml<T> implements IRpEntWri<T> {
    * @throws Exception - an exception
    **/
   @Override
-  public final void write(final Map<String, Object> pRqVs,
+  public final <T> void write(final Map<String, Object> pRqVs,
     final T pEnt, final Writer pWri) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 6501 && this.log.getDbgCl() > 6499;
@@ -111,7 +110,7 @@ public class RpEntWriXml<T> implements IRpEntWri<T> {
    * @throws Exception - an exception
    **/
   private void writeFld(final Map<String, Object> pRqVs,
-    final T pEnt, final Writer pWri, final String pFdNm) throws Exception {
+    final Object pEnt, final Writer pWri, final String pFdNm) throws Exception {
     Method getter = this.hldGets.get(pEnt.getClass(), pFdNm);
     Object fdVl = getter.invoke(pEnt);
     String fdVlSt;

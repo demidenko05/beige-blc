@@ -26,10 +26,29 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package org.beigesoft.rpl;
+
+import java.util.Map;
+
 /**
- * <p>Represents abstractions and some implementations of common
- * services for internationalization, reflection, XML, etc.</p>
+ * <p>Service that makes SQL WHERE filter for given entity.</p>
  *
  * @author Yury Demidenko
  */
-package org.beigesoft.srv;
+public interface IFltEnts {
+
+  /**
+   * <p>Setting name of filter.</p>
+   **/
+  String FLTENTSNM = "fltEnt";
+
+  /**
+   * <p>Makes SQL WHERE filter for given entity.</p>
+   * @param pCls Entity Class
+   * @param pRqVs request scoped vars (e.g. requested database ID)
+   * @return filter - null or conditions without WHERE word e.g. "ITSID>12"
+   * @throws Exception - an exception
+   **/
+  String makeWhe(Map<String, Object> pRqVs,
+    Class<?> pCls) throws Exception;
+}

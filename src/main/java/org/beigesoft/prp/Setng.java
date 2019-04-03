@@ -111,6 +111,11 @@ public class Setng implements ISetng {
   private Map<Class<?>, Map<String, Map<String, String>>> fldStgs;
 
   /**
+   * <p>All involved classes.</p>
+   **/
+  private List<Class<?>> clss;
+
+  /**
    * <p>Fields names involved excluding IDs.</p>
    */
   private Map<Class<?>, List<String>> fldNms;
@@ -121,11 +126,6 @@ public class Setng implements ISetng {
   private Map<Class<?>, List<String>> idFldNms;
 
     //Loaded sources properties from conf.xml:
-  /**
-   * <p>All involved classes.</p>
-   **/
-  private LinkedHashSet<Class<?>> clss;
-
   /**
    * <p>Class settings names.</p>
    */
@@ -286,6 +286,17 @@ public class Setng implements ISetng {
   }
 
   /**
+   * <p>Lazy gets all involved classes.</p>
+   * @return classes list
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final List<Class<?>> lazClss() throws Exception {
+    lazConf();
+    return this.clss;
+  }
+
+  /**
    * <p>Lazy gets field's setting for given class and name. Maybe NULL.</p>
    * @param pCls class
    * @param pStgNm setting name
@@ -376,10 +387,14 @@ public class Setng implements ISetng {
     this.clsStgs = null;
     this.fldStgs = null;
     this.clss = null;
+    this.fldNms = null;
+    this.idFldNms = null;
     this.clsStgNms = null;
     this.fldStgNms = null;
     this.exlFlds = null;
+    this.clsCs = null;
     this.clsTyCs = null;
+    this.clsFs = null;
     this.fldTyFs = null;
     this.fldNmFs = null;
     this.fldNmTyFs = null;
@@ -661,7 +676,7 @@ public class Setng implements ISetng {
           }
           this.log.info(null, Setng.class, "classes: " + strClss);
           LinkedHashSet<String> clsNms = this.utlPrp.evPrpStrSet(strClss);
-          LinkedHashSet<Class<?>> tclss = new LinkedHashSet<Class<?>>();
+          List<Class<?>> tclss = new ArrayList<Class<?>>();
           for (String clsNm : clsNms) {
             tclss.add(Class.forName(clsNm));
           }
@@ -915,7 +930,7 @@ public class Setng implements ISetng {
    * <p>Getter for clss.</p>
    * @return LinkedHashSet<Class<?>>
    **/
-  public final synchronized LinkedHashSet<Class<?>> getClss() {
+  public final synchronized List<Class<?>> getClss() {
     return this.clss;
   }
 

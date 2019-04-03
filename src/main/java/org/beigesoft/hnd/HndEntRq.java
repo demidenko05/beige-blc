@@ -41,7 +41,7 @@ import org.beigesoft.hld.IHldNm;
 import org.beigesoft.cnv.IFilEnt;
 import org.beigesoft.prc.IPrc;
 import org.beigesoft.prc.IPrcEnt;
-import org.beigesoft.srv.IRdb;
+import org.beigesoft.rdb.IRdb;
 
 /**
  * <p>Handler for entity requests like "create, update, delete, list".

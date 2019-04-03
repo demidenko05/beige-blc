@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.beigesoft.mdl.IHasVr;
-import org.beigesoft.srv.IOrm;
+import org.beigesoft.rdb.IOrm;
 
 /**
  * <p>Standard service that synchronizes just read foreign entity with home one.

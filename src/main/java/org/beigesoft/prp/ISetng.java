@@ -167,6 +167,13 @@ public interface ISetng {
   List<String> lazIdFldNms(Class<?> pCls) throws Exception;
 
   /**
+   * <p>Lazy gets all involved classes.</p>
+   * @return classes list
+   * @throws Exception - an exception
+   **/
+  List<Class<?>> lazClss() throws Exception;
+
+  /**
    * <p>Releases beans (memory).</p>
    * @throws Exception - an exception
    **/

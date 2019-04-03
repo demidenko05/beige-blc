@@ -26,7 +26,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.srv;
+package org.beigesoft.rdb;
 
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.mdl.ColVals;

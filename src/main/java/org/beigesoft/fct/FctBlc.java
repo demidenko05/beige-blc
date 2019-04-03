@@ -47,12 +47,12 @@ import org.beigesoft.log.ILog;
 import org.beigesoft.cnv.FilEntRq;
 import org.beigesoft.rpl.RpEntWriXml;
 import org.beigesoft.rpl.RpEntReadXml;
+import org.beigesoft.rdb.IRdb;
+import org.beigesoft.rdb.IOrm;
 import org.beigesoft.srv.INumStr;
 import org.beigesoft.srv.NumStr;
 import org.beigesoft.srv.IReflect;
 import org.beigesoft.srv.Reflect;
-import org.beigesoft.srv.IRdb;
-import org.beigesoft.srv.IOrm;
 import org.beigesoft.srv.UtlXml;
 import org.beigesoft.srv.IUtlXml;
 
@@ -296,12 +296,11 @@ public class FctBlc<RS> implements IFctApp {
    * @return RpEntWriXmlDbCp
    * @throws Exception - an exception
    */
-  private RpEntWriXml<?> lazRpEntWriXmlDbCp(
+  private RpEntWriXml lazRpEntWriXmlDbCp(
     final Map<String, Object> pRqVs) throws Exception {
-    @SuppressWarnings("unchecked")
-    RpEntWriXml<Object> rz = (RpEntWriXml<Object>) this.beans.get(ENWRDBCPNM);
+    RpEntWriXml rz = (RpEntWriXml) this.beans.get(ENWRDBCPNM);
     if (rz == null) {
-      rz = new RpEntWriXml<Object>();
+      rz = new RpEntWriXml();
       rz.setLog(lazLogStd(pRqVs));
       rz.setSetng(lazStgDbCp(pRqVs));
       rz.setHldGets(lazHldGets(pRqVs));
@@ -350,6 +349,7 @@ public class FctBlc<RS> implements IFctApp {
       rz = new HldNmFilFdSt();
       rz.setHldFdCls(lazHldFldCls(pRqVs));
       rz.setFilHasIdNm(FctNmFilFdSt.FILHSIDSTDBCPNM);
+      rz.setFilSmpNm(FctNmFilFdSt.FILSMPSTDBCPNM);
       rz.setSetng(lazStgDbCp(pRqVs));
       this.beans.put(HLFILFDNMDBCP, rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(),
@@ -459,6 +459,7 @@ public class FctBlc<RS> implements IFctApp {
       rz = new HldNmFilFdSt();
       rz.setHldFdCls(lazHldFldCls(pRqVs));
       rz.setFilHasIdNm(FctNmFilFdSt.FILHSIDSTUVDNM);
+      rz.setFilSmpNm(FctNmFilFdSt.FILSMPSTUVDNM);
       rz.setSetng(lazStgUvd(pRqVs));
       this.beans.put(HLFILFDNMUVD, rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(),
@@ -548,7 +549,8 @@ public class FctBlc<RS> implements IFctApp {
       rz.setStgUvd(lazStgUvd(pRqVs));
       rz.setStgDbCp(lazStgDbCp(pRqVs));
       rz.setHldFdCls(lazHldFldCls(pRqVs));
-      rz.setHldNmFdCn(lazHldNmCnFrSt(pRqVs));
+      rz.setHldNmFdCnUvd(lazHldNmCnFrSt(pRqVs));
+      rz.setHldNmFdCnDbCp(lazHldNmCnFrStXml(pRqVs));
       rz.setFctCnvFld(lazFctNmCnFrSt(pRqVs));
       rz.setHldFilFdNmsUvd(lazHldNmFilFdStUvd(pRqVs));
       rz.setHldFilFdNmsDbCp(lazHldNmFilFdStDbCp(pRqVs));
