@@ -28,20 +28,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.cnv;
 
+import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Method;
 
+import org.beigesoft.mdl.LvDep;
+import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.hld.IHldNm;
 
 /**
  * <p>Standard service that fills/converts object's field of simple type from
- * given string value (HTML parameter). Simple types - Integer, Long,
+ * given DB result-set. Simple types - Integer, Long,
  * BigDecimal, etc.</p>
  *
+ * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FilFldSmpStr implements IFilFld<String> {
+public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
 
   /**
    * <p>Fields setters RAPI holder.</p>
@@ -56,7 +60,7 @@ public class FilFldSmpStr implements IFilFld<String> {
   /**
    * <p>Factory simple converters.</p>
    **/
-  private IFctNm<IConv<String, ?>> fctCnvFld;
+  private IFctNm<IConvNm<IRecSet<RS>, ?>> fctCnvFld;
 
   /**
    * <p>Fills object's field.</p>
@@ -65,23 +69,32 @@ public class FilFldSmpStr implements IFilFld<String> {
    * @param pVs invoker scoped vars, e.g. a current converted field's class of
    * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
    * @param pObj Object to fill, not null
-   * @param pStVl Source field string value
-   * @param pFlNm Field name
+   * @param pRs Source record-set with field value
+   * @param pFdNm Field name
    * @throws Exception - an exception
    **/
   @Override
   public final <T> void fill(final Map<String, Object> pRqVs,
     final Map<String, Object> pVs, final T pObj,
-    final String pStVl, final String pFlNm) throws Exception {
+    final IRecSet<RS> pRs, final String pFdNm) throws Exception {
     Object val = null;
-    if (pStVl != null && !"".equals(pStVl)) {
-      String cnNm = this.hldNmFdCn.get(pObj.getClass(), pFlNm);
+    String cnNm = this.hldNmFdCn.get(pObj.getClass(), pFdNm);
+    @SuppressWarnings("unchecked")
+    IConvNm<IRecSet<RS>, Object> flCnv =
+      (IConvNm<IRecSet<RS>, Object>) this.fctCnvFld.laz(pRqVs, cnNm);
+    @SuppressWarnings("unchecked")
+    List<LvDep> lvDeps = (List<LvDep>) pVs.get("lvDeps");
+    LvDep clvDep = lvDeps.get(lvDeps.size() - 1);
+    String clNm;
+    if (lvDeps.size() == 1 || lvDeps.size() == 2 && clvDep.getDep() == 0) {
+      clNm = pFdNm.toUpperCase();
+    } else {
       @SuppressWarnings("unchecked")
-      IConv<String, Object> flCnv =
-        (IConv<String, Object>) this.fctCnvFld.laz(pRqVs, cnNm);
-      val = flCnv.conv(pRqVs, pStVl);
+      List<String> tbAls = (List<String>) pVs.get("tbAls");
+      clNm = tbAls.get(tbAls.size() - 1) + pFdNm.toUpperCase();
     }
-    Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
+    val = flCnv.conv(pRqVs, pVs, pRs, clNm);
+    Method setr = this.hldSets.get(pObj.getClass(), pFdNm);
     setr.invoke(pObj, val);
   }
 
@@ -105,9 +118,9 @@ public class FilFldSmpStr implements IFilFld<String> {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctCls<IConv<String, Object>
+   * @return IFctCls<IConvNm<IRecSet<RS>, Object>
    **/
-  public final IFctNm<IConv<String, ?>> getFctCnvFld() {
+  public final IFctNm<IConvNm<IRecSet<RS>, ?>> getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -116,7 +129,7 @@ public class FilFldSmpStr implements IFilFld<String> {
    * @param pFctCnvFld reference
    **/
   public final void setFctCnvFld(
-    final IFctNm<IConv<String, ?>> pFctCnvFld) {
+    final IFctNm<IConvNm<IRecSet<RS>, ?>> pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 

@@ -78,14 +78,17 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
    * <p>Fills object's field.</p>
    * @param <T> object type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pObject Object to fill, not null
+   * @param pVs invoker scoped vars, e.g. a current converted field's class of
+   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
+   * @param pObj Object to fill, not null
    * @param pStVl Source field string value
    * @param pFlNm Field name
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void fill(final Map<String, Object> pRqVs, final T pObj,
-    final String pStVl, final String pFlNm) throws Exception {
+  public final <T> void fill(final Map<String, Object> pRqVs,
+    final Map<String, Object> pVs, final T pObj,
+      final String pStVl, final String pFlNm) throws Exception {
     E val = null;
     if (pStVl != null && !"".equals(pStVl)) {
       @SuppressWarnings("unchecked")
@@ -97,7 +100,7 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
       }
       String filFdNm = this.hldFilFdNms.get(flCls, fdIdNms.get(0));
       IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
-      filFl.fill(pRqVs, val, pStVl, fdIdNms.get(0));
+      filFl.fill(pRqVs, pVs, val, pStVl, fdIdNms.get(0));
     }
     Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
     setr.invoke(pObj, val);

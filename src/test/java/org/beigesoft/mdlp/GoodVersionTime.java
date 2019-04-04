@@ -39,4 +39,25 @@ import java.math.BigDecimal;
  */
 public class GoodVersionTime extends AOrIdVrNm {
 
+  /**
+   * <p>Category for deep level testing.</p>
+   **/
+  private GdCat gdCat;
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for gdCat.</p>
+   * @return GdCat
+   **/
+  public final GdCat getGdCat() {
+    return this.gdCat;
+  }
+
+  /**
+   * <p>Setter for gdCat.</p>
+   * @param pGdCat reference
+   **/
+  public final void setGdCat(final GdCat pGdCat) {
+    this.gdCat = pGdCat;
+  }
 }

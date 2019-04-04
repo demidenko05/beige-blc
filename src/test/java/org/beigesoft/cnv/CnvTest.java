@@ -197,7 +197,7 @@ public class CnvTest<RS> {
     assertEquals(usRlTmc.getUsr().getUsr(), reqDt.getParam(parPref + "usr"));
     //fill:
     UsRlTmc usRlTmcf = new UsRlTmc();
-    filEntRq.fill(this.rqVs, usRlTmcf, reqDt);
+    filEntRq.fill(this.rqVs, null, usRlTmcf, reqDt);
     assertEquals(usRlTmc.getIsNew(), usRlTmcf.getIsNew());
     assertEquals(usRlTmc.getRol(), usRlTmcf.getRol());
     assertEquals(usRlTmc.getUsr().getIid(), usRlTmcf.getUsr().getIid());
@@ -255,7 +255,7 @@ public class CnvTest<RS> {
     assertTrue(!reqDt.getParamsMp().keySet().contains(parPref + "tmpDescription"));
     //fill:
     PersistableHead prshf = new PersistableHead();
-    filEntRq.fill(this.rqVs, prshf, reqDt);
+    filEntRq.fill(this.rqVs, null, prshf, reqDt);
     assertEquals(prsh.getIid(), prshf.getIid());
     assertEquals(prsh.getIsNew(), prshf.getIsNew());
     assertEquals(prsh.getVer(), prshf.getVer());
@@ -296,7 +296,7 @@ public class CnvTest<RS> {
     assertEquals(goodsRating.getAverageRating().toString(), reqDt.getParam(parPref + "averageRating"));
     //fill:
     GoodsRating goodsRatingf = new GoodsRating();
-    filEntRq.fill(this.rqVs, goodsRatingf, reqDt);
+    filEntRq.fill(this.rqVs, null, goodsRatingf, reqDt);
     assertEquals(goodsRating.getIid().getIid(), goodsRatingf.getIid().getIid());
     assertEquals(goodsRating.getIsNew(), goodsRatingf.getIsNew());
     assertEquals(goodsRating.getGoods().getIid(), goodsRatingf.getGoods().getIid());

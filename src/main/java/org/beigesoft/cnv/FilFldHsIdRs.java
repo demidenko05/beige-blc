@@ -28,22 +28,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.cnv;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.lang.reflect.Method;
 
+import org.beigesoft.mdl.LvDep;
+import org.beigesoft.mdl.IRecSet;
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.hld.IHldNm;
 
 /**
- * <p>Standard service that fills/converts object's field of type Enum from
- * given string value (HTML parameter).</p>
+ * <p>Standard service that fills/converts object's field of type IHasId from
+ * given DB result-set. It's an owned entity converter.</p>
  *
- * @param <E> Enum type
+ * @param <E> owned entity type
+ * @param <ID> owned entity ID type
+ * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FilFldEnmStr<E extends Enum<E>> implements IFilFld<String> {
+public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
+  implements IFilFld<IRecSet<RS>> {
 
   /**
-   * <p>Holder of an entity's field's class.</p>
+   * <p>Fields classes holder.</p>
    **/
   private IHldNm<Class<?>, Class<?>> hldFdCls;
 
@@ -53,25 +61,49 @@ public class FilFldEnmStr<E extends Enum<E>> implements IFilFld<String> {
   private IHldNm<Class<?>, Method> hldSets;
 
   /**
+   * <p>Filler entity factory.</p>
+   */
+  private IFilEnt<IRecSet<RS>> filEnt;
+
+  /**
    * <p>Fills object's field.</p>
    * @param <T> object type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. a current converted field's class of
    * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
    * @param pObj Object to fill, not null
-   * @param pStVl Source field string value
+   * @param pRs Source with field value
    * @param pFlNm Field name
    * @throws Exception - an exception
    **/
   @Override
   public final <T> void fill(final Map<String, Object> pRqVs,
     final Map<String, Object> pVs, final T pObj,
-      final String pStVl, final String pFlNm) throws Exception {
-    Enum<?> val = null;
-    if (pStVl != null && !"".equals(pStVl)) {
-      @SuppressWarnings("unchecked")
-      Class<E> flCls = (Class<E>) hldFdCls.get(pObj.getClass(), pFlNm);
-      val = Enum.valueOf(flCls, pStVl);
+      final IRecSet<RS> pRs, final String pFlNm) throws Exception {
+    @SuppressWarnings("unchecked")
+    Class<E> flCls = (Class<E>) this.hldFdCls.get(pObj.getClass(), pFlNm);
+    E val = flCls.newInstance();
+    @SuppressWarnings("unchecked")
+    List<LvDep> lvDeps = (List<LvDep>) pVs.get("lvDeps");
+    LvDep clvDep = lvDeps.get(lvDeps.size() - 1);
+    String tbAl = null;
+    List<String> tbAls = null;
+    if (lvDeps.size() > 1 && clvDep.getDep() > 0) {
+      Integer alsIdx = lvDeps.size() - 1;
+      tbAl = pFlNm.toUpperCase() + alsIdx;
+      tbAls = (List<String>) pVs.get("tbAls");
+      if (tbAls == null) {
+        tbAls = new ArrayList<String>();
+        pVs.put("tbAls", tbAls);
+      }
+      tbAls.add(tbAl);
+    }
+    this.filEnt.fill(pRqVs, pVs, val, pRs);
+    if (tbAl != null) {
+      tbAls.remove(tbAl);
+    }
+    if (val.getIid() == null) {
+      val = null;
     }
     Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
     setr.invoke(pObj, val);
@@ -108,5 +140,21 @@ public class FilFldEnmStr<E extends Enum<E>> implements IFilFld<String> {
    **/
   public final void setHldSets(final IHldNm<Class<?>, Method> pHldSets) {
     this.hldSets = pHldSets;
+  }
+
+  /**
+   * <p>Getter for filEnt.</p>
+   * @return IFilEnt<IRecSet<RS>>
+   **/
+  public final IFilEnt<IRecSet<RS>> getFilEnt() {
+    return this.filEnt;
+  }
+
+  /**
+   * <p>Setter for filEnt.</p>
+   * @param pFilEnt reference
+   **/
+  public final void setFilEnt(final IFilEnt<IRecSet<RS>> pFilEnt) {
+    this.filEnt = pFilEnt;
   }
 }

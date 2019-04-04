@@ -29,19 +29,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-import org.beigesoft.mdl.IReqDt;
+import org.beigesoft.mdl.IRecSet;
+import org.beigesoft.mdl.LvDep;
 import org.beigesoft.log.ILog;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.hld.IHldNm;
 import org.beigesoft.prp.ISetng;
 
 /**
- * <p>Service that fill object(entity) from HTTP request.</p>
+ * <p>Service that fill object(entity) from DB result-set.
+ * Entity often has owned entities, and RS may has its (OE) several
+ * fields (not only ID).</p>
  *
+ * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FilEntRq implements IFilEnt<IReqDt> {
+public class FilEntRs<RS> implements IFilEnt<IRecSet<RS>> {
 
   /**
    * <p>Log.</p>
@@ -61,59 +68,86 @@ public class FilEntRq implements IFilEnt<IReqDt> {
   /**
    * <p>Fillers fields factory.</p>
    */
-  private IFctNm<IFilFld<String>> fctFilFld;
+  private IFctNm<IFilFld<IRecSet<RS>>> fctFilFld;
 
   /**
-   * <p>Fill entity from request.</p>
+   * <p>Fill entity from DB recods-set.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. a current converted field's class of
    * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
    * @param pEnt Entity to fill
-   * @param pRqDt - request data
+   * @param pRs - request data
    * @throws Exception - an exception
    **/
   @Override
   public final <T> void fill(final Map<String, Object> pRqVs,
     final Map<String, Object> pVs, final T pEnt,
-      final IReqDt pRqDt) throws Exception {
+      final IRecSet<RS> pRs) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 5001 && this.log.getDbgCl() > 4999;
-    for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
-      fillFld(pRqVs, pVs, pEnt, pRqDt, fdNm, isDbgSh);
+      && this.log.getDbgFl() < 7001 && this.log.getDbgCl() > 7999;
+    Integer dpLv = (Integer) pVs.
+      get(pEnt.getClass().getSimpleName() + "dpLv");
+    @SuppressWarnings("unchecked")
+    List<LvDep> lvDeps = (List<LvDep>) pVs.get("lvDeps");
+    LvDep clvDep;
+    if (lvDeps == null) { //main(root) entity:
+      lvDeps = new ArrayList<LvDep>();
+      clvDep = new LvDep();
+      if (dpLv != null) { //custom root branch deep level
+        clvDep.setDep(dpLv);
+      }
+      lvDeps.add(clvDep);
+    } else if (dpLv != null) { //custom level for subentity(owned) subbranch:
+      clvDep = new LvDep();
+      clvDep.setDep(dpLv);
+      lvDeps.add(clvDep);
+    } else { //entering into new sub/branch's sub-entity:
+      clvDep = lvDeps.get(lvDeps.size() - 1);
+      clvDep.setCur(clvDep.getCur() + 1);
     }
-    for (String fdNm : this.setng.lazFldNms(pEnt.getClass())) {
-      fillFld(pRqVs, pVs, pEnt, pRqDt, fdNm, isDbgSh);
+    for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
+      fillFld(pRqVs, pVs, pEnt, pRs, fdNm, isDbgSh);
+    }
+    if (clvDep.getCur() != clvDep.getDep()) {
+      String[] ndFds = (String[]) pVs.
+        get(pEnt.getClass().getSimpleName() + "ndFds");
+      for (String fdNm : this.setng.lazFldNms(pEnt.getClass())) {
+        if (ndFds == null || Arrays.binarySearch(ndFds, fdNm) != -1) {
+          fillFld(pRqVs, pVs, pEnt, pRs, fdNm, isDbgSh);
+        }
+      }
+    }
+    if (lvDeps.size() > 1) { //exiting from subentity:
+      lvDeps.remove(lvDeps.size() - 1);
+    } else {  //exiting from root entity:
+      pVs.remove("lvDeps");
     }
   }
 
   /**
-   * <p>Fill entity field from request.</p>
+   * <p>Fill entity field from DB recods-set.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. a current converted field's class of
    * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
    * @param pEnt Entity to fill
-   * @param pRqDt - request data
+   * @param pRs - request data
    * @param pFdNm field name
    * @param pIsDbgSh show debug msgs
    * @throws Exception - an exception
    **/
   private <T> void fillFld(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final T pEnt, final IReqDt pRqDt,
+    final Map<String, Object> pVs, final T pEnt, final IRecSet<RS> pRs,
       final String pFdNm, final boolean pIsDbgSh) throws Exception {
-    String valStr = pRqDt.getParam(pEnt.getClass().getSimpleName()
-      + "." + pFdNm); // standard
-    if (valStr != null) { // e.g. Boolean checkbox or none-editable
-      String filFdNm = this.hldFilFdNms.get(pEnt.getClass(), pFdNm);
-      IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
-      if (pIsDbgSh) {
-        this.log.debug(pRqVs, FilEntRq.class,
-      "Filling fdNm/cls/val/filler: " + pFdNm + "/" + pEnt.getClass()
-    .getSimpleName() + "/" + valStr + "/" + filFl.getClass().getSimpleName());
-      }
-      filFl.fill(pRqVs, pVs, pEnt, valStr, pFdNm);
+    String filFdNm = this.hldFilFdNms.get(pEnt.getClass(), pFdNm);
+    IFilFld<IRecSet<RS>> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
+    if (pIsDbgSh) {
+      this.log.debug(pRqVs, FilEntRs.class,
+    "Filling DB fdNm/cls/filler: " + pFdNm + "/" + pEnt.getClass()
+  .getSimpleName() + "/" + filFl.getClass().getSimpleName());
     }
+    filFl.fill(pRqVs, pVs, pEnt, pRs, pFdNm);
   }
 
   //Simple getters and setters:
@@ -135,9 +169,9 @@ public class FilEntRq implements IFilEnt<IReqDt> {
 
   /**
    * <p>Getter for fctFilFld.</p>
-   * @return IFctNm<IFilFld<String>>
+   * @return IFctNm<IFilFld<IRecSet<RS>>>
    **/
-  public final IFctNm<IFilFld<String>> getFctFilFld() {
+  public final IFctNm<IFilFld<IRecSet<RS>>> getFctFilFld() {
     return this.fctFilFld;
   }
 
@@ -145,7 +179,8 @@ public class FilEntRq implements IFilEnt<IReqDt> {
    * <p>Setter for fctFilFld.</p>
    * @param pFctFilFld reference
    **/
-  public final void setFctFilFld(final IFctNm<IFilFld<String>> pFctFilFld) {
+  public final void setFctFilFld(
+    final IFctNm<IFilFld<IRecSet<RS>>> pFctFilFld) {
     this.fctFilFld = pFctFilFld;
   }
 

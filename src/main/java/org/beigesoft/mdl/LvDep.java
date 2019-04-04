@@ -26,38 +26,55 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.cnv;
-
-import java.util.Map;
-
-import org.beigesoft.mdl.IRecSet;
+package org.beigesoft.mdl;
 
 /**
- * <p>Converts named field from result-set to Enum.</p>
+ * <p>Model of branch current level and required deep.</p>
  *
- * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class CnvBnRsEnm<RS> implements IConvNm<IRecSet<RS>, Enum<?>> {
+public class LvDep  {
 
   /**
-   * <p>Converts named field from resultset.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, must has "fldCls" - field's class!
-   * @param pRs result set
-   * @param pNm field name
-   * @return pTo to value
-   * @throws Exception - an exception
+   * <p>Current level, from 0.</p>
    **/
-  @Override
-  public final Enum<?> conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final IRecSet<RS> pRs,
-      final String pNm) throws Exception {
-    Integer intVal = pRs.getInt(pNm);
-    if (intVal != null) {
-      Class fldCls = (Class) pVs.get("fldCls");
-      return (Enum) fldCls.getEnumConstants()[intVal];
-    }
-    return null;
+  private int cur = 0;
+
+  /**
+   * <p>Required deep, 1 default.</p>
+   **/
+  private int dep = 1;
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for cur.</p>
+   * @return int
+   **/
+  public final int getCur() {
+    return this.cur;
+  }
+
+  /**
+   * <p>Setter for cur.</p>
+   * @param pCur reference
+   **/
+  public final void setCur(final int pCur) {
+    this.cur = pCur;
+  }
+
+  /**
+   * <p>Getter for dep.</p>
+   * @return int
+   **/
+  public final int getDep() {
+    return this.dep;
+  }
+
+  /**
+   * <p>Setter for dep.</p>
+   * @param pDep reference
+   **/
+  public final void setDep(final int pDep) {
+    this.dep = pDep;
   }
 }

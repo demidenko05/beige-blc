@@ -31,14 +31,16 @@ package org.beigesoft.mdlp;
 
 import java.math.BigDecimal;
 
+import org.beigesoft.mdl.IOwned;
+
 /**
  * <p>Model for test ORM. Version auto-increment.</p>
  *
  * @author Yury Demidenko
  */
- public class PersistableLine extends AOrIdVr {
+ public class PersistableLine extends AOrIdVr implements IOwned<PersistableHead> {
 
-  private PersistableHead persistableHead;
+  private PersistableHead ownr;
   
   /**
    * <p>User from foreign table.</p>
@@ -60,23 +62,23 @@ import java.math.BigDecimal;
    **/
   private BigDecimal itsTotal;
 
-  //Simple getters and setters:
   /**
-   * <p>Geter for persistableHead.</p>
+   * <p>Getter for ownr.</p>
    * @return PersistableHead
    **/
-  public final PersistableHead getPersistableHead() {
-    return this.persistableHead;
+  public final PersistableHead getOwnr() {
+    return this.ownr;
   }
 
   /**
-   * <p>Setter for persistableHead.</p>
-   * @param pPersistableHead reference/value
+   * <p>Setter for ownr.</p>
+   * @param pOwnr reference
    **/
-  public final void setPersistableHead(final PersistableHead pPersistableHead) {
-    this.persistableHead = pPersistableHead;
+  public final void setOwnr(final PersistableHead pOwnr) {
+    this.ownr = pOwnr;
   }
 
+  //Simple getters and setters:
   /**
    * <p>Geter for itsProduct.</p>
    * @return GoodVersionTime

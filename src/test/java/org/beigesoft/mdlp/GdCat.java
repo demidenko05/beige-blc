@@ -26,29 +26,38 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.cnv;
 
-import java.util.Map;
+package org.beigesoft.mdlp;
+
+
+import java.math.BigDecimal;
 
 /**
- * <p>Abstraction of service that fills/converts object (entity)
- * from a source, e.g. from SQL result-set or HTML request.</p>
+ * <p>Model for test ORM. Optimistic locking version changed time.</p>
  *
- * @param <S> source type
  * @author Yury Demidenko
  */
-public interface IFilEnt<S> {
+public class GdCat extends AOrIdVrNm {
 
   /**
-   * <p>Fills object's fields from given source data.</p>
-   * @param <T> object (entity) type
-   * @param pRqVs request scoped vars
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pEnt entity to fill, not null
-   * @param pSrc Source, e.g. request data
-   * @throws Exception - an exception
+   * <p>Department.</p>
    **/
-  <T> void fill(Map<String, Object> pRqVs,
-    Map<String, Object> pVs, T pEnt, S pSrc) throws Exception;
+  private Department dep;
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for dep.</p>
+   * @return Department
+   **/
+  public final Department getDep() {
+    return this.dep;
+  }
+
+  /**
+   * <p>Setter for dep.</p>
+   * @param pDep reference
+   **/
+  public final void setDep(final Department pDep) {
+    this.dep = pDep;
+  }
 }

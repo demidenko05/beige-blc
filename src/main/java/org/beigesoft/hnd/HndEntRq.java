@@ -168,7 +168,7 @@ public class HndEntRq<RS> implements IHndRq {
         IFctRq<IHasId<?>> entFac = (IFctRq<IHasId<?>>)
           this.fctFctEnt.laz(pRqVs, cls);
         ent = entFac.create(pRqVs);
-        this.filEntRq.fill(pRqVs, ent, pRqDt);
+        this.filEntRq.fill(pRqVs, null, ent, pRqDt);
         String entProcNm = this.hldPrcEntNm
           .get(cls, actArr[0]);
         if (entProcNm == null) {
@@ -284,7 +284,7 @@ public class HndEntRq<RS> implements IHndRq {
         IFctRq<IHasId<?>> entFac = (IFctRq<IHasId<?>>)
           this.fctFctEnt.laz(pRqVs, cls);
         ent = entFac.create(pRqVs);
-        this.filEntRq.fill(pRqVs, ent, pRqDt);
+        this.filEntRq.fill(pRqVs, null, ent, pRqDt);
       }
       for (String actNm : pActArr) {
         if (actNm.startsWith("ent")) {

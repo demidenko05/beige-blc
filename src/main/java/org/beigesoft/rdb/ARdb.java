@@ -46,9 +46,9 @@ public abstract class ARdb<RS> implements IRdb<RS> {
   private Integer dbId;
 
   /**
-   * <p>Logger.</p>
+   * <p>Log.</p>
    **/
-  private ILog logger;
+  private ILog log;
 
   /**
    * <p>Evaluate single Integer result.</p>
@@ -228,18 +228,18 @@ public abstract class ARdb<RS> implements IRdb<RS> {
 
   //Simple getters and setters:
   /**
-   * <p>Geter for logger.</p>
+   * <p>Geter for log.</p>
    * @return ILog
    **/
-  public final ILog getLogger() {
-    return this.logger;
+  public final ILog getLog() {
+    return this.log;
   }
 
   /**
-   * <p>Setter for logger.</p>
-   * @param pLogger reference
+   * <p>Setter for log.</p>
+   * @param pLog reference
    **/
-  public final void setLogger(final ILog pLogger) {
-    this.logger = pLogger;
+  public final void setLog(final ILog pLog) {
+    this.log = pLog;
   }
 }

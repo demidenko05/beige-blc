@@ -100,7 +100,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
       IFctRq<IHasId<?>> entFac = (IFctRq<IHasId<?>>)
         this.fctFctEnt.laz(pRqVs, entityClass);
       entity = entFac.create(pRqVs);
-      this.filEntRq.fill(pRqVs, entity, pRqDt);
+      this.filEntRq.fill(pRqVs, null, entity, pRqDt);
       String nmRep = pRqDt.getParam("nmRep");
       @SuppressWarnings("unchecked")
       IEntFlRp<IHasId<?>, ?> efr = (IEntFlRp<IHasId<?>, ?>)

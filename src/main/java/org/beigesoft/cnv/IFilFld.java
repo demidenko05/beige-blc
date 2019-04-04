@@ -43,11 +43,14 @@ public interface IFilFld<S> {
    * <p>Fills object's field.</p>
    * @param <T> object (entity) type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pVs invoker scoped vars, e.g. a current converted field's class of
+   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
    * @param pObject Object to fill, not null
    * @param pFlVl Source field Value
    * @param pFlNm Field name
    * @throws Exception - an exception
    **/
-  <T> void fill(Map<String, Object> pRqVs, T pObject,
+  <T> void fill(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, T pObject,
     S pFlVl, String pFlNm) throws Exception;
 }

@@ -80,7 +80,7 @@ public class CsvWriterTest {
     colDate.setIndx(1);
     colDate.setSrIdx(1);
     colDate.setDtIdx(1);
-    colDate.setFldPh("persistableHead" + "," + "itsDate");
+    colDate.setFldPh("ownr" + "," + "itsDate");
     colDate.setFrmt("MM/dd/yyyy");
     this.csvMethod.getClns().add(colDate);
     CsvCl colDesc = new CsvCl();
@@ -90,7 +90,7 @@ public class CsvWriterTest {
     colDesc.setSrIdx(2);
     colDesc.setDtIdx(1);
     colDesc.setTxDlm("\"");
-    colDesc.setFldPh("persistableHead" + "," + "tmpDescription");
+    colDesc.setFldPh("ownr" + "," + "tmpDescription");
     this.csvMethod.getClns().add(colDesc);
     CsvCl colAm = new CsvCl();
     colAm.setTyp(ECsvClTy.NUMERIC);
@@ -107,7 +107,7 @@ public class CsvWriterTest {
     colIsClosed.setSrIdx(4);
     colIsClosed.setFrmt("1,0");
     colIsClosed.setDtIdx(1);
-    colIsClosed.setFldPh("persistableHead" + "," + "isClosed");
+    colIsClosed.setFldPh("ownr" + "," + "isClosed");
     this.csvMethod.getClns().add(colIsClosed);
     CsvCl colRating = new CsvCl();
     colRating.setNme("Rating");
@@ -168,7 +168,7 @@ public class CsvWriterTest {
     ph.setTmpDescription("sample a, sample b...");
     ph.setItsDate(new Date());
     ph.setIsClosed(true);
-    pl.setPersistableHead(ph);
+    pl.setOwnr(ph);
     GoodVersionTime pr1 = new GoodVersionTime();
     pr1.setIid(1L);
     pl.setItsProduct(pr1);
@@ -178,7 +178,7 @@ public class CsvWriterTest {
     PersistableLine pl2 = new PersistableLine();
     PersistableHead ph2 = new PersistableHead();
     ph2.setItsDate(new Date());
-    pl2.setPersistableHead(ph2);
+    pl2.setOwnr(ph2);
     GoodVersionTime pr2 = new GoodVersionTime();
     pr2.setIid(2L);
     pl2.setItsProduct(pr2);

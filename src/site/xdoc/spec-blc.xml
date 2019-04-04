@@ -25,8 +25,7 @@
       <p>String representations of some things depend of user preferences. To make it flexible, it's used Map&lt;String, Object&gt; to pass request scoped vars.
         Request scoped variables pRqVs contains of:
         <ul>
-          <li>rqDt - IReqDt request data (only when using in WEB application)</li>
-          <li>cmnPref - decimal places in quantity, cost, price, decimal separator char value</li>
+          <li>rqDt - IReqDt client's request data</li>
           <li>upf - UsrPrf - persistable user preferences - decimal separator, digits in group, language, etc.</li>
           <li>cpf - CmnPrf - non-persistable system and user preferences - decimal spaces, current decimal separator char value, preferred locale.</li>
         </ul>
@@ -34,6 +33,8 @@
       <h4>Invoker scoped variables</h4>
       <p>Invoker scoped variables pVs may contains of:
         <ul>
+          <li>[entity simple name]dpLv - DpLev, entity deep level, 0 - only ID, 1 - its owned entities only ID...</li>
+          <li>[entity simple name]ndFds - String[], entity's needed fields names</li>
           <li>fldCls - Class - current field's class</li>
           <li>verAlg - Integer - version algorithm for current persistable entity, 0 auto-increment, 1-changed time</li>
         </ul>

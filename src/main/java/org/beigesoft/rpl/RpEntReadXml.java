@@ -99,12 +99,12 @@ public class RpEntReadXml implements IRpEntRead<Object> {
     for (String flNm : this.setng.lazIdFldNms(cls)) {
       String filFdNm = this.hldFilFdNms.get(cls, flNm);
       IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
-      filFl.fill(pRqVs, ent, attrs.get(flNm), flNm);
+      filFl.fill(pRqVs, null, ent, attrs.get(flNm), flNm);
     }
     for (String flNm : this.setng.lazFldNms(cls)) {
       String filFdNm = this.hldFilFdNms.get(cls, flNm);
       IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
-      filFl.fill(pRqVs, ent, attrs.get(flNm), flNm);
+      filFl.fill(pRqVs, null, ent, attrs.get(flNm), flNm);
     }
     return ent;
   }

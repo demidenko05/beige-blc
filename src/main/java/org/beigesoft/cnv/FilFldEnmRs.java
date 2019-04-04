@@ -31,16 +31,19 @@ package org.beigesoft.cnv;
 import java.util.Map;
 import java.lang.reflect.Method;
 
+import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.hld.IHldNm;
 
 /**
  * <p>Standard service that fills/converts object's field of type Enum from
- * given string value (HTML parameter).</p>
+ * given result-set.</p>
  *
  * @param <E> Enum type
+ * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FilFldEnmStr<E extends Enum<E>> implements IFilFld<String> {
+public class FilFldEnmRs<E extends Enum<E>, RS>
+  implements IFilFld<IRecSet<RS>> {
 
   /**
    * <p>Holder of an entity's field's class.</p>
@@ -53,27 +56,30 @@ public class FilFldEnmStr<E extends Enum<E>> implements IFilFld<String> {
   private IHldNm<Class<?>, Method> hldSets;
 
   /**
-   * <p>Fills object's field.</p>
+   * <p>Fills/converts object's field of type Enum from
+   * given result-set.</p>
    * @param <T> object type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRqVs request scoped vars
    * @param pVs invoker scoped vars, e.g. a current converted field's class of
    * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
    * @param pObj Object to fill, not null
-   * @param pStVl Source field string value
-   * @param pFlNm Field name
+   * @param pRs Source with field value
+   * @param pFdNm Field name
    * @throws Exception - an exception
    **/
   @Override
   public final <T> void fill(final Map<String, Object> pRqVs,
     final Map<String, Object> pVs, final T pObj,
-      final String pStVl, final String pFlNm) throws Exception {
+      final IRecSet<RS> pRs, final String pFdNm) throws Exception {
+    String clNm = (String) pVs.get("clNm");
+    Integer intVal = pRs.getInt(clNm);
     Enum<?> val = null;
-    if (pStVl != null && !"".equals(pStVl)) {
+    if (intVal != null) {
       @SuppressWarnings("unchecked")
-      Class<E> flCls = (Class<E>) hldFdCls.get(pObj.getClass(), pFlNm);
-      val = Enum.valueOf(flCls, pStVl);
+      Class<E> fdCls = (Class<E>) hldFdCls.get(pObj.getClass(), pFdNm);
+      val = fdCls.getEnumConstants()[intVal];
     }
-    Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
+    Method setr = this.hldSets.get(pObj.getClass(), pFdNm);
     setr.invoke(pObj, val);
   }
 
