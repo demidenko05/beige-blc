@@ -8,7 +8,7 @@
   <suppress checks="MagicNumberCheck"
     files="UtlXml|CsvWri|HldGets|HldSets|HldFldCls|FilEntRq|HndI18nRq|HndEntRq|NumStr|UsPrf|CsvRdr"/>
   <suppress checks="MagicNumberCheck"
-    files="HndSpam|Setng|CmnPrf|RpEntWriXml|RpEntReadXml|RplXmlHttps|FilEntRs"/>
+    files="HndSpam|Setng|CmnPrf|RpEntWriXml|RpEntReadXml|RplXmlHttps|FilEntRs|FilFldSmpRs|FilFldEnmRs|FilFldHsIdRs"/>
   <suppress checks="EmptyBlock"
     files="RplXmlHttps"/>
   <suppress checks="LineLength"

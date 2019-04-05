@@ -35,7 +35,9 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.hld.HldFldCls;
 import org.beigesoft.hld.HldGets;
 import org.beigesoft.hld.HldSets;
+import org.beigesoft.hld.HldNmFilFdRs;
 import org.beigesoft.hld.HldNmFilFdSt;
+import org.beigesoft.hld.HldNmCnFrRs;
 import org.beigesoft.hld.HldNmCnFrSt;
 import org.beigesoft.hld.HldNmCnToSt;
 import org.beigesoft.hld.HldNmCnToStXml;
@@ -44,6 +46,7 @@ import org.beigesoft.hnd.HndI18nRq;
 import org.beigesoft.prp.UtlPrp;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.log.ILog;
+import org.beigesoft.cnv.FilEntRs;
 import org.beigesoft.cnv.FilEntRq;
 import org.beigesoft.rpl.RpEntWriXml;
 import org.beigesoft.rpl.RpEntReadXml;
@@ -96,6 +99,11 @@ public class FctBlc<RS> implements IFctApp {
   public static final String STGUVDNM = "stgUvd";
 
   /**
+   * <p>ORM Setting service name.</p>
+   **/
+  public static final String STGORMNM = "stgOrm";
+
+  /**
    * <p>Standard logger name.</p>
    **/
   public static final String LOGSTDNM = "logStd";
@@ -115,6 +123,11 @@ public class FctBlc<RS> implements IFctApp {
    * <p>UVD setting base dir.</p>
    **/
   private String stgUvdDir;
+
+  /**
+   * <p>ORM setting base dir.</p>
+   **/
+  private String stgOrmDir;
 
   //parts/services:
   /**
@@ -157,6 +170,16 @@ public class FctBlc<RS> implements IFctApp {
         if (rz == null) {
           if (HndI18nRq.class.getSimpleName().equals(pBnNm)) {
             rz = lazHndI18nRq(pRqVs);
+          } else if (STGORMNM.equals(pBnNm)) {
+            rz = lazStgOrm(pRqVs);
+          } else if (FilEntRs.class.getSimpleName().equals(pBnNm)) {
+            rz = lazFilEntRs(pRqVs);
+          } else if (HldNmFilFdRs.class.getSimpleName().equals(pBnNm)) {
+            rz = lazHldNmFilFdRs(pRqVs);
+          } else if (HldNmCnFrRs.class.getSimpleName().equals(pBnNm)) {
+            rz = lazHldNmCnFrRs(pRqVs);
+          } else if (FctNmCnFrRs.class.getSimpleName().equals(pBnNm)) {
+            rz = lazFctNmCnFrRs(pRqVs);
           } else if (FilEntRq.class.getSimpleName().equals(pBnNm)) {
             rz = lazFilEntRq(pRqVs);
           } else if (ENWRDBCPNM.equals(pBnNm)) {
@@ -396,6 +419,137 @@ public class FctBlc<RS> implements IFctApp {
       this.beans.put(HldNmCnFrStXml.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), HldNmCnFrStXml.class
         .getSimpleName() + " has been created.");
+    }
+    return rz;
+  }
+
+  //ORM:
+  /**
+   * <p>Lazy getter Setng ORM.</p>
+   * @param pRqVs request scoped vars
+   * @return Setng ORM
+   * @throws Exception - an exception
+   */
+  private Setng lazStgOrm(final Map<String, Object> pRqVs) throws Exception {
+    Setng rz = (Setng) this.beans.get(STGORMNM);
+    if (rz == null) {
+      rz = new Setng();
+      rz.setDir(getStgOrmDir());
+      rz.setReflect(lazReflect(pRqVs));
+      rz.setUtlPrp(lazUtlPrp(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setLog(lazLogStd(pRqVs));
+      this.beans.put(STGORMNM, rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), STGORMNM + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter FilEntRs.</p>
+   * @param pRqVs request scoped vars
+   * @return FilEntRs
+   * @throws Exception - an exception
+   */
+  private FilEntRs<RS> lazFilEntRs(
+    final Map<String, Object> pRqVs) throws Exception {
+    FilEntRs<RS> rz = (FilEntRs<RS>) this.beans
+      .get(FilEntRs.class.getSimpleName());
+    if (rz == null) {
+      rz = new FilEntRs<RS>();
+      rz.setLog(lazLogStd(pRqVs));
+      rz.setSetng(lazStgOrm(pRqVs));
+      rz.setHldFilFdNms(lazHldNmFilFdRs(pRqVs));
+      FctNmFilFdRs<RS> fffd = lazFctNmFilFdRs(pRqVs);
+      fffd.setFilEnt(rz);
+      rz.setFctFilFld(fffd);
+      this.beans.put(FilEntRs.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), FilEntRs.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter HldNmFilFdRs.</p>
+   * @param pRqVs request scoped vars
+   * @return HldNmFilFdRs
+   * @throws Exception - an exception
+   */
+  private HldNmFilFdRs lazHldNmFilFdRs(
+    final Map<String, Object> pRqVs) throws Exception {
+    HldNmFilFdRs rz = (HldNmFilFdRs) this.beans
+      .get(HldNmFilFdRs.class.getSimpleName());
+    if (rz == null) {
+      rz = new HldNmFilFdRs();
+      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      this.beans.put(HldNmFilFdRs.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(),
+        HldNmFilFdRs.class.getSimpleName() + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter HldNmCnFrRs.</p>
+   * @param pRqVs request scoped vars
+   * @return HldNmCnFrRs
+   * @throws Exception - an exception
+   */
+  private HldNmCnFrRs lazHldNmCnFrRs(
+    final Map<String, Object> pRqVs) throws Exception {
+    HldNmCnFrRs rz = (HldNmCnFrRs) this.beans
+      .get(HldNmCnFrRs.class.getSimpleName());
+    if (rz == null) {
+      rz = new HldNmCnFrRs();
+      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      this.beans.put(HldNmCnFrRs.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), HldNmCnFrRs.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter FctNmCnFrRs.</p>
+   * @param pRqVs request scoped vars
+   * @return FctNmCnFrRs
+   * @throws Exception - an exception
+   */
+  private FctNmCnFrRs<RS> lazFctNmCnFrRs(
+    final Map<String, Object> pRqVs) throws Exception {
+    FctNmCnFrRs<RS> rz = (FctNmCnFrRs<RS>) this.beans
+      .get(FctNmCnFrRs.class.getSimpleName());
+    if (rz == null) {
+      rz = new FctNmCnFrRs<RS>();
+      rz.setLogStd(lazLogStd(pRqVs));
+      this.beans.put(FctNmCnFrRs.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), FctNmCnFrRs.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter FctNmFilFdRs. Mutual dependency with FilEntRs.</p>
+   * @param pRqVs request scoped vars
+   * @return FctNmFilFdRs
+   * @throws Exception - an exception
+   */
+  private FctNmFilFdRs<RS> lazFctNmFilFdRs(
+    final Map<String, Object> pRqVs) throws Exception {
+    FctNmFilFdRs<RS> rz = (FctNmFilFdRs<RS>) this.beans
+      .get(FctNmFilFdRs.class.getSimpleName());
+    if (rz == null) {
+      rz = new FctNmFilFdRs<RS>();
+      rz.setLogStd(lazLogStd(pRqVs));
+      rz.setHldSets(lazHldSets(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setHldNmFdCn(lazHldNmCnFrRs(pRqVs));
+      rz.setFctCnvFld(lazFctNmCnFrRs(pRqVs));
+      this.beans.put(FctNmFilFdRs.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(),
+        FctNmFilFdRs.class.getSimpleName() + " has been created.");
     }
     return rz;
   }
@@ -758,6 +912,22 @@ public class FctBlc<RS> implements IFctApp {
    **/
   public final void setStgDbCpDir(final String pStgDbCpDir) {
     this.stgDbCpDir = pStgDbCpDir;
+  }
+
+  /**
+   * <p>Getter for stgOrmDir.</p>
+   * @return String
+   **/
+  public final String getStgOrmDir() {
+    return this.stgOrmDir;
+  }
+
+  /**
+   * <p>Setter for stgOrmDir.</p>
+   * @param pStgOrmDir reference
+   **/
+  public final void setStgOrmDir(final String pStgOrmDir) {
+    this.stgOrmDir = pStgOrmDir;
   }
 
   /**

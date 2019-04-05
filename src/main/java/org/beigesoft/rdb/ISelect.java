@@ -26,29 +26,27 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.cnv;
+package org.beigesoft.rdb;
 
 import java.util.Map;
 
 /**
- * <p>Abstraction of service that fills/converts object (entity)
- * from a source, e.g. from SQL result-set or HTML request.</p>
+ * <p>Abstraction of service that generates DML Select statement
+ * for given entity and vars.</p>
  *
- * @param <S> source type
  * @author Yury Demidenko
  */
-public interface IFilEnt<S> {
+public interface ISelect {
 
   /**
-   * <p>Fills object's fields from given source data.</p>
+   * <p>Generates DML Select statement for given entity and vars.</p>
    * @param <T> object (entity) type
    * @param pRqVs request scoped vars
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
+   * @param pVs invoker scoped vars, e.g. entity's needed fields, nullable.
    * @param pEnt entity to fill, not null
-   * @param pSrc Source, e.g. request data
+   * @return Select query
    * @throws Exception - an exception
    **/
-  <T> void fill(Map<String, Object> pRqVs,
-    Map<String, Object> pVs, T pEnt, S pSrc) throws Exception;
+  <T> String gen(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, T pEnt) throws Exception;
 }

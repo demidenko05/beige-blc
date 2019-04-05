@@ -28,10 +28,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.cnv;
 
+import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Method;
 
 import org.beigesoft.mdl.IRecSet;
+import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHldNm;
 
 /**
@@ -44,6 +46,11 @@ import org.beigesoft.hld.IHldNm;
  */
 public class FilFldEnmRs<E extends Enum<E>, RS>
   implements IFilFld<IRecSet<RS>> {
+
+  /**
+   * <p>Log.</p>
+   **/
+  private ILog log;
 
   /**
    * <p>Holder of an entity's field's class.</p>
@@ -71,7 +78,20 @@ public class FilFldEnmRs<E extends Enum<E>, RS>
   public final <T> void fill(final Map<String, Object> pRqVs,
     final Map<String, Object> pVs, final T pObj,
       final IRecSet<RS> pRs, final String pFdNm) throws Exception {
-    String clNm = (String) pVs.get("clNm");
+    String clNm;
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 7004 && this.log.getDbgCl() > 7002;
+    @SuppressWarnings("unchecked")
+    List<String> tbAls = (List<String>) pVs.get("tbAls");
+    if (tbAls.size() > 0) {
+      clNm = tbAls.get(tbAls.size() - 1) + pFdNm.toUpperCase();
+    } else {
+      clNm = pFdNm.toUpperCase();
+    }
+    if (isDbgSh) {
+      this.log.debug(pRqVs, FilFldSmpRs.class, "Column alias/cls: "
+        + clNm + "/" + pObj.getClass());
+    }
     Integer intVal = pRs.getInt(clNm);
     Enum<?> val = null;
     if (intVal != null) {
@@ -84,6 +104,22 @@ public class FilFldEnmRs<E extends Enum<E>, RS>
   }
 
   //Simple getters and setters:
+  /**
+   * <p>Getter for log.</p>
+   * @return ILog
+   **/
+  public final ILog getLog() {
+    return this.log;
+  }
+
+  /**
+   * <p>Setter for log.</p>
+   * @param pLog reference
+   **/
+  public final void setLog(final ILog pLog) {
+    this.log = pLog;
+  }
+
   /**
    * <p>Getter for hldFdCls.</p>
    * @return IHldNm<Class<?>, Class<?>>

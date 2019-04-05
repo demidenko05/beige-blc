@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Method;
 
-import org.beigesoft.mdl.LvDep;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.fct.IFctNm;
+import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHldNm;
 
 /**
@@ -46,6 +46,11 @@ import org.beigesoft.hld.IHldNm;
  * @author Yury Demidenko
  */
 public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
+
+  /**
+   * <p>Log.</p>
+   **/
+  private ILog log;
 
   /**
    * <p>Fields setters RAPI holder.</p>
@@ -77,21 +82,24 @@ public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
   public final <T> void fill(final Map<String, Object> pRqVs,
     final Map<String, Object> pVs, final T pObj,
     final IRecSet<RS> pRs, final String pFdNm) throws Exception {
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 7003 && this.log.getDbgCl() > 7001;
     Object val = null;
     String cnNm = this.hldNmFdCn.get(pObj.getClass(), pFdNm);
     @SuppressWarnings("unchecked")
     IConvNm<IRecSet<RS>, Object> flCnv =
       (IConvNm<IRecSet<RS>, Object>) this.fctCnvFld.laz(pRqVs, cnNm);
-    @SuppressWarnings("unchecked")
-    List<LvDep> lvDeps = (List<LvDep>) pVs.get("lvDeps");
-    LvDep clvDep = lvDeps.get(lvDeps.size() - 1);
     String clNm;
-    if (lvDeps.size() == 1 || lvDeps.size() == 2 && clvDep.getDep() == 0) {
-      clNm = pFdNm.toUpperCase();
-    } else {
-      @SuppressWarnings("unchecked")
-      List<String> tbAls = (List<String>) pVs.get("tbAls");
+    @SuppressWarnings("unchecked")
+    List<String> tbAls = (List<String>) pVs.get("tbAls");
+    if (tbAls.size() > 0) {
       clNm = tbAls.get(tbAls.size() - 1) + pFdNm.toUpperCase();
+    } else {
+      clNm = pFdNm.toUpperCase();
+    }
+    if (isDbgSh) {
+      this.log.debug(pRqVs, FilFldSmpRs.class, "Column alias/cls: "
+        + clNm + "/" + pObj.getClass());
     }
     val = flCnv.conv(pRqVs, pVs, pRs, clNm);
     Method setr = this.hldSets.get(pObj.getClass(), pFdNm);
@@ -99,6 +107,22 @@ public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
   }
 
   //Simple getters and setters:
+  /**
+   * <p>Getter for log.</p>
+   * @return ILog
+   **/
+  public final ILog getLog() {
+    return this.log;
+  }
+
+  /**
+   * <p>Setter for log.</p>
+   * @param pLog reference
+   **/
+  public final void setLog(final ILog pLog) {
+    this.log = pLog;
+  }
+
   /**
    * <p>Getter for hldSets.</p>
    * @return IHldNm<Class<?>, Method>

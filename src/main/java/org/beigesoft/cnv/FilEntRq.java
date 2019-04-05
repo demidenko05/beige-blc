@@ -41,7 +41,7 @@ import org.beigesoft.prp.ISetng;
  *
  * @author Yury Demidenko
  */
-public class FilEntRq implements IFilEnt<IReqDt> {
+public class FilEntRq implements IFilObj<IReqDt> {
 
   /**
    * <p>Log.</p>

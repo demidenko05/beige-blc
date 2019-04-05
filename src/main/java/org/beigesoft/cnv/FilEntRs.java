@@ -48,7 +48,7 @@ import org.beigesoft.prp.ISetng;
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FilEntRs<RS> implements IFilEnt<IRecSet<RS>> {
+public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
 
   /**
    * <p>Log.</p>
@@ -85,43 +85,67 @@ public class FilEntRs<RS> implements IFilEnt<IRecSet<RS>> {
     final Map<String, Object> pVs, final T pEnt,
       final IRecSet<RS> pRs) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 7001 && this.log.getDbgCl() > 7999;
-    Integer dpLv = (Integer) pVs.
-      get(pEnt.getClass().getSimpleName() + "dpLv");
+      && this.log.getDbgFl() < 7001 && this.log.getDbgCl() > 6999;
     @SuppressWarnings("unchecked")
     List<LvDep> lvDeps = (List<LvDep>) pVs.get("lvDeps");
     LvDep clvDep;
-    if (lvDeps == null) { //main(root) entity:
+    if (lvDeps == null) { //start main(root) entity:
       lvDeps = new ArrayList<LvDep>();
       clvDep = new LvDep();
+    Integer dpLv = (Integer) pVs.get(pEnt.getClass().getSimpleName() + "dpLv");
       if (dpLv != null) { //custom root branch deep level
         clvDep.setDep(dpLv);
       }
       lvDeps.add(clvDep);
-    } else if (dpLv != null) { //custom level for subentity(owned) subbranch:
-      clvDep = new LvDep();
-      clvDep.setDep(dpLv);
-      lvDeps.add(clvDep);
-    } else { //entering into new sub/branch's sub-entity:
+      pVs.put("lvDeps", lvDeps);
+      if (isDbgSh) {
+        this.log.debug(pRqVs, FilEntRs.class, "Start fill root entity/DL/CL: "
+          + pEnt.getClass() + "/" + clvDep.getDep() + "/" + clvDep.getCur());
+      }
+      List<String> tbAls = new ArrayList<String>();
+      pVs.put("tbAls", tbAls);
+      if (isDbgSh) {
+        this.log.debug(pRqVs, FilFldHsIdRs.class, "tbAls created");
+      }
+    } else {
       clvDep = lvDeps.get(lvDeps.size() - 1);
-      clvDep.setCur(clvDep.getCur() + 1);
     }
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
       fillFld(pRqVs, pVs, pEnt, pRs, fdNm, isDbgSh);
     }
-    if (clvDep.getCur() != clvDep.getDep()) {
+    if (clvDep.getCur() < clvDep.getDep()) {
       String[] ndFds = (String[]) pVs.
         get(pEnt.getClass().getSimpleName() + "ndFds");
+      if (ndFds != null && isDbgSh) {
+        this.log.debug(pRqVs, FilEntRs.class, "Needed fields entity: "
+          + pEnt.getClass() + "/" + Arrays.toString(ndFds));
+      }
       for (String fdNm : this.setng.lazFldNms(pEnt.getClass())) {
-        if (ndFds == null || Arrays.binarySearch(ndFds, fdNm) != -1) {
+        boolean isNd = true;
+        if (ndFds != null) {
+          isNd = false;
+          for (String fn : ndFds) {
+            if (fdNm.equals(fn)) {
+              isNd = true;
+              break;
+            }
+          }
+        }
+        if (isNd) {
           fillFld(pRqVs, pVs, pEnt, pRs, fdNm, isDbgSh);
         }
       }
     }
-    if (lvDeps.size() > 1) { //exiting from subentity:
-      lvDeps.remove(lvDeps.size() - 1);
-    } else {  //exiting from root entity:
-      pVs.remove("lvDeps");
+    if (lvDeps.size() == 1) { //move down through root DL subentities branch:
+      LvDep ld = lvDeps.get(0);
+      if (ld.getCur() == 0) { //current is root entity:
+        pVs.remove("lvDeps");
+        pVs.remove("tbAls");
+        if (isDbgSh) {
+          this.log.debug(pRqVs, FilEntRs.class,
+            "Finish filling root entity: " + pEnt.getClass());
+        }
+      }
     }
   }
 
@@ -144,8 +168,8 @@ public class FilEntRs<RS> implements IFilEnt<IRecSet<RS>> {
     IFilFld<IRecSet<RS>> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
     if (pIsDbgSh) {
       this.log.debug(pRqVs, FilEntRs.class,
-    "Filling DB fdNm/cls/filler: " + pFdNm + "/" + pEnt.getClass()
-  .getSimpleName() + "/" + filFl.getClass().getSimpleName());
+        "Filling DB fdNm/cls/filler: " + pFdNm + "/" + pEnt.getClass()
+          .getSimpleName() + "/" + filFl.getClass().getSimpleName());
     }
     filFl.fill(pRqVs, pVs, pEnt, pRs, pFdNm);
   }

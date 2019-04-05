@@ -31,6 +31,7 @@ package org.beigesoft.cnv;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
@@ -72,17 +73,19 @@ public class FromRsTest<RS> {
   private FctBlc<RS> fctApp;
 
   private ILog logStd;
+ 
+  private Map<String, Object> rqVs = new HashMap<String, Object>();
 
   public FromRsTest() throws Exception {
-    /*this.fctApp = new FctBlc<RS>();
+    this.fctApp = new FctBlc<RS>();
     FctTst fctTst = new FctTst();
-    fctTst.setLogStdNm(CnvTest.class.getSimpleName());
+    fctTst.setLogStdNm(FromRsTest.class.getSimpleName());
     this.fctApp.setStgOrmDir("tstOrm");
     this.fctApp.setFctConf(fctTst);
     this.logStd = (ILog) fctApp.laz(this.rqVs, FctBlc.LOGSTDNM);
     this.logStd.setDbgSh(true);
     this.logStd.setDbgFl(4001);
-    this.logStd.setDbgCl(8002);*/
+    this.logStd.setDbgCl(8002);
   }
 
   @Test
@@ -109,6 +112,8 @@ public class FromRsTest<RS> {
     ph.setIid(4L);
     ph.setVer(1L);
     ph.setDbOr(1);
+    ph.setItsStatus(EStatus.STATUS_A);
+    ph.setItsDate(new Date());
     PersistableLine pl = new PersistableLine();
     pl.setIid(5L);
     pl.setVer(1L);
@@ -117,33 +122,75 @@ public class FromRsTest<RS> {
     pl.setItsProduct(gd);
     pl.setItsPrice(new BigDecimal("13.12"));
     pl.setItsTotal(new BigDecimal("13.12"));
-    pl.setItsQuantity(new BigDecimal("1"));
+    pl.setItsQuantity(new BigDecimal("1.0"));
     RecSetTst<RS> rs = new RecSetTst<RS>();
     //0 level default dpLv=1:
     rs.getData().put("IID", pl.getIid());
     rs.getData().put("VER", pl.getVer());
     rs.getData().put("DBOR", pl.getDbOr());
-    rs.getData().put("ITSPRICE", pl.getItsPrice());
-    rs.getData().put("ITSTOTAL", pl.getItsTotal());
-    rs.getData().put("ITSQUANTITY", pl.getItsQuantity());
+    rs.getData().put("IDOR", pl.getIdOr());
+    rs.getData().put("ITSPRICE", pl.getItsPrice().doubleValue());
+    rs.getData().put("ITSTOTAL", pl.getItsTotal().doubleValue());
+    rs.getData().put("ITSQUANTITY", pl.getItsQuantity().doubleValue());
       //dpLv 0 - only ID, 1 - its owned entities only ID...
-    rs.getData().put("OWNR", pl.getOwnr().getIid()); //only ID, PersistableHeaddpLv=0 slv=0  exit
+    rs.getData().put("OWNR1IID", pl.getOwnr().getIid()); //only ID, PersistableHeaddpLv=0 slv=0  exit
     //1st level:
     rs.getData().put("ITSPRODUCT1IID", pl.getItsProduct().getIid()); //GoodVersionTimedpLv=2 slv=0
     rs.getData().put("ITSPRODUCT1VER", pl.getItsProduct().getVer());
     rs.getData().put("ITSPRODUCT1DBOR", pl.getItsProduct().getDbOr());
+    rs.getData().put("ITSPRODUCT1IDOR", pl.getItsProduct().getIdOr());
     rs.getData().put("ITSPRODUCT1NME", pl.getItsProduct().getNme());
     //2nd level:
     rs.getData().put("GDCAT2IID", pl.getItsProduct().getGdCat().getIid()); //GoodVersionTimedpLv=2 slv=1
     rs.getData().put("GDCAT2VER", pl.getItsProduct().getGdCat().getVer());
     rs.getData().put("GDCAT2DBOR", pl.getItsProduct().getGdCat().getDbOr());
+    rs.getData().put("GDCAT2IDOR", pl.getItsProduct().getGdCat().getIdOr());
     rs.getData().put("GDCAT2NME", pl.getItsProduct().getGdCat().getNme());
-    rs.getData().put("GDCAT2DEP", pl.getItsProduct().getGdCat().getDep().getIid()); //GoodVersionTimedpLv=2 slv=2 exit
+    rs.getData().put("DEP3IID", pl.getItsProduct().getGdCat().getDep().getIid()); //GoodVersionTimedpLv=2 slv=2 exit
     //filling:
-    Map<String, Object> rqVs = new HashMap<String, Object>();
     Map<String, Object> vs = new HashMap<String, Object>();
-    //FilEntRs<RS> filEntRs = (FilEntRs<RS>) this.fctApp.laz(this.rqVs, FilEntRs.class.getSimpleName());
+    vs.put("PersistableHeaddpLv", 0);
+    vs.put("GoodVersionTimedpLv", 2);
     PersistableLine plf = new PersistableLine();
-    //filEntRs.fill(rqVs, vs, plf, rs);
+    FilEntRs<RS> filEntRs = (FilEntRs<RS>) this.fctApp.laz(this.rqVs, FilEntRs.class.getSimpleName());
+    filEntRs.fill(this.rqVs, vs, plf, rs);
+    assertEquals(pl.getIid(), plf.getIid());
+    assertEquals(pl.getVer(), plf.getVer());
+    assertEquals(pl.getDbOr(), plf.getDbOr());
+    assertEquals(pl.getItsPrice(), plf.getItsPrice());
+    assertEquals(pl.getItsTotal(), plf.getItsTotal());
+    assertEquals(pl.getItsQuantity(), plf.getItsQuantity());
+    assertEquals(pl.getOwnr().getIid(), plf.getOwnr().getIid());
+    assertNull(plf.getOwnr().getVer());
+    assertEquals(pl.getItsProduct().getIid(), plf.getItsProduct().getIid());
+    assertEquals(pl.getItsProduct().getVer(), plf.getItsProduct().getVer());
+    assertEquals(pl.getItsProduct().getDbOr(), plf.getItsProduct().getDbOr());
+    assertEquals(pl.getItsProduct().getIdOr(), plf.getItsProduct().getIdOr());
+    assertEquals(pl.getItsProduct().getNme(), plf.getItsProduct().getNme());
+    assertEquals(pl.getItsProduct().getGdCat().getIid(), plf.getItsProduct().getGdCat().getIid());
+    assertEquals(pl.getItsProduct().getGdCat().getVer(), plf.getItsProduct().getGdCat().getVer());
+    assertEquals(pl.getItsProduct().getGdCat().getDbOr(), plf.getItsProduct().getGdCat().getDbOr());
+    assertEquals(pl.getItsProduct().getGdCat().getNme(), plf.getItsProduct().getGdCat().getNme());
+    assertEquals(pl.getItsProduct().getGdCat().getDep().getIid(), plf.getItsProduct().getGdCat().getDep().getIid());
+    assertNull(plf.getItsProduct().getGdCat().getDep().getVer());
+    vs.remove("PersistableHeaddpLv");
+    String[] ndFds = new String[] {"iid", "itsDate", "itsStatus", "isClosed"};
+    vs.put("PersistableHeadndFds", ndFds);
+    rs.getData().put("OWNR1ITSSTATUS", pl.getOwnr().getItsStatus().ordinal());
+    rs.getData().put("OWNR1ITSDATE", pl.getOwnr().getItsDate().getTime());
+    rs.getData().put("OWNR1ISCLOSED", pl.getOwnr().getIsClosed() ? 1 : 0);
+    plf = new PersistableLine();
+    filEntRs.fill(this.rqVs, vs, plf, rs);
+    assertEquals(pl.getIid(), plf.getIid());
+    assertEquals(pl.getVer(), plf.getVer());
+    assertEquals(pl.getDbOr(), plf.getDbOr());
+    assertEquals(pl.getItsPrice(), plf.getItsPrice());
+    assertEquals(pl.getItsTotal(), plf.getItsTotal());
+    assertEquals(pl.getItsQuantity(), plf.getItsQuantity());
+    assertEquals(pl.getOwnr().getIid(), plf.getOwnr().getIid());
+    assertEquals(pl.getOwnr().getItsDate(), plf.getOwnr().getItsDate());
+    assertEquals(pl.getOwnr().getItsStatus(), plf.getOwnr().getItsStatus());
+    assertEquals(pl.getOwnr().getIsClosed(), plf.getOwnr().getIsClosed());
+    assertNull(plf.getOwnr().getVer());
   }
 }

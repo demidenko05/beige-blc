@@ -29,13 +29,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.lang.reflect.Method;
 
 import org.beigesoft.mdl.LvDep;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.mdl.IHasId;
+import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHldNm;
 
 /**
@@ -51,6 +51,11 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
   implements IFilFld<IRecSet<RS>> {
 
   /**
+   * <p>Log.</p>
+   **/
+  private ILog log;
+
+  /**
    * <p>Fields classes holder.</p>
    **/
   private IHldNm<Class<?>, Class<?>> hldFdCls;
@@ -63,7 +68,7 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
   /**
    * <p>Filler entity factory.</p>
    */
-  private IFilEnt<IRecSet<RS>> filEnt;
+  private IFilObj<IRecSet<RS>> filEnt;
 
   /**
    * <p>Fills object's field.</p>
@@ -80,27 +85,81 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
   public final <T> void fill(final Map<String, Object> pRqVs,
     final Map<String, Object> pVs, final T pObj,
       final IRecSet<RS> pRs, final String pFlNm) throws Exception {
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 7002 && this.log.getDbgCl() > 7000;
     @SuppressWarnings("unchecked")
     Class<E> flCls = (Class<E>) this.hldFdCls.get(pObj.getClass(), pFlNm);
     E val = flCls.newInstance();
     @SuppressWarnings("unchecked")
     List<LvDep> lvDeps = (List<LvDep>) pVs.get("lvDeps");
-    LvDep clvDep = lvDeps.get(lvDeps.size() - 1);
+    LvDep clvDep;
     String tbAl = null;
     List<String> tbAls = null;
-    if (lvDeps.size() > 1 && clvDep.getDep() > 0) {
-      Integer alsIdx = lvDeps.size() - 1;
-      tbAl = pFlNm.toUpperCase() + alsIdx;
-      tbAls = (List<String>) pVs.get("tbAls");
-      if (tbAls == null) {
-        tbAls = new ArrayList<String>();
-        pVs.put("tbAls", tbAls);
+    Integer dpLv = (Integer) pVs.get(flCls.getSimpleName() + "dpLv");
+    if (dpLv != null) { //custom level for subentity(owned) subbranch:
+      clvDep = new LvDep();
+      clvDep.setDep(dpLv);
+      lvDeps.add(clvDep);
+      if (isDbgSh) {
+        this.log.debug(pRqVs, FilEntRs.class, "Start fill custDL subent/DL/CL: "
+            + flCls + "/" + clvDep.getDep() + "/" + clvDep.getCur());
       }
-      tbAls.add(tbAl);
+    } else { //entering into new sub/branch's sub-entity:
+      clvDep = lvDeps.get(lvDeps.size() - 1);
+      clvDep.setCur(clvDep.getCur() + 1);
+      if (isDbgSh) {
+        this.log.debug(pRqVs, FilEntRs.class, "Start subent/DL/CL: "
+            + flCls + "/" + clvDep.getDep() + "/" + clvDep.getCur());
+      }
+    }
+    if (lvDeps.size() > 1) { //sub-branch, main branch level change:
+      lvDeps.get(0).setCur(lvDeps.get(0).getCur() + 1);
+      this.log.debug(pRqVs, FilEntRs.class, "Main branch UP DL/CL: "
+          + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
+    }
+    tbAl = pFlNm.toUpperCase() + lvDeps.get(0).getCur();
+    tbAls = (List<String>) pVs.get("tbAls");
+    tbAls.add(tbAl);
+    if (isDbgSh) {
+      this.log.debug(pRqVs, FilFldHsIdRs.class, "Added tbAl/cls: " + tbAl
+        + "/" + flCls);
     }
     this.filEnt.fill(pRqVs, pVs, val, pRs);
     if (tbAl != null) {
       tbAls.remove(tbAl);
+      if (isDbgSh) {
+        this.log.debug(pRqVs, FilFldHsIdRs.class, "Removed tbAl/cls: " + tbAl
+          + "/" + flCls);
+      }
+    }
+    if (lvDeps.size() > 1) { //move down through custom DL subentities branch:
+      LvDep ld = lvDeps.get(lvDeps.size() - 1);
+      if (ld.getCur() == 0) { //ending custom DL subentity:
+        lvDeps.remove(lvDeps.size() - 1);
+        if (isDbgSh) {
+          this.log.debug(pRqVs, FilEntRs.class,
+            "Finish custom DL root subentity: " + flCls);
+        }
+      } else { //finish subentity:
+        ld.setCur(ld.getCur() - 1);
+        if (isDbgSh) {
+          this.log.debug(pRqVs, FilEntRs.class,
+            "Finish custom DL subentity: " + flCls);
+        }
+      }
+      //sub-branch, main branch level change:
+      lvDeps.get(0).setCur(lvDeps.get(0).getCur() - 1);
+      this.log.debug(pRqVs, FilEntRs.class, "Main branch DOWN DL/CL: "
+          + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
+    } else {  //move down through root DL subentities branch:
+      LvDep ld = lvDeps.get(0);
+      if (ld.getCur() > 0) { //finish subentity:
+        ld.setCur(ld.getCur() - 1);
+        if (isDbgSh) {
+          this.log.debug(pRqVs, FilEntRs.class,
+            "Finish custom subentity: " + flCls);
+        }
+      }
     }
     if (val.getIid() == null) {
       val = null;
@@ -110,6 +169,22 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
   }
 
   //Simple getters and setters:
+  /**
+   * <p>Getter for log.</p>
+   * @return ILog
+   **/
+  public final ILog getLog() {
+    return this.log;
+  }
+
+  /**
+   * <p>Setter for log.</p>
+   * @param pLog reference
+   **/
+  public final void setLog(final ILog pLog) {
+    this.log = pLog;
+  }
+
   /**
    * <p>Getter for hldFdCls.</p>
    * @return IHldNm<Class<?>, Class<?>>
@@ -144,9 +219,9 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
 
   /**
    * <p>Getter for filEnt.</p>
-   * @return IFilEnt<IRecSet<RS>>
+   * @return IFilObj<IRecSet<RS>>
    **/
-  public final IFilEnt<IRecSet<RS>> getFilEnt() {
+  public final IFilObj<IRecSet<RS>> getFilEnt() {
     return this.filEnt;
   }
 
@@ -154,7 +229,7 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
    * <p>Setter for filEnt.</p>
    * @param pFilEnt reference
    **/
-  public final void setFilEnt(final IFilEnt<IRecSet<RS>> pFilEnt) {
+  public final void setFilEnt(final IFilObj<IRecSet<RS>> pFilEnt) {
     this.filEnt = pFilEnt;
   }
 }

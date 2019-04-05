@@ -48,7 +48,7 @@ import org.beigesoft.cnv.CnvBnRsStr;
  *
  * @author Yury Demidenko
  */
-public class HldNmCnBnFrRs implements IHldNm<Class<?>, String> {
+public class HldNmCnFrRs implements IHldNm<Class<?>, String> {
 
   /**
    * <p>Holder of an entity's field's class.</p>
@@ -65,7 +65,7 @@ public class HldNmCnBnFrRs implements IHldNm<Class<?>, String> {
   /**
    * <p>Only constructor.</p>
    **/
-  public HldNmCnBnFrRs() {
+  public HldNmCnFrRs() {
     this.stdCnvNms = new HashMap<Class<?>, String>();
     this.stdCnvNms.put(Date.class, CnvBnRsDt.class.getSimpleName());
     this.stdCnvNms.put(Integer.class, CnvBnRsInt.class.getSimpleName());

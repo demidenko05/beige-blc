@@ -26,57 +26,30 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdl;
+package org.beigesoft.cnv;
+
+import java.util.Map;
 
 /**
- * <p>Model of branch current level and required deep.
- * Entity deep level 0 - only ID, 1 - its owned entities only ID,
- * 2 - owned fulfilled but their owned has only ID...</p>
+ * <p>Abstraction of service that fills/converts object
+ * from a source, e.g. filling entity from given SQL result-set or HTML request,
+ * or filling column values from given entity.</p>
  *
+ * @param <S> source type
  * @author Yury Demidenko
  */
-public class LvDep  {
+public interface IFilObj<S> {
 
   /**
-   * <p>Current level, from 0.</p>
+   * <p>Fills object's fields from given source data.</p>
+   * @param <T> object (entity) type
+   * @param pRqVs request scoped vars
+   * @param pVs invoker scoped vars, e.g. a current converted field's class of
+   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
+   * @param pObj object to fill, not null
+   * @param pSrc Source, e.g. request data
+   * @throws Exception - an exception
    **/
-  private int cur = 0;
-
-  /**
-   * <p>Required deep, 2 default.</p>
-   **/
-  private int dep = 2;
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for cur.</p>
-   * @return int
-   **/
-  public final int getCur() {
-    return this.cur;
-  }
-
-  /**
-   * <p>Setter for cur.</p>
-   * @param pCur reference
-   **/
-  public final void setCur(final int pCur) {
-    this.cur = pCur;
-  }
-
-  /**
-   * <p>Getter for dep.</p>
-   * @return int
-   **/
-  public final int getDep() {
-    return this.dep;
-  }
-
-  /**
-   * <p>Setter for dep.</p>
-   * @param pDep reference
-   **/
-  public final void setDep(final int pDep) {
-    this.dep = pDep;
-  }
+  <T> void fill(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, T pObj, S pSrc) throws Exception;
 }

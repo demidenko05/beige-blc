@@ -36,7 +36,7 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctRq;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.fct.IFctCls;
-import org.beigesoft.cnv.IFilEnt;
+import org.beigesoft.cnv.IFilObj;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.srv.IEntFlRp;
 
@@ -56,7 +56,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
   /**
    * <p>Service that fill entity from request.</p>
    **/
-  private IFilEnt<IReqDt> filEntRq;
+  private IFilObj<IReqDt> filEntRq;
 
   /**
    * <p>Entities factories factory.</p>
@@ -136,9 +136,9 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
 
   /**
    * <p>Getter for filEntRq.</p>
-   * @return IFilEnt<IReqDt>
+   * @return IFilObj<IReqDt>
    **/
-  public final IFilEnt<IReqDt> getFilEntRq() {
+  public final IFilObj<IReqDt> getFilEntRq() {
     return this.filEntRq;
   }
 
@@ -146,7 +146,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
    * <p>Setter for filEntRq.</p>
    * @param pFilEntRq reference
    **/
-  public final void setFilEntRq(final IFilEnt<IReqDt> pFilEntRq) {
+  public final void setFilEntRq(final IFilObj<IReqDt> pFilEntRq) {
     this.filEntRq = pFilEntRq;
   }
 
