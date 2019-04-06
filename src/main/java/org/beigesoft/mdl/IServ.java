@@ -33,7 +33,7 @@ package org.beigesoft.mdl;
  *
  * @author Yury Demidenko
  */
-public interface IServ extends IIdLnVrNm {
+public interface IServ extends IIdLnNm {
 
   /**
    * <p>Getter for tmMe.

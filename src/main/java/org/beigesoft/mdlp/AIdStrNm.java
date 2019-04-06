@@ -28,36 +28,38 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.mdlp;
 
-import org.beigesoft.mdl.AHasVr;
-import org.beigesoft.mdl.IIdStrVr;
+import org.beigesoft.mdl.IIdStrNm;
 
 /**
- * <p>Base abstraction mdlp model with ID String type.</p>
+ * <p>
+ * Abstraction of model with name and
+ * non-generated String Id.
+ * </p>
  *
  * @author Yury Demidenko
  */
-public abstract class AIdStrVr extends AHasVr implements IIdStrVr {
+public abstract class AIdStrNm extends AIdStr implements IIdStrNm {
 
   /**
-   * <p>Fast explicit, usable ID of type String.</p>
+   * <p>Name.</p>
    **/
-  private String iid;
+  private String nme;
 
   /**
-   * <p>Geter for id.</p>
+   * <p>Geter for nme.</p>
    * @return String
    **/
   @Override
-  public final String getIid() {
-    return this.iid;
+  public final String getNme() {
+    return this.nme;
   }
 
   /**
-   * <p>Setter for id.</p>
-   * @param pId reference/value
+   * <p>Setter for nme.</p>
+   * @param pNme reference
    **/
   @Override
-  public final void setIid(final String pId) {
-    this.iid = pId;
+  public final void setNme(final String pNme) {
+    this.nme = pNme;
   }
 }

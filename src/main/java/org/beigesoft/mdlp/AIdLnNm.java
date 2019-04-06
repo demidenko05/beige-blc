@@ -28,14 +28,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.mdlp;
 
-import org.beigesoft.mdl.IIdLnVrNm;
+import org.beigesoft.mdl.IIdLnNm;
 
 /**
  * <p>Abstraction of mdlp model with name, Long Id and version.</p>
  *
  * @author Yury Demidenko
  */
-public abstract class AIdLnVrNm extends AIdLnVr implements IIdLnVrNm {
+public abstract class AIdLnNm extends AIdLn implements IIdLnNm {
 
   /**
    * <p>Name.</p>

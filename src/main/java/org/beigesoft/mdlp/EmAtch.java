@@ -35,7 +35,7 @@ import org.beigesoft.mdl.IOwned;
  *
  * @author Yury Demidenko
  */
-public class EmAtch extends AIdLnVrNm implements IOwned<EmMsg> {
+public class EmAtch extends AIdLnNm implements IOwned<EmMsg> {
 
   /**
    * <p>Email message.</p>

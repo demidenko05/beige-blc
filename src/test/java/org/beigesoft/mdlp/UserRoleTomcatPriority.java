@@ -50,6 +50,29 @@ public class UserRoleTomcatPriority extends AEditable
   private Integer priority;
 
   /**
+   * <p>Version to check dirty or replication.</p>
+   **/
+  private Long ver;
+
+  /**
+   * <p>Geter for ver.</p>
+   * @return Long
+   **/
+  @Override
+  public final Long getVer() {
+    return this.ver;
+  }
+
+  /**
+   * <p>Setter for ver.</p>
+   * @param pVer reference
+   **/
+  @Override
+  public final void setVer(final Long pVer) {
+    this.ver = pVer;
+  }
+
+  /**
    * <p>Getter for itsId.</p>
    * @return UsRlTmc
    **/

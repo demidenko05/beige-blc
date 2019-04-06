@@ -30,7 +30,7 @@ package org.beigesoft.mdlp;
 
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IHasNm;
-import org.beigesoft.mdl.IIdLnVrNm;
+import org.beigesoft.mdl.IIdLnNm;
 import org.beigesoft.mdl.AHasVr;
 
 /**
@@ -42,8 +42,8 @@ import org.beigesoft.mdl.AHasVr;
  * @param <ID> ID type
  * @author Yury Demidenko
  */
-public abstract class AI18nNm<T extends IIdLnVrNm, ID extends AI18nNmId<T>>
-    extends AHasVr implements IHasId<ID>, IHasNm {
+public abstract class AI18nNm<T extends IIdLnNm, ID extends AI18nNmId<T>>
+    extends AHasVr<ID> implements IHasId<ID>, IHasNm {
 
   /**
    * <p>Name in the language.</p>

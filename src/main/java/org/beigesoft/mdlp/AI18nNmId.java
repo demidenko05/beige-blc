@@ -28,7 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.mdlp;
 
-import org.beigesoft.mdl.IIdLnVrNm;
+import org.beigesoft.mdl.IIdLnNm;
 
 /**
  * <p>
@@ -39,7 +39,7 @@ import org.beigesoft.mdl.IIdLnVrNm;
  * @param <T> item type
  * @author Yury Demidenko
  */
-public abstract class AI18nNmId<T extends IIdLnVrNm> {
+public abstract class AI18nNmId<T extends IIdLnNm> {
 
   /**
    * <p>The language.</p>

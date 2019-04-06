@@ -36,7 +36,7 @@ import org.beigesoft.mdl.IHasNm;
  *
  * @author Yury Demidenko
  */
-public abstract class AI18nFtr extends AIdStrVr implements IHasNm {
+public abstract class AI18nFtr extends AIdStr implements IHasNm {
 
   /**
    * <p>Name.</p>

@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @author Yury Demidenko
  */
-public class MaFrn extends AIdLnVrNm {
+public class MaFrn extends AIdLnNm {
 
   /**
    * <p>Not null, simple class name of native entity,

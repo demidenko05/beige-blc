@@ -29,10 +29,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.mdl;
 
 /**
- * <p>Abstraction an persistable model that must has ID.</p>
+ * <p>Abstraction an persistable model that must has ID, any persistable
+ * model must has version for dirty checking, tracking and replication,
+ * so version is included to avoid excessive interfaces and classes.
+ * Version algorithm: 0 autoincrement, 1 changed time.</p>
  *
- * @author Yury Demidenko
  * @param <ID> type of ID
+ * @author Yury Demidenko
  */
 public interface IHasId<ID> extends IEditable {
 
@@ -40,6 +43,28 @@ public interface IHasId<ID> extends IEditable {
    * <p>ID field name.</p>
    **/
   String IDNM = "iid";
+
+  /**
+   * <p>Field and column version name.</p>
+   **/
+  String VERNM = "ver";
+
+  /**
+   * <p>Setting version algorithm name.</p>
+   **/
+  String VERALGNM = "vrAlg";
+
+  /**
+   * <p>Geter for itsVersion to check dirty.</p>
+   * @return Long
+   **/
+  Long getVer();
+
+  /**
+   * <p>Setter for itsVersion to check dirty.</p>
+   * @param pVer reference
+   **/
+  void setVer(final Long pVer);
 
   /**
    * <p>Usually it's simple getter that return model ID.</p>

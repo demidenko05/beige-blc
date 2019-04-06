@@ -38,7 +38,7 @@ import org.beigesoft.mdl.IOwned;
  *
  * @author Yury Demidenko
  */
- public class PersistableLine extends AOrIdVr implements IOwned<PersistableHead> {
+ public class PersistableLine extends AOrId implements IOwned<PersistableHead> {
 
   private PersistableHead ownr;
   

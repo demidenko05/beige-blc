@@ -31,7 +31,7 @@ package org.beigesoft.rpl;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.beigesoft.mdl.IHasVr;
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.rdb.IOrm;
 
 /**
@@ -43,7 +43,7 @@ import org.beigesoft.rdb.IOrm;
  * @param <T> entity type
  * @author Yury Demidenko
  */
-public class RpEntSyDb<RS, T extends IHasVr> implements IRpEntSync<T> {
+public class RpEntSyDb<RS, T extends IHasId<?>> implements IRpEntSync<T> {
 
   /**
    * <p>ORM service.</p>

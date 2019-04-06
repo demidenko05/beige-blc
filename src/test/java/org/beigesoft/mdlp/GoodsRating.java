@@ -50,6 +50,29 @@ public class GoodsRating extends AEditable
   private Integer averageRating;
 
   /**
+   * <p>Version to check dirty or replication.</p>
+   **/
+  private Long ver;
+
+  /**
+   * <p>Geter for ver.</p>
+   * @return Long
+   **/
+  @Override
+  public final Long getVer() {
+    return this.ver;
+  }
+
+  /**
+   * <p>Setter for ver.</p>
+   * @param pVer reference
+   **/
+  @Override
+  public final void setVer(final Long pVer) {
+    this.ver = pVer;
+  }
+
+  /**
    * <p>Usually it's simple getter that return model ID.</p>
    * @return ID model ID
    **/

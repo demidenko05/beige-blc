@@ -31,7 +31,7 @@ package org.beigesoft.cmp;
 import java.util.Comparator;
 import java.io.Serializable;
 
-import org.beigesoft.mdl.IHasVr;
+import org.beigesoft.mdl.IHasId;
 
 /**
  * <p>Comparator of model that has Version.</p>
@@ -39,7 +39,8 @@ import org.beigesoft.mdl.IHasVr;
  * @param <T> has version type
  * @author Yury Demidenko
  */
-public class CmpHasVr<T extends IHasVr> implements Comparator<T>, Serializable {
+public class CmpHasVr<T extends IHasId<?>>
+  implements Comparator<T>, Serializable {
 
   /**
    * <p>serialVersionUID.</p>

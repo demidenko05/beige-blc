@@ -40,7 +40,7 @@ import org.beigesoft.mdl.EStatus;
  *
  * @author Yury Demidenko
  */
- public class PersistableHead extends AOrIdVr {
+ public class PersistableHead extends AOrId {
 
   /**
    * <p>Date.</p>

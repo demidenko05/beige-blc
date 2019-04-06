@@ -37,7 +37,7 @@ import org.beigesoft.mdl.IOwned;
  *
  * @author Yury Demidenko
  */
-public class CsvCl extends AIdLnVrNm implements IOwned<CsvMth> {
+public class CsvCl extends AIdLnNm implements IOwned<CsvMth> {
 
   /**
    * <p>CSV method.</p>

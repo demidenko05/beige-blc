@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author Yury Demidenko
  */
-public class EmCon extends AIdLnVrNm {
+public class EmCon extends AIdLnNm {
 
   /**
    * <p>User email.</p>

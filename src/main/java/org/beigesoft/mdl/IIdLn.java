@@ -17,6 +17,6 @@ package org.beigesoft.mdl;
  *
  * @author Yury Demidenko
  */
-public interface IIdLnVr extends IHasId<Long>, IHasVr {
+public interface IIdLn extends IHasId<Long> {
 
 }

@@ -26,30 +26,31 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdl;
+package org.beigesoft.cnv;
+
+import java.util.Map;
 
 /**
- * <p>Abstraction a model that has Version, e.g. for dirty checking
- * or replication.</p>
+ * <p>Abstraction of service that fills/converts given
+ * destination container with given source data and name, e.g. fill entity's
+ * field from DB result-set or request data,  or fill column
+ * values with entity's field.</p>
  *
+ * @param <S> source type
+ * @param <D> destination type
  * @author Yury Demidenko
  */
-public interface IHasVr {
+public interface IFilNm<S, D> {
 
   /**
-   * <p>Field and column version name.</p>
+   * <p>Fills given destination container with given source data and name.</p>
+   * @param pRqVs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, ver, nme}.
+   * @param pSrc source, e.g. request data or entity
+   * @param pDst destination container, e.g. entity or column values
+   * @param pNm name, e.g. field name
+   * @throws Exception - an exception
    **/
-  String VERNM = "ver";
-
-  /**
-   * <p>Geter for itsVersion to check dirty.</p>
-   * @return Long
-   **/
-  Long getVer();
-
-  /**
-   * <p>Setter for itsVersion to check dirty.</p>
-   * @param pVer reference
-   **/
-  void setVer(final Long pVer);
+  void fill(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, S pSrc, D pDst, String pNm) throws Exception;
 }

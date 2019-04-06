@@ -37,7 +37,7 @@ import java.math.BigDecimal;
  *
  * @author Yury Demidenko
  */
-public class GdCat extends AOrIdVrNm {
+public class GdCat extends AOrIdNm {
 
   /**
    * <p>Department.</p>

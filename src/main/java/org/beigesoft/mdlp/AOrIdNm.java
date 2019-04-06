@@ -26,13 +26,37 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdl;
+package org.beigesoft.mdlp;
+
+import org.beigesoft.mdl.IIdLnNm;
 
 /**
- * <p>Abstraction of persistable model with String ID and version.</p>
+ * <pre>Base abstraction mdlp model with name.</pre>
  *
  * @author Yury Demidenko
  */
-public interface IIdStrVr extends IHasId<String>, IHasVr {
+public abstract class AOrIdNm extends AOrId implements IIdLnNm {
 
+  /**
+   * <pre>Usable field nme.</pre>
+   **/
+  private String nme;
+
+  /**
+   * <p>Geter for nme.</p>
+   * @return String
+   **/
+  @Override
+  public final String getNme() {
+    return this.nme;
+  }
+
+  /**
+   * <p>Setter for nme.</p>
+   * @param pNme reference
+   **/
+  @Override
+  public final void setNme(final String pNme) {
+    this.nme = pNme;
+  }
 }

@@ -34,6 +34,6 @@ package org.beigesoft.mdlp;
  *
  * @author Yury Demidenko
  */
-public class Warehouse extends AIdLnVrNm {
+public class Warehouse extends AIdLnNm {
 
 }

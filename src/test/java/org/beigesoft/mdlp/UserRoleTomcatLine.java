@@ -35,7 +35,7 @@ import org.beigesoft.mdl.IOwned;
  *
  * @author Yury Demidenko
  */
-public class UserRoleTomcatLine extends AIdLnVr implements IOwned<UsRlTmc> {
+public class UserRoleTomcatLine extends AIdLn implements IOwned<UsRlTmc> {
 
   /**
    * <p>Complex foreign ID.</p>

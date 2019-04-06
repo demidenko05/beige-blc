@@ -29,14 +29,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.mdlp;
 
 import org.beigesoft.mdl.AHasVr;
-import org.beigesoft.mdl.IIdLnVr;
+import org.beigesoft.mdl.IIdLn;
 
 /**
  * <p>Base abstraction mdlp model with ID Long type and version.</p>
  *
  * @author Yury Demidenko
  */
-public abstract class AIdLnVr extends AHasVr implements IIdLnVr {
+public abstract class AIdLn extends AHasVr<Long> implements IIdLn {
 
   /**
    * <p>Fast explicit, usable ID of type Long.</p>

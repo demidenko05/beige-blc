@@ -36,7 +36,7 @@ import org.beigesoft.mdl.AHasVr;
  *
  * @author Yury Demidenko
  */
-public class UsPrf extends AHasVr implements IHasId<UsPrfId> {
+public class UsPrf extends AHasVr<UsPrfId> implements IHasId<UsPrfId> {
 
   /**
    * <p>ID.</p>

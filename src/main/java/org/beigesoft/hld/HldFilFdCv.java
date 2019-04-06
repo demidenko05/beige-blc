@@ -26,55 +26,70 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.cnv;
+package org.beigesoft.hld;
 
 import java.util.Map;
-import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Date;
+import java.math.BigDecimal;
 
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.mdl.IHasId;
+import org.beigesoft.cnv.FilNmCvHsId;
+import org.beigesoft.cnv.FilNmCvSmp;
 
 /**
- * <p>Standard service that fills/converts object's field of type Enum from
- * given string value (HTML parameter).</p>
+ * <p>Holder of names of fillers of column values with fields values.</p>
  *
- * @param <E> Enum type
  * @author Yury Demidenko
  */
-public class FilFldEnmStr<E extends Enum<E>> implements IFilFld<String> {
+public class HldFilFdCv implements IHldNm<Class<?>, String> {
 
+  //Services:
   /**
    * <p>Holder of an entity's field's class.</p>
    **/
   private IHldNm<Class<?>, Class<?>> hldFdCls;
 
   /**
-   * <p>Fields setters RAPI holder.</p>
+   * <p>Map of names of standard fillers of fields values from string.
+   * It's hard coded map Fields standard type - standard filler name.
+   * Fields like Entity, Enum, Composite ID requires manual format.</p>
    **/
-  private IHldNm<Class<?>, Method> hldSets;
+  private final Map<Class<?>, String> stdFilNms;
 
   /**
-   * <p>Fills object's field.</p>
-   * @param <T> object type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pObj Object to fill, not null
-   * @param pStVl Source field string value
-   * @param pFlNm Field name
-   * @throws Exception - an exception
+   * <p>Only constructor.</p>
+   **/
+  public HldFilFdCv() {
+    this.stdFilNms = new HashMap<Class<?>, String>();
+    this.stdFilNms.put(Integer.class, FilNmCvSmp.class.getSimpleName());
+    this.stdFilNms.put(Long.class, FilNmCvSmp.class.getSimpleName());
+    this.stdFilNms.put(String.class, FilNmCvSmp.class.getSimpleName());
+    this.stdFilNms.put(Float.class, FilNmCvSmp.class.getSimpleName());
+    this.stdFilNms.put(Double.class, FilNmCvSmp.class.getSimpleName());
+    this.stdFilNms.put(Boolean.class, FilNmCvSmp.class.getSimpleName());
+    this.stdFilNms.put(BigDecimal.class, FilNmCvSmp.class.getSimpleName());
+    this.stdFilNms.put(Date.class, FilNmCvSmp.class.getSimpleName());
+  }
+
+  /**
+   * <p>Get filler name for given class and field name.</p>
+   * @param pCls a Class
+   * @param pFlNm Field Name
+   * @return filler from string name
    **/
   @Override
-  public final <T> void fill(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final T pObj,
-      final String pStVl, final String pFlNm) throws Exception {
-    Enum<?> val = null;
-    if (pStVl != null && !"".equals(pStVl)) {
-      @SuppressWarnings("unchecked")
-      Class<E> flCls = (Class<E>) this.hldFdCls.get(pObj.getClass(), pFlNm);
-      val = Enum.valueOf(flCls, pStVl);
+  public final String get(final Class<?> pCls, final String pFlNm) {
+    Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
+    if (IHasId.class.isAssignableFrom(fdCls)) {
+      return FilNmCvHsId.class.getSimpleName();
     }
-    Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
-    setr.invoke(pObj, val);
+    String rez = this.stdFilNms.get(fdCls);
+    if (rez == null) {
+      throw new RuntimeException("There is no FIL CV FR FLD! enCl/flNm/fdCl: "
+        + pCls.getSimpleName() + "/" + pFlNm + "/" + fdCls.getSimpleName());
+    }
+    return rez;
   }
 
   //Simple getters and setters:
@@ -92,21 +107,5 @@ public class FilFldEnmStr<E extends Enum<E>> implements IFilFld<String> {
    **/
   public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
     this.hldFdCls = pHldFdCls;
-  }
-
-  /**
-   * <p>Getter for hldSets.</p>
-   * @return IHldNm<Class<?>, Method>
-   **/
-  public final IHldNm<Class<?>, Method> getHldSets() {
-    return this.hldSets;
-  }
-
-  /**
-   * <p>Setter for hldSets.</p>
-   * @param pHldSets reference
-   **/
-  public final void setHldSets(final IHldNm<Class<?>, Method> pHldSets) {
-    this.hldSets = pHldSets;
   }
 }

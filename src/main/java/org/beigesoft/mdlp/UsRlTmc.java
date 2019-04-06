@@ -54,6 +54,29 @@ public class UsRlTmc extends AEditable implements IHasId<UsRlTmcId> {
   private String rol;
 
   /**
+   * <p>Version to check dirty or replication.</p>
+   **/
+  private Long ver;
+
+  /**
+   * <p>Geter for ver.</p>
+   * @return Long
+   **/
+  @Override
+  public final Long getVer() {
+    return this.ver;
+  }
+
+  /**
+   * <p>Setter for ver.</p>
+   * @param pVer reference
+   **/
+  @Override
+  public final void setVer(final Long pVer) {
+    this.ver = pVer;
+  }
+
+  /**
    * <p>Geter for iid.</p>
    * @return UsRlTmcId
    **/

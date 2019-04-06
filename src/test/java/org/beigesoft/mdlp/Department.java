@@ -36,6 +36,6 @@ import java.util.List;
  *
  * @author Yury Demidenko
  */
-public class Department extends AOrIdVrNm {
+public class Department extends AOrIdNm {
 
 }

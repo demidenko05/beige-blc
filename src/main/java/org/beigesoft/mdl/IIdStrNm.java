@@ -29,10 +29,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.mdl;
 
 /**
- * <p>Abstraction of persistable model with Long ID, name and version.</p>
+ * <p>Abstraction of persistable model with String ID, name and version.</p>
  *
  * @author Yury Demidenko
  */
-public interface IIdLnVrNm extends IIdLnVr, IHasNm {
+public interface IIdStrNm extends IIdStr, IHasNm {
 
 }

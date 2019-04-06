@@ -29,52 +29,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Date;
-
-import org.beigesoft.exc.ExcCode;
-import org.beigesoft.mdl.ColVals;
 
 /**
- * <p>Converter version to column values according version algorithm.</p>
+ * <p>Abstraction of service that fills/converts given
+ * destination container with given source data, e.g. fill entity
+ * from DB result-set or request data,  or fill column
+ * values from entity.</p>
  *
+ * @param <S> source type
+ * @param <D> destination type
  * @author Yury Demidenko
  */
-public class CnvIbnVrCv implements IConvNmInto<Long, ColVals> {
+public interface IFiller<S, D> {
 
   /**
-   * <p>Put version current and old to column values
-   * according version algorithm.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pFrom from a Long object
-   * @param pClVl to column values
-   * @param pNm field name
+   * <p>Fills given destination container with given source data.</p>
+   * @param pRqVs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, ver, nme}.
+   * @param pSrc source, e.g. request data or entity
+   * @param pDst destination container, e.g. entity or column values
    * @throws Exception - an exception
    **/
-  @Override
-  public final void conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Long pFrom,
-      final ColVals pClVl, final String pNm) throws Exception {
-    Integer verAlg = (Integer) pVs.get("verAlg");
-    if (verAlg == null) {
-      throw new ExcCode(ExcCode.WRCN, "Missed parameter verAlg!");
-    }
-    Long vlNew = null;
-    if (verAlg == 1) {
-      vlNew = new Date().getTime();
-    } else {
-      if (pFrom == null) {
-        vlNew = 1L;
-      } else {
-        vlNew = pFrom + 1L;
-      }
-    }
-    if (pClVl.getLongs() == null) {
-      pClVl.setLongs(new HashMap<String, Long>());
-    }
-    pClVl.getLongs().put(pNm, vlNew);
-    pClVl.setOldVer(pFrom);
-  }
+  void fill(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, S pSrc, D pDst) throws Exception;
 }

@@ -28,7 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.mdlp;
 
-import org.beigesoft.mdl.IIdLnVr;
+import org.beigesoft.mdl.IIdLn;
 
 /**
  * <p>Abstraction of base persistable model for distributed databases.
@@ -40,7 +40,7 @@ import org.beigesoft.mdl.IIdLnVr;
  *
  * @author Yury Demidenko
  */
-public interface IOrId extends IIdLnVr {
+public interface IOrId extends IIdLn {
 
   /**
    * <p>Geter for ID of Original Database (Birth).</p>

@@ -31,9 +31,10 @@ package org.beigesoft.mdl;
 /**
  * <p>Base abstraction editable model with version.</p>
  *
+ * @param <ID> type of ID
  * @author Yury Demidenko
  */
-public abstract class AHasVr extends AEditable implements IHasVr {
+public abstract class AHasVr<ID> extends AEditable implements IHasId<ID> {
 
   /**
    * <p>Version to check dirty or replication.</p>

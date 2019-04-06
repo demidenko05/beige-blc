@@ -26,13 +26,38 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdl;
+package org.beigesoft.mdlp;
+
+import org.beigesoft.mdl.AHasVr;
+import org.beigesoft.mdl.IIdStr;
 
 /**
- * <p>Abstraction of persistable model with String ID, name and version.</p>
+ * <p>Base abstraction mdlp model with ID String type.</p>
  *
  * @author Yury Demidenko
  */
-public interface IIdStrVrNm extends IIdStrVr, IHasNm {
+public abstract class AIdStr extends AHasVr<String> implements IIdStr {
 
+  /**
+   * <p>Fast explicit, usable ID of type String.</p>
+   **/
+  private String iid;
+
+  /**
+   * <p>Geter for id.</p>
+   * @return String
+   **/
+  @Override
+  public final String getIid() {
+    return this.iid;
+  }
+
+  /**
+   * <p>Setter for id.</p>
+   * @param pId reference/value
+   **/
+  @Override
+  public final void setIid(final String pId) {
+    this.iid = pId;
+  }
 }

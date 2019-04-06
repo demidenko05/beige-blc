@@ -37,7 +37,7 @@ import java.math.BigDecimal;
  *
  * @author Yury Demidenko
  */
-public class GoodVersionTime extends AOrIdVrNm {
+public class GoodVersionTime extends AOrIdNm {
 
   /**
    * <p>Category for deep level testing.</p>
