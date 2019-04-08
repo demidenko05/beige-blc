@@ -41,12 +41,9 @@ import org.beigesoft.prp.ISetng;
 /**
  * <p>Fills given column values with given entity's field of entity type.</p>
  *
- * @param <S> source type
- * @param <ID> ID type
  * @author Yury Demidenko
  */
-public class FilNmCvHsId<S extends IHasId<ID>, ID>
-  implements IFilNm<S, ColVals> {
+public class FilNmCvHsId implements IFilNm<IHasId<?>, ColVals> {
 
   /**
    * <p>Log.</p>
@@ -69,14 +66,14 @@ public class FilNmCvHsId<S extends IHasId<ID>, ID>
   private IHldNm<Class<?>, Class<?>> hldFdCls;
 
   /**
-   * <p>Holder of fillers fields names.</p>
+   * <p>Holder of converters fields names.</p>
   **/
-  private IHldNm<Class<?>, String> hldFilFdNms;
+  private IHldNm<Class<?>, String> hldCnvFdNms;
 
   /**
-   * <p>Fillers fields factory.</p>
+   * <p>Converters fields factory.</p>
    */
-  private IFctNm<IFilNm<? extends IHasId<?>, ColVals>> fctFilFld;
+  private IFctNm<IConvNmInto<?, ColVals>> fctCnvFld;
 
   /**
    * <p>Fills given column values with given entity's field of entity type.</p>
@@ -89,27 +86,33 @@ public class FilNmCvHsId<S extends IHasId<ID>, ID>
    **/
   @Override
   public final void fill(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final S pEnt, final ColVals pClVl,
+    final Map<String, Object> pVs, final IHasId<?> pEnt, final ColVals pClVl,
     final String pFdNm) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7023 && this.log.getDbgCl() > 7021;
-    @SuppressWarnings("unchecked")
-    Class<IHasId<?>> fdCls = (Class<IHasId<?>>)
-      this.hldFdCls.get(pEnt.getClass(), pFdNm);
     Method getter = this.hldGets.get(pEnt.getClass(), pFdNm);
     @SuppressWarnings("unchecked")
     IHasId<?> subEnt = (IHasId<?>) getter.invoke(pEnt);
-    for (String fdNm : this.setng.lazIdFldNms(fdCls)) {
-      String filFdNm = this.hldFilFdNms.get(pEnt.getClass(), fdNm);
-      @SuppressWarnings("unchecked")
-      IFilNm<IHasId<?>, ColVals> filFl = (IFilNm<IHasId<?>, ColVals>)
-        this.fctFilFld.laz(pRqVs, filFdNm);
-      if (isDbgSh) {
-        this.log.debug(pRqVs, FilCvEnt.class,
-          "Filling FD ID CV fdNm/cls/filler: " + fdNm + "/" + fdCls
-            .getSimpleName() + "/" + filFl.getClass().getSimpleName());
+    @SuppressWarnings("unchecked")
+    Class<?> ifdCls = (Class<IHasId<?>>)
+      this.hldFdCls.get(pEnt.getClass(), pFdNm);
+    for (String fdNm : this.setng.lazIdFldNms(ifdCls)) {
+      Object val;
+      if (subEnt != null) {
+        getter = this.hldGets.get(subEnt.getClass(), fdNm);
+        val = getter.invoke(subEnt);
+      } else {
+        val = null;
       }
-      filFl.fill(pRqVs, pVs, subEnt, pClVl, fdNm);
+      String cnvFdNm = this.hldCnvFdNms.get(ifdCls, fdNm);
+      IConvNmInto<Object, ColVals> cnvFl = (IConvNmInto<Object, ColVals>)
+        this.fctCnvFld.laz(pRqVs, cnvFdNm);
+      if (isDbgSh) {
+        this.log.debug(pRqVs, FilNmCvSmp.class,
+      "Converts fdNm/cls/val/converter: " + pFdNm + "/" + ifdCls
+    .getSimpleName() + "/" + val + "/" + cnvFl.getClass().getSimpleName());
+      }
+      cnvFl.conv(pRqVs, pVs, val, pClVl, pFdNm);
     }
   }
 
@@ -179,35 +182,35 @@ public class FilNmCvHsId<S extends IHasId<ID>, ID>
   }
 
   /**
-   * <p>Getter for hldFilFdNms.</p>
+   * <p>Getter for hldCnvFdNms.</p>
    * @return IHldNm<Class<?>, String>
    **/
-  public final IHldNm<Class<?>, String> getHldFilFdNms() {
-    return this.hldFilFdNms;
+  public final IHldNm<Class<?>, String> getHldCnvFdNms() {
+    return this.hldCnvFdNms;
   }
 
   /**
-   * <p>Setter for hldFilFdNms.</p>
+   * <p>Setter for hldCnvFdNms.</p>
    * @param pHdCnFdNms reference
    **/
-  public final void setHldFilFdNms(final IHldNm<Class<?>, String> pHdCnFdNms) {
-    this.hldFilFdNms = pHdCnFdNms;
+  public final void setHldCnvFdNms(final IHldNm<Class<?>, String> pHdCnFdNms) {
+    this.hldCnvFdNms = pHdCnFdNms;
   }
 
   /**
-   * <p>Getter for fctFilFld.</p>
-   * @return IFctNm<IFilNm<?, ColVals>>
+   * <p>Getter for fctCnvFld.</p>
+   * @return IFctNm<IConvNmInto<?, ColVals>>
    **/
-  public final IFctNm<IFilNm<? extends IHasId<?>, ColVals>> getFctFilFld() {
-    return this.fctFilFld;
+  public final IFctNm<IConvNmInto<?, ColVals>> getFctCnvFld() {
+    return this.fctCnvFld;
   }
 
   /**
-   * <p>Setter for fctFilFld.</p>
-   * @param pFctFilFld reference
+   * <p>Setter for fctCnvFld.</p>
+   * @param pFctCnvFld reference
    **/
-  public final void setFctFilFld(
-    final IFctNm<IFilNm<? extends IHasId<?>, ColVals>> pFctFilFld) {
-    this.fctFilFld = pFctFilFld;
+  public final void setFctCnvFld(
+    final IFctNm<IConvNmInto<?, ColVals>> pFctCnvFld) {
+    this.fctCnvFld = pFctCnvFld;
   }
 }

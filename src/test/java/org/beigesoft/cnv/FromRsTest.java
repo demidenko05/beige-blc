@@ -59,6 +59,7 @@ import org.beigesoft.fct.FctTst;
 import org.beigesoft.fct.FctBlc;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.prp.ISetng;
+import org.beigesoft.rdb.ISelct;
 import org.beigesoft.srv.Reflect;
 import org.beigesoft.srv.IReflect;
 
@@ -152,6 +153,13 @@ public class FromRsTest<RS> {
     vs.put("PersistableHeaddpLv", 0);
     vs.put("GoodVersionTimedpLv", 2);
     PersistableLine plf = new PersistableLine();
+    ISelct selct = (ISelct) this.fctApp.laz(this.rqVs, ISelct.class.getSimpleName());
+    String sel = selct.gen(this.rqVs, vs, pl.getClass());
+    this.logStd.test(this.rqVs, getClass(), sel);
+    assertTrue(sel.contains("PERSISTABLELINE.VER as VER"));
+    assertTrue(sel.contains("GDCAT2.NME as GDCAT2NME"));
+    assertTrue(sel.contains("left join DEPARTMENT as DEP3 on GDCAT2.DEP=DEP3.IID"));
+    assertFalse(sel.contains("OWNR1.ITSSTATUS as OWNR1ITSSTATUS"));
     FilEntRs<RS> filEntRs = (FilEntRs<RS>) this.fctApp.laz(this.rqVs, FilEntRs.class.getSimpleName());
     filEntRs.fill(this.rqVs, vs, plf, rs);
     assertEquals(pl.getIid(), plf.getIid());
@@ -174,8 +182,11 @@ public class FromRsTest<RS> {
     assertEquals(pl.getItsProduct().getGdCat().getDep().getIid(), plf.getItsProduct().getGdCat().getDep().getIid());
     assertNull(plf.getItsProduct().getGdCat().getDep().getVer());
     vs.remove("PersistableHeaddpLv");
-    String[] ndFds = new String[] {"iid", "itsDate", "itsStatus", "isClosed"};
+    String[] ndFds = new String[] {"iid", "isClosed", "itsDate", "itsStatus"};
     vs.put("PersistableHeadndFds", ndFds);
+    sel = selct.gen(this.rqVs, vs, pl.getClass());
+    this.logStd.test(this.rqVs, getClass(), sel);
+    assertTrue(sel.contains("OWNR1.ITSSTATUS as OWNR1ITSSTATUS"));
     rs.getData().put("OWNR1ITSSTATUS", pl.getOwnr().getItsStatus().ordinal());
     rs.getData().put("OWNR1ITSDATE", pl.getOwnr().getItsDate().getTime());
     rs.getData().put("OWNR1ISCLOSED", pl.getOwnr().getIsClosed() ? 1 : 0);

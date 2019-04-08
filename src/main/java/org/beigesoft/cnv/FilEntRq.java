@@ -134,6 +134,22 @@ public class FilEntRq implements IFilObj<IReqDt> {
   }
 
   /**
+   * <p>Getter for setng.</p>
+   * @return ISetng
+   **/
+  public final ISetng getSetng() {
+    return this.setng;
+  }
+
+  /**
+   * <p>Setter for setng.</p>
+   * @param pSetng reference
+   **/
+  public final void setSetng(final ISetng pSetng) {
+    this.setng = pSetng;
+  }
+
+  /**
    * <p>Getter for fctFilFld.</p>
    * @return IFctNm<IFilFld<String>>
    **/
@@ -164,21 +180,5 @@ public class FilEntRq implements IFilObj<IReqDt> {
   public final void setHldFilFdNms(
     final IHldNm<Class<?>, String> pHldFilFdNms) {
     this.hldFilFdNms = pHldFilFdNms;
-  }
-
-  /**
-   * <p>Getter for setng.</p>
-   * @return ISetng
-   **/
-  public final ISetng getSetng() {
-    return this.setng;
-  }
-
-  /**
-   * <p>Setter for setng.</p>
-   * @param pSetng reference
-   **/
-  public final void setSetng(final ISetng pSetng) {
-    this.setng = pSetng;
   }
 }

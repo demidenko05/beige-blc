@@ -50,6 +50,16 @@ public class UserRoleTomcatPriority extends AEditable
   private Integer priority;
 
   /**
+   * <p>User.</p>
+   **/
+  private UsTmc usr;
+
+  /**
+   * <p>User's role.</p>
+   **/
+  private String rol;
+
+  /**
    * <p>Version to check dirty or replication.</p>
    **/
   private Long ver;
@@ -73,6 +83,45 @@ public class UserRoleTomcatPriority extends AEditable
   }
 
   /**
+   * <p>Setter for iid.</p>
+   * @param pIid reference/value
+   **/
+  @Override
+  public final void setIid(final UsRlTmc pIid) {
+    this.userRoleTomcat = pIid;
+    if (this.userRoleTomcat == null) {
+      this.usr = null;
+      this.rol = null;
+    } else {
+      this.usr = this.userRoleTomcat.getUsr();
+      this.rol = this.userRoleTomcat.getRol();
+    }
+  }
+
+  /**
+   * <p>Setter for usr.</p>
+   * @param pUsr reference/value
+   **/
+  public final void setUsr(final UsTmc pUsr) {
+    this.usr = pUsr;
+    if (this.userRoleTomcat == null) {
+      this.userRoleTomcat = new UsRlTmc();
+    }
+    this.userRoleTomcat.setUsr(this.usr);
+  }
+
+  /**
+   * <p>Setter for rol.</p>
+   * @param pRol reference
+   **/
+  public final void setRol(final String pRol) {
+    this.rol = pRol;
+    if (this.userRoleTomcat == null) {
+      this.userRoleTomcat = new UsRlTmc();
+    }
+    this.userRoleTomcat.setRol(this.rol);
+  }
+  /**
    * <p>Getter for itsId.</p>
    * @return UsRlTmc
    **/
@@ -82,29 +131,36 @@ public class UserRoleTomcatPriority extends AEditable
   }
 
   /**
-   * <p>Setter for itsId.</p>
-   * @param pIid reference/value
+   * <p>Setter for userRoleTomcat.</p>
+   * @param pUserRoleTomcat reference
    **/
-  @Override
-  public final void setIid(final UsRlTmc pIid) {
-    this.userRoleTomcat = pIid;
+  public final void setUserRoleTomcat(final UsRlTmc pUserRoleTomcat) {
+    setIid(pUserRoleTomcat);
   }
 
   //Simple getters and setters:
+  /**
+   * <p>Getter for usr.</p>
+   * @return UsTmc
+   **/
+  public final UsTmc getUsr() {
+    return this.usr;
+  }
+
+  /**
+   * <p>Getter for rol.</p>
+   * @return String
+   **/
+  public final String getRol() {
+    return this.rol;
+  }
+
   /**
    * <p>Getter for userRoleTomcat.</p>
    * @return UsRlTmc
    **/
   public final UsRlTmc getUserRoleTomcat() {
     return this.userRoleTomcat;
-  }
-
-  /**
-   * <p>Setter for userRoleTomcat.</p>
-   * @param pUserRoleTomcat reference
-   **/
-  public final void setUserRoleTomcat(final UsRlTmc pUserRoleTomcat) {
-    this.userRoleTomcat = pUserRoleTomcat;
   }
 
   /**

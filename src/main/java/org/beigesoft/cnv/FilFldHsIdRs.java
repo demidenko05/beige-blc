@@ -88,28 +88,26 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7002 && this.log.getDbgCl() > 7000;
     @SuppressWarnings("unchecked")
-    Class<E> flCls = (Class<E>) this.hldFdCls.get(pObj.getClass(), pFlNm);
-    E val = flCls.newInstance();
+    Class<E> fdCls = (Class<E>) this.hldFdCls.get(pObj.getClass(), pFlNm);
+    E val = fdCls.newInstance();
     @SuppressWarnings("unchecked")
     List<LvDep> lvDeps = (List<LvDep>) pVs.get("lvDeps");
     LvDep clvDep;
-    String tbAl = null;
-    List<String> tbAls = null;
-    Integer dpLv = (Integer) pVs.get(flCls.getSimpleName() + "dpLv");
+    Integer dpLv = (Integer) pVs.get(fdCls.getSimpleName() + "dpLv");
     if (dpLv != null) { //custom level for subentity(owned) subbranch:
       clvDep = new LvDep();
       clvDep.setDep(dpLv);
       lvDeps.add(clvDep);
       if (isDbgSh) {
         this.log.debug(pRqVs, FilEntRs.class, "Start fill custDL subent/DL/CL: "
-            + flCls + "/" + clvDep.getDep() + "/" + clvDep.getCur());
+            + fdCls + "/" + clvDep.getDep() + "/" + clvDep.getCur());
       }
     } else { //entering into new sub/branch's sub-entity:
       clvDep = lvDeps.get(lvDeps.size() - 1);
       clvDep.setCur(clvDep.getCur() + 1);
       if (isDbgSh) {
         this.log.debug(pRqVs, FilEntRs.class, "Start subent/DL/CL: "
-            + flCls + "/" + clvDep.getDep() + "/" + clvDep.getCur());
+            + fdCls + "/" + clvDep.getDep() + "/" + clvDep.getCur());
       }
     }
     if (lvDeps.size() > 1) { //sub-branch, main branch level change:
@@ -117,34 +115,28 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
       this.log.debug(pRqVs, FilEntRs.class, "Main branch UP DL/CL: "
           + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
     }
-    tbAl = pFlNm.toUpperCase() + lvDeps.get(0).getCur();
-    tbAls = (List<String>) pVs.get("tbAls");
+    String tbAl = pFlNm.toUpperCase() + lvDeps.get(0).getCur();
+    List<String> tbAls = (List<String>) pVs.get("tbAls");
     tbAls.add(tbAl);
     if (isDbgSh) {
       this.log.debug(pRqVs, FilFldHsIdRs.class, "Added tbAl/cls: " + tbAl
-        + "/" + flCls);
+        + "/" + fdCls);
     }
     this.filEnt.fill(pRqVs, pVs, val, pRs);
-    if (tbAl != null) {
-      tbAls.remove(tbAl);
-      if (isDbgSh) {
-        this.log.debug(pRqVs, FilFldHsIdRs.class, "Removed tbAl/cls: " + tbAl
-          + "/" + flCls);
-      }
-    }
+    tbAls.remove(tbAl);
     if (lvDeps.size() > 1) { //move down through custom DL subentities branch:
       LvDep ld = lvDeps.get(lvDeps.size() - 1);
       if (ld.getCur() == 0) { //ending custom DL subentity:
         lvDeps.remove(lvDeps.size() - 1);
         if (isDbgSh) {
           this.log.debug(pRqVs, FilEntRs.class,
-            "Finish custom DL root subentity: " + flCls);
+            "Finish custom DL root subentity: " + fdCls);
         }
       } else { //finish subentity:
         ld.setCur(ld.getCur() - 1);
         if (isDbgSh) {
           this.log.debug(pRqVs, FilEntRs.class,
-            "Finish custom DL subentity: " + flCls);
+            "Finish custom DL subentity: " + fdCls);
         }
       }
       //sub-branch, main branch level change:
@@ -157,7 +149,7 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
         ld.setCur(ld.getCur() - 1);
         if (isDbgSh) {
           this.log.debug(pRqVs, FilEntRs.class,
-            "Finish custom subentity: " + flCls);
+            "Finish custom subentity: " + fdCls);
         }
       }
     }

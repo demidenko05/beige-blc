@@ -36,17 +36,17 @@ import java.util.Map;
  *
  * @author Yury Demidenko
  */
-public interface ISelect {
+public interface ISelct {
 
   /**
    * <p>Generates DML Select statement for given entity and vars.</p>
    * @param <T> object (entity) type
    * @param pRqVs request scoped vars
    * @param pVs invoker scoped vars, e.g. entity's needed fields, nullable.
-   * @param pEnt entity to fill, not null
+   * @param pCls entity class, not null
    * @return Select query
    * @throws Exception - an exception
    **/
   <T> String gen(Map<String, Object> pRqVs,
-    Map<String, Object> pVs, T pEnt) throws Exception;
+    Map<String, Object> pVs, Class<T> pCls) throws Exception;
 }

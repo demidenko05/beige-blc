@@ -99,37 +99,37 @@ public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
       lvDeps.add(clvDep);
       pVs.put("lvDeps", lvDeps);
       if (isDbgSh) {
-        this.log.debug(pRqVs, FilEntRs.class, "Start fill root entity/DL/CL: "
+        this.log.debug(pRqVs, getClass(), "Start fill root entity/DL/CL: "
           + pEnt.getClass() + "/" + clvDep.getDep() + "/" + clvDep.getCur());
       }
       List<String> tbAls = new ArrayList<String>();
       pVs.put("tbAls", tbAls);
       if (isDbgSh) {
-        this.log.debug(pRqVs, FilFldHsIdRs.class, "tbAls created");
+        this.log.debug(pRqVs, getClass(), "tbAls created");
       }
     } else {
       clvDep = lvDeps.get(lvDeps.size() - 1);
     }
+    String[] ndFds = (String[]) pVs.
+      get(pEnt.getClass().getSimpleName() + "ndFds");
+    if (ndFds != null && isDbgSh) {
+      this.log.debug(pRqVs, getClass(), "Needed fields entity: "
+        + pEnt.getClass() + "/" + Arrays.toString(ndFds));
+    }
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
-      fillFld(pRqVs, pVs, pEnt, pRs, fdNm, isDbgSh);
+      boolean isNd = true;
+      if (ndFds != null) {
+        isNd = Arrays.binarySearch(ndFds, fdNm) >= 0;
+      }
+      if (isNd) {
+        fillFld(pRqVs, pVs, pEnt, pRs, fdNm, isDbgSh);
+      }
     }
     if (clvDep.getCur() < clvDep.getDep()) {
-      String[] ndFds = (String[]) pVs.
-        get(pEnt.getClass().getSimpleName() + "ndFds");
-      if (ndFds != null && isDbgSh) {
-        this.log.debug(pRqVs, FilEntRs.class, "Needed fields entity: "
-          + pEnt.getClass() + "/" + Arrays.toString(ndFds));
-      }
       for (String fdNm : this.setng.lazFldNms(pEnt.getClass())) {
         boolean isNd = true;
         if (ndFds != null) {
-          isNd = false;
-          for (String fn : ndFds) {
-            if (fdNm.equals(fn)) {
-              isNd = true;
-              break;
-            }
-          }
+          isNd = Arrays.binarySearch(ndFds, fdNm) >= 0;
         }
         if (isNd) {
           fillFld(pRqVs, pVs, pEnt, pRs, fdNm, isDbgSh);
@@ -142,7 +142,7 @@ public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
         pVs.remove("lvDeps");
         pVs.remove("tbAls");
         if (isDbgSh) {
-          this.log.debug(pRqVs, FilEntRs.class,
+          this.log.debug(pRqVs, getClass(),
             "Finish filling root entity: " + pEnt.getClass());
         }
       }
@@ -167,7 +167,7 @@ public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
     String filFdNm = this.hldFilFdNms.get(pEnt.getClass(), pFdNm);
     IFilFld<IRecSet<RS>> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
     if (pIsDbgSh) {
-      this.log.debug(pRqVs, FilEntRs.class,
+      this.log.debug(pRqVs, getClass(),
         "Filling DB fdNm/cls/filler: " + pFdNm + "/" + pEnt.getClass()
           .getSimpleName() + "/" + filFl.getClass().getSimpleName());
     }

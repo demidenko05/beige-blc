@@ -15,8 +15,8 @@ See LICENSE in base folder
   org.beigesoft.mdlp.PersistableLine,
   org.beigesoft.mdlp.UsTmc,
   org.beigesoft.mdlp.UsRlTmc,
-  org.beigesoft.mdlp.UsRlTmcId</entry>
-<entry key="stgClsNms">exlFlds,idFlds</entry>
+  org.beigesoft.mdlp.UserRoleTomcatPriority</entry>
+<entry key="stgClsNms">exlFlds,idFlds,vrAlg</entry>
 <entry key="stgFldNms"></entry>
 <entry key="exlFlds">tmpDescription,isNew</entry>
 </properties>

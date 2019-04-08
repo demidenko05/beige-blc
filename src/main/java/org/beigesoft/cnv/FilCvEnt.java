@@ -31,6 +31,7 @@ package org.beigesoft.cnv;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Arrays;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
@@ -85,13 +86,7 @@ public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
     String[] ndFds = (String[]) pVs.get("ndFds");
     boolean ndVr = true;
     if (ndFds != null) {
-      ndVr = false;
-      for (String fn : ndFds) {
-        if (IHasId.VERNM.equals(fn)) {
-          ndVr = true;
-          break;
-        }
-      }
+      ndVr = Arrays.binarySearch(ndFds, IHasId.VERNM) >= 0;
     }
     if (ndVr) {
       String verAlg = this.setng
@@ -115,6 +110,7 @@ public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
       }
       pClVl.getLongs().put(IHasId.VERNM, vlNew);
       pClVl.setOldVer(pEnt.getVer());
+      pEnt.setVer(vlNew);
     }
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7021 && this.log.getDbgCl() > 7019;
@@ -125,13 +121,7 @@ public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
       if (!IHasId.VERNM.equals(fdNm)) {
         boolean ndFl = true;
         if (ndFds != null) {
-          ndFl = false;
-          for (String fn : ndFds) {
-            if (fdNm.equals(fn)) {
-              ndFl = true;
-              break;
-            }
-          }
+          ndFl = Arrays.binarySearch(ndFds, fdNm) >= 0;
         }
         if (ndFl) {
           fillFd(pRqVs, pVs, pEnt, pClVl, fdNm, isDbgSh);

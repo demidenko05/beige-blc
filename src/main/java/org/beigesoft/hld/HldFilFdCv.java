@@ -81,6 +81,9 @@ public class HldFilFdCv implements IHldNm<Class<?>, String> {
   @Override
   public final String get(final Class<?> pCls, final String pFlNm) {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
+    if (fdCls.isEnum()) {
+      return FilNmCvSmp.class.getSimpleName();
+    }
     if (IHasId.class.isAssignableFrom(fdCls)) {
       return FilNmCvHsId.class.getSimpleName();
     }

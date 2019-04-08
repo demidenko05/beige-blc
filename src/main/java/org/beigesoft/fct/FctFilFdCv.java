@@ -113,7 +113,7 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
           } else if (FilNmCvSmp.class.getSimpleName().equals(pFiNm)) {
             rz = crPuFilNmCvSmp();
           } else {
-            throw new ExcCode(ExcCode.WRCN, "There is no FIL FR STR: " + pFiNm);
+            throw new ExcCode(ExcCode.WRCN, "There is no FIL CV: " + pFiNm);
           }
         }
       }
@@ -147,8 +147,8 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
     rz.setHldGets(getHldGets());
     rz.setHldFdCls(getHldFdCls());
     rz.setSetng(getSetng());
-    rz.setHldFilFdNms(getHldFilFdNms());
-    rz.setFctFilFld(this);
+    rz.setHldCnvFdNms(getHldNmFdCn());
+    rz.setFctCnvFld(getFctCnvFld());
     this.fillers.put(FilNmCvHsId.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), FilNmCvHsId.class.getSimpleName()
       + " has been created.");

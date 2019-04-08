@@ -36,7 +36,7 @@ import java.math.BigDecimal;
 import org.beigesoft.mdl.EStatus;
 
 /**
- * <p>Model for test ORM. Version auto-increment.</p>
+ * <p>Model for test ORM. Version chsnged time.</p>
  *
  * @author Yury Demidenko
  */

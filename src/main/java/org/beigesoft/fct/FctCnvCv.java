@@ -44,6 +44,7 @@ import org.beigesoft.cnv.CnvIbnFltCv;
 import org.beigesoft.cnv.CnvIbnIntCv;
 import org.beigesoft.cnv.CnvIbnLngCv;
 import org.beigesoft.cnv.CnvIbnStrCv;
+import org.beigesoft.srv.ISqlEsc;
 /**
  * <p>Factory of converters fields to column values.</p>
  *
@@ -56,6 +57,11 @@ public class FctCnvCv implements IFctNm<IConvNmInto<?, ColVals>> {
    * <p>Logger.</p>
    **/
   private ILog logStd;
+
+  /**
+   * <p>SQL Escape srv.</p>
+   **/
+  private ISqlEsc sqlEsc;
 
   //requested data:
   /**
@@ -97,7 +103,7 @@ public class FctCnvCv implements IFctNm<IConvNmInto<?, ColVals>> {
           } else if (CnvIbnStrCv.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvIbnStrCv();
           } else {
-            throw new ExcCode(ExcCode.WRCN, "There is no CNV FR RS: " + pCnNm);
+            throw new ExcCode(ExcCode.WRCN, "There is no CNV IN CV: " + pCnNm);
           }
         }
       }
@@ -111,6 +117,7 @@ public class FctCnvCv implements IFctNm<IConvNmInto<?, ColVals>> {
    */
   private CnvIbnStrCv crPuCnvIbnStrCv() {
     CnvIbnStrCv rz = new CnvIbnStrCv();
+    rz.setSqlEsc(getSqlEsc());
     this.convrts.put(CnvIbnStrCv.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvIbnStrCv.class.getSimpleName()
       + " has been created.");
@@ -228,5 +235,21 @@ public class FctCnvCv implements IFctNm<IConvNmInto<?, ColVals>> {
    **/
   public final void setLogStd(final ILog pLogStd) {
     this.logStd = pLogStd;
+  }
+
+  /**
+   * <p>Getter for sqlEsc.</p>
+   * @return ISqlEsc
+   **/
+  public final ISqlEsc getSqlEsc() {
+    return this.sqlEsc;
+  }
+
+  /**
+   * <p>Setter for sqlEsc.</p>
+   * @param pSqlEsc reference
+   **/
+  public final void setSqlEsc(final ISqlEsc pSqlEsc) {
+    this.sqlEsc = pSqlEsc;
   }
 }
