@@ -58,7 +58,7 @@ public abstract class ARdb<RS> implements IRdb<RS> {
    * @throws Exception - an exception
    */
   @Override
-  public final Integer evalInt(final String pQuery,
+  public final Integer evInt(final String pQuery,
     final String pClNm) throws Exception {
     Integer result = null;
     IRecSet<RS> rs = null;
@@ -83,7 +83,7 @@ public abstract class ARdb<RS> implements IRdb<RS> {
    * @throws Exception - an exception
    */
   @Override
-  public final Long evalLong(final String pQuery,
+  public final Long evLong(final String pQuery,
     final String pClNm) throws Exception {
     Long result = null;
     IRecSet<RS> rs = null;
@@ -108,7 +108,7 @@ public abstract class ARdb<RS> implements IRdb<RS> {
    * @throws Exception - an exception
    */
   @Override
-  public final Float evalFloat(final String pQuery,
+  public final Float evFloat(final String pQuery,
     final String pClNm) throws Exception {
     Float result = null;
     IRecSet<RS> rs = null;
@@ -133,7 +133,7 @@ public abstract class ARdb<RS> implements IRdb<RS> {
    * @throws Exception - an exception
    */
   @Override
-  public final Double evalDouble(final String pQuery,
+  public final Double evDouble(final String pQuery,
     final String pClNm) throws Exception {
     Double result = null;
     IRecSet<RS> rs = null;
@@ -158,7 +158,7 @@ public abstract class ARdb<RS> implements IRdb<RS> {
    * @throws Exception - an exception
    */
   @Override
-  public final Double[] evalDoubles(final String pQuery,
+  public final Double[] evDoubles(final String pQuery,
     final String[] pClNms) throws Exception {
     Double[] result = new Double[pClNms.length];
     IRecSet<RS> rs = null;
@@ -186,12 +186,12 @@ public abstract class ARdb<RS> implements IRdb<RS> {
     if (this.dbId == null) {
       try {
         String query = "select count(*) as TOTROWS from DBINF;";
-        Integer rc = evalInt(query, "TOTROWS");
+        Integer rc = evInt(query, "TOTROWS");
         if (rc != 1) {
           throw new ExcCode(ExcCode.WRCN, "database_info_config_error");
         }
         query = "select DBID from DBINF;";
-        Integer di = evalInt(query, "DBID");
+        Integer di = evInt(query, "DBID");
         if (di == null) {
           throw new ExcCode(ExcCode.WRCN, "database_info_config_error");
         }
@@ -211,12 +211,12 @@ public abstract class ARdb<RS> implements IRdb<RS> {
   public final Integer getDbVr() {
     try {
       String query = "select count(*) as TOTROWS from DBINF;";
-      Integer rc = evalInt(query, "TOTROWS");
+      Integer rc = evInt(query, "TOTROWS");
       if (rc != 1) {
         throw new ExcCode(ExcCode.WRCN, "database_info_config_error");
       }
       query = "select DBVR from DBINF;";
-      Integer dbVr = evalInt(query, "DBVR");
+      Integer dbVr = evInt(query, "DBVR");
       if (dbVr == null) {
         throw new ExcCode(ExcCode.WRCN, "database_info_config_error");
       }

@@ -59,7 +59,7 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
   /**
    * <p>ORM service.</p>
    **/
-  private IOrm<RS> orm;
+  private IOrm orm;
 
   /**
    * <p>CSV writer service.</p>
@@ -105,7 +105,9 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
       this.rdb.setAcmt(false);
       this.rdb.setTrIsl(IRdb.TRRC);
       this.rdb.begin();
-      csMt = getOrm().retEntId(pRqVs, null, CsvMth.class, csMtId);
+      CsvMth csMtt = new CsvMth();
+      csMtt.setIid(csMtId);
+      csMt = getOrm().retEnt(pRqVs, null, csMtt);
       List<CsvCl> cols = getOrm().retLstCnd(pRqVs, null,
         CsvCl.class, "where ITSOWNER=" + csMt.getIid());
       csMt.setClns(cols);
@@ -147,9 +149,9 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
 
   /**
    * <p>Getter for orm.</p>
-   * @return IOrm<RS>
+   * @return IOrm
    **/
-  public final IOrm<RS> getOrm() {
+  public final IOrm getOrm() {
     return this.orm;
   }
 
@@ -157,7 +159,7 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
    * <p>Setter for orm.</p>
    * @param pOrm reference
    **/
-  public final void setOrm(final IOrm<RS> pOrm) {
+  public final void setOrm(final IOrm pOrm) {
     this.orm = pOrm;
   }
 

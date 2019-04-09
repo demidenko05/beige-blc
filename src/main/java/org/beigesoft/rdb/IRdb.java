@@ -233,7 +233,7 @@ public interface IRdb<RS> {
    * @return Integer result e.g 11231 or NULL
    * @throws Exception - an exception
    */
-  Integer evalInt(String pQuery, String pClNm) throws Exception;
+  Integer evInt(String pQuery, String pClNm) throws Exception;
 
   /**
    * <p>Evaluate single Long result.</p>
@@ -242,7 +242,7 @@ public interface IRdb<RS> {
    * @return Long result e.g 11231 or NULL
    * @throws Exception - an exception
    */
-  Long evalLong(String pQuery, String pClNm) throws Exception;
+  Long evLong(String pQuery, String pClNm) throws Exception;
 
   /**
    * <p>Evaluate single Float result.</p>
@@ -251,7 +251,7 @@ public interface IRdb<RS> {
    * @return Float result e.g 1.1231 or NULL
    * @throws Exception - an exception
    */
-  Float evalFloat(String pQuery, String pClNm) throws Exception;
+  Float evFloat(String pQuery, String pClNm) throws Exception;
 
   /**
    * <p>Evaluate single Double result.</p>
@@ -260,7 +260,7 @@ public interface IRdb<RS> {
    * @return Double result e.g 1.1231 or NULL
    * @throws Exception - an exception
    */
-  Double evalDouble(String pQuery, String pClNm) throws Exception;
+  Double evDouble(String pQuery, String pClNm) throws Exception;
 
   /**
    * <p>Evaluate Double results.</p>
@@ -269,5 +269,5 @@ public interface IRdb<RS> {
    * @return Double[] result e.g. [2.14, NULL, 111.456]
    * @throws Exception - an exception
    */
-  Double[] evalDoubles(String pQuery, String[] pClNms) throws Exception;
+  Double[] evDoubles(String pQuery, String[] pClNms) throws Exception;
 }

@@ -47,7 +47,7 @@ public class RpEntSyOrId<RS, T extends IOrId> implements IRpEntSync<T> {
   /**
    * <p>ORM service.</p>
    **/
-  private IOrm<RS> orm;
+  private IOrm orm;
 
   /**
    * <p>Synchronizes given entity of type IOrId {iid, idOr and dbOr}.</p>
@@ -68,8 +68,8 @@ public class RpEntSyOrId<RS, T extends IOrId> implements IRpEntSync<T> {
     String whe = "where " + tblNm + ".IDOR=" + pEnt.getIid()
       + " and " + tblNm + ".DBOR=" + pEnt.getDbOr();
     Map<String, Object> vs = new HashMap<String, Object>();
-    String[] ndFds = new String[] {"iid", "ver", "idor", "dbor"};
-    vs.put("ndFds", ndFds);
+    String[] ndFds = new String[] {"dbor", "idor", "iid", "ver"};
+    vs.put(pEnt.getClass().getSimpleName() + "ndFds", ndFds);
     @SuppressWarnings("unchecked")
     T entDb = (T) getOrm().retEntCnd(pRqVs, vs, pEnt.getClass(), whe);
     pEnt.setIdOr(pEnt.getIid());
@@ -86,9 +86,9 @@ public class RpEntSyOrId<RS, T extends IOrId> implements IRpEntSync<T> {
   //Simple getters and setters:
   /**
    * <p>Getter for orm.</p>
-   * @return IOrm<RS>
+   * @return IOrm
    **/
-  public final IOrm<RS> getOrm() {
+  public final IOrm getOrm() {
     return this.orm;
   }
 
@@ -96,7 +96,7 @@ public class RpEntSyOrId<RS, T extends IOrId> implements IRpEntSync<T> {
    * <p>Setter for orm.</p>
    * @param pOrm reference
    **/
-  public final void setOrm(final IOrm<RS> pOrm) {
+  public final void setOrm(final IOrm pOrm) {
     this.orm = pOrm;
   }
 }

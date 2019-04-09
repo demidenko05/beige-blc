@@ -48,7 +48,7 @@ public class RpEntSyDb<RS, T extends IHasId<?>> implements IRpEntSync<T> {
   /**
    * <p>ORM service.</p>
    **/
-  private IOrm<RS> orm;
+  private IOrm orm;
 
   /**
    * <p>Just checks if entity exists in home database.</p>
@@ -75,9 +75,9 @@ public class RpEntSyDb<RS, T extends IHasId<?>> implements IRpEntSync<T> {
   //Simple getters and setters:
   /**
    * <p>Getter for orm.</p>
-   * @return IOrm<RS>
+   * @return IOrm
    **/
-  public final IOrm<RS> getOrm() {
+  public final IOrm getOrm() {
     return this.orm;
   }
 
@@ -85,7 +85,7 @@ public class RpEntSyDb<RS, T extends IHasId<?>> implements IRpEntSync<T> {
    * <p>Setter for orm.</p>
    * @param pOrm reference
    **/
-  public final void setOrm(final IOrm<RS> pOrm) {
+  public final void setOrm(final IOrm pOrm) {
     this.orm = pOrm;
   }
 }

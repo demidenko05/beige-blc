@@ -45,7 +45,7 @@ public class HlMaFrn<RS> implements IHldEx<Long, MaFrn>  {
   /**
    * <p>ORM service.</p>
    **/
-  private IOrm<RS> orm;
+  private IOrm orm;
 
   /**
    * <p>Get match foreign  given ID.</p>
@@ -56,7 +56,9 @@ public class HlMaFrn<RS> implements IHldEx<Long, MaFrn>  {
    **/
   public final MaFrn get(final Map<String, Object> pRqVs,
     final Long pId) throws Exception {
-    MaFrn mf = getOrm().retEntId(pRqVs, null, MaFrn.class, pId);
+    MaFrn mft = new MaFrn();
+    mft.setIid(pId);
+    MaFrn mf = getOrm().retEnt(pRqVs, null, mft);
     mf.setLns(getOrm().retLstCnd(pRqVs, null, MaFrnLn.class,
       "where OWNR=" + pId));
     return mf;
@@ -65,9 +67,9 @@ public class HlMaFrn<RS> implements IHldEx<Long, MaFrn>  {
   //Simple getters and setters:
   /**
    * <p>Getter for orm.</p>
-   * @return IOrm<RS>
+   * @return IOrm
    **/
-  public final IOrm<RS> getOrm() {
+  public final IOrm getOrm() {
     return this.orm;
   }
 
@@ -75,7 +77,7 @@ public class HlMaFrn<RS> implements IHldEx<Long, MaFrn>  {
    * <p>Setter for orm.</p>
    * @param pOrm reference
    **/
-  public final void setOrm(final IOrm<RS> pOrm) {
+  public final void setOrm(final IOrm pOrm) {
     this.orm = pOrm;
   }
 }

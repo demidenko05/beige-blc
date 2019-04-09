@@ -59,7 +59,7 @@ import org.beigesoft.fct.FctTst;
 import org.beigesoft.fct.FctBlc;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.prp.ISetng;
-import org.beigesoft.rdb.ISelct;
+import org.beigesoft.rdb.ISqlQu;
 import org.beigesoft.srv.Reflect;
 import org.beigesoft.srv.IReflect;
 
@@ -81,7 +81,7 @@ public class FromRsTest<RS> {
     this.fctApp = new FctBlc<RS>();
     FctTst fctTst = new FctTst();
     fctTst.setLogStdNm(FromRsTest.class.getSimpleName());
-    this.fctApp.setStgOrmDir("tstOrm");
+    this.fctApp.setStgOrmDir("sqlite");
     this.fctApp.setFctConf(fctTst);
     this.logStd = (ILog) fctApp.laz(this.rqVs, FctBlc.LOGSTDNM);
     this.logStd.setDbgSh(true);
@@ -153,9 +153,11 @@ public class FromRsTest<RS> {
     vs.put("PersistableHeaddpLv", 0);
     vs.put("GoodVersionTimedpLv", 2);
     PersistableLine plf = new PersistableLine();
-    ISelct selct = (ISelct) this.fctApp.laz(this.rqVs, ISelct.class.getSimpleName());
-    String sel = selct.gen(this.rqVs, vs, pl.getClass());
+    ISqlQu selct = (ISqlQu) this.fctApp.laz(this.rqVs, ISqlQu.class.getSimpleName());
+    String sel = selct.evSel(this.rqVs, vs, pl.getClass()).toString();
     this.logStd.test(this.rqVs, getClass(), sel);
+    String cr = selct.evCreate(this.rqVs, pl.getClass());
+    this.logStd.test(this.rqVs, getClass(), cr);
     assertTrue(sel.contains("PERSISTABLELINE.VER as VER"));
     assertTrue(sel.contains("GDCAT2.NME as GDCAT2NME"));
     assertTrue(sel.contains("left join DEPARTMENT as DEP3 on GDCAT2.DEP=DEP3.IID"));
@@ -184,9 +186,13 @@ public class FromRsTest<RS> {
     vs.remove("PersistableHeaddpLv");
     String[] ndFds = new String[] {"iid", "isClosed", "itsDate", "itsStatus"};
     vs.put("PersistableHeadndFds", ndFds);
-    sel = selct.gen(this.rqVs, vs, pl.getClass());
-    this.logStd.test(this.rqVs, getClass(), sel);
+    sel = selct.evSel(this.rqVs, vs, pl.getClass()).toString();
     assertTrue(sel.contains("OWNR1.ITSSTATUS as OWNR1ITSSTATUS"));
+    this.logStd.test(this.rqVs, getClass(), sel);
+    sel = selct.evSel(this.rqVs, vs, UsRlTmc.class).toString();
+    this.logStd.test(this.rqVs, getClass(), sel);
+    cr = selct.evCreate(this.rqVs, UsRlTmc.class);
+    this.logStd.test(this.rqVs, getClass(), cr);
     rs.getData().put("OWNR1ITSSTATUS", pl.getOwnr().getItsStatus().ordinal());
     rs.getData().put("OWNR1ITSDATE", pl.getOwnr().getItsDate().getTime());
     rs.getData().put("OWNR1ISCLOSED", pl.getOwnr().getIsClosed() ? 1 : 0);

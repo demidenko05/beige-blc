@@ -55,9 +55,10 @@ import org.beigesoft.cnv.FilCvEnt;
 import org.beigesoft.rpl.RpEntWriXml;
 import org.beigesoft.rpl.RpEntReadXml;
 import org.beigesoft.rdb.IRdb;
+import org.beigesoft.rdb.Orm;
 import org.beigesoft.rdb.IOrm;
-import org.beigesoft.rdb.ISelct;
-import org.beigesoft.rdb.Selct;
+import org.beigesoft.rdb.ISqlQu;
+import org.beigesoft.rdb.SqlQu;
 import org.beigesoft.srv.INumStr;
 import org.beigesoft.srv.NumStr;
 import org.beigesoft.srv.IReflect;
@@ -180,8 +181,10 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazHndI18nRq(pRqVs);
           } else if (STGORMNM.equals(pBnNm)) {
             rz = lazStgOrm(pRqVs);
-          } else if (ISelct.class.getSimpleName().equals(pBnNm)) {
-            rz = lazSelct(pRqVs);
+          } else if (IOrm.class.getSimpleName().equals(pBnNm)) {
+            rz = lazOrm(pRqVs);
+          } else if (ISqlQu.class.getSimpleName().equals(pBnNm)) {
+            rz = lazSqlQu(pRqVs);
           } else if (FilCvEnt.class.getSimpleName().equals(pBnNm)) {
             rz = lazFilCvEnt(pRqVs);
           } else if (FilEntRs.class.getSimpleName().equals(pBnNm)) {
@@ -232,6 +235,9 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazHldSets(pRqVs);
           } else if (HldFldCls.class.getSimpleName().equals(pBnNm)) {
             rz = lazHldFldCls(pRqVs);
+          } else if (FctFctEnt.class.getSimpleName().equals(pBnNm)) {
+            //IT DEPENDS OF ORM!
+            rz = lazFctFctEnt(pRqVs);
           } else if (UtlPrp.class.getSimpleName().equals(pBnNm)) {
             rz = lazUtlPrp(pRqVs);
           } else if (INumStr.class.getSimpleName().equals(pBnNm)) {
@@ -295,9 +301,7 @@ public class FctBlc<RS> implements IFctApp {
       .get(HndI18nRq.class.getSimpleName());
     if (rz == null) {
       rz = new HndI18nRq<RS>();
-      @SuppressWarnings("unchecked")
-      IOrm<RS> orm = (IOrm<RS>) laz(pRqVs, IOrm.class.getSimpleName());
-      rz.setOrm(orm);
+      rz.setOrm(lazOrm(pRqVs));
       @SuppressWarnings("unchecked")
       IRdb<RS> rdb = (IRdb<RS>) laz(pRqVs, IRdb.class.getSimpleName());
       rz.setRdb(rdb);
@@ -445,6 +449,36 @@ public class FctBlc<RS> implements IFctApp {
 
   //ORM:
   /**
+   * <p>Lazy getter Orm.</p>
+   * @param pRqVs request scoped vars
+   * @return Orm
+   * @throws Exception - an exception
+   */
+  private Orm<RS> lazOrm(final Map<String, Object> pRqVs) throws Exception {
+    @SuppressWarnings("unchecked")
+    Orm<RS> rz = (Orm<RS>) this.beans.get(IOrm.class.getSimpleName());
+    if (rz == null) {
+      rz = new Orm<RS>();
+      rz.setLog(lazLogStd(pRqVs));
+      rz.setSetng(lazStgOrm(pRqVs));
+      @SuppressWarnings("unchecked")
+      IRdb<RS> rdb = (IRdb<RS>) laz(pRqVs, IRdb.class.getSimpleName());
+      rz.setRdb(rdb);
+      rz.setSqlQu(lazSqlQu(pRqVs));
+      rz.setFilEntRs(lazFilEntRs(pRqVs));
+      FctFctEnt fctFctEnt = lazFctFctEnt(pRqVs);
+      fctFctEnt.setOrm(rz);
+      rz.setFctFctEnt(fctFctEnt);
+      rz.init(pRqVs);
+      rz.getSetng().release(); // remove data about all entities
+      this.beans.put(IOrm.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), Orm.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
    * <p>Lazy getter Setng ORM.</p>
    * @param pRqVs request scoped vars
    * @return Setng ORM
@@ -466,21 +500,22 @@ public class FctBlc<RS> implements IFctApp {
   }
 
   /**
-   * <p>Lazy getter Selct.</p>
+   * <p>Lazy getter SqlQu.</p>
    * @param pRqVs request scoped vars
-   * @return Selct
+   * @return SqlQu
    * @throws Exception - an exception
    */
-  private Selct lazSelct(
+  private SqlQu lazSqlQu(
     final Map<String, Object> pRqVs) throws Exception {
-    Selct rz = (Selct) this.beans.get(ISelct.class.getSimpleName());
+    SqlQu rz = (SqlQu) this.beans.get(ISqlQu.class.getSimpleName());
     if (rz == null) {
-      rz = new Selct();
+      rz = new SqlQu();
       rz.setLog(lazLogStd(pRqVs));
       rz.setSetng(lazStgOrm(pRqVs));
       rz.setHldFdCls(lazHldFldCls(pRqVs));
-      this.beans.put(ISelct.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), Selct.class.getSimpleName()
+      rz.setHldGets(lazHldGets(pRqVs));
+      this.beans.put(ISqlQu.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), SqlQu.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -949,6 +984,24 @@ public class FctBlc<RS> implements IFctApp {
       rz.setReflect(lazReflect(pRqVs));
       this.beans.put(HldFldCls.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), HldFldCls.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter FctFctEnt IT DEPENDS OF ORM!!</p>
+   * @param pRqVs request scoped vars
+   * @return FctFctEnt
+   * @throws Exception - an exception
+   */
+  private FctFctEnt lazFctFctEnt(
+    final Map<String, Object> pRqVs) throws Exception {
+    FctFctEnt rz = (FctFctEnt) this.beans.get(FctFctEnt.class.getSimpleName());
+    if (rz == null) {
+      rz = new FctFctEnt();
+      this.beans.put(FctFctEnt.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), FctFctEnt.class.getSimpleName()
         + " has been created.");
     }
     return rz;

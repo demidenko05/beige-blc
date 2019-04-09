@@ -62,7 +62,7 @@ public class RpRtrvDbXml<RS> implements IRpRtrv {
   /**
    * <p>ORM service.</p>
    **/
-  private IOrm<RS> orm;
+  private IOrm orm;
 
   /**
    * <p>Database service.</p>
@@ -185,9 +185,9 @@ public class RpRtrvDbXml<RS> implements IRpRtrv {
 
   /**
    * <p>Getter for orm.</p>
-   * @return IOrm<RS>
+   * @return IOrm
    **/
-  public final IOrm<RS> getOrm() {
+  public final IOrm getOrm() {
     return this.orm;
   }
 
@@ -195,7 +195,7 @@ public class RpRtrvDbXml<RS> implements IRpRtrv {
    * <p>Setter for orm.</p>
    * @param pOrm reference
    **/
-  public final void setOrm(final IOrm<RS> pOrm) {
+  public final void setOrm(final IOrm pOrm) {
     this.orm = pOrm;
   }
 

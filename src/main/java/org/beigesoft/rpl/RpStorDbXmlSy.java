@@ -62,7 +62,7 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
   /**
    * <p>ORM srv.</p>
    **/
-  private IOrm<RS> orm;
+  private IOrm orm;
 
   /**
    * <p>Database srv.</p>
@@ -164,9 +164,9 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
 
   /**
    * <p>Getter for orm.</p>
-   * @return IOrm<RS>
+   * @return IOrm
    **/
-  public final IOrm<RS> getOrm() {
+  public final IOrm getOrm() {
     return this.orm;
   }
 
@@ -174,7 +174,7 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
    * <p>Setter for orm.</p>
    * @param pOrm reference
    **/
-  public final void setOrm(final IOrm<RS> pOrm) {
+  public final void setOrm(final IOrm pOrm) {
     this.orm = pOrm;
   }
 

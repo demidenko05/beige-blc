@@ -183,6 +183,29 @@ public class Setng implements ISetng {
   private Map<String, Map<Class<?>, String>> fldNmClTyFs;
 
   /**
+   * <p>Lazy gets common settings.</p>
+   * @return common settings if exists or empty map
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final Map<String, String> lazCmnst() throws Exception {
+    if (this.cmnStgs == null) {
+      synchronized (this) {
+        if (this.cmnStgs == null) {
+          String fiNm = "/" + this.dir + "/" + CMNSTFLNM;
+          this.cmnStgs = ldPrps(fiNm);
+          if (this.cmnStgs == null) {
+            this.log.info(null, getClass(),
+              "There is no common settings in dir " + this.dir);
+            this.cmnStgs = new HashMap<String, String>();
+          }
+        }
+      }
+    }
+    return this.cmnStgs;
+  }
+
+  /**
    * <p>Lazy gets field's setting for given class, field and name.
    * Maybe NULL.</p>
    * @param pCls class
@@ -564,7 +587,7 @@ public class Setng implements ISetng {
           if (this.clsFs == null || !this.clsFs.keySet().contains(pCls)) {
             fiPa = "/" + this.dir + "/" + DIRCLSFS + "/"
               + pCls.getSimpleName() + ".xml";
-            Map<String, String> clFsPr = ldPrps(pCls.getSimpleName(), fiPa);
+            Map<String, String> clFsPr = ldPrps(fiPa);
             if (this.clsFs == null) {
               this.clsFs = new HashMap<Class<?>, Map<String, String>>();
             }
@@ -581,7 +604,7 @@ public class Setng implements ISetng {
           }
           if (this.fldNmFs == null || !this.fldNmFs.keySet().contains(pStgNm)) {
             fiPa = "/" + this.dir + "/" + DIRFLDNMFS + "/" + pStgNm + ".xml";
-            Map<String, String> flNmFsPr = ldPrps(pStgNm, fiPa);
+            Map<String, String> flNmFsPr = ldPrps(fiPa);
             if (this.fldNmFs == null) {
               this.fldNmFs = new HashMap<String, Map<String, String>>();
             }
@@ -634,7 +657,7 @@ public class Setng implements ISetng {
           if (this.clsCs == null || !this.clsCs.keySet().contains(pCls)) {
             fiPa = "/" + this.dir + "/" + DIRCLSCS + "/"
               + pCls.getSimpleName() + ".xml";
-            Map<String, String> clFsPr = ldPrps(pCls.getSimpleName(), fiPa);
+            Map<String, String> clFsPr = ldPrps(fiPa);
             if (this.clsCs == null) {
               this.clsCs = new HashMap<Class<?>, Map<String, String>>();
             }
@@ -731,14 +754,12 @@ public class Setng implements ISetng {
 
   /**
    * <p>Load properties String-String from XML file.</p>
-   * @param pKey setting file name - setting name or
-   *  field name + setting name or class name
    * @param pFiNm File Name
    * @return Map<String, String> properties
    * @throws Exception - an exception
    **/
   public final synchronized Map<String, String> ldPrps(
-    final String pKey, final String pFiNm) throws Exception {
+    final String pFiNm) throws Exception {
     Map<String, String> rz = null;
     LnkPrps prp = this.utlPrp.load(pFiNm);
     if (prp != null) {

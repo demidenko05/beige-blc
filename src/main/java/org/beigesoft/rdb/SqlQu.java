@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.lang.reflect.Method;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
@@ -41,12 +42,11 @@ import org.beigesoft.hld.IHldNm;
 import org.beigesoft.prp.ISetng;
 
 /**
- * <p>Service that generates DML Select statement
- * for given entity and vars.</p>
+ * <p>Service that generates DML/DDL statements (queries).</p>
  *
  * @author Yury Demidenko
  */
-public class Selct implements ISelct {
+public class SqlQu implements ISqlQu {
 
   /**
    * <p>Log.</p>
@@ -64,16 +64,124 @@ public class Selct implements ISelct {
   private IHldNm<Class<?>, Class<?>> hldFdCls;
 
   /**
+   * <p>Fields getters RAPI holder.</p>
+   **/
+  private IHldNm<Class<?>, Method> hldGets;
+
+  /**
+   * <p>Generates DDL Create statement for given entity.</p>
+   * @param <T> object (entity) type
+   * @param pRqVs request scoped vars
+   * @param pCls entity class, not null
+   * @return Select query in String Buffer
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final <T> String evCreate(final Map<String, Object> pRqVs,
+    final Class<T> pCls) throws Exception {
+    StringBuffer sb = new StringBuffer("create table "
+      + pCls.getSimpleName().toUpperCase() + "(\n");
+    //fields definition:
+    boolean isFst = true;
+    List<String> idNms = this.setng.lazIdFldNms(pCls);
+    for (String fdNm : idNms) {
+      String def = this.setng.lazFldStg(pCls, fdNm, DEF);
+      String nul = this.setng.lazFldStg(pCls, fdNm, NUL);
+      if ("false".equals(nul) && !def.contains("not null")) {
+        def += " not null";
+      }
+      if (isFst) {
+        isFst = false;
+      } else {
+        sb.append(",\n");
+      }
+      sb.append(fdNm.toUpperCase() + " " + def);
+    }
+    for (String fdNm : this.setng.lazFldNms(pCls)) {
+      String def = this.setng.lazFldStg(pCls, fdNm, DEF);
+      String nul = this.setng.lazFldStg(pCls, fdNm, NUL);
+      if ("false".equals(nul) && !def.contains("not null")) {
+        def += " not null";
+      }
+      if (isFst) {
+        isFst = false;
+      } else {
+        sb.append(",\n");
+      }
+      sb.append(fdNm.toUpperCase() + " " + def);
+    }
+    //complex primary ID constraint:
+    if (idNms.size() > 1) {
+      isFst = true;
+      sb.append(",\nconstraint pk" + pCls.getSimpleName()
+        + " primary key (");
+      for (String fdNm : idNms) {
+        if (isFst) {
+          isFst = false;
+        } else {
+          sb.append(", ");
+        }
+        sb.append(fdNm.toUpperCase());
+      }
+      sb.append(")");
+    }
+    //foreign ID constraint
+    for (String fdNm : idNms) {
+      evFrCnstr(pRqVs, pCls, fdNm, sb);
+    }
+    for (String fdNm : this.setng.lazFldNms(pCls)) {
+      evFrCnstr(pRqVs, pCls, fdNm, sb);
+    }
+    String cnstr = this.setng.lazClsStg(pCls, CNSTR);
+    if (cnstr != null) {
+      sb.append(",\n" + cnstr);
+    }
+    sb.append(");\n");
+    return sb.toString();
+  }
+
+  /**
+   * <p>Try to add constraint foreign key.</p>
+   * @param pRqVs request scoped vars
+   * @param pCls entity class, not null
+   * @param pFdNm field name
+   * @param pSb String Buffer
+   * @throws Exception - an exception
+   **/
+  public final void evFrCnstr(final Map<String, Object> pRqVs,
+    final Class<?> pCls, final String pFdNm,
+      final StringBuffer pSb) throws Exception {
+    Class<?> fdCls = this.hldFdCls.get(pCls, pFdNm);
+    if (IHasId.class.isAssignableFrom(fdCls)) {
+      List<String> fdIdNms = this.setng.lazIdFldNms(fdCls);
+      if (fdIdNms.size() > 1) {
+        throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID!"
+          + " cls/fd" + pCls + "/" + pFdNm);
+      }
+      Class<?> fcs = this.hldFdCls.get(fdCls, fdIdNms.get(0));
+      if (IHasId.class.isAssignableFrom(fcs)) {
+        throw new ExcCode(ExcCode.WRCN, "Subentity with double foreign ID!"
+          + " cls/fd/fcl/f" + pCls + "/" + pFdNm + "/"
+            + fdCls + "/" + fdIdNms.get(0));
+      }
+      pSb.append(",\nconstraint fk" + pCls.getSimpleName() + pFdNm
+        + " foreign key (" + pFdNm.toUpperCase() + ") references ");
+      pSb.append(fdCls.getSimpleName().toUpperCase() + "(");
+      pSb.append(fdIdNms.get(0).toUpperCase() + ")");
+    }
+  }
+
+  /**
    * <p>Generates DML Select statement for given entity and vars.</p>
    * @param <T> object (entity) type
    * @param pRqVs request scoped vars
    * @param pVs invoker scoped vars, e.g. entity's needed fields, nullable.
    * @param pCls entity class, not null
-   * @return Select query
+   * @return Select query in String Buffer
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> String gen(final Map<String, Object> pRqVs,
+  public final <T> StringBuffer evSel(final Map<String, Object> pRqVs,
     final Map<String, Object> pVs, final Class<T> pCls) throws Exception {
     StringBuffer sb = new StringBuffer("select ");
     StringBuffer sbe = new StringBuffer(" from "
@@ -106,7 +214,70 @@ public class Selct implements ISelct {
         "Finish selecting root entity: " + pCls);
     }
     sb.append(sbe);
-    return sb.toString();
+    return sb;
+  }
+
+  /**
+   * <p>Generates condition ID for given entity and appends into given
+   * String Buffer.</p>
+   * @param <T> object (entity) type
+   * @param pRqVs request scoped vars
+   * @param pEnt entity, not null
+   * @param pSb String Buffer to put ID condition e.g. "[TBL].IID=2"
+   *    or "[TBL].WHOUS=1 and [TBL].ITM=2 and [TBL].UOM=5"
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final <T> void evCndId(final Map<String, Object> pRqVs,
+    final T pEnt, final StringBuffer pSb) throws Exception {
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 7102 && this.log.getDbgCl() > 7100;
+    boolean isFst = true;
+    String als = pEnt.getClass().getSimpleName().toUpperCase() + ".";
+    for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
+      Object fdVl = null;
+      Class<?> fdCls = this.hldFdCls.get(pEnt.getClass(), fdNm);
+      Method getter = this.hldGets.get(pEnt.getClass(), fdNm);
+      fdVl = getter.invoke(pEnt);
+      if (isDbgSh) {
+        this.log.debug(pRqVs, getClass(), "EV CND ID ent/fd/fcls/vl: "
+          + pEnt.getClass() + "/" + fdNm + "/" + fdCls + "/" + fdVl);
+      }
+      if (fdVl == null) {
+        throw new ExcCode(ExcCode.WRPR, "Entity with NULL ID!");
+      }
+      if (IHasId.class.isAssignableFrom(fdCls)) {
+        List<String> fdIdNms = this.setng.lazIdFldNms(fdCls);
+        if (fdIdNms.size() > 1) {
+          throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID!"
+            + " cls/fd" + pEnt.getClass() + "/" + fdNm);
+        }
+        Class<?> fcs = this.hldFdCls.get(fdCls, fdIdNms.get(0));
+        if (IHasId.class.isAssignableFrom(fcs)) {
+          throw new ExcCode(ExcCode.WRCN, "Subentity with double foreign ID!"
+            + " cls/fd/fcl/f" + pEnt.getClass() + "/" + fdNm + "/"
+              + fdCls + "/" + fdIdNms.get(0));
+        }
+        if (isDbgSh) {
+          this.log.debug(pRqVs, getClass(), "EV CND ID sent/sfd: "
+            + fcs + "/" + fdIdNms.get(0));
+        }
+        getter = this.hldGets.get(fdCls, fdIdNms.get(0));
+        fdVl = getter.invoke(fdVl);
+      }
+      if (isFst) {
+        isFst = false;
+      } else {
+        pSb.append(" and ");
+      }
+      String val;
+      if (fdVl instanceof String) {
+        val = "'" + fdVl.toString() + "'";
+      } else {
+        val = fdVl.toString();
+      }
+      pSb.append(als + fdNm.toUpperCase() + "=" + val);
+    }
   }
 
   /**
@@ -268,7 +439,7 @@ public class Selct implements ISelct {
         pSb.append(tbAls.get(tbAls.size() - 1) + "." + fnu + " as "
           + tbAls.get(tbAls.size() - 1) + fnu);
       } else {
-        pSb.append(pCls.getSimpleName().toUpperCase() + "." + fnu + " as " + fnu);
+      pSb.append(pCls.getSimpleName().toUpperCase() + "." + fnu + " as " + fnu);
       }
     }
   }
@@ -320,5 +491,21 @@ public class Selct implements ISelct {
    **/
   public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
     this.hldFdCls = pHldFdCls;
+  }
+
+  /**
+   * <p>Getter for hldGets.</p>
+   * @return IHldNm<Class<?>, Method>
+   **/
+  public final IHldNm<Class<?>, Method> getHldGets() {
+    return this.hldGets;
+  }
+
+  /**
+   * <p>Setter for hldGets.</p>
+   * @param pHldGets reference
+   **/
+  public final void setHldGets(final IHldNm<Class<?>, Method> pHldGets) {
+    this.hldGets = pHldGets;
   }
 }

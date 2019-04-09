@@ -63,7 +63,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
   /**
    * <p>ORM service.</p>
    */
-  private IOrm<RS> orm;
+  private IOrm orm;
 
   //Cached data:
   /**
@@ -492,9 +492,9 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
 
   /**
    * <p>Getter for orm.</p>
-   * @return IOrm<RS>
+   * @return IOrm
    **/
-  public final synchronized IOrm<RS> getOrm() {
+  public final synchronized IOrm getOrm() {
     return this.orm;
   }
 
@@ -502,7 +502,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    * <p>Setter for orm.</p>
    * @param pOrm reference
    **/
-  public final synchronized void setOrm(final IOrm<RS> pOrm) {
+  public final synchronized void setOrm(final IOrm pOrm) {
     this.orm = pOrm;
   }
 }

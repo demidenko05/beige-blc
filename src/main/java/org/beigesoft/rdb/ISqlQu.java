@@ -31,12 +31,37 @@ package org.beigesoft.rdb;
 import java.util.Map;
 
 /**
- * <p>Abstraction of service that generates DML Select statement
- * for given entity and vars.</p>
+ * <p>Abstraction of service that generates DML/DDL statements(queries).</p>
  *
  * @author Yury Demidenko
  */
-public interface ISelct {
+public interface ISqlQu {
+
+  /**
+   * <p>Definition key.</p>
+   **/
+  String DEF = "def";
+
+  /**
+   * <p>Nullable key.</p>
+   **/
+  String NUL = "nul";
+
+  /**
+   * <p>Addition constraint key.</p>
+   **/
+  String CNSTR = "cnstr";
+
+  /**
+   * <p>Generates DDL Create statement for given entity.</p>
+   * @param <T> object (entity) type
+   * @param pRqVs request scoped vars
+   * @param pCls entity class, not null
+   * @return Select query in String Buffer
+   * @throws Exception - an exception
+   **/
+  <T> String evCreate(Map<String, Object> pRqVs,
+    Class<T> pCls) throws Exception;
 
   /**
    * <p>Generates DML Select statement for given entity and vars.</p>
@@ -44,9 +69,22 @@ public interface ISelct {
    * @param pRqVs request scoped vars
    * @param pVs invoker scoped vars, e.g. entity's needed fields, nullable.
    * @param pCls entity class, not null
-   * @return Select query
+   * @return Select query in String Buffer
    * @throws Exception - an exception
    **/
-  <T> String gen(Map<String, Object> pRqVs,
+  <T> StringBuffer evSel(Map<String, Object> pRqVs,
     Map<String, Object> pVs, Class<T> pCls) throws Exception;
+
+  /**
+   * <p>Generates condition ID for given entity and appends into given
+   * String Buffer.</p>
+   * @param <T> object (entity) type
+   * @param pRqVs request scoped vars
+   * @param pEnt entity, not null
+   * @param pSb String Buffer to put ID condition e.g. "[TBL].IID=2"
+   *   or "[TBL].WHOUS=1 and [TBL].ITM=2 and [TBL].UOM=5"
+   * @throws Exception - an exception
+   **/
+  <T> void evCndId(Map<String, Object> pRqVs,
+    T pEnt, StringBuffer pSb) throws Exception;
 }

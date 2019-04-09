@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.prp;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Abstraction of service that loads classes and their fields settings
@@ -89,7 +90,7 @@ public interface ISetng {
   /**
    * <p>Common settings file name.</p>
    **/
-  String APPSTFLNM = "cmnst.xml";
+  String CMNSTFLNM = "cmnst.xml";
 
     //Classes settings:
   /**
@@ -172,6 +173,13 @@ public interface ISetng {
    * @throws Exception - an exception
    **/
   List<Class<?>> lazClss() throws Exception;
+
+  /**
+   * <p>Lazy gets common settings.</p>
+   * @return common settings if exists or empty map
+   * @throws Exception - an exception
+   **/
+  Map<String, String> lazCmnst() throws Exception;
 
   /**
    * <p>Releases beans (memory).</p>

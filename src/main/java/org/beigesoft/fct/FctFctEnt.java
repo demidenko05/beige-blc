@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.beigesoft.mdlp.IOrId;
-import org.beigesoft.rdb.IRdb;
+import org.beigesoft.rdb.IOrm;
 
 /**
  * <p>Entities factories factory.</p>
@@ -50,7 +50,7 @@ public class FctFctEnt implements IFctCls<IFctRq<?>> {
   /**
    * <p>Database service to get ID database.</p>
    **/
-  private IRdb rdb;
+  private IOrm orm;
 
   /**
    * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
@@ -89,7 +89,7 @@ public class FctFctEnt implements IFctCls<IFctRq<?>> {
   protected final FctOrId crPuFctOrId(final Class<?> pCls) throws Exception {
     FctOrId fct = new FctOrId();
     fct.setCls(pCls);
-    fct.setDbOr(this.rdb.getDbId());
+    fct.setDbOr(this.orm.getDbId());
     //assigning fully initialized object:
     this.fcts.put(pCls, fct);
     return fct;
@@ -111,18 +111,18 @@ public class FctFctEnt implements IFctCls<IFctRq<?>> {
 
   //Simple getters and setters:
   /**
-   * <p>Getter for rdb.</p>
-   * @return IRdb
+   * <p>Getter for orm.</p>
+   * @return IOrm
    **/
-  public final IRdb getRdb() {
-    return this.rdb;
+  public final IOrm getOrm() {
+    return this.orm;
   }
 
   /**
-   * <p>Setter for rdb.</p>
-   * @param pRdb reference
+   * <p>Setter for orm.</p>
+   * @param pOrm reference
    **/
-  public final void setRdb(final IRdb pRdb) {
-    this.rdb = pRdb;
+  public final void setOrm(final IOrm pOrm) {
+    this.orm = pOrm;
   }
 }
