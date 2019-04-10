@@ -52,20 +52,24 @@ public abstract class ARdb<RS> implements IRdb<RS> {
 
   /**
    * <p>Evaluate single Integer result.</p>
-   * @param pQuery Query
+   * @param pQu Query
    * @param pClNm Column Name
    * @return Integer result e.g 11231 or NULL
    * @throws Exception - an exception
    */
   @Override
-  public final Integer evInt(final String pQuery,
+  public final Integer evInt(final String pQu,
     final String pClNm) throws Exception {
     Integer result = null;
     IRecSet<RS> rs = null;
     try {
-      rs = retRs(pQuery);
+      rs = retRs(pQu);
       if (rs.first()) {
         result = rs.getInt(pClNm);
+        if (rs.next()) {
+          throw new ExcCode(ExcCode.WRPR,
+            "Query returns more than 1 result - " + pQu);
+        }
       }
     } finally {
       if (rs != null) {
@@ -77,20 +81,24 @@ public abstract class ARdb<RS> implements IRdb<RS> {
 
   /**
    * <p>Evaluate single Long result.</p>
-   * @param pQuery Query
+   * @param pQu Query
    * @param pClNm Column Name
    * @return Long result e.g 11231 or NULL
    * @throws Exception - an exception
    */
   @Override
-  public final Long evLong(final String pQuery,
+  public final Long evLong(final String pQu,
     final String pClNm) throws Exception {
     Long result = null;
     IRecSet<RS> rs = null;
     try {
-      rs = retRs(pQuery);
+      rs = retRs(pQu);
       if (rs.first()) {
         result = rs.getLong(pClNm);
+        if (rs.next()) {
+          throw new ExcCode(ExcCode.WRPR,
+            "Query returns more than 1 result - " + pQu);
+        }
       }
     } finally {
       if (rs != null) {
@@ -102,20 +110,24 @@ public abstract class ARdb<RS> implements IRdb<RS> {
 
   /**
    * <p>Evaluate single Float result.</p>
-   * @param pQuery Query
+   * @param pQu Query
    * @param pClNm Column Name
    * @return Float result e.g 1.1231 or NULL
    * @throws Exception - an exception
    */
   @Override
-  public final Float evFloat(final String pQuery,
+  public final Float evFloat(final String pQu,
     final String pClNm) throws Exception {
     Float result = null;
     IRecSet<RS> rs = null;
     try {
-      rs = retRs(pQuery);
+      rs = retRs(pQu);
       if (rs.first()) {
         result = rs.getFloat(pClNm);
+        if (rs.next()) {
+          throw new ExcCode(ExcCode.WRPR,
+            "Query returns more than 1 result - " + pQu);
+        }
       }
     } finally {
       if (rs != null) {
@@ -127,20 +139,24 @@ public abstract class ARdb<RS> implements IRdb<RS> {
 
   /**
    * <p>Evaluate single Double result.</p>
-   * @param pQuery Query
+   * @param pQu Query
    * @param pClNm Column Name
    * @return Double result e.g 1.1231 or NULL
    * @throws Exception - an exception
    */
   @Override
-  public final Double evDouble(final String pQuery,
+  public final Double evDouble(final String pQu,
     final String pClNm) throws Exception {
     Double result = null;
     IRecSet<RS> rs = null;
     try {
-      rs = retRs(pQuery);
+      rs = retRs(pQu);
       if (rs.first()) {
         result = rs.getDouble(pClNm);
+        if (rs.next()) {
+          throw new ExcCode(ExcCode.WRPR,
+            "Query returns more than 1 result - " + pQu);
+        }
       }
     } finally {
       if (rs != null) {
@@ -152,18 +168,18 @@ public abstract class ARdb<RS> implements IRdb<RS> {
 
   /**
    * <p>Evaluate Double results.</p>
-   * @param pQuery Query
+   * @param pQu Query
    * @param pClNms Column Names
    * @return Double[] result e.g. [2.14, NULL, 111.456]
    * @throws Exception - an exception
    */
   @Override
-  public final Double[] evDoubles(final String pQuery,
+  public final Double[] evDoubles(final String pQu,
     final String[] pClNms) throws Exception {
     Double[] result = new Double[pClNms.length];
     IRecSet<RS> rs = null;
     try {
-      rs = retRs(pQuery);
+      rs = retRs(pQu);
       if (rs.first()) {
         for (int i = 0; i < pClNms.length; i++) {
           result[i] = rs.getDouble(pClNms[i]);
@@ -185,12 +201,7 @@ public abstract class ARdb<RS> implements IRdb<RS> {
   public final synchronized Integer getDbId() {
     if (this.dbId == null) {
       try {
-        String query = "select count(*) as TOTROWS from DBINF;";
-        Integer rc = evInt(query, "TOTROWS");
-        if (rc != 1) {
-          throw new ExcCode(ExcCode.WRCN, "database_info_config_error");
-        }
-        query = "select DBID from DBINF;";
+        String query = "select DBID from DBINF;";
         Integer di = evInt(query, "DBID");
         if (di == null) {
           throw new ExcCode(ExcCode.WRCN, "database_info_config_error");
@@ -210,12 +221,7 @@ public abstract class ARdb<RS> implements IRdb<RS> {
   @Override
   public final Integer getDbVr() {
     try {
-      String query = "select count(*) as TOTROWS from DBINF;";
-      Integer rc = evInt(query, "TOTROWS");
-      if (rc != 1) {
-        throw new ExcCode(ExcCode.WRCN, "database_info_config_error");
-      }
-      query = "select DBVR from DBINF;";
+      String query = "select DBVR from DBINF;";
       Integer dbVr = evInt(query, "DBVR");
       if (dbVr == null) {
         throw new ExcCode(ExcCode.WRCN, "database_info_config_error");

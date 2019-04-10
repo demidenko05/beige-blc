@@ -48,6 +48,7 @@ import org.beigesoft.mdlp.DcSp;
 import org.beigesoft.mdlp.DcGrSp;
 import org.beigesoft.mdlp.UsTmc;
 import org.beigesoft.mdlp.UsRlTmc;
+import org.beigesoft.mdlp.UserRoleTomcatPriority;
 import org.beigesoft.mdlp.PersistableHead;
 import org.beigesoft.mdlp.PersistableLine;
 import org.beigesoft.mdlp.Department;
@@ -60,6 +61,7 @@ import org.beigesoft.fct.FctBlc;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.rdb.ISqlQu;
+import org.beigesoft.rdb.IOrm;
 import org.beigesoft.srv.Reflect;
 import org.beigesoft.srv.IReflect;
 
@@ -189,10 +191,6 @@ public class FromRsTest<RS> {
     sel = selct.evSel(this.rqVs, vs, pl.getClass()).toString();
     assertTrue(sel.contains("OWNR1.ITSSTATUS as OWNR1ITSSTATUS"));
     this.logStd.test(this.rqVs, getClass(), sel);
-    sel = selct.evSel(this.rqVs, vs, UsRlTmc.class).toString();
-    this.logStd.test(this.rqVs, getClass(), sel);
-    cr = selct.evCreate(this.rqVs, UsRlTmc.class);
-    this.logStd.test(this.rqVs, getClass(), cr);
     rs.getData().put("OWNR1ITSSTATUS", pl.getOwnr().getItsStatus().ordinal());
     rs.getData().put("OWNR1ITSDATE", pl.getOwnr().getItsDate().getTime());
     rs.getData().put("OWNR1ISCLOSED", pl.getOwnr().getIsClosed() ? 1 : 0);
@@ -209,5 +207,17 @@ public class FromRsTest<RS> {
     assertEquals(pl.getOwnr().getItsStatus(), plf.getOwnr().getItsStatus());
     assertEquals(pl.getOwnr().getIsClosed(), plf.getOwnr().getIsClosed());
     assertNull(plf.getOwnr().getVer());
+    sel = selct.evSel(this.rqVs, vs, UsRlTmc.class).toString();
+    this.logStd.test(this.rqVs, getClass(), sel);
+    cr = selct.evCreate(this.rqVs, UsRlTmc.class);
+    this.logStd.test(this.rqVs, getClass(), cr);
+    sel = selct.evSel(this.rqVs, vs, UserRoleTomcatPriority.class).toString();
+    this.logStd.test(this.rqVs, getClass(), sel);
+    cr = selct.evCreate(this.rqVs, UserRoleTomcatPriority.class);
+    this.logStd.test(this.rqVs, getClass(), cr);
+    assertTrue(cr.contains("constraint urtpprioritygt0 check (PRIORITY>0)"));
+    Setng stgOrm = (Setng) this.fctApp.laz(this.rqVs, this.fctApp.STGORMNM);
+    String jdbcCls = stgOrm.lazCmnst().get(IOrm.JDBCCLS);
+    assertEquals("org.sqlite.JDBC", jdbcCls);
   }
 }

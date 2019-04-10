@@ -86,8 +86,7 @@ public class SqlQu implements ISqlQu {
     List<String> idNms = this.setng.lazIdFldNms(pCls);
     for (String fdNm : idNms) {
       String def = this.setng.lazFldStg(pCls, fdNm, DEF);
-      String nul = this.setng.lazFldStg(pCls, fdNm, NUL);
-      if ("false".equals(nul) && !def.contains("not null")) {
+      if (!def.contains("not null")) {
         def += " not null";
       }
       if (isFst) {

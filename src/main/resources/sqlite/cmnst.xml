@@ -12,4 +12,5 @@ See LICENSE in base folder
 <entry key="dbNm">#currentDir#blc.sqlite</entry>
 <entry key="dbUrl">jdbc:sqlite:#currentDir#blc.sqlite</entry>
 <entry key="checkTbl">select * from SQLITE_MASTER where TBL_NAME=':tblNm';</entry>
+<entry key="lastId">select last_insert_rowid() as LASTID;</entry>
 </properties>

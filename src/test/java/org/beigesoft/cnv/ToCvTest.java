@@ -61,6 +61,7 @@ import org.beigesoft.fct.FctBlc;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.rdb.ISqlQu;
+import org.beigesoft.rdb.SrvClVl;
 import org.beigesoft.srv.Reflect;
 import org.beigesoft.srv.IReflect;
 
@@ -142,6 +143,13 @@ public class ToCvTest<RS> {
     assertEquals(Double.valueOf(pl.getItsPrice().doubleValue()), cv.getDoubles().get("itsPrice"));
     assertEquals(Double.valueOf(pl.getItsTotal().doubleValue()), cv.getDoubles().get("itsTotal"));
     assertEquals(Double.valueOf(pl.getItsQuantity().doubleValue()), cv.getDoubles().get("itsQuantity"));
+    SrvClVl srvClVl = (SrvClVl) this.fctApp.laz(this.rqVs, SrvClVl.class.getSimpleName());
+    String ins = srvClVl.evInsert(pl.getClass(), cv);
+    this.logStd.test(this.rqVs, getClass(), ins);
+    cv = new ColVals();
+    filCvEnt.fill(this.rqVs, vs, pl, cv);
+    String upd = srvClVl.evUpdate(pl.getClass(), cv);
+    this.logStd.test(this.rqVs, getClass(), upd);
     cv = new ColVals();
     filCvEnt.fill(this.rqVs, vs, ph, cv);
     assertEquals(ph.getIid(), cv.getLongs().get("iid"));
@@ -152,8 +160,12 @@ public class ToCvTest<RS> {
     String[] ndFds = new String[] {"iid", "itsStatus", "ver"}; //only change status with optimistic locking
     vs.put("ndFds", ndFds);
     Long oldVer = ph.getVer();
+    ins = srvClVl.evInsert(ph.getClass(), cv);
+    this.logStd.test(this.rqVs, getClass(), ins);
     cv = new ColVals();
     filCvEnt.fill(this.rqVs, vs, ph, cv);
+    upd = srvClVl.evUpdate(ph.getClass(), cv);
+    this.logStd.test(this.rqVs, getClass(), upd);
     assertEquals(ph.getIid(), cv.getLongs().get("iid"));
     assertTrue(!cv.getLongs().entrySet().contains("itsDate"));
     assertEquals(Integer.valueOf(ph.getItsStatus().ordinal()), cv.getInts().get("itsStatus"));
@@ -184,6 +196,12 @@ public class ToCvTest<RS> {
     assertTrue(sel.contains("USERROLETOMCATPRIORITY.ROL='rol1'"));
     assertTrue(sel.contains("USERROLETOMCATPRIORITY.USR='usr1'"));
     this.logStd.test(this.rqVs, getClass(), sel);
+    ins = srvClVl.evInsert(urtp.getClass(), cv);
+    this.logStd.test(this.rqVs, getClass(), ins);
+    cv = new ColVals();
+    filCvEnt.fill(this.rqVs, vs, urtp, cv);
+    upd = srvClVl.evUpdate(urtp.getClass(), cv);
+    this.logStd.test(this.rqVs, getClass(), upd);
     cv = new ColVals();
     urtp.setIid(null);
     filCvEnt.fill(this.rqVs, vs, urtp, cv);
@@ -192,6 +210,6 @@ public class ToCvTest<RS> {
     assertTrue(cv.getStrs().keySet().contains("usr"));
     assertNull(cv.getStrs().get("usr"));
     assertEquals(urtp.getPriority(), cv.getInts().get("priority"));
-    assertEquals(Long.valueOf(2L), cv.getLongs().get("ver"));
+    assertEquals(Long.valueOf(3L), cv.getLongs().get("ver"));
   }
 }

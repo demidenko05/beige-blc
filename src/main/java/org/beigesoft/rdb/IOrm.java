@@ -39,8 +39,74 @@ import java.util.Map;
 public interface IOrm {
 
   /**
+   * <p>Setting JDBC class.</p>
+   **/
+  String JDBCCLS = "jdbcCls";
+
+  /**
+   * <p>Setting DS class.</p>
+   **/
+  String DSCLS = "dsCls";
+
+  /**
+   * <p>Setting DB name.</p>
+   **/
+  String DBNM = "dbNm";
+
+  /**
+   * <p>Setting DB URL.</p>
+   **/
+  String DBURL = "dbUrl";
+
+  /**
+   * <p>Setting check if table exists query.</p>
+   **/
+  String CHECKTBL = "checkTbl";
+
+  /**
+   * <p>Table var in check if table exists query.</p>
+   **/
+  String TBLNM = ":tblNm";
+
+  /**
+   * <p>Query initializing.</p>
+   **/
+  String INITSQL = "init.sql";
+
+  /**
+   * <p>Query insert.</p>
+   **/
+  String INSTSQL = "inst.sql";
+
+  /**
+   * <p>Query upgrade without suffix.</p>
+   **/
+  String UPGRSQL = "upgr";
+
+  /**
+   * <p>Query last inserted ID, e.g. for SQLITE, MySql.</p>
+   **/
+  String LASTID = "lastId";
+
+  /**
+   * <p>Sub-query returning ID, e.g. for Postgresql.</p>
+   **/
+  String RETID = "retId";
+
+  /**
+   * <p>Optimistic locking fail.</p>
+   **/
+  int DRTREAD = 1151;
+
+  /**
+   * <p>Error insert/update row count != 1.</p>
+   **/
+  int INSUPERR = 1152;
+
+  /**
    * <p>Initializes database, e.g. create/updates tables if need.
-   * It must be invoked once by factory initializing this service.</p>
+   * It must be invoked once by an initializer (e.g. load on startup servlet).
+   * </p>
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @throws Exception - an exception
    **/
@@ -74,7 +140,8 @@ public interface IOrm {
     Class<T> pCls, String pCond) throws Exception;
 
   /**
-   * <p>Retrieve the first entity from DB by query.</p>
+   * <p>Retrieve entity from DB by query, if more than 1 result,
+   * then trows exception.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable

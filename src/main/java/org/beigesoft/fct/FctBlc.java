@@ -59,6 +59,7 @@ import org.beigesoft.rdb.Orm;
 import org.beigesoft.rdb.IOrm;
 import org.beigesoft.rdb.ISqlQu;
 import org.beigesoft.rdb.SqlQu;
+import org.beigesoft.rdb.SrvClVl;
 import org.beigesoft.srv.INumStr;
 import org.beigesoft.srv.NumStr;
 import org.beigesoft.srv.IReflect;
@@ -183,6 +184,8 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazStgOrm(pRqVs);
           } else if (IOrm.class.getSimpleName().equals(pBnNm)) {
             rz = lazOrm(pRqVs);
+          } else if (SrvClVl.class.getSimpleName().equals(pBnNm)) {
+            rz = lazSrvClVl(pRqVs);
           } else if (ISqlQu.class.getSimpleName().equals(pBnNm)) {
             rz = lazSqlQu(pRqVs);
           } else if (FilCvEnt.class.getSimpleName().equals(pBnNm)) {
@@ -465,12 +468,12 @@ public class FctBlc<RS> implements IFctApp {
       IRdb<RS> rdb = (IRdb<RS>) laz(pRqVs, IRdb.class.getSimpleName());
       rz.setRdb(rdb);
       rz.setSqlQu(lazSqlQu(pRqVs));
+      rz.setSrvClVl(lazSrvClVl(pRqVs));
       rz.setFilEntRs(lazFilEntRs(pRqVs));
       FctFctEnt fctFctEnt = lazFctFctEnt(pRqVs);
       fctFctEnt.setOrm(rz);
       rz.setFctFctEnt(fctFctEnt);
-      rz.init(pRqVs);
-      rz.getSetng().release(); // remove data about all entities
+      //initialization must be by the first invoker (servlet)
       this.beans.put(IOrm.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), Orm.class.getSimpleName()
         + " has been created.");
@@ -495,6 +498,25 @@ public class FctBlc<RS> implements IFctApp {
       rz.setLog(lazLogStd(pRqVs));
       this.beans.put(STGORMNM, rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), STGORMNM + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter SrvClVl.</p>
+   * @param pRqVs request scoped vars
+   * @return SrvClVl
+   * @throws Exception - an exception
+   */
+  private SrvClVl lazSrvClVl(
+    final Map<String, Object> pRqVs) throws Exception {
+    SrvClVl rz = (SrvClVl) this.beans.get(SrvClVl.class.getSimpleName());
+    if (rz == null) {
+      rz = new SrvClVl();
+      rz.setSetng(lazStgOrm(pRqVs));
+      this.beans.put(SrvClVl.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), SrvClVl.class.getSimpleName()
+        + " has been created.");
     }
     return rz;
   }

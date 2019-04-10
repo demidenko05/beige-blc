@@ -26,15 +26,15 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.srv;
+package org.beigesoft.rdb;
 
-import java.util.Set;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
 import org.beigesoft.exc.ExcCode;
-import org.beigesoft.hld.IHld;
 import org.beigesoft.mdl.ColVals;
+import org.beigesoft.prp.ISetng;
 
 /**
  * <p>Column values shared utility.</p>
@@ -44,25 +44,22 @@ import org.beigesoft.mdl.ColVals;
 public class SrvClVl {
 
   /**
-   * <p>Holder of persistable entities ID columns names.</p>
+   * <p>ORM setting service.</p>
    **/
-  private IHld<Class<?>, Set<String>> hldIdClNms;
-
-  /**
-   * <p>Holder of persistable entities columns names.</p>
-   **/
-  private IHld<Class<?>, Set<String>> hldClNms;
+  private ISetng setng;
 
   /**
    * <p>Makes string representation.</p>
    * @param pCls entity class
    * @param pClVl column values
    * @return string representation
+   * @throws Exception an Exception
    **/
-  public final String str(final Class<?> pCls, final ColVals pClVl) {
+  public final String str(final Class<?> pCls,
+    final ColVals pClVl) throws Exception {
     StringBuffer sb = new StringBuffer("IDs column names: ");
     boolean isFirst = true;
-    for (String idNm : this.hldClNms.get(pCls)) {
+    for (String idNm : this.setng.lazIdFldNms(pCls)) {
       if (isFirst) {
         isFirst = false;
       } else {
@@ -255,13 +252,36 @@ public class SrvClVl {
   }
 
   /**
+   * <p>Get ID column with String or Long value to check if null.</p>
+   * @param pClVl type-safe map column name - column value
+   * @param pNm column name
+   * @return Object column val
+   * @throws ExcCode if field not found
+   **/
+  public final Object getIdVl(final ColVals pClVl,
+    final String pNm) throws ExcCode {
+    if (pClVl.getLongs() != null && pClVl.getLongs().keySet().contains(pNm)) {
+      return pClVl.getLongs().get(pNm);
+    }
+    if (pClVl.getStrs() != null && pClVl.getStrs().keySet().contains(pNm)) {
+      return pClVl.getStrs().get(pNm);
+    }
+    throw new ExcCode(ExcCode.WRPR, "There is no field - " + pNm);
+  }
+
+  /**
    * <p>Get column with Float val.</p>
    * @param pClVl type-safe map column name - column value
    * @param pNm column name
    * @return Float column val
+   * @throws ExcCode if field not found
    **/
-  public final Float getFloat(final ColVals pClVl, final String pNm) {
-    return pClVl.getFloats().get(pNm);
+  public final Float getFloat(final ColVals pClVl,
+    final String pNm) throws ExcCode {
+    if (pClVl.getFloats() != null && pClVl.getFloats().keySet().contains(pNm)) {
+      return pClVl.getFloats().get(pNm);
+    }
+    throw new ExcCode(ExcCode.WRPR, "There is no field - " + pNm);
   }
 
   /**
@@ -269,9 +289,14 @@ public class SrvClVl {
    * @param pClVl type-safe map column name - column value
    * @param pNm column name
    * @return Double column val
+   * @throws ExcCode if field not found
    **/
-  public final Double getDouble(final ColVals pClVl, final String pNm) {
-    return pClVl.getDoubles().get(pNm);
+  public final Double getDouble(final ColVals pClVl,
+    final String pNm) throws ExcCode {
+  if (pClVl.getDoubles() != null && pClVl.getDoubles().keySet().contains(pNm)) {
+      return pClVl.getDoubles().get(pNm);
+    }
+    throw new ExcCode(ExcCode.WRPR, "There is no field - " + pNm);
   }
 
   /**
@@ -349,8 +374,7 @@ public class SrvClVl {
     if (pClVl.getFloats() != null && pClVl.getFloats().keySet().contains(pNm)) {
       return true;
     }
-    if (pClVl.getDoubles() != null
-      && pClVl.getDoubles().keySet().contains(pNm)) {
+  if (pClVl.getDoubles() != null && pClVl.getDoubles().keySet().contains(pNm)) {
       return true;
     }
     return false;
@@ -389,23 +413,6 @@ public class SrvClVl {
   }
 
   /**
-   * <p>Check if field is ID.</p>
-   * @param pCls entity class
-   * @param pClVl type-safe map column name - column value
-   * @param pNm column name
-   * @return if it's ID
-   **/
-  public final boolean isId(final Class<?> pCls, final ColVals pClVl,
-    final String pNm) {
-    for (String idNm  : this.hldIdClNms.get(pCls)) {
-      if (idNm.equals(pNm)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
    * <p>Evaluate SQL insert statement. It's assumed that ID maybe either Long
    * or String type, i.e. Integer is not.</p>
    * @param pCls entity class
@@ -419,9 +426,11 @@ public class SrvClVl {
       + pCls.getSimpleName().toUpperCase() + " (");
     StringBuffer vls = new StringBuffer(" values (");
     boolean isFst = true;
+    List<String> idNms = this.setng.lazIdFldNms(pCls);
+    //ID-able Long and String:
     if (pClVl.getLongs() != null) {
       for (Map.Entry<String, Long> ent : pClVl.getLongs().entrySet()) {
-        if (!isId(pCls, pClVl, ent.getKey()) || ent.getValue() != null) {
+        if (ent.getValue() != null || !idNms.contains(ent.getKey())) {
           if (isFst) {
             isFst = false;
           } else {
@@ -435,7 +444,7 @@ public class SrvClVl {
     }
     if (pClVl.getStrs() != null) {
       for (Map.Entry<String, String> ent : pClVl.getStrs().entrySet()) {
-        if (!isId(pCls, pClVl, ent.getKey()) || ent.getValue() != null) {
+        if (ent.getValue() != null || !idNms.contains(ent.getKey())) {
           if (isFst) {
             isFst = false;
           } else {
@@ -449,16 +458,14 @@ public class SrvClVl {
     }
     if (pClVl.getInts() != null) {
       for (Map.Entry<String, Integer> ent : pClVl.getInts().entrySet()) {
-        //if (!isId(pCls, pClVl, ent.getKey()) || ent.getValue() != null) {
-          if (isFst) {
-            isFst = false;
-          } else {
-            res.append(", ");
-            vls.append(", ");
-          }
-          res.append(ent.getKey().toUpperCase());
-          vls.append(evSqlVl(pClVl, ent.getKey()));
-        //}
+        if (isFst) {
+          isFst = false;
+        } else {
+          res.append(", ");
+          vls.append(", ");
+        }
+        res.append(ent.getKey().toUpperCase());
+        vls.append(evSqlVl(pClVl, ent.getKey()));
       }
     }
     if (pClVl.getFloats() != null) {
@@ -485,27 +492,68 @@ public class SrvClVl {
         vls.append(evSqlVl(pClVl, ent.getKey()));
       }
     }
-    res.append(")\n" + vls + ")");
+    res.append(") " + vls + ");");
     return res.toString();
   }
 
   /**
-   * <p>Evaluate SQL update statement. It's assumed that ID maybe either Long
-   * or String type!</p>
+   * <p>Evaluate where conditions for SQL update standard statement
+   * with optimistic locking if need.</p>
    * @param pCls entity class
    * @param pClVl type-safe map column name - column value
-   * @param pWhere where conditions e.g. "itsId=2 AND itsVersion=2"
+   * @return where conditions e.g. "IID=1 and VER=2"
+   * @throws Exception - an exception
+   **/
+  public final String evWheUpd(final Class<?> pCls,
+    final ColVals pClVl) throws Exception {
+    StringBuffer sb = new StringBuffer("");
+    boolean isFst = true;
+    for (String idNm : this.setng.lazIdFldNms(pCls)) {
+      if (isFst) {
+        isFst = false;
+      } else {
+        sb.append(" and ");
+      }
+      sb.append(idNm.toUpperCase() + "=" + evSqlVl(pClVl, idNm));
+    }
+    if (pClVl.getOldVer() != null) {
+      sb.append(" and VER=" + pClVl.getOldVer());
+    }
+    return sb.toString();
+  }
+
+  /**
+   * <p>Evaluate SQL update standard statement
+   * with optimistic locking if need.</p>
+   * @param pCls entity class
+   * @param pClVl type-safe map column name - column value
    * @return update statement
    * @throws Exception - an exception
    **/
   public final String evUpdate(final Class<?> pCls,
-    final ColVals pClVl, final String pWhere) throws Exception {
+    final ColVals pClVl) throws Exception {
+    String cnd = evWheUpd(pCls, pClVl);
+    return evUpdateCnd(pCls, pClVl, cnd);
+  }
+
+  /**
+   * <p>Evaluate SQL update statement with given conditions (nullable).
+   * It's assumed that ID maybe either Long or String type!</p>
+   * @param pCls entity class
+   * @param pClVl type-safe map column name - column value
+   * @param pCnd where conditions e.g. "IID=2 and VER=2" or NULL
+   * @return update statement
+   * @throws Exception - an exception
+   **/
+  public final String evUpdateCnd(final Class<?> pCls,
+    final ColVals pClVl, final String pCnd) throws Exception {
     StringBuffer res = new StringBuffer("update "
-      + pCls.getSimpleName().toUpperCase() + " set \n");
+      + pCls.getSimpleName().toUpperCase() + " set ");
+    List<String> idNms = this.setng.lazIdFldNms(pCls);
     boolean isFst = true;
     if (pClVl.getLongs() != null) {
       for (String key : pClVl.getLongs().keySet()) {
-        if (!isId(pCls, pClVl, key)) {
+        if (!idNms.contains(key)) {
           if (isFst) {
             isFst = false;
           } else {
@@ -517,7 +565,7 @@ public class SrvClVl {
     }
     if (pClVl.getStrs() != null) {
       for (String key : pClVl.getStrs().keySet()) {
-        if (!isId(pCls, pClVl, key)) {
+        if (!idNms.contains(key)) {
           if (isFst) {
             isFst = false;
           } else {
@@ -557,44 +605,28 @@ public class SrvClVl {
         res.append(key.toUpperCase() + "=" + evSqlVl(pClVl, key));
       }
     }
-    if (pWhere != null) {
-      res.append(" where " + pWhere);
+    if (pCnd != null) {
+      res.append(" where " + pCnd);
     }
-    res.append(";\n");
+    res.append(";");
     return res.toString();
   }
 
   //Simple getters and setters:
   /**
-   * <p>Getter for hldIdClNms.</p>
+   * <p>Getter for setng.</p>
    * @return IHld<Class<?, Set<String>>
    **/
-  public final IHld<Class<?>, Set<String>> getHldIdClNms() {
-    return this.hldIdClNms;
+  public final ISetng getSetng() {
+    return this.setng;
   }
 
   /**
-   * <p>Setter for hldIdClNms.</p>
-   * @param pHldIdClNms reference
+   * <p>Setter for setng.</p>
+   * @param pSetng reference
    **/
-  public final void setHldIdClNms(
-    final IHld<Class<?>, Set<String>> pHldIdClNms) {
-    this.hldIdClNms = pHldIdClNms;
-  }
-
-  /**
-   * <p>Getter for hldClNms.</p>
-   * @return IHld<Class<?, Set<String>>
-   **/
-  public final IHld<Class<?>, Set<String>> getHldClNms() {
-    return this.hldClNms;
-  }
-
-  /**
-   * <p>Setter for hldClNms.</p>
-   * @param pHldClNms reference
-   **/
-  public final void setHldClNms(final IHld<Class<?>, Set<String>> pHldClNms) {
-    this.hldClNms = pHldClNms;
+  public final void setSetng(
+    final ISetng pSetng) {
+    this.setng = pSetng;
   }
 }

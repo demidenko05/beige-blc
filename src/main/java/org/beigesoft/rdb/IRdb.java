@@ -189,7 +189,7 @@ public interface IRdb<RS> {
    * </p>
    * @param pTbl table name
    * @param pClVls type-safe map column name - column value
-   * @param pWhere where conditions e.g. "itsId=2"
+   * @param pWhere where conditions e.g. "itsId=2" or NULL - update all
    * @return row count affected
    * @throws Exception - an exception
    **/
@@ -213,7 +213,7 @@ public interface IRdb<RS> {
    * It is to adapt Android insert/update/delete interface.
    * </p>
    * @param pTbl table name
-   * @param pWhere where conditions e.g. "itsId=2" or NULL -delete all
+   * @param pWhere where conditions e.g. "itsId=2" or NULL - delete all
    * @return row count affected
    * @throws Exception - an exception
    **/
