@@ -31,6 +31,7 @@ package org.beigesoft.rpl;
 import java.util.Map;
 import java.io.Reader;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.log.ILog;
 import org.beigesoft.rdb.IOrm;
 import org.beigesoft.rdb.IRdb;
@@ -52,7 +53,7 @@ public class RpStorDbXmlCp<RS> implements IRpStor {
   /**
    * <p>Entity Reader.</p>
    **/
-  private IRpEntRead rpEntRead;
+  private IRpEntRead<IHasId<?>> rpEntRead;
 
   /**
    * <p>Log.</p>
@@ -89,8 +90,7 @@ public class RpStorDbXmlCp<RS> implements IRpStor {
       this.rdb.setTrIsl(IRdb.TRRUC);
       this.rdb.begin();
       while (this.utlXml.readUntilStart(pReader, "entity")) {
-        @SuppressWarnings("unchecked")
-        Object entity = this.rpEntRead.read(pRqVs, pReader);
+        IHasId<?> entity = this.rpEntRead.read(pRqVs, pReader);
         this.orm.insert(pRqVs, null, entity);
       }
       this.rdb.commit();
@@ -109,7 +109,7 @@ public class RpStorDbXmlCp<RS> implements IRpStor {
    * <p>Getter for rpEntRead.</p>
    * @return IRpEntRead
    **/
-  public final IRpEntRead getRpEntRead() {
+  public final IRpEntRead<IHasId<?>> getRpEntRead() {
     return this.rpEntRead;
   }
 
@@ -117,7 +117,7 @@ public class RpStorDbXmlCp<RS> implements IRpStor {
    * <p>Setter for rpEntRead.</p>
    * @param pRpEntRead reference
    **/
-  public final void setRpEntRead(final IRpEntRead pRpEntRead) {
+  public final void setRpEntRead(final IRpEntRead<IHasId<?>> pRpEntRead) {
     this.rpEntRead = pRpEntRead;
   }
 

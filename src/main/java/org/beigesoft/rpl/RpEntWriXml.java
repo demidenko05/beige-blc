@@ -32,6 +32,7 @@ import java.util.Map;
 import java.io.Writer;
 import java.lang.reflect.Method;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHldNm;
@@ -82,7 +83,7 @@ public class RpEntWriXml implements IRpEntWri {
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void write(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> void write(final Map<String, Object> pRqVs,
     final T pEnt, final Writer pWri) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 6501 && this.log.getDbgCl() > 6499;

@@ -31,6 +31,7 @@ package org.beigesoft.rdb;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.log.ILog;
 import org.beigesoft.mdl.IRecSet;
+import org.beigesoft.mdlp.DbInf;
 
 /**
  * <p>Base Database service that handles cross-platform methods.</p>
@@ -41,9 +42,9 @@ import org.beigesoft.mdl.IRecSet;
 public abstract class ARdb<RS> implements IRdb<RS> {
 
   /**
-   * <p>Database ID.</p>
+   * <p>Database info.</p>
    **/
-  private Integer dbId;
+  private DbInf dbInf;
 
   /**
    * <p>Log.</p>
@@ -196,40 +197,34 @@ public abstract class ARdb<RS> implements IRdb<RS> {
   /**
    * <p>Geter for database ID.</p>
    * @return ID database
+   * @throws Exception - an exception
    **/
   @Override
-  public final synchronized Integer getDbId() {
-    if (this.dbId == null) {
+  public final synchronized DbInf getDbInf() throws Exception {
+    if (this.dbInf == null) {
+      IRecSet<RS> rs = null;
       try {
-        String query = "select DBID from DBINF;";
-        Integer di = evInt(query, "DBID");
-        if (di == null) {
-          throw new ExcCode(ExcCode.WRCN, "database_info_config_error");
+        String qu = "select DBID, DBVR, DESC from DBINF;";
+        DbInf di = new DbInf();
+        rs = retRs(qu);
+        if (rs.first()) {
+          di.setDbId(rs.getInt("DBID"));
+          di.setDbVr(rs.getInt("DBVR"));
+          di.setDesc(rs.getStr("DESC"));
+          if (rs.next()) {
+            throw new ExcCode(ExcCode.WRCN, "Wrong DB info!");
+          }
+        } else {
+          throw new ExcCode(ExcCode.WRCN, "Wrong DB info!");
         }
-        this.dbId = di;
-      } catch (Exception e) {
-        throw new RuntimeException(e);
+        this.dbInf = di;
+      } finally {
+        if (rs != null) {
+          rs.close();
+        }
       }
     }
-    return this.dbId;
-  }
-
-  /**
-   * <p>Geter for database version.</p>
-   * @return database version
-   **/
-  @Override
-  public final Integer getDbVr() {
-    try {
-      String query = "select DBVR from DBINF;";
-      Integer dbVr = evInt(query, "DBVR");
-      if (dbVr == null) {
-        throw new ExcCode(ExcCode.WRCN, "database_info_config_error");
-      }
-      return dbVr;
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    return this.dbInf;
   }
 
   //Simple getters and setters:

@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.io.Writer;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdlp.DbInf;
 import org.beigesoft.rdb.IOrm;
 import org.beigesoft.rdb.IRdb;
@@ -80,22 +81,20 @@ public class RpRtrvDbXml<RS> implements IRpRtrv {
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> int rtrvTo(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> int rtrvTo(final Map<String, Object> pRqVs,
       final Class<T> pCls, final Writer pWri) throws Exception {
     //e.g. "limit 20 offset 19":
     //e.g. "where (IID>0 and IDOR=2135) limit 20 offset 19":
     String cond = (String) pRqVs.get("cond");
     int dsDbVr = Integer.parseInt((String) pRqVs.get("dsDbVr"));
-    int dbVr = this.rdb.getDbVr();
     List<T> entities = null;
     int entCnt = 0;
-    DbInf di;
-    if (dsDbVr == dbVr) {
+    DbInf di = this.rdb.getDbInf();
+    if (dsDbVr == di.getDbVr()) {
       try {
         this.rdb.setAcmt(false);
         this.rdb.setTrIsl(IRdb.TRRUC);
         this.rdb.begin();
-        di = getOrm().retEntCnd(pRqVs, null, DbInf.class, "");
         String srDbIdStr = (String) pRqVs.get("srDbId");
         if (srDbIdStr != null) { //replication
           int srDbId = Integer.parseInt(srDbIdStr);

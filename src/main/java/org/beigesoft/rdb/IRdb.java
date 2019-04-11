@@ -30,6 +30,7 @@ package org.beigesoft.rdb;
 
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.mdl.ColVals;
+import org.beigesoft.mdlp.DbInf;
 
 /**
  * <p>Abstraction of database service.
@@ -86,19 +87,11 @@ public interface IRdb<RS> {
   int BADPR = 1153;
 
   /**
-   * <p>Getter for database ID, it is settled by SQL script on DB create.
-   * Any database must has ID, int is suitable type for that cause
-   * its range is enough and it's faster than String.</p>
-   * @return ID database
+   * <p>Getter for database info.</p>
+   * @return database info
+   * @throws Exception - an exception
    **/
-  Integer getDbId();
-
-  /**
-   * <p>Getter for database Version.
-   * Any database must has Version for upgrade purpose.</p>
-   * @return database version
-   **/
-  Integer getDbVr();
+  DbInf getDbInf() throws Exception;
 
   /**
    * <p>Get if RDBMS in autocommit mode.</p>

@@ -31,6 +31,8 @@ package org.beigesoft.rpl;
 import java.util.Map;
 import java.io.Writer;
 
+import org.beigesoft.mdl.IHasId;
+
 /**
  * <p>Service that retrieves entities of given type from source (e.g. DB)
  * then writes them into stream (file or network connection) by given writer
@@ -51,6 +53,6 @@ public interface IRpRtrv {
    * @return entities count
    * @throws Exception - an exception
    **/
-  <T> int rtrvTo(Map<String, Object> pRqVs,
+  <T extends IHasId<?>> int rtrvTo(Map<String, Object> pRqVs,
     Class<T> pCls, Writer pWri) throws Exception;
 }

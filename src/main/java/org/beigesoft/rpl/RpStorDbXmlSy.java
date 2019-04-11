@@ -32,6 +32,7 @@ import java.util.Map;
 import java.io.Reader;
 
 import org.beigesoft.exc.ExcCode;
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.prp.ISetng;
@@ -52,7 +53,7 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
   /**
    * <p>Entity Reader.</p>
    **/
-  private IRpEntRead rpEntRead;
+  private IRpEntRead<IHasId<?>> rpEntRead;
 
   /**
    * <p>Log.</p>
@@ -100,8 +101,7 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
       this.rdb.setTrIsl(IRdb.TRRUC);
       this.rdb.begin();
       while (this.utlXml.readUntilStart(pReader, "entity")) {
-        @SuppressWarnings("unchecked")
-        Object entity = this.rpEntRead.read(pRqVs, pReader);
+        IHasId<?> entity = this.rpEntRead.read(pRqVs, pReader);
         String entSyNm = this.setng
           .lazClsStg(entity.getClass(), IRpEntSync.RPENTSYNCNM);
         if (entSyNm == null) {
@@ -109,7 +109,7 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
             + entity.getClass());
         }
         @SuppressWarnings("unchecked")
-        IRpEntSync<Object> entSy = (IRpEntSync<Object>) this.fctEntSy
+        IRpEntSync<IHasId<?>> entSy = (IRpEntSync<IHasId<?>>) this.fctEntSy
           .laz(pRqVs, entSyNm);
         boolean isNew = entSy.sync(pRqVs, entity);
         if (isNew) {
@@ -134,7 +134,7 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
    * <p>Getter for rpEntRead.</p>
    * @return IRpEntRead
    **/
-  public final IRpEntRead getRpEntRead() {
+  public final IRpEntRead<IHasId<?>> getRpEntRead() {
     return this.rpEntRead;
   }
 
@@ -142,7 +142,7 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
    * <p>Setter for rpEntRead.</p>
    * @param pRpEntRead reference
    **/
-  public final void setRpEntRead(final IRpEntRead pRpEntRead) {
+  public final void setRpEntRead(final IRpEntRead<IHasId<?>> pRpEntRead) {
     this.rpEntRead = pRpEntRead;
   }
 

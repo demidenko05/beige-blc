@@ -31,6 +31,8 @@ package org.beigesoft.rdb;
 import java.util.List;
 import java.util.Map;
 
+import org.beigesoft.mdl.IHasId;
+
 /**
  * <p>Abstraction of ORM service.</p>
  *
@@ -94,14 +96,14 @@ public interface IOrm {
   String RETID = "retId";
 
   /**
-   * <p>Optimistic locking fail.</p>
+   * <p>Optimistic locking fail, update/delete returns 0.</p>
    **/
   int DRTREAD = 1151;
 
   /**
-   * <p>Error insert/update row count != 1.</p>
+   * <p>Error insert/update/delete entity, row count != 1.</p>
    **/
-  int INSUPERR = 1152;
+  int ACTROWERR = 1152;
 
   /**
    * <p>Initializes database, e.g. create/updates tables if need.
@@ -113,7 +115,7 @@ public interface IOrm {
   void init(Map<String, Object> pRqVs) throws Exception;
 
   /**
-   * <p>Retrieve entity from DB.</p>
+   * <p>Retrieves entity from DB.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
@@ -121,26 +123,36 @@ public interface IOrm {
    * @return entity or null
    * @throws Exception - an exception
    **/
-  <T> T retEnt(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    T pEnt) throws Exception;
+  <T extends IHasId<?>> T retEnt(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, T pEnt) throws Exception;
 
   /**
-   * <p>Retrieve entity from DB by given query conditions.
-   * The first record in record-set will be returned.</p>
+   * <p>Refreshes entity from DB. If not found then ID will be nulled.</p>
+   * @param <T> entity type
+   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pEnt entity
+   * @throws Exception - an exception
+   **/
+  <T extends IHasId<?>> void refrEnt(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, T pEnt) throws Exception;
+
+  /**
+   * <p>Retrieves entity from DB by query conditions, if more than 1 result,
+   * then trows exception.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
-   * @param pCond Not NULL e.g. "where name='U1' ORDER BY id"
-   * or "" that means without filter/order
+   * @param pCond Not NULL e.g. "ORID=1 and DBID=2"
    * @return entity or null
    * @throws Exception - an exception
    **/
-  <T> T retEntCnd(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    Class<T> pCls, String pCond) throws Exception;
+  <T extends IHasId<?>> T retEntCnd(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, Class<T> pCls, String pCond) throws Exception;
 
   /**
-   * <p>Retrieve entity from DB by query, if more than 1 result,
+   * <p>Retrieves entity from DB by query, if more than 1 result,
    * then trows exception.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
@@ -150,56 +162,71 @@ public interface IOrm {
    * @return entity or null
    * @throws Exception - an exception
    **/
-  <T> T retEntQu(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    Class<T> pCls, String pQu) throws Exception;
+  <T extends IHasId<?>> T retEntQu(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, Class<T> pCls, String pQu) throws Exception;
 
   /**
-   * <p>Insert entity into DB.</p>
+   * <p>Inserts entity into DB. It's should be used by generic requester that
+   * is not dedicated to concrete entity type, e.g. HTML request handler.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pEnt entity
    * @throws Exception - an exception
    **/
-  <T> void insert(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    T pEnt) throws Exception;
+  <T extends IHasId<?>> void insert(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, T pEnt) throws Exception;
 
   /**
-   * <p>Update entity with ID in DB.</p>
+   * <p>Inserts entity with no Long ID into DB.
+   * It's should be used by requester that is dedicated to concrete entity
+   * type with no Long ID, e.g. account saver and account has string ID.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pEnt entity
    * @throws Exception - an exception
    **/
-  <T> void update(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    T pEnt) throws Exception;
+  <T extends IHasId<?>> void insIdNln(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, T pEnt) throws Exception;
 
   /**
-   * <p>Delete entity with ID from DB.</p>
+   * <p>Inserts entity with Long ID (maybe auto-generated) into DB.
+   * It's should be used by requester that is dedicated to concrete entity
+   * type with Long ID, e.g. invoice saver.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pEnt entity
    * @throws Exception - an exception
    **/
-  <T> void del(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    T pEnt) throws Exception;
+  <T extends IHasId<Long>> void insIdLn(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, T pEnt) throws Exception;
 
   /**
-   * <p>Delete entity(is) with condition.</p>
+   * <p>Updates entity with ID in DB.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
-   * @param pCls entity class
-   * @param pWhere Not Null e.g. "WAREHOUSESITE=1 and PRODUCT=1"
+   * @param pEnt entity
    * @throws Exception - an exception
    **/
-  <T> void delWhe(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    Class<T> pCls, String pWhere) throws Exception;
+  <T extends IHasId<?>> void update(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, T pEnt) throws Exception;
 
   /**
-   * <p>Retrieve a list of all entities.</p>
+   * <p>Deletes entity with ID from DB.</p>
+   * @param <T> entity type
+   * @param pRqVs request scoped vars
+   * @param pVs invoker scoped vars
+   * @param pEnt entity
+   * @throws Exception - an exception
+   **/
+  <T extends IHasId<?>> void del(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, T pEnt) throws Exception;
+
+  /**
+   * <p>Retrieves a list of all entities.</p>
    * @param <T> - type of business object,
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
@@ -207,11 +234,11 @@ public interface IOrm {
    * @return list of all business objects or empty list, not null
    * @throws Exception - an exception
    */
-  <T> List<T> retLst(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    Class<T> pCls) throws Exception;
+  <T extends IHasId<?>> List<T> retLst(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, Class<T> pCls) throws Exception;
 
   /**
-   * <p>Retrieve a list of entities.</p>
+   * <p>Retrieves a list of entities.</p>
    * @param <T> - type of business object
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
@@ -220,11 +247,11 @@ public interface IOrm {
    * @return list of business objects or empty list, not null
    * @throws Exception - an exception
    */
-  <T> List<T> retLstCnd(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    Class<T> pCls, String pCond) throws Exception;
+  <T extends IHasId<?>> List<T> retLstCnd(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, Class<T> pCls, String pCond) throws Exception;
 
   /**
-   * <p>Retrieve a list of entities by complex query that may contain
+   * <p>Retrieves a list of entities by complex query that may contain
    * additional joins and filters, see Beige-Webstore for example.</p>
    * @param <T> - type of business object
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
@@ -234,26 +261,11 @@ public interface IOrm {
    * @return list of business objects or empty list, not null
    * @throws Exception - an exception
    */
-  <T> List<T> retLstQu(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    Class<T> pCls, String pQu) throws Exception;
+  <T extends IHasId<?>> List<T> retLstQu(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, Class<T> pCls, String pQu) throws Exception;
 
   /**
-   * <p>Retrieve entity's lists for field that used as filter
-   * (e.g. invoice lines for invoice).</p>
-   * @param <T> - type of entity owned
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
-   * @param pEnt entity InvoiceLine
-   * @param pFieldFor - name of field to be filter, e.g. "invoice"
-   * to retrieve invoices lines for invoice
-   * @return list of business objects or empty list, not null
-   * @throws Exception - an exception
-   */
-  <T> List<T> retLstFld(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    T pEnt, String pFieldFor) throws Exception;
-
-  /**
-   * <p>Retrieve a page of entities.</p>
+   * <p>Retrieves a page of entities.</p>
    * @param <T> - type of business object,
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
@@ -263,26 +275,28 @@ public interface IOrm {
    * @return list of business objects or empty list, not null
    * @throws Exception - an exception
    */
-  <T> List<T> retPg(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    Class<T> pCls, Integer pFst, Integer pPgSz) throws Exception;
+  <T extends IHasId<?>> List<T> retPg(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, Class<T> pCls, Integer pFst,
+      Integer pPgSz) throws Exception;
 
   /**
-   * <p>Retrieve a page of entities.</p>
+   * <p>Retrieves a page of entities.</p>
    * @param <T> - type of business object,
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
-   * @param pCond not null e.g. "WHERE name='U1' ORDER BY id"
+   * @param pCond not null e.g. "name='U1' ORDER BY id"
    * @param pFst number of the first record (from 0)
    * @param pPgSz page size (max records)
    * @return list of business objects or empty list, not null
    * @throws Exception - an exception
    */
-  <T> List<T> retPgCnd(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    Class<T> pCls, String pCond, Integer pFst, Integer pPgSz) throws Exception;
+  <T extends IHasId<?>> List<T> retPgCnd(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, Class<T> pCls, String pCond, Integer pFst,
+      Integer pPgSz) throws Exception;
 
   /**
-   * <p>Retrieve a page of entities by given complex query.
+   * <p>Retrieves a page of entities by given complex query.
    * For example it used to retrieve page Itms to sell in Beige-Webstore
    * by complex query what might consist of joints to filtered goods/services,
    * it also may has not all fields e.g. omit unused auctioning fields for
@@ -297,11 +311,12 @@ public interface IOrm {
    * @return list of business objects or empty list, not null
    * @throws Exception - an exception
    */
-  <T> List<T> retPgQu(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    Class<T> pCls, String pQu, Integer pFst, Integer pPgSz) throws Exception;
+  <T extends IHasId<?>> List<T> retPgQu(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, Class<T> pCls, String pQu, Integer pFst,
+      Integer pPgSz) throws Exception;
 
   /**
-   * <p>Calculate total rows.</p>
+   * <p>Calculates total rows.</p>
    * @param <T> - type of business object,
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
@@ -310,11 +325,11 @@ public interface IOrm {
    * @return Integer row count
    * @throws Exception - an exception
    */
-  <T> Integer evRowCntWhe(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    Class<T> pCls, String pWhere) throws Exception;
+  <T extends IHasId<?>> Integer evRowCntWhe(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, Class<T> pCls, String pWhere) throws Exception;
 
   /**
-   * <p>Calculate total rows.</p>
+   * <p>Calculates total rows.</p>
    * @param <T> - type of business object,
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
@@ -322,11 +337,11 @@ public interface IOrm {
    * @return Integer row count
    * @throws Exception - an exception
    */
-  <T> Integer evRowCnt(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    Class<T> pCls) throws Exception;
+  <T extends IHasId<?>> Integer evRowCnt(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, Class<T> pCls) throws Exception;
 
   /**
-   * <p>Calculate total rows for pagination by custom query.</p>
+   * <p>Calculates total rows for pagination by custom query.</p>
    * @param <T> - type of business object,
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
@@ -335,14 +350,15 @@ public interface IOrm {
    * @return Integer row count
    * @throws Exception - an exception
    */
-  <T> Integer evRowCntQu(Map<String, Object> pRqVs, Map<String, Object> pVs,
-    Class<T> pCls, String pQu) throws Exception;
+  <T extends IHasId<?>> Integer evRowCntQu(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, Class<T> pCls, String pQu) throws Exception;
 
   /**
    * <p>Getter for database ID.
    * Any database mist has ID, int is suitable type for that cause
    * its range is enough and it's faster than String.</p>
    * @return ID database
+   * @throws Exception - an exception
    **/
-  Integer getDbId();
+  Integer getDbId() throws Exception;
 }

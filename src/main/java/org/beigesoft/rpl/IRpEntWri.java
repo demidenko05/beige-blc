@@ -31,6 +31,8 @@ package org.beigesoft.rpl;
 import java.util.Map;
 import java.io.Writer;
 
+import org.beigesoft.mdl.IHasId;
+
 /**
  * <p>Service to writes given entity into given stream (writer).</p>
  *
@@ -46,6 +48,6 @@ public interface IRpEntWri {
    * @param pWri writer
    * @throws Exception - an exception
    **/
-  <T> void write(Map<String, Object> pRqVs,
+  <T extends IHasId<?>> void write(Map<String, Object> pRqVs,
     T pEnt, Writer pWri) throws Exception;
 }

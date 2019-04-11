@@ -47,6 +47,7 @@ import java.net.CookieHandler;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.beigesoft.exc.ExcCode;
+import org.beigesoft.mdlp.DbInf;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.dlg.IMake;
@@ -195,7 +196,7 @@ public class RplXmlHttps<RS> implements IReplicator {
     Map<String, Integer> clsCnts = new LinkedHashMap<String, Integer>();
     Integer clsCnt = 0;
     boolean isDbBefore = false;
-    int dbVr = this.rdb.getDbVr();
+    DbInf dbInf = this.rdb.getDbInf();
     for (Class<?> cls : this.setng.lazClss()) {
       int entRecd = 0;
       int fstRec = 0;
@@ -228,14 +229,14 @@ public class RplXmlHttps<RS> implements IReplicator {
           cond += " limit " + maxRecs + " offset " + fstRec;
           String srDbIdStr = "";
           if (srDbId != null) {
-            if (Integer.parseInt(srDbId) == getRdb().getDbId()) {
+            if (Integer.parseInt(srDbId) == dbInf.getDbId()) {
               throw new ExcCode(ExcCode.WRPR,
                 "requested_database_must_be_different");
             }
             srDbIdStr = "&srDbId=" + srDbId;
           }
           writer.write("entNm=" + cls.getCanonicalName() + "&cond=" + cond
-            + "&dsDbVr=" + dbVr + srDbIdStr);
+            + "&dsDbVr=" + dbInf.getDbVr() + srDbIdStr);
           writer.write("&dbRtrvNm=" + pRqVs.get("dbRtrvNm")); //TODO
           writer.flush();
           if (HttpsURLConnection.HTTP_OK == urlCn.getResponseCode()) {

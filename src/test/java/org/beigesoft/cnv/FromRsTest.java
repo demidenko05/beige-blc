@@ -46,6 +46,7 @@ import org.beigesoft.mdlp.UsPrf;
 import org.beigesoft.mdl.EStatus;
 import org.beigesoft.mdlp.DcSp;
 import org.beigesoft.mdlp.DcGrSp;
+import org.beigesoft.mdlp.DbInf;
 import org.beigesoft.mdlp.UsTmc;
 import org.beigesoft.mdlp.UsRlTmc;
 import org.beigesoft.mdlp.UserRoleTomcatPriority;
@@ -219,5 +220,7 @@ public class FromRsTest<RS> {
     Setng stgOrm = (Setng) this.fctApp.laz(this.rqVs, this.fctApp.STGORMNM);
     String jdbcCls = stgOrm.lazCmnst().get(IOrm.JDBCCLS);
     assertEquals("org.sqlite.JDBC", jdbcCls);
+    cr = selct.evCreate(this.rqVs, DbInf.class);
+    this.logStd.test(this.rqVs, getClass(), cr);
   }
 }

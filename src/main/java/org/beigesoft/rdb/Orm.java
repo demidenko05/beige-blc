@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.rdb;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.io.InputStream;
 import java.io.IOException;
@@ -37,7 +38,7 @@ import java.net.URL;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.mdl.ColVals;
-import org.beigesoft.mdl.IIdLn;
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctCls;
 import org.beigesoft.fct.IFctRq;
 import org.beigesoft.log.ILog;
@@ -105,11 +106,11 @@ public class Orm<RS> implements IOrm {
    * <p>Initializes database, e.g. create/updates tables if need.
    * It must be invoked once by an initializer (e.g. load on startup servlet).
    * </p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @throws Exception - an exception
    **/
   @Override
-  public final void init(final Map<String, Object> pRqVs) throws Exception {
+  public final void init(final Map<String, Object> pRvs) throws Exception {
     //checking exist, creating:
     String checkTbl = this.setng.lazCmnst().get(CHECKTBL);
     boolean allCr = true;
@@ -141,8 +142,8 @@ public class Orm<RS> implements IOrm {
         }
         if (!tbExs) {
           anyCr = true;
-          String cre = this.sqlQu.evCreate(pRqVs, cls);
-          this.log.info(pRqVs, getClass(), "Try to execute " + cre);
+          String cre = this.sqlQu.evCreate(pRvs, cls);
+          this.log.info(pRvs, getClass(), "Try to execute " + cre);
           try {
             this.rdb.exec(cre);
           } catch (Exception e) {
@@ -156,18 +157,18 @@ public class Orm<RS> implements IOrm {
     //upgrading:
     String setPth = "/" + this.setng.getDir() + "/";
     this.rdb.release(); //new connection required
-    Integer nxVr = this.rdb.getDbVr() + 1;
+    Integer nxVr = this.rdb.getDbInf().getDbVr() + 1;
     String pth = setPth + UPGRSQL + nxVr + ".sql";
     String upgAll = loadStr(pth);
     while (upgAll != null) {
-      this.log.info(pRqVs, getClass(), "Found " + pth);
+      this.log.info(pRvs, getClass(), "Found " + pth);
       for (String upg : upgAll.split("\n")) {
         if (upg.trim().length() > 1 && !upg.startsWith("/")) {
-          this.log.info(pRqVs, getClass(), "Try to execute " + upg);
+          this.log.info(pRvs, getClass(), "Try to execute " + upg);
           try {
             this.rdb.exec(upg);
           } catch (Exception e) {
-            this.log.error(pRqVs, getClass(), "Can't execute upgrade ", e);
+            this.log.error(pRvs, getClass(), "Can't execute upgrade ", e);
           }
         }
       }
@@ -180,92 +181,125 @@ public class Orm<RS> implements IOrm {
     pth = setPth + INITSQL;
     String init = loadStr(pth);
     if (init != null) {
-      this.log.info(pRqVs, getClass(), "Found " + pth);
+      this.log.info(pRvs, getClass(), "Found " + pth);
       for (String ini : init.split("\n")) {
         if (ini.trim().length() > 1 && !ini.startsWith("/")) {
-          this.log.info(pRqVs, getClass(), "Try to execute " + ini);
+          this.log.info(pRvs, getClass(), "Try to execute " + ini);
           try {
             this.rdb.exec(ini);
           } catch (Exception e) {
-            this.log.error(pRqVs, getClass(), "Can't execute init ", e);
+            this.log.error(pRvs, getClass(), "Can't execute init ", e);
           }
         }
       }
       this.rdb.release();
     }
     if (allCr) {
-      this.log.info(pRqVs, getClass(), "All tables has been created");
+      this.log.info(pRvs, getClass(), "All tables has been created");
       pth = setPth + INSTSQL;
       String inst = loadStr(pth);
       if (inst != null) {
-        this.log.info(pRqVs, getClass(), "Found " + pth);
+        this.log.info(pRvs, getClass(), "Found " + pth);
         for (String ins : inst.split("\n")) {
           if (ins.trim().length() > 1 && !ins.startsWith("/")) {
-            this.log.info(pRqVs, getClass(), "Try to execute " + ins);
+            this.log.info(pRvs, getClass(), "Try to execute " + ins);
             try {
               this.rdb.exec(ins);
             } catch (Exception e) {
-              this.log.error(pRqVs, getClass(), "Can't execute insert ", e);
+              this.log.error(pRvs, getClass(), "Can't execute insert ", e);
             }
           }
         }
         this.rdb.release();
       }
     } else if (anyCr) {
-      this.log.info(pRqVs, getClass(), "Part of tables has been created");
+      this.log.info(pRvs, getClass(), "Part of tables has been created");
     } else {
-      this.log.info(pRqVs, getClass(), "Tables already created");
+      this.log.info(pRvs, getClass(), "Tables already created");
     }
   }
 
   /**
-   * <p>Retrieve entity from DB.</p>
+   * <p>Retrieves entity from DB.</p>
    * @param <T> entity type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pEnt entity
    * @return entity or null
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> T retEnt(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> T retEnt(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final T pEnt) throws Exception {
-    StringBuffer sb = this.sqlQu.evSel(pRqVs, pVs, pEnt.getClass());
+    StringBuffer sb = this.sqlQu.evSel(pRvs, pVs, pEnt.getClass());
     sb.append(" where ");
-    this.sqlQu.evCndId(pRqVs, pEnt, sb);
+    this.sqlQu.evCndId(pRvs, pEnt, sb);
     sb.append(";");
     @SuppressWarnings("unchecked")
-    T ent = (T) retEntQu(pRqVs, pVs, pEnt.getClass(), sb.toString());
+    T ent = (T) retEntQu(pRvs, pVs, pEnt.getClass(), sb.toString());
     return ent;
   }
 
   /**
-   * <p>Retrieve entity from DB by given query conditions.
-   * The first record in record-set will be returned.</p>
+   * <p>Retrieves entity from DB by query conditions, if more than 1 result,
+   * then trows exception.</p>
    * @param <T> entity type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
-   * @param pCond Not NULL e.g. "where name='U1' ORDER BY id"
-   * or "" that means without filter/order
+   * @param pCond Not NULL e.g. "ORID=1 and DBID=2"
    * @return entity or null
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> T retEntCnd(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> T retEntCnd(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final Class<T> pCls,
       final String pCond) throws Exception {
-    StringBuffer sb = this.sqlQu.evSel(pRqVs, pVs, pCls);
-    sb.append(" " + pCond + ";");
-    T ent = retEntQu(pRqVs, pVs, pCls, sb.toString());
-    return ent;
+    StringBuffer sb = this.sqlQu.evSel(pRvs, pVs, pCls);
+    sb.append(" where " + pCond + ";");
+    return retEntQu(pRvs, pVs, pCls, sb.toString());
   }
 
   /**
-   * <p>Retrieve entity from DB by query, if more than 1 result,
+   * <p>Refreshes entity from DB. If not found then ID will be nulled.</p>
+   * @param <T> entity type
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
+   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pEnt entity
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final <T extends IHasId<?>> void refrEnt(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final T pEnt) throws Exception {
+    StringBuffer sb = this.sqlQu.evSel(pRvs, pVs, pEnt.getClass());
+    sb.append(" where ");
+    this.sqlQu.evCndId(pRvs, pEnt, sb);
+    sb.append(";");
+    IRecSet<RS> rs = null;
+    try {
+      rs = this.rdb.retRs(sb.toString());
+      if (rs.first()) {
+        this.filEntRs.fill(pRvs, pVs, pEnt, rs);
+        if (rs.next()) {
+          throw new ExcCode(ExcCode.WRPR,
+            "Select entity returns more than 1 result - " + sb.toString());
+        }
+      } else {
+        pEnt.setIid(null);
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+    }
+  }
+
+  /**
+   * <p>Retrieves entity from DB by query, if more than 1 result,
    * then trows exception.</p>
    * @param <T> entity type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
    * @param pQu SELECT statement
@@ -273,7 +307,7 @@ public class Orm<RS> implements IOrm {
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> T retEntQu(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> T retEntQu(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final Class<T> pCls,
       final String pQu) throws Exception {
     T ent = null;
@@ -282,9 +316,9 @@ public class Orm<RS> implements IOrm {
       rs = this.rdb.retRs(pQu);
       if (rs.first()) {
         @SuppressWarnings("unchecked")
-        IFctRq<T> fctEnt = (IFctRq<T>) this.fctFctEnt.laz(pRqVs, pCls);
-        ent = fctEnt.create(pRqVs);
-        this.filEntRs.fill(pRqVs, pVs, ent, rs);
+        IFctRq<T> fctEnt = (IFctRq<T>) this.fctFctEnt.laz(pRvs, pCls);
+        ent = fctEnt.create(pRvs);
+        this.filEntRs.fill(pRvs, pVs, ent, rs);
         if (rs.next()) {
           throw new ExcCode(ExcCode.WRPR,
             "Select entity returns more than 1 result - " + pQu);
@@ -299,24 +333,66 @@ public class Orm<RS> implements IOrm {
   }
 
   /**
-   * <p>Insert entity into DB.</p>
+   * <p>Inserts entity into DB. It's should be used by generic requester that
+   * is not dedicated to concrete entity type, e.g. HTML request handler.</p>
    * @param <T> entity type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pEnt entity
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void insert(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> void insert(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final T pEnt) throws Exception {
+    if (pEnt.getIid() == null) {
+      insIdLn(pRvs, pVs, (IHasId<Long>) pEnt);
+    } else {
+      insIdNln(pRvs, pVs, pEnt);
+    }
+  }
+
+  /**
+   * <p>Inserts entity with No Long ID into DB.
+   * It's should be used by requester that is dedicated to concrete entity
+   * type with no Long ID, e.g. account saver and account has string ID.</p>
+   * @param <T> entity type
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
+   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pEnt entity
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final <T extends IHasId<?>> void insIdNln(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final T pEnt) throws Exception {
     ColVals cv = new ColVals();
-    Object ento = (Object) pEnt;
-    this.filCvEn.fill(pRqVs, pVs, ento, cv);
-    List<String> idNms = this.setng.lazIdFldNms(pEnt.getClass());
-    boolean idAu = idNms.size() == 0 && this.srvClVl
-      .getIdVl(cv, idNms.get(0)) == null;
+    this.filCvEn.fill(pRvs, pVs, pEnt, cv);
+    long r = this.rdb.insert(pEnt.getClass().getSimpleName().toUpperCase(), cv);
+    if (r != 1) {
+      String qu = getSrvClVl().evInsert(pEnt.getClass(), cv);
+throw new ExcCode(ACTROWERR, "It should be 1 row inserted but it is " + r
++ ", query:\n" + qu + ";\n" + "CV - "  + getSrvClVl().str(pEnt.getClass(), cv));
+    }
+  }
+
+  /**
+   * <p>Inserts entity with Long ID (maybe auto-generated) into DB.
+   * It's should be used by requester that is dedicated to concrete entity
+   * type with Long ID, e.g. invoice saver.</p>
+   * @param <T> entity type
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
+   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pEnt entity
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final <T extends IHasId<Long>> void insIdLn(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final T pEnt) throws Exception {
+    ColVals cv = new ColVals();
+    this.filCvEn.fill(pRvs, pVs, pEnt, cv);
     long r; //may has autogenerated ID
-    if (this.isAndr || !idAu) {
+    if (this.isAndr || pEnt.getIid() != null) {
       r = this.rdb.insert(pEnt.getClass().getSimpleName().toUpperCase(), cv);
     } else { //autogenerated non-Android:
       String lastId = this.setng.lazCmnst().get(LASTID);
@@ -329,7 +405,7 @@ public class Orm<RS> implements IOrm {
       }
       if (lastId != null) { //SQlite, MySql like
         r = this.rdb.insert(pEnt.getClass().getSimpleName().toUpperCase(), cv);
-        if (r == 1) {
+        if (r == 1L) {
           Long li = this.rdb.evLong(lastId, "LASTID");
           if (li == null) {
            throw new ExcCode(ExcCode.WRCN, "Wrong lastId - " + lastId);
@@ -337,6 +413,7 @@ public class Orm<RS> implements IOrm {
           r = li;
         }
       } else { //Postgresql like
+        List<String> idNms = this.setng.lazIdFldNms(pEnt.getClass());
         retId = retId.replace(":RETID", idNms.get(0).toUpperCase());
         String qu = getSrvClVl().evInsert(pEnt.getClass(), cv);
         qu = qu.substring(0, qu.length() - 2) + " " + retId;
@@ -347,31 +424,29 @@ public class Orm<RS> implements IOrm {
         r = li;
       }
     }
-    if (this.isAndr && r == -1 || r != 1) {
+    if (pEnt.getIid() == null && r > 0L) {
+      pEnt.setIid(r);
+    } else if (this.isAndr && r == -1L || r != 1L) {
       String qu = getSrvClVl().evInsert(pEnt.getClass(), cv);
-throw new ExcCode(INSUPERR, "It should be 1 row inserted but it is " + r
+throw new ExcCode(ACTROWERR, "It should be 1 row inserted but it is " + r
 + ", query:\n" + qu + ";\n" + "CV - "  + getSrvClVl().str(pEnt.getClass(), cv));
-    }
-    if (idAu) {
-      IIdLn ent = (IIdLn) pEnt;
-      ent.setIid(r);
     }
   }
 
   /**
-   * <p>Update entity with ID in DB.</p>
+   * <p>Updates entity with ID in DB.</p>
    * @param <T> entity type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pEnt entity
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void update(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> void update(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final T pEnt) throws Exception {
     ColVals cv = new ColVals();
     Object ento = (Object) pEnt;
-    this.filCvEn.fill(pRqVs, pVs, ento, cv);
+    this.filCvEn.fill(pRvs, pVs, ento, cv);
     String whe = this.srvClVl.evWheUpd(pEnt.getClass(), cv);
     int r = this.rdb.update(pEnt.getClass().getSimpleName().toUpperCase(),
       cv, whe);
@@ -380,61 +455,60 @@ throw new ExcCode(INSUPERR, "It should be 1 row inserted but it is " + r
         throw new ExcCode(DRTREAD, "dirty_read");
       } else {
       String qu = getSrvClVl().evUpdate(pEnt.getClass(), cv);
-throw new ExcCode(INSUPERR, "It should be 1 row updated but it is " + r
+throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
 + ", query:\n" + qu + ";\n" + "CV - "  + getSrvClVl().str(pEnt.getClass(), cv));
       }
     }
   }
 
   /**
-   * <p>Delete entity with ID from DB.</p>
+   * <p>Deletes entity with ID from DB.</p>
    * @param <T> entity type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars
    * @param pEnt entity
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void del(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> void del(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final T pEnt) throws Exception {
-    throw new Exception("NEI");
+    ColVals cv = new ColVals();
+    Object ento = (Object) pEnt;
+    this.filCvEn.fill(pRvs, pVs, ento, cv);
+    String whe = this.srvClVl.evWheUpd(pEnt.getClass(), cv); //with OL
+    int r = this.rdb.delete(pEnt.getClass().getSimpleName().toUpperCase(), whe);
+    if (r != 1) {
+      if (r == 0) {
+        throw new ExcCode(DRTREAD, "dirty_read");
+      } else {
+        throw new ExcCode(ACTROWERR, "It should be 1 row deleted but it is "
+          + r + ", where: " + whe + ", class: " + pEnt.getClass());
+      }
+    }
   }
 
   /**
-   * <p>Delete entity(is) with condition.</p>
-   * @param <T> entity type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
-   * @param pCls entity class
-   * @param pWhere Not Null e.g. "WAREHOUSESITE=1 and PRODUCT=1"
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final <T> void delWhe(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Class<T> pCls,
-      final String pWhere) throws Exception {
-    throw new Exception("NEI");
-  }
-
-  /**
-   * <p>Retrieve a list of all entities.</p>
+   * <p>Retrieves a list of all entities.</p>
    * @param <T> - type of business object,
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
    * @return list of all business objects or empty list, not null
    * @throws Exception - an exception
    */
   @Override
-  public final <T> List<T> retLst(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Class<T> pCls) throws Exception {
-    throw new Exception("NEI");
+  public final <T extends IHasId<?>> List<T> retLst(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final Class<T> pCls) throws Exception {
+    StringBuffer sb = this.sqlQu.evSel(pRvs, pVs, pCls);
+    sb.append(";");
+    return retLstQu(pRvs, pVs, pCls, sb.toString());
   }
 
   /**
-   * <p>Retrieve a list of entities.</p>
+   * <p>Retrieves a list of entities.</p>
    * @param <T> - type of business object
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
    * @param pCond Not NULL e.g. "where name='U1' ORDER BY id"
@@ -442,17 +516,19 @@ throw new ExcCode(INSUPERR, "It should be 1 row updated but it is " + r
    * @throws Exception - an exception
    */
   @Override
-  public final <T> List<T> retLstCnd(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Class<T> pCls,
-      final String pCond) throws Exception {
-    throw new Exception("NEI");
+  public final <T extends IHasId<?>> List<T> retLstCnd(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final Class<T> pCls, final String pCond) throws Exception {
+    StringBuffer sb = this.sqlQu.evSel(pRvs, pVs, pCls);
+    sb.append(" where " + pCond + ";");
+    return retLstQu(pRvs, pVs, pCls, sb.toString());
   }
 
   /**
-   * <p>Retrieve a list of entities by complex query that may contain
+   * <p>Retrieves a list of entities by complex query that may contain
    * additional joins and filters, see Beige-Webstore for example.</p>
    * @param <T> - type of business object
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
    * @param pQu Not NULL complex query
@@ -460,35 +536,34 @@ throw new ExcCode(INSUPERR, "It should be 1 row updated but it is " + r
    * @throws Exception - an exception
    */
   @Override
-  public final <T> List<T> retLstQu(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Class<T> pCls,
-      final String pQu) throws Exception {
-    throw new Exception("NEI");
+  public final <T extends IHasId<?>> List<T> retLstQu(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final Class<T> pCls, final String pQu) throws Exception {
+    List<T> ents = new ArrayList<T>();
+    IRecSet<RS> rs = null;
+    try {
+      rs = this.rdb.retRs(pQu);
+      if (rs.first()) {
+        @SuppressWarnings("unchecked")
+        IFctRq<T> fctEnt = (IFctRq<T>) this.fctFctEnt.laz(pRvs, pCls);
+        do {
+          T ent = fctEnt.create(pRvs);
+          this.filEntRs.fill(pRvs, pVs, ent, rs);
+          ents.add(ent);
+        } while (rs.next());
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+    }
+    return ents;
   }
 
   /**
-   * <p>Retrieve entity's lists for field that used as filter
-   * (e.g. invoice lines for invoice).</p>
-   * @param <T> - type of entity owned
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
-   * @param pEnt entity InvoiceLine
-   * @param pFieldFor - name of field to be filter, e.g. "invoice"
-   * to retrieve invoices lines for invoice
-   * @return list of business objects or empty list, not null
-   * @throws Exception - an exception
-   */
-  @Override
-  public final <T> List<T> retLstFld(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final T pEnt,
-      final String pFieldFor) throws Exception {
-    throw new Exception("NEI");
-  }
-
-  /**
-   * <p>Retrieve a page of entities.</p>
+   * <p>Retrieves a page of entities.</p>
    * @param <T> - type of business object,
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
    * @param pFst number of the first record (from 0)
@@ -497,39 +572,45 @@ throw new ExcCode(INSUPERR, "It should be 1 row updated but it is " + r
    * @throws Exception - an exception
    */
   @Override
-  public final <T> List<T> retPg(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Class<T> pCls,
-      final Integer pFst, final Integer pPgSz) throws Exception {
-    throw new Exception("NEI");
+  public final <T extends IHasId<?>> List<T> retPg(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final Class<T> pCls, final Integer pFst,
+        final Integer pPgSz) throws Exception {
+    StringBuffer sb = this.sqlQu.evSel(pRvs, pVs, pCls);
+    sb.append(";");
+    return retPgQu(pRvs, pVs, pCls, sb.toString(), pFst, pPgSz);
   }
 
   /**
-   * <p>Retrieve a page of entities.</p>
+   * <p>Retrieves a page of entities.</p>
    * @param <T> - type of business object,
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
-   * @param pCond not null e.g. "WHERE name='U1' ORDER BY id"
+   * @param pCond not null e.g. "name='U1' ORDER BY id"
    * @param pFst number of the first record (from 0)
    * @param pPgSz page size (max records)
    * @return list of business objects or empty list, not null
    * @throws Exception - an exception
    */
   @Override
-  public final <T> List<T> retPgCnd(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Class<T> pCls, final String pCond,
-      final Integer pFst, final Integer pPgSz) throws Exception {
-    throw new Exception("NEI");
+  public final <T extends IHasId<?>> List<T> retPgCnd(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final Class<T> pCls, final String pCond, final Integer pFst,
+        final Integer pPgSz) throws Exception {
+    StringBuffer sb = this.sqlQu.evSel(pRvs, pVs, pCls);
+    sb.append(" where " + pCond + ";");
+    return retPgQu(pRvs, pVs, pCls, sb.toString(), pFst, pPgSz);
   }
 
   /**
-   * <p>Retrieve a page of entities by given complex query.
+   * <p>Retrieves a page of entities by given complex query.
    * For example it used to retrieve page Itms to sell in Beige-Webstore
    * by complex query what might consist of joints to filtered goods/services,
    * it also may has not all fields e.g. omit unused auctioning fields for
    * performance advantage.</p>
    * @param <T> - type of business object,
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
    * @param pQu not null complex query without page conditions
@@ -539,16 +620,35 @@ throw new ExcCode(INSUPERR, "It should be 1 row updated but it is " + r
    * @throws Exception - an exception
    */
   @Override
-  public final <T> List<T> retPgQu(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Class<T> pCls, final String pQu,
-      final Integer pFst, final Integer pPgSz) throws Exception {
-    throw new Exception("NEI");
+  public final <T extends IHasId<?>> List<T> retPgQu(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final Class<T> pCls, final String pQu, final Integer pFst,
+        final Integer pPgSz) throws Exception {
+    List<T> ents = new ArrayList<T>();
+    IRecSet<RS> rs = null;
+    try {
+      rs = this.rdb.retRs(pQu + " limit " + pPgSz + " offset" + pFst + ";");
+      if (rs.first()) {
+        @SuppressWarnings("unchecked")
+        IFctRq<T> fctEnt = (IFctRq<T>) this.fctFctEnt.laz(pRvs, pCls);
+        do {
+          T ent = fctEnt.create(pRvs);
+          this.filEntRs.fill(pRvs, pVs, ent, rs);
+          ents.add(ent);
+        } while (rs.next());
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+    }
+    return ents;
   }
 
   /**
-   * <p>Calculate total rows.</p>
+   * <p>Calculates total rows.</p>
    * @param <T> - type of business object,
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
    * @param pWhere not null e.g. "ITSID > 33"
@@ -556,31 +656,32 @@ throw new ExcCode(INSUPERR, "It should be 1 row updated but it is " + r
    * @throws Exception - an exception
    */
   @Override
-  public final <T> Integer evRowCntWhe(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Class<T> pCls,
-      final String pWhere) throws Exception {
+  public final <T extends IHasId<?>> Integer evRowCntWhe(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final Class<T> pCls, final String pWhere) throws Exception {
     throw new Exception("NEI");
   }
 
   /**
-   * <p>Calculate total rows.</p>
+   * <p>Calculates total rows.</p>
    * @param <T> - type of business object,
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
    * @return Integer row count
    * @throws Exception - an exception
    */
   @Override
-  public final <T> Integer evRowCnt(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Class<T> pCls) throws Exception {
+  public final <T extends IHasId<?>> Integer evRowCnt(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final Class<T> pCls) throws Exception {
     throw new Exception("NEI");
   }
 
   /**
-   * <p>Calculate total rows for pagination by custom query.</p>
+   * <p>Calculates total rows for pagination by custom query.</p>
    * @param <T> - type of business object,
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
    * @param pQu not null custom query with column named TOTROWS
@@ -588,9 +689,9 @@ throw new ExcCode(INSUPERR, "It should be 1 row updated but it is " + r
    * @throws Exception - an exception
    */
   @Override
-  public final <T> Integer evRowCntQu(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Class<T> pCls,
-      final String pQu) throws Exception {
+  public final <T extends IHasId<?>> Integer evRowCntQu(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final Class<T> pCls, final String pQu) throws Exception {
     throw new Exception("NEI");
   }
 
@@ -599,10 +700,11 @@ throw new ExcCode(INSUPERR, "It should be 1 row updated but it is " + r
    * Any database mist has ID, int is suitable type for that cause
    * its range is enough and it's faster than String.</p>
    * @return ID database
+   * @throws Exception - an exception
    **/
   @Override
-  public final Integer getDbId() {
-    return this.rdb.getDbId();
+  public final Integer getDbId() throws Exception {
+    return this.rdb.getDbInf().getDbId();
   }
 
   //Utils:
