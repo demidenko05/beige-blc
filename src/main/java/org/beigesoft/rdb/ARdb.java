@@ -204,13 +204,13 @@ public abstract class ARdb<RS> implements IRdb<RS> {
     if (this.dbInf == null) {
       IRecSet<RS> rs = null;
       try {
-        String qu = "select DBID, DBVR, DESC from DBINF;";
+        String qu = "select DBID, DBVR, INF from DBINF;";
         DbInf di = new DbInf();
         rs = retRs(qu);
         if (rs.first()) {
           di.setDbId(rs.getInt("DBID"));
           di.setDbVr(rs.getInt("DBVR"));
-          di.setDesc(rs.getStr("DESC"));
+          di.setInf(rs.getStr("INF"));
           if (rs.next()) {
             throw new ExcCode(ExcCode.WRCN, "Wrong DB info!");
           }

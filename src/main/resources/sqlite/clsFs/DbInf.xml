@@ -9,4 +9,5 @@ See LICENSE in base folder
 <comment>Explicit final definition.</comment>
 <entry key="dbIddef">integer not null primary key</entry>
 <entry key="dbVrnul">false</entry>
+<entry key="infnul">false</entry>
 </properties>

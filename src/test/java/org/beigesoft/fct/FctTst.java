@@ -35,8 +35,6 @@ import java.io.File;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.log.ILog;
 import org.beigesoft.log.LogFile;
-import org.beigesoft.rdb.IRdb;
-import org.beigesoft.rdb.IOrm;
 
 /**
  * <p>Tests final configuration auxiliary factory.</p>

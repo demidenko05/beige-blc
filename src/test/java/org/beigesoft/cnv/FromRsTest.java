@@ -220,6 +220,8 @@ public class FromRsTest<RS> {
     Setng stgOrm = (Setng) this.fctApp.laz(this.rqVs, this.fctApp.STGORMNM);
     String jdbcCls = stgOrm.lazCmnst().get(IOrm.JDBCCLS);
     assertEquals("org.sqlite.JDBC", jdbcCls);
+    cr = selct.evCreate(this.rqVs, UsTmc.class);
+    this.logStd.test(this.rqVs, getClass(), cr);
     cr = selct.evCreate(this.rqVs, DbInf.class);
     this.logStd.test(this.rqVs, getClass(), cr);
   }

@@ -47,9 +47,9 @@ public class DbInf {
   private Integer dbVr;
 
   /**
-   * <p>Description.</p>
+   * <p>Infription.</p>
    **/
-  private String desc;
+  private String inf;
 
   //Simple getters and setters:
   /**
@@ -85,18 +85,18 @@ public class DbInf {
   }
 
   /**
-   * <p>Getter for desc.</p>
+   * <p>Getter for inf.</p>
    * @return String
    **/
-  public final String getDesc() {
-    return this.desc;
+  public final String getInf() {
+    return this.inf;
   }
 
   /**
-   * <p>Setter for desc.</p>
-   * @param pDesc reference
+   * <p>Setter for inf.</p>
+   * @param pInf reference
    **/
-  public final void setDesc(final String pDesc) {
-    this.desc = pDesc;
+  public final void setInf(final String pInf) {
+    this.inf = pInf;
   }
 }

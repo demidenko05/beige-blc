@@ -130,7 +130,7 @@ public class RpRtrvDbXml<RS> implements IRpRtrv {
       pWri.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       pWri.write("<message databaseId=\"" + di.getDbId()
         + "\" dbVr=\"" + di.getDbVr()
-          + "\" description=\"" + di.getDesc() + "\" entCnt=\""
+          + "\" description=\"" + di.getInf() + "\" entCnt=\""
             + entCnt + "\">\n");
       for (T entity : entities) {
         this.rpEntWri.write(pRqVs, entity, pWri);

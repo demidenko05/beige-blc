@@ -135,7 +135,7 @@ public class SqlQu implements ISqlQu {
     if (cnstr != null) {
       sb.append(",\n" + cnstr);
     }
-    sb.append(");\n");
+    sb.append(");");
     return sb.toString();
   }
 

@@ -84,8 +84,18 @@ public class HldFldCls implements IHldNm<Class<?>, Class<?>> {
     }
     Class<?> rz = clMp.get(pFlNm);
     if (rz == null) {
-      throw new RuntimeException("Can't get class for cls/fld: " + pCls
-        + "/" + pFlNm);
+      StringBuffer sb = new StringBuffer();
+      boolean isFst = true;
+      for (String fn : clMp.keySet()) {
+        if (isFst) {
+          isFst = false;
+        } else {
+          sb.append(", ");
+        }
+        sb.append(fn);
+      }
+      throw new RuntimeException("Can't get class for cls/fld/flds: " + pCls
+        + "/" + pFlNm + "/" + sb);
     }
     return rz;
   }

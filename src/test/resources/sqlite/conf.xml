@@ -8,7 +8,6 @@ See LICENSE in base folder
 <properties>
 <comment>Beigesoft settings service test1 configuration</comment>
 <entry key="clss">org.beigesoft.mdlp.DbInf,
-  org.beigesoft.mdlp.EmAtch,
   org.beigesoft.mdlp.Department,
   org.beigesoft.mdlp.GdCat,
   org.beigesoft.mdlp.GoodVersionTime,

@@ -41,6 +41,11 @@ import org.beigesoft.mdl.IHasId;
 public interface IOrm {
 
   /**
+   * <p>Setting APP info.</p>
+   **/
+  String APPINF = "appInf";
+
+  /**
    * <p>Setting JDBC class.</p>
    **/
   String JDBCCLS = "jdbcCls";
@@ -94,6 +99,17 @@ public interface IOrm {
    * <p>Sub-query returning ID, e.g. for Postgresql.</p>
    **/
   String RETID = "retId";
+
+  /**
+   * <p>Word that point to current dir System.getProperty("user.dir").</p>
+   **/
+  String CURDIR = "#currentDir#";
+
+  /**
+   * <p>Word that point to current parent dir
+   * System.getProperty("user.dir").parent.</p>
+   **/
+  String CURPDIR = "#currentParentDir#";
 
   /**
    * <p>Optimistic locking fail, update/delete returns 0.</p>
@@ -316,23 +332,10 @@ public interface IOrm {
       Integer pPgSz) throws Exception;
 
   /**
-   * <p>Calculates total rows.</p>
+   * <p>Calculates total rows for given entity class.</p>
    * @param <T> - type of business object,
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
-   * @param pCls entity class
-   * @param pWhere not null e.g. "ITSID > 33"
-   * @return Integer row count
-   * @throws Exception - an exception
-   */
-  <T extends IHasId<?>> Integer evRowCntWhe(Map<String, Object> pRqVs,
-    Map<String, Object> pVs, Class<T> pCls, String pWhere) throws Exception;
-
-  /**
-   * <p>Calculates total rows.</p>
-   * @param <T> - type of business object,
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pRqVs request scoped vars
+   * @param pVs invoker scoped vars
    * @param pCls entity class
    * @return Integer row count
    * @throws Exception - an exception
@@ -341,17 +344,17 @@ public interface IOrm {
     Map<String, Object> pVs, Class<T> pCls) throws Exception;
 
   /**
-   * <p>Calculates total rows for pagination by custom query.</p>
+   * <p>Calculates total rows for given entity class and conditions.</p>
    * @param <T> - type of business object,
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
-   * @param pQu not null custom query with column named TOTROWS
+   * @param pWhe not null e.g. "ITSID > 33"
    * @return Integer row count
    * @throws Exception - an exception
    */
-  <T extends IHasId<?>> Integer evRowCntQu(Map<String, Object> pRqVs,
-    Map<String, Object> pVs, Class<T> pCls, String pQu) throws Exception;
+  <T extends IHasId<?>> Integer evRowCntWhe(Map<String, Object> pRqVs,
+    Map<String, Object> pVs, Class<T> pCls, String pWhe) throws Exception;
 
   /**
    * <p>Getter for database ID.
