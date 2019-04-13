@@ -56,9 +56,14 @@ public interface IOrm {
   String DSCLS = "dsCls";
 
   /**
-   * <p>Setting DB name.</p>
+   * <p>Setting DB user name.</p>
    **/
-  String DBNM = "dbNm";
+  String DBUSR = "dbUsr";
+
+  /**
+   * <p>Setting DB user password.</p>
+   **/
+  String DBPSW = "dbPsw";
 
   /**
    * <p>Setting DB URL.</p>

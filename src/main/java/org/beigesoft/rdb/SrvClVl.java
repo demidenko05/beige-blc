@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.rdb;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -50,13 +51,24 @@ public class SrvClVl {
 
   /**
    * <p>Makes string representation.</p>
+   * @param pCv column values
+   * @return string representation
+   **/
+  public final String str(final ColVals pCv) {
+    StringBuffer sb = new StringBuffer("IDs column names: ");
+    strCv(pCv, sb);
+    return sb.toString();
+  }
+
+  /**
+   * <p>Makes string representation.</p>
    * @param pCls entity class
-   * @param pClVl column values
+   * @param pCv column values
    * @return string representation
    * @throws Exception an Exception
    **/
   public final String str(final Class<?> pCls,
-    final ColVals pClVl) throws Exception {
+    final ColVals pCv) throws Exception {
     StringBuffer sb = new StringBuffer("IDs column names: ");
     boolean isFirst = true;
     for (String idNm : this.setng.lazIdFldNms(pCls)) {
@@ -67,248 +79,276 @@ public class SrvClVl {
       }
       sb.append(idNm);
     }
-    if (pClVl.getOldVer() != null) {
-      sb.append("\nOld version=" + pClVl.getOldVer());
-    }
-    if (pClVl.getExprs() != null) {
-      sb.append("\nColumns with expression: ");
-      isFirst = true;
-      for (String clNm : pClVl.getExprs()) {
-        if (isFirst) {
-          isFirst = false;
-        } else {
-          sb.append(",");
-        }
-        sb.append(clNm);
-      }
-    }
-    sb.append("\nvalues: ");
-    if (pClVl.getInts() != null) {
-      for (Map.Entry<String, Integer> ent : pClVl.getInts().entrySet()) {
-        if (isFirst) {
-          isFirst = false;
-        } else {
-          sb.append(",");
-        }
-        sb.append(ent.getKey() + "=" + ent.getValue());
-      }
-    }
-    if (pClVl.getLongs() != null) {
-      for (Map.Entry<String, Long> ent : pClVl.getLongs().entrySet()) {
-        if (isFirst) {
-          isFirst = false;
-        } else {
-          sb.append(",");
-        }
-        sb.append(ent.getKey() + "=" + ent.getValue());
-      }
-    }
-    if (pClVl.getFloats() != null) {
-      for (Map.Entry<String, Float> ent : pClVl.getFloats().entrySet()) {
-        if (isFirst) {
-          isFirst = false;
-        } else {
-          sb.append(",");
-        }
-        sb.append(ent.getKey() + "=" + ent.getValue());
-      }
-    }
-    if (pClVl.getDoubles() != null) {
-      for (Map.Entry<String, Double> ent : pClVl.getDoubles().entrySet()) {
-        if (isFirst) {
-          isFirst = false;
-        } else {
-          sb.append(",");
-        }
-        sb.append(ent.getKey() + "=" + ent.getValue());
-      }
-    }
-    if (pClVl.getStrs() != null) {
-      for (Map.Entry<String, String> ent : pClVl.getStrs().entrySet()) {
-        if (isFirst) {
-          isFirst = false;
-        } else {
-          sb.append(",");
-        }
-        sb.append(ent.getKey() + "=" + ent.getValue());
-      }
-    }
+    strCv(pCv, sb);
     return sb.toString();
   }
 
   /**
+   * <p>Makes string representation.</p>
+   * @param pCv column values
+   * @param pSb StringBuffer
+   **/
+  private void strCv(final ColVals pCv,
+    final StringBuffer pSb) {
+    if (pCv.getOldVer() != null) {
+      pSb.append("\nOld version=" + pCv.getOldVer());
+    }
+    boolean isFirst = true;
+    if (pCv.getExprs() != null) {
+      pSb.append("\nColumns with expression: ");
+      for (String clNm : pCv.getExprs()) {
+        if (isFirst) {
+          isFirst = false;
+        } else {
+          pSb.append(",");
+        }
+        pSb.append(clNm);
+      }
+    }
+    pSb.append("\nvalues: ");
+    if (pCv.getInts() != null) {
+      for (Map.Entry<String, Integer> ent : pCv.getInts().entrySet()) {
+        if (isFirst) {
+          isFirst = false;
+        } else {
+          pSb.append(",");
+        }
+        pSb.append(ent.getKey() + "=" + ent.getValue());
+      }
+    }
+    if (pCv.getLongs() != null) {
+      for (Map.Entry<String, Long> ent : pCv.getLongs().entrySet()) {
+        if (isFirst) {
+          isFirst = false;
+        } else {
+          pSb.append(",");
+        }
+        pSb.append(ent.getKey() + "=" + ent.getValue());
+      }
+    }
+    if (pCv.getFloats() != null) {
+      for (Map.Entry<String, Float> ent : pCv.getFloats().entrySet()) {
+        if (isFirst) {
+          isFirst = false;
+        } else {
+          pSb.append(",");
+        }
+        pSb.append(ent.getKey() + "=" + ent.getValue());
+      }
+    }
+    if (pCv.getDoubles() != null) {
+      for (Map.Entry<String, Double> ent : pCv.getDoubles().entrySet()) {
+        if (isFirst) {
+          isFirst = false;
+        } else {
+          pSb.append(",");
+        }
+        pSb.append(ent.getKey() + "=" + ent.getValue());
+      }
+    }
+    if (pCv.getStrs() != null) {
+      for (Map.Entry<String, String> ent : pCv.getStrs().entrySet()) {
+        if (isFirst) {
+          isFirst = false;
+        } else {
+          pSb.append(",");
+        }
+        pSb.append(ent.getKey() + "=" + ent.getValue());
+      }
+    }
+  }
+
+  /**
+   * <p>Put column name that has expression.</p>
+   * @param pCv type-safe map column name - column value
+   * @param pNm column name
+   **/
+  public final void putExpr(final ColVals pCv, final String pNm) {
+    if (pCv.getExprs() == null) {
+      pCv.setExprs(new HashSet<String>());
+    }
+    pCv.getExprs().add(pNm);
+  }
+
+  /**
    * <p>Put into column Long value.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @param pVal column val
    **/
-  public final void put(final ColVals pClVl, final String pNm,
+  public final void put(final ColVals pCv, final String pNm,
     final Long pVal) {
-    if (pClVl.getLongs() == null) {
-      pClVl.setLongs(new HashMap<String, Long>());
+    if (pCv.getLongs() == null) {
+      pCv.setLongs(new HashMap<String, Long>());
     }
-    pClVl.getLongs().put(pNm, pVal);
+    pCv.getLongs().put(pNm, pVal);
   }
 
   /**
    * <p>Put into column String value.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @param pVal column val
    **/
-  public final void put(final ColVals pClVl, final String pNm,
+  public final void put(final ColVals pCv, final String pNm,
     final String pVal) {
-    if (pClVl.getStrs() == null) {
-      pClVl.setStrs(new HashMap<String, String>());
+    if (pCv.getStrs() == null) {
+      pCv.setStrs(new HashMap<String, String>());
     }
-    pClVl.getStrs().put(pNm, pVal);
+    pCv.getStrs().put(pNm, pVal);
   }
 
   /**
    * <p>Put into column Integer val.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @param pVal column val
    **/
-  public final void put(final ColVals pClVl, final String pNm,
+  public final void put(final ColVals pCv, final String pNm,
     final Integer pVal) {
-    if (pClVl.getInts() == null) {
-      pClVl.setInts(new HashMap<String, Integer>());
+    if (pCv.getInts() == null) {
+      pCv.setInts(new HashMap<String, Integer>());
     }
-    pClVl.getInts().put(pNm, pVal);
+    pCv.getInts().put(pNm, pVal);
   }
 
   /**
    * <p>Put into column Float val.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @param pVal column val
    **/
-  public final void put(final ColVals pClVl, final String pNm,
+  public final void put(final ColVals pCv, final String pNm,
     final Float pVal) {
-    if (pClVl.getFloats() == null) {
-      pClVl.setFloats(new HashMap<String, Float>());
+    if (pCv.getFloats() == null) {
+      pCv.setFloats(new HashMap<String, Float>());
     }
-    pClVl.getFloats().put(pNm, pVal);
+    pCv.getFloats().put(pNm, pVal);
   }
 
   /**
    * <p>Put into column Double val.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @param pVal column val
    **/
-  public final void put(final ColVals pClVl, final String pNm,
+  public final void put(final ColVals pCv, final String pNm,
     final Double pVal) {
-    if (pClVl.getDoubles() == null) {
-      pClVl.setDoubles(new HashMap<String, Double>());
+    if (pCv.getDoubles() == null) {
+      pCv.setDoubles(new HashMap<String, Double>());
     }
-    pClVl.getDoubles().put(pNm, pVal);
+    pCv.getDoubles().put(pNm, pVal);
   }
 
   /**
    * <p>Get column with Integer val.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @return Integer column val
    * @throws ExcCode if field not found
    **/
-  public final Integer getInt(final ColVals pClVl,
+  public final Integer getInt(final ColVals pCv,
     final String pNm) throws ExcCode {
-    if (pClVl.getInts() != null && pClVl.getInts().keySet().contains(pNm)) {
-      return pClVl.getInts().get(pNm);
+    if (pCv.getInts() != null && pCv.getInts().keySet().contains(pNm)) {
+      return pCv.getInts().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field - " + pNm);
+    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+      + "/" + str(pCv));
   }
 
   /**
    * <p>Get column with Long value or ID.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @return Long column val
    * @throws ExcCode if field not found
    **/
-  public final Long getLong(final ColVals pClVl,
+  public final Long getLong(final ColVals pCv,
     final String pNm) throws ExcCode {
-    if (pClVl.getLongs() != null && pClVl.getLongs().keySet().contains(pNm)) {
-      return pClVl.getLongs().get(pNm);
+    if (pCv.getLongs() != null && pCv.getLongs().keySet().contains(pNm)) {
+      return pCv.getLongs().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field - " + pNm);
+    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+      + "/" + str(pCv));
   }
 
   /**
    * <p>Get column with String val.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @return String column val
    * @throws ExcCode if field not found
    **/
-  public final String getString(final ColVals pClVl,
+  public final String getString(final ColVals pCv,
     final String pNm) throws ExcCode {
-    if (pClVl.getStrs() != null && pClVl.getStrs().keySet().contains(pNm)) {
-      return pClVl.getStrs().get(pNm);
+    if (pCv.getStrs() != null && pCv.getStrs().keySet().contains(pNm)) {
+      return pCv.getStrs().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field - " + pNm);
+    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+      + "/" + str(pCv));
   }
 
   /**
    * <p>Get ID column with String or Long value to check if null.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @return Object column val
    * @throws ExcCode if field not found
    **/
-  public final Object getIdVl(final ColVals pClVl,
+  public final Object getIdVl(final ColVals pCv,
     final String pNm) throws ExcCode {
-    if (pClVl.getLongs() != null && pClVl.getLongs().keySet().contains(pNm)) {
-      return pClVl.getLongs().get(pNm);
+    if (pCv.getLongs() != null && pCv.getLongs().keySet().contains(pNm)) {
+      return pCv.getLongs().get(pNm);
     }
-    if (pClVl.getStrs() != null && pClVl.getStrs().keySet().contains(pNm)) {
-      return pClVl.getStrs().get(pNm);
+    if (pCv.getStrs() != null && pCv.getStrs().keySet().contains(pNm)) {
+      return pCv.getStrs().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field - " + pNm);
+    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+      + "/" + str(pCv));
   }
 
   /**
    * <p>Get column with Float val.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @return Float column val
    * @throws ExcCode if field not found
    **/
-  public final Float getFloat(final ColVals pClVl,
+  public final Float getFloat(final ColVals pCv,
     final String pNm) throws ExcCode {
-    if (pClVl.getFloats() != null && pClVl.getFloats().keySet().contains(pNm)) {
-      return pClVl.getFloats().get(pNm);
+    if (pCv.getFloats() != null && pCv.getFloats().keySet().contains(pNm)) {
+      return pCv.getFloats().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field - " + pNm);
+    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+      + "/" + str(pCv));
   }
 
   /**
    * <p>Get column with Double val.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @return Double column val
    * @throws ExcCode if field not found
    **/
-  public final Double getDouble(final ColVals pClVl,
+  public final Double getDouble(final ColVals pCv,
     final String pNm) throws ExcCode {
-  if (pClVl.getDoubles() != null && pClVl.getDoubles().keySet().contains(pNm)) {
-      return pClVl.getDoubles().get(pNm);
+  if (pCv.getDoubles() != null && pCv.getDoubles().keySet().contains(pNm)) {
+      return pCv.getDoubles().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field - " + pNm);
+    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+      + "/" + str(pCv));
   }
 
   /**
    * <p>Evaluate column val for SQL statement INSERT or UPDATE.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @return String column val
    * @throws ExcCode if column not found
    **/
-  public final String evSqlVl(final ColVals pClVl,
+  public final String evSqlVl(final ColVals pCv,
     final String pNm) throws ExcCode {
-    Object val = evObjVl(pClVl, pNm);
+    Object val = evObjVl(pCv, pNm);
     if (val == null) {
       return "null";
     } else {
@@ -320,61 +360,62 @@ public class SrvClVl {
    * <p>Evaluate column string val for
    * SQL statement INSERT or UPDATE.
    * For String '[val]' or NULL</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @return Object column val
    * @throws ExcCode if column not found
    **/
-  public final Object evObjVl(final ColVals pClVl,
+  public final Object evObjVl(final ColVals pCv,
     final String pNm) throws ExcCode {
-    if (pClVl.getInts() != null && pClVl.getInts().keySet().contains(pNm)) {
-      return pClVl.getInts().get(pNm);
+    if (pCv.getInts() != null && pCv.getInts().keySet().contains(pNm)) {
+      return pCv.getInts().get(pNm);
     }
-    if (pClVl.getLongs() != null && pClVl.getLongs().keySet().contains(pNm)) {
-      return pClVl.getLongs().get(pNm);
+    if (pCv.getLongs() != null && pCv.getLongs().keySet().contains(pNm)) {
+      return pCv.getLongs().get(pNm);
     }
-    if (pClVl.getStrs() != null && pClVl.getStrs().keySet().contains(pNm)) {
-      String val = (String) pClVl.getStrs().get(pNm);
+    if (pCv.getStrs() != null && pCv.getStrs().keySet().contains(pNm)) {
+      String val = pCv.getStrs().get(pNm);
       if (val == null) {
         return null;
       } else {
-        if (pClVl.getExprs() != null && pClVl.getExprs().contains(pNm)) {
+        if (pCv.getExprs() != null && pCv.getExprs().contains(pNm)) {
           return val;
         } else {
           return "'" + val + "'";
         }
       }
     }
-    if (pClVl.getFloats() != null && pClVl.getFloats().keySet().contains(pNm)) {
-      return pClVl.getFloats().get(pNm);
+    if (pCv.getFloats() != null && pCv.getFloats().keySet().contains(pNm)) {
+      return pCv.getFloats().get(pNm);
     }
-    if (pClVl.getDoubles() != null
-      && pClVl.getDoubles().keySet().contains(pNm)) {
-      return pClVl.getDoubles().get(pNm);
+    if (pCv.getDoubles() != null
+      && pCv.getDoubles().keySet().contains(pNm)) {
+      return pCv.getDoubles().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field - " + pNm);
+    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+      + "/" + str(pCv));
   }
 
   /**
    * <p>Check whether column is contained here.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @return if contains
     **/
-  public final boolean contains(final ColVals pClVl, final String pNm) {
-    if (pClVl.getInts() != null && pClVl.getInts().keySet().contains(pNm)) {
+  public final boolean contains(final ColVals pCv, final String pNm) {
+    if (pCv.getInts() != null && pCv.getInts().keySet().contains(pNm)) {
       return true;
     }
-    if (pClVl.getLongs() != null && pClVl.getLongs().keySet().contains(pNm)) {
+    if (pCv.getLongs() != null && pCv.getLongs().keySet().contains(pNm)) {
       return true;
     }
-    if (pClVl.getStrs() != null && pClVl.getStrs().keySet().contains(pNm)) {
+    if (pCv.getStrs() != null && pCv.getStrs().keySet().contains(pNm)) {
       return true;
     }
-    if (pClVl.getFloats() != null && pClVl.getFloats().keySet().contains(pNm)) {
+    if (pCv.getFloats() != null && pCv.getFloats().keySet().contains(pNm)) {
       return true;
     }
-  if (pClVl.getDoubles() != null && pClVl.getDoubles().keySet().contains(pNm)) {
+  if (pCv.getDoubles() != null && pCv.getDoubles().keySet().contains(pNm)) {
       return true;
     }
     return false;
@@ -382,54 +423,55 @@ public class SrvClVl {
 
   /**
    * <p>Remove column.</p>
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pNm column name
    * @throws ExcCode if column not found
    **/
-  public final void remove(final ColVals pClVl,
+  public final void remove(final ColVals pCv,
     final String pNm) throws ExcCode {
-    if (pClVl.getInts() != null && pClVl.getInts().keySet().contains(pNm)) {
-      pClVl.getInts().remove(pNm);
+    if (pCv.getInts() != null && pCv.getInts().keySet().contains(pNm)) {
+      pCv.getInts().remove(pNm);
       return;
     }
-    if (pClVl.getLongs() != null && pClVl.getLongs().keySet().contains(pNm)) {
-      pClVl.getLongs().remove(pNm);
+    if (pCv.getLongs() != null && pCv.getLongs().keySet().contains(pNm)) {
+      pCv.getLongs().remove(pNm);
       return;
     }
-    if (pClVl.getStrs() != null && pClVl.getStrs().keySet().contains(pNm)) {
-      pClVl.getStrs().remove(pNm);
+    if (pCv.getStrs() != null && pCv.getStrs().keySet().contains(pNm)) {
+      pCv.getStrs().remove(pNm);
       return;
     }
-    if (pClVl.getFloats() != null && pClVl.getFloats().keySet().contains(pNm)) {
-      pClVl.getFloats().remove(pNm);
+    if (pCv.getFloats() != null && pCv.getFloats().keySet().contains(pNm)) {
+      pCv.getFloats().remove(pNm);
       return;
     }
-    if (pClVl.getDoubles() != null
-      && pClVl.getDoubles().keySet().contains(pNm)) {
-      pClVl.getDoubles().remove(pNm);
+    if (pCv.getDoubles() != null
+      && pCv.getDoubles().keySet().contains(pNm)) {
+      pCv.getDoubles().remove(pNm);
       return;
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no column " + pNm);
+    throw new ExcCode(ExcCode.WRPR, "There is no column/CV " + pNm
+      + "/" + str(pCv));
   }
 
   /**
    * <p>Evaluate SQL insert statement. It's assumed that ID maybe either Long
    * or String type, i.e. Integer is not.</p>
    * @param pCls entity class
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @return insert query
    * @throws Exception - an exception
    **/
   public final String evInsert(final Class<?> pCls,
-    final ColVals pClVl) throws Exception {
+    final ColVals pCv) throws Exception {
     StringBuffer res = new StringBuffer("insert into "
       + pCls.getSimpleName().toUpperCase() + " (");
     StringBuffer vls = new StringBuffer(" values (");
     boolean isFst = true;
     List<String> idNms = this.setng.lazIdFldNms(pCls);
     //ID-able Long and String:
-    if (pClVl.getLongs() != null) {
-      for (Map.Entry<String, Long> ent : pClVl.getLongs().entrySet()) {
+    if (pCv.getLongs() != null) {
+      for (Map.Entry<String, Long> ent : pCv.getLongs().entrySet()) {
         if (ent.getValue() != null || !idNms.contains(ent.getKey())) {
           if (isFst) {
             isFst = false;
@@ -438,12 +480,12 @@ public class SrvClVl {
             vls.append(", ");
           }
           res.append(ent.getKey().toUpperCase());
-          vls.append(evSqlVl(pClVl, ent.getKey()));
+          vls.append(evSqlVl(pCv, ent.getKey()));
         }
       }
     }
-    if (pClVl.getStrs() != null) {
-      for (Map.Entry<String, String> ent : pClVl.getStrs().entrySet()) {
+    if (pCv.getStrs() != null) {
+      for (Map.Entry<String, String> ent : pCv.getStrs().entrySet()) {
         if (ent.getValue() != null || !idNms.contains(ent.getKey())) {
           if (isFst) {
             isFst = false;
@@ -452,12 +494,12 @@ public class SrvClVl {
             vls.append(", ");
           }
           res.append(ent.getKey().toUpperCase());
-          vls.append(evSqlVl(pClVl, ent.getKey()));
+          vls.append(evSqlVl(pCv, ent.getKey()));
         }
       }
     }
-    if (pClVl.getInts() != null) {
-      for (Map.Entry<String, Integer> ent : pClVl.getInts().entrySet()) {
+    if (pCv.getInts() != null) {
+      for (Map.Entry<String, Integer> ent : pCv.getInts().entrySet()) {
         if (isFst) {
           isFst = false;
         } else {
@@ -465,11 +507,11 @@ public class SrvClVl {
           vls.append(", ");
         }
         res.append(ent.getKey().toUpperCase());
-        vls.append(evSqlVl(pClVl, ent.getKey()));
+        vls.append(evSqlVl(pCv, ent.getKey()));
       }
     }
-    if (pClVl.getFloats() != null) {
-      for (Map.Entry<String, Float> ent : pClVl.getFloats().entrySet()) {
+    if (pCv.getFloats() != null) {
+      for (Map.Entry<String, Float> ent : pCv.getFloats().entrySet()) {
         if (isFst) {
           isFst = false;
         } else {
@@ -477,11 +519,11 @@ public class SrvClVl {
           vls.append(", ");
         }
         res.append(ent.getKey().toUpperCase());
-        vls.append(evSqlVl(pClVl, ent.getKey()));
+        vls.append(evSqlVl(pCv, ent.getKey()));
       }
     }
-    if (pClVl.getDoubles() != null) {
-      for (Map.Entry<String, Double> ent : pClVl.getDoubles().entrySet()) {
+    if (pCv.getDoubles() != null) {
+      for (Map.Entry<String, Double> ent : pCv.getDoubles().entrySet()) {
         if (isFst) {
           isFst = false;
         } else {
@@ -489,7 +531,7 @@ public class SrvClVl {
           vls.append(", ");
         }
         res.append(ent.getKey().toUpperCase());
-        vls.append(evSqlVl(pClVl, ent.getKey()));
+        vls.append(evSqlVl(pCv, ent.getKey()));
       }
     }
     res.append(") " + vls + ");");
@@ -500,12 +542,12 @@ public class SrvClVl {
    * <p>Evaluate where conditions for SQL update standard statement
    * with optimistic locking if need.</p>
    * @param pCls entity class
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @return where conditions e.g. "IID=1 and VER=2"
    * @throws Exception - an exception
    **/
   public final String evWheUpd(final Class<?> pCls,
-    final ColVals pClVl) throws Exception {
+    final ColVals pCv) throws Exception {
     StringBuffer sb = new StringBuffer("");
     boolean isFst = true;
     for (String idNm : this.setng.lazIdFldNms(pCls)) {
@@ -514,10 +556,10 @@ public class SrvClVl {
       } else {
         sb.append(" and ");
       }
-      sb.append(idNm.toUpperCase() + "=" + evSqlVl(pClVl, idNm));
+      sb.append(idNm.toUpperCase() + "=" + evSqlVl(pCv, idNm));
     }
-    if (pClVl.getOldVer() != null) {
-      sb.append(" and VER=" + pClVl.getOldVer());
+    if (pCv.getOldVer() != null) {
+      sb.append(" and VER=" + pCv.getOldVer());
     }
     return sb.toString();
   }
@@ -526,83 +568,83 @@ public class SrvClVl {
    * <p>Evaluate SQL update standard statement
    * with optimistic locking if need.</p>
    * @param pCls entity class
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @return update statement
    * @throws Exception - an exception
    **/
   public final String evUpdate(final Class<?> pCls,
-    final ColVals pClVl) throws Exception {
-    String cnd = evWheUpd(pCls, pClVl);
-    return evUpdateCnd(pCls, pClVl, cnd);
+    final ColVals pCv) throws Exception {
+    String cnd = evWheUpd(pCls, pCv);
+    return evUpdateCnd(pCls, pCv, cnd);
   }
 
   /**
    * <p>Evaluate SQL update statement with given conditions (nullable).
    * It's assumed that ID maybe either Long or String type!</p>
    * @param pCls entity class
-   * @param pClVl type-safe map column name - column value
+   * @param pCv type-safe map column name - column value
    * @param pCnd where conditions e.g. "IID=2 and VER=2" or NULL
    * @return update statement
    * @throws Exception - an exception
    **/
   public final String evUpdateCnd(final Class<?> pCls,
-    final ColVals pClVl, final String pCnd) throws Exception {
+    final ColVals pCv, final String pCnd) throws Exception {
     StringBuffer res = new StringBuffer("update "
       + pCls.getSimpleName().toUpperCase() + " set ");
     List<String> idNms = this.setng.lazIdFldNms(pCls);
     boolean isFst = true;
-    if (pClVl.getLongs() != null) {
-      for (String key : pClVl.getLongs().keySet()) {
+    if (pCv.getLongs() != null) {
+      for (String key : pCv.getLongs().keySet()) {
         if (!idNms.contains(key)) {
           if (isFst) {
             isFst = false;
           } else {
             res.append(", ");
           }
-          res.append(key.toUpperCase() + "=" + evSqlVl(pClVl, key));
+          res.append(key.toUpperCase() + "=" + evSqlVl(pCv, key));
         }
       }
     }
-    if (pClVl.getStrs() != null) {
-      for (String key : pClVl.getStrs().keySet()) {
+    if (pCv.getStrs() != null) {
+      for (String key : pCv.getStrs().keySet()) {
         if (!idNms.contains(key)) {
           if (isFst) {
             isFst = false;
           } else {
             res.append(", ");
           }
-          res.append(key.toUpperCase() + "=" + evSqlVl(pClVl, key));
+          res.append(key.toUpperCase() + "=" + evSqlVl(pCv, key));
         }
       }
     }
-    if (pClVl.getInts() != null) {
-      for (String key : pClVl.getInts().keySet()) {
+    if (pCv.getInts() != null) {
+      for (String key : pCv.getInts().keySet()) {
         if (isFst) {
           isFst = false;
         } else {
           res.append(", ");
         }
-        res.append(key.toUpperCase() + "=" + evSqlVl(pClVl, key));
+        res.append(key.toUpperCase() + "=" + evSqlVl(pCv, key));
       }
     }
-    if (pClVl.getFloats() != null) {
-      for (String key : pClVl.getFloats().keySet()) {
+    if (pCv.getFloats() != null) {
+      for (String key : pCv.getFloats().keySet()) {
         if (isFst) {
           isFst = false;
         } else {
           res.append(", ");
         }
-        res.append(key.toUpperCase() + "=" + evSqlVl(pClVl, key));
+        res.append(key.toUpperCase() + "=" + evSqlVl(pCv, key));
       }
     }
-    if (pClVl.getDoubles() != null) {
-      for (String key : pClVl.getDoubles().keySet()) {
+    if (pCv.getDoubles() != null) {
+      for (String key : pCv.getDoubles().keySet()) {
         if (isFst) {
           isFst = false;
         } else {
           res.append(", ");
         }
-        res.append(key.toUpperCase() + "=" + evSqlVl(pClVl, key));
+        res.append(key.toUpperCase() + "=" + evSqlVl(pCv, key));
       }
     }
     if (pCnd != null) {

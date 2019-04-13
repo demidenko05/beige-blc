@@ -181,7 +181,7 @@ public interface IRdb<RS> {
    * It is to adapt Android insert/update/delete interface.</p>
    * @param pCls entity class
    * @param pClVls type-safe map column name - column value
-   * @param pWhe where conditions e.g. "itsId=2" or NULL - update all
+   * @param pWhe where conditions e.g. "IID=2" or NULL - update all
    * @return row count affected
    * @throws Exception - an exception
    **/
