@@ -9,4 +9,3 @@ release.properties
 /maven-central-deploy.log
 /maven-central-deploy.sh~
 *.releaseBackup
-persistableLines.csv

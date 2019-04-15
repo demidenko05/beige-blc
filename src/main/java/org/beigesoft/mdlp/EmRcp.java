@@ -35,7 +35,7 @@ import org.beigesoft.mdl.IOwned;
  *
  * @author Yury Demidenko
  */
-public class EmRcp extends AIdLn implements IOwned<EmMsg> {
+public class EmRcp extends AIdLn implements IOwned<EmMsg, Long> {
 
   /**
    * <p>Email message.</p>

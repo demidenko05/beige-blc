@@ -156,9 +156,9 @@ public class HndEntRq<RS> implements IHndRq {
           "Action: " + actNm);
       }
     }
-    if (this.wrReSpTr && ("entityFolSave".equals(actArr[0])
-  || "entitySave".equals(actArr[0]) || "entityDelete".equals(actArr[0])
-|| "entityFolDelete".equals(actArr[0]))) {
+    if (this.wrReSpTr && ("entSv".equals(actArr[0])
+  || "entOwSv".equals(actArr[0]) || "entDl".equals(actArr[0])
+|| "entOwDl".equals(actArr[0]))) {
       IHasId<?> ent = null;
       try {
         this.rdb.setAcmt(false);
@@ -169,8 +169,7 @@ public class HndEntRq<RS> implements IHndRq {
           this.fctFctEnt.laz(pRqVs, cls);
         ent = entFac.create(pRqVs);
         this.filEntRq.fill(pRqVs, null, ent, pRqDt);
-        String entProcNm = this.hldPrcEntNm
-          .get(cls, actArr[0]);
+        String entProcNm = this.hldPrcEntNm.get(cls, actArr[0]);
         if (entProcNm == null) {
           this.logSec.error(null, HndEntRq.class,
             "Trying to work with forbidden ent/action/user: " + nmEnt + "/"
@@ -203,7 +202,7 @@ public class HndEntRq<RS> implements IHndRq {
             String actNm = actArr[i];
             if (actNm.startsWith("ent")) {
               if (ent == null) { // it's may be change ent to owner:
-                ent = (IHasId<?>) pRqVs.get("nextEntity");
+                ent = (IHasId<?>) pRqVs.get("entNx");
                 if (ent == null) {
                   throw new ExcCode(ExcCode.WRPR,
                     "wrong_request_entity_not_filled");
@@ -289,7 +288,7 @@ public class HndEntRq<RS> implements IHndRq {
       for (String actNm : pActArr) {
         if (actNm.startsWith("ent")) {
           if (ent == null) { // it's may be change ent to owner:
-           ent = (IHasId<?>) pRqVs.get("nextEntity");
+           ent = (IHasId<?>) pRqVs.get("entNx");
            if (ent == null) {
               throw new ExcCode(ExcCode.WRPR,
                 "wrong_request_entity_not_filled");

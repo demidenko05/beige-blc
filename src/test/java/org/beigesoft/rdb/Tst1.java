@@ -97,6 +97,7 @@ public class Tst1<RS> {
         dp.setDbOr(orm.getDbId());
         orm.insIdLn(rvs, vs, dp);
       }
+      assertEquals("1", stgOrm.lazClsStg(Department.class, "vrAlg"));
       Department dpf = new Department();
       dpf.setIid(dp.getIid());
       orm.refrEnt(rvs, vs, dpf);
@@ -118,6 +119,7 @@ public class Tst1<RS> {
         orm.insIdLn(rvs, vs, gdc);
       }
       GoodVersionTime gd = new GoodVersionTime();
+      assertEquals("1", stgOrm.lazClsStg(GoodVersionTime.class, "vrAlg"));
       gd.setIid(1L);
       orm.refrEnt(rvs, vs, gd);
       if (gd.getIid() == null) {
@@ -128,10 +130,12 @@ public class Tst1<RS> {
         orm.insIdLn(rvs, vs, gd);
       }
       PersistableHead ph = new PersistableHead();
+      assertEquals("1", stgOrm.lazClsStg(PersistableHead.class, "vrAlg"));
       ph.setIid(1L);
       orm.refrEnt(rvs, vs, ph);
       if (ph.getIid() == null) {
         ph.setDbOr(orm.getDbId());
+        ph.setItsDepartment(dp);
         ph.setIid(null);
         ph.setItsStatus(EStatus.STATUS_A);
         ph.setItsDate(new Date());
@@ -186,6 +190,7 @@ public class Tst1<RS> {
       String[] ndFds = new String[] {"iid", "isClosed", "itsDate", "itsStatus"};
       vs.put("PersistableHeadndFds", ndFds);
       plf = new PersistableLine();
+      assertEquals("0", stgOrm.lazClsStg(PersistableLine.class, "vrAlg"));
       plf.setIid(pl.getIid());
       orm.refrEnt(rvs, vs, plf);
       assertEquals(pl.getIid(), plf.getIid());
@@ -244,6 +249,33 @@ public class Tst1<RS> {
         orm.refrEnt(rvs, vs, phf);
         assertTrue(phf.getItsTotal().compareTo(ph.getItsTotal()) == 0);
       }
+      //composite ID:
+      UsTmc ut = new UsTmc();
+      assertEquals("0", stgOrm.lazClsStg(UsTmc.class, "vrAlg"));
+      ut.setUsr("usr1");
+      orm.refrEnt(rvs, vs, ut);
+      if (ut.getIid() == null) {
+        ut.setUsr("usr1");
+        ut.setPwd("pwd1");
+        orm.insIdNln(rvs, vs, ut);
+        orm.refrEnt(rvs, vs, ut);
+      }
+      assertEquals("usr1", ut.getUsr());
+      assertEquals("pwd1", ut.getPwd());
+      UsRlTmc urt = new UsRlTmc();
+      urt.setUsr(ut);
+      urt.setRol("rol1");
+      orm.refrEnt(rvs, vs, urt);
+      if (urt.getIid() == null) {
+        urt.setUsr(ut);
+        urt.setRol("rol1");
+        orm.insIdNln(rvs, vs, urt);
+        orm.refrEnt(rvs, vs, urt);
+        assertEquals("0", stgOrm.getClsStgs().get(UsRlTmc.class).get("vrAlg"));
+        
+      }
+      assertEquals("usr1", urt.getUsr().getUsr());
+      assertEquals("rol1", urt.getRol());
       //inner transaction rollback and OL by VER:
       String cakeins = "cakeins";
       rdb.creSavPnt(cakeins);

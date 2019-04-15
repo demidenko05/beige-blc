@@ -9,6 +9,8 @@
     files="UtlXml|CsvWri|HldGets|HldSets|HldFldCls|FilEntRq|HndI18nRq|HndEntRq|NumStr|UsPrf|CsvRdr|FilCvEnt|FilNmCvSmp|FilNmCvHsId"/>
   <suppress checks="MagicNumberCheck"
     files="HndSpam|Setng|CmnPrf|RpEntWriXml|RpEntReadXml|RplXmlHttps|FilEntRs|FilFldSmpRs|FilFldEnmRs|FilFldHsIdRs|SqlQu"/>
+  <suppress checks="MagicNumberCheck"
+    files="HlpEntPg"/>
   <suppress checks="EmptyBlock"
     files="RplXmlHttps"/>
   <suppress checks="LineLength"

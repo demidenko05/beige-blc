@@ -9,5 +9,4 @@ See LICENSE in base folder
 <comment>Explicit final definition.</comment>
 <entry key="exlFlds">userRoleTomcat</entry>
 <entry key="idFlds">usr,rol</entry>
-<entry key="cnstr">CONSTRAINT urtpprioritygt0 CHECK (PRIORITY&gt;0)</entry>
 </properties>

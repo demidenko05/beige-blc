@@ -26,81 +26,60 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdlp;
+package org.beigesoft.prc;
 
-import org.beigesoft.mdl.IOwned;
+import java.util.Map;
+import java.util.HashMap;
+
+import org.beigesoft.mdl.IReqDt;
+import org.beigesoft.mdl.IHasId;
+import org.beigesoft.rdb.IOrm;
 
 /**
- * <p>String properties to connect to email server
- * e.g. "mail.transport.protocol"-"smtp".</p>
+ * <p>Service that deletes entity into DB.</p>
  *
+ * @param <T> entity type
+ * @param <ID> entity ID type
  * @author Yury Demidenko
  */
-public class EmStr extends AIdLn implements IOwned<EmCon, Long> {
+public class PrcEntDl<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
 
   /**
-   * <p>Email connection.</p>
+   * <p>ORM service.</p>
    **/
-  private EmCon ownr;
+  private IOrm orm;
 
   /**
-   * <p>Property name.</p>
-   **/
-  private String prNm;
-
-  /**
-   * <p>Property value.</p>
-   **/
-  private String prVl;
-
-  /**
-   * <p>Getter for ownr.</p>
-   * @return EmCon
+   * <p>Process that deletes entity.</p>
+   * @param pRvs request scoped vars, e.g. return this line's
+   * owner(document) in "nextEntity" for farther processing
+   * @param pRqDt Request Data
+   * @param pEnt Entity to process
+   * @return Entity processed for farther process or null
+   * @throws Exception - an exception
    **/
   @Override
-  public final EmCon getOwnr() {
-    return this.ownr;
-  }
-
-  /**
-   * <p>Setter for ownr.</p>
-   * @param pOwnr reference
-   **/
-  @Override
-  public final void setOwnr(final EmCon pOwnr) {
-    this.ownr = pOwnr;
+  public final T process(final Map<String, Object> pRvs, final T pEnt,
+    final IReqDt pRqDt) throws Exception {
+    Map<String, Object> vs = new HashMap<String, Object>();
+    this.orm.del(pRvs, vs, pEnt);
+    return null;
   }
 
   //Simple getters and setters:
   /**
-   * <p>Getter for prNm.</p>
-   * @return String
+   * <p>Getter for orm.</p>
+   * @return IOrm
    **/
-  public final String getPrNm() {
-    return this.prNm;
+  public final IOrm getOrm() {
+    return this.orm;
   }
 
   /**
-   * <p>Setter for prNm.</p>
-   * @param pPrNm reference
+   * <p>Setter for orm.</p>
+   * @param pOrm reference
    **/
-  public final void setPrNm(final String pPrNm) {
-    this.prNm = pPrNm;
-  }
-
-  /**
-   * <p>Getter for prVl.</p>
-   * @return String
-   **/
-  public final String getPrVl() {
-    return this.prVl;
-  }
-
-  /**
-   * <p>Setter for prVl.</p>
-   * @param pPrVl reference
-   **/
-  public final void setPrVl(final String pPrVl) {
-    this.prVl = pPrVl;
+  public final void setOrm(final IOrm pOrm) {
+    this.orm = pOrm;
   }
 }

@@ -32,20 +32,21 @@ package org.beigesoft.mdl;
  * <p>Abstraction an persistable model that has owner,
  * e.g. an invoice line.</p>
  *
+ * @param <T> type of owner
+ * @param <ID> type of ID
  * @author Yury Demidenko
- * @param <O> type of owner
  */
-public interface IOwned<O> {
+public interface IOwned<T, ID> extends IHasId<ID> {
 
   /**
    * <p>Usually it's simple getter that return owner.</p>
    * @return O owner
    **/
-  O getOwnr();
+  T getOwnr();
 
   /**
    * <p>Usually it's simple setter for owner.</p>
    * @param pOwnr reference
    **/
-  void setOwnr(O pOwnr);
+  void setOwnr(T pOwnr);
 }
