@@ -424,6 +424,34 @@ public class Setng implements ISetng {
     this.fldNmClTyFs = null;
   }
 
+  /**
+   * <p>Getter for cmnStgs.</p>
+   * @return Map<String, String>
+   **/
+  @Override
+  public final synchronized Map<String, String> getCmnStgs() {
+    return this.cmnStgs;
+  }
+
+  /**
+   * <p>Getter for clsStgs.</p>
+   * @return Map<Class<?>, Map<String, String>>
+   **/
+  @Override
+  public final synchronized Map<Class<?>, Map<String, String>> getClsStgs() {
+    return this.clsStgs;
+  }
+
+  /**
+   * <p>Getter for fldStgs.</p>
+   * @return Map<Class<?>, Map<String, Map<String, String>>>
+   **/
+  @Override
+  public final synchronized
+    Map<Class<?>, Map<String, Map<String, String>>> getFldStgs() {
+    return this.fldStgs;
+  }
+
   //Utils:
   /**
    * <p>Reveal field setting for given class, field and setting name.</p>
@@ -897,40 +925,6 @@ public class Setng implements ISetng {
   }
 
   //For debugging purposes:
-  /**
-   * <p>Getter for cmnStgs.</p>
-   * @return Map<String, String>
-   **/
-  public final synchronized Map<String, String> getCmnStgs() {
-    return this.cmnStgs;
-  }
-
-  /**
-   * <p>Getter for clsStgs.</p>
-   * @return Map<Class<?>, Map<String, String>>
-   **/
-  public final synchronized Map<Class<?>, Map<String, String>> getClsStgs() {
-    return this.clsStgs;
-  }
-
-  /**
-   * <p>Getter for fldStgs.</p>
-   * @return Map<Class<?>, Map<String, Map<String, String>>>
-   **/
-  public final synchronized
-    Map<Class<?>, Map<String, Map<String, String>>> getFldStgs() {
-    return this.fldStgs;
-  }
-
-  /**
-   * <p>Setter for fldStgs.</p>
-   * @param pFldStgs reference
-   **/
-  public final synchronized void setFldStgs(
-    final Map<Class<?>, Map<String, Map<String, String>>> pFldStgs) {
-    this.fldStgs = pFldStgs;
-  }
-
   /**
    * <p>Getter for fldNms.</p>
    * @return Map<Class<?>, List<String>>

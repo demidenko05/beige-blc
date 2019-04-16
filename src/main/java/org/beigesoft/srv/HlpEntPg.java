@@ -24,7 +24,7 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+*/
 
 package org.beigesoft.srv;
 
@@ -118,7 +118,6 @@ public class HlpEntPg<RS> {
   /**
    * <p>Retrieve ents pg - ents list, pgs, filter map etc.</p>
    * @param pRvs request scoped vars
-   * @param pVs invoker scoped vars
    * @param pRqd Request Data
    * @param pEntMp Entity Map
    * @param pDbgSh is show debug messages
@@ -128,10 +127,10 @@ public class HlpEntPg<RS> {
    * It may throw exception, e.g. "Forbidden" if user has no permissions.
    * @throws Exception - an exception
    **/
-  public final void retrievePage(final Map<String, Object> pRvs,
-    final Map<String, Object> pVs, final IReqDt pRqd,
-      final Map<String, Class<IHasId<?>>> pEntMp, final boolean pDbgSh,
-        final IEvalFr<IReqDt, String> pMkFlt) throws Exception {
+  public final void retPg(final Map<String, Object> pRvs, final IReqDt pRqd,
+    final Map<String, Class<IHasId<?>>> pEntMp, final boolean pDbgSh,
+      final IEvalFr<IReqDt, String> pMkFlt) throws Exception {
+    Map<String, Object> vs = new HashMap<String, Object>();
     String nmEnt;
     if (pRvs.get("nmEntOw") != null) {
       // owned entity put it to refresh owner list
@@ -220,15 +219,15 @@ public class HlpEntPg<RS> {
     }
     if (strWhe != null) {
       if (strFiWhe != null) { //it's maybe second level conditions:
-        String qu = this.sqlQu.evSel(pRvs, pVs, cls).toString();
+        String qu = this.sqlQu.evSel(pRvs, vs, cls).toString();
         qu = qu.substring(qu.indexOf("from"));
         qu = "select count(*) as TOROWS " + qu + " where " + strWhe;
         roCnt = this.rdb.evInt(qu, "TOROWS");
       } else {
-        roCnt = this.orm.evRowCntWhe(pRvs, pVs, cls, strWhe);
+        roCnt = this.orm.evRowCntWhe(pRvs, vs, cls, strWhe);
       }
     } else {
-      roCnt = this.orm.evRowCnt(pRvs, pVs, cls);
+      roCnt = this.orm.evRowCnt(pRvs, vs, cls);
     }
     Integer pg = Integer.valueOf(pRqd.getParam("pg"));
     Integer pgSz = Integer.valueOf(setng.lazCmnst().get("pgSz"));
@@ -240,13 +239,13 @@ public class HlpEntPg<RS> {
     List ents;
     if (strWhe != null || quOrdBy.length() > 0) {
       if (strWhe != null) {
-        ents = this.orm.retPgCnd(pRvs, pVs, cls, "where " + strWhe + quOrdBy,
+        ents = this.orm.retPgCnd(pRvs, vs, cls, "where " + strWhe + quOrdBy,
           fstRz, pgSz);
       } else {
-        ents = this.orm.retPgCnd(pRvs, pVs, cls, quOrdBy, fstRz, pgSz);
+        ents = this.orm.retPgCnd(pRvs, vs, cls, quOrdBy, fstRz, pgSz);
       }
     } else {
-      ents = this.orm.retPg(pRvs, pVs, cls, fstRz, pgSz);
+      ents = this.orm.retPg(pRvs, vs, cls, fstRz, pgSz);
     }
     Integer pgTl = Integer.valueOf(setng.lazCmnst().get("pgTl"));
     List<Page> pgs = srvPg.evPgs(pg, pgCnt, pgTl);

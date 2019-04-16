@@ -96,7 +96,7 @@ public class CnvTest<RS> {
     this.fctApp = new FctBlc<RS>();
     FctTst fctTst = new FctTst();
     fctTst.setLogStdNm(CnvTest.class.getSimpleName());
-    this.fctApp.setStgUvdDir("tstUvd");
+    this.fctApp.setStgUvdDir("uvd");
     this.fctApp.setFctConf(fctTst);
     this.logStd = (ILog) fctApp.laz(this.rqVs, FctBlc.LOGSTDNM);
     this.logStd.setDbgSh(true);

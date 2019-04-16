@@ -391,7 +391,7 @@ public class RplXmlHttps<RS> implements IReplicator {
       urlCn.addRequestProperty("Content-Length",
         String.valueOf(paramStr.length()));
       boolean isDbgSh = this.log.getDbgSh(this.getClass())
-        && this.log.getDbgFl() < 8001 && this.log.getDbgCl() > 8003;
+        && this.log.getDbgFl() < 5501 && this.log.getDbgCl() > 5499;
       if (isDbgSh) {
         getLog().debug(pRqVs, RplXmlHttps.class,
           "Request before flush auth:");

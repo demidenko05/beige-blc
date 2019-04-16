@@ -83,7 +83,7 @@ public class WriReXmlTest<RS> {
     this.fctApp = new FctBlc<RS>();
     FctTst fctTst = new FctTst();
     fctTst.setLogStdNm(WriReXmlTest.class.getSimpleName());
-    this.fctApp.setStgDbCpDir("tstDbCp");
+    this.fctApp.setStgDbCpDir("dbcp");
     this.fctApp.setFctConf(fctTst);
     this.logStd = (ILog) fctApp.laz(this.rqVs, FctBlc.LOGSTDNM);
     this.logStd.setDbgSh(true);

@@ -312,8 +312,7 @@ public class HndEntRq<RS> implements IHndRq {
           }
           ent = ep.process(pRqVs, ent, pRqDt);
         } else { // else actions like "list" (page)
-          String procNm = this.hldPrcNm
-            .get(cls, actNm);
+          String procNm = this.hldPrcNm.get(cls, actNm);
           if (procNm == null) {
             this.logSec.error(pRqVs, HndEntRq.class,
               "Trying to work with forbidden ent/action/user: " + pNmEnt

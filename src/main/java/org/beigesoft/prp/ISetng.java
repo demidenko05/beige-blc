@@ -199,4 +199,23 @@ public interface ISetng {
    * @param pDir reference
    **/
   void setDir(String pDir);
+
+  //for requestors that transform properties and hold them by themselves:
+  /**
+   * <p>Getter for cmnStgs.</p>
+   * @return Map<String, String>
+   **/
+  Map<String, String> getCmnStgs();
+
+  /**
+   * <p>Getter for clsStgs.</p>
+   * @return Map<Class<?>, Map<String, String>>
+   **/
+  Map<Class<?>, Map<String, String>> getClsStgs();
+
+  /**
+   * <p>Getter for fldStgs.</p>
+   * @return Map<Class<?>, Map<String, Map<String, String>>>
+   **/
+  Map<Class<?>, Map<String, Map<String, String>>> getFldStgs();
 }

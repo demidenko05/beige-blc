@@ -14,8 +14,7 @@ See LICENSE in base folder
   org.beigesoft.mdlp.PersistableHead,
   org.beigesoft.mdlp.PersistableLine,
   org.beigesoft.mdlp.UsTmc,
-  org.beigesoft.mdlp.UsRlTmc,
-  org.beigesoft.mdlp.UsRlTmcId</entry>
+  org.beigesoft.mdlp.UsRlTmc</entry>
 <entry key="stgClsNms">exlFlds,idFlds</entry>
 <entry key="stgFldNms"></entry>
 <entry key="exlFlds">tmpDescription,isNew</entry>
