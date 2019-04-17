@@ -57,7 +57,7 @@ import org.beigesoft.mdlp.GoodVersionTime;
 import org.beigesoft.mdlp.UserRoleTomcatPriority;
 import org.beigesoft.mdlp.GdCat;
 import org.beigesoft.log.ILog;
-import org.beigesoft.fct.FctTst;
+import org.beigesoft.fct.IFctAsm;
 import org.beigesoft.fct.FctBlc;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.prp.ISetng;
@@ -73,7 +73,7 @@ import org.beigesoft.rdb.IRdb;
  */
 public class Tst1<RS> {
 
-  private FctBlc<RS> fctApp;
+  private IFctAsm<RS> fctApp;
 
   public void tst1() throws Exception {
     Map<String, Object> rvs = new HashMap<String, Object>();
@@ -81,7 +81,7 @@ public class Tst1<RS> {
     IOrm orm = (IOrm) this.fctApp.laz(rvs, IOrm.class.getSimpleName());
     IRdb<RS> rdb = (IRdb<RS>) this.fctApp.laz(rvs, IRdb.class.getSimpleName());
     orm.init(rvs);
-    Setng stgOrm = (Setng) this.fctApp.laz(rvs, this.fctApp.STGORMNM);
+    Setng stgOrm = (Setng) this.fctApp.laz(rvs, FctBlc.STGORMNM);
     stgOrm.release();
     try {
       rdb.setAcmt(false);
@@ -226,7 +226,7 @@ public class Tst1<RS> {
       assertTrue(!phf.getItsStatus().equals(ph.getItsStatus()));
       assertTrue(!phf.getVer().equals(ph.getVer()));
       vs.clear();
-      if (!this.fctApp.getIsAndr()) {
+      if (!this.fctApp.getFctBlc().getIsAndr()) {
         //fast update:
         SrvClVl srvClVl = (SrvClVl) this.fctApp.laz(rvs, SrvClVl.class.getSimpleName());
         Long newVer = phf.getVer() + 1;
@@ -342,7 +342,7 @@ public class Tst1<RS> {
    * <p>Getter for fctApp.</p>
    * @return FctBlc<RS>
    **/
-  public final FctBlc<RS> getFctApp() {
+  public final IFctAsm<RS> getFctApp() {
     return this.fctApp;
   }
 
@@ -350,7 +350,7 @@ public class Tst1<RS> {
    * <p>Setter for fctApp.</p>
    * @param pFctApp reference
    **/
-  public final void setFctApp(final FctBlc<RS> pFctApp) {
+  public final void setFctApp(final IFctAsm<RS> pFctApp) {
     this.fctApp = pFctApp;
   }
 }

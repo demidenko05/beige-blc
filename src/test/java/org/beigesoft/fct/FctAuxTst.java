@@ -30,15 +30,15 @@ package org.beigesoft.fct;
 
 import java.util.Map;
 
+import org.beigesoft.rdb.IRdb;
+
 /**
- * <p>Abstraction of application beans auxiliary factory.
- * It's a sub-factory of main application beans factory.
- * It must returns NULL if bean name not found.</p>
+ * <p>Auxiliary stub factory.</p>
  *
  * @param <RS> platform dependent RDBMS recordset
  * @author Yury Demidenko
  */
-public interface IFctAux<RS> {
+public class FctAuxTst<RS> implements IFctAux<RS> {
 
   /**
    * <p>Creates requested bean and put into given main factory.
@@ -49,8 +49,16 @@ public interface IFctAux<RS> {
    * @return Object - requested bean or NULL
    * @throws Exception - an exception
    */
-  Object crePut(Map<String, Object> pRqVs,
-    String pBnNm, FctBlc<RS> pFctApp) throws Exception;
+  @Override
+  public final Object crePut(final Map<String, Object> pRqVs,
+    final String pBnNm, final FctBlc<RS> pFctApp) throws Exception {
+    Object rz = null;
+    if (IRdb.class.getSimpleName().equals(pBnNm)) {
+      rz = new RdbStub<RS>();
+      pFctApp.put(pRqVs, IRdb.class.getSimpleName(), rz);
+    }
+    return rz;
+  }
 
   /**
    * <p>Releases state when main factory is releasing.</p>
@@ -58,5 +66,9 @@ public interface IFctAux<RS> {
    * @param pFctApp main factory
    * @throws Exception - an exception
    */
-  void release(Map<String, Object> pRqVs, FctBlc<RS> pFctApp) throws Exception;
+  @Override
+  public final void release(final Map<String, Object> pRqVs,
+    final FctBlc<RS> pFctApp) throws Exception {
+    //nothing;
+  }
 }

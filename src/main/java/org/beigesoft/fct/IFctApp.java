@@ -64,7 +64,8 @@ public interface IFctApp {
 
   /**
    * <p>Releases beans (memory). This is memory friendly factory.</p>
+   * @param pRqVs request scoped vars
    * @throws Exception - an exception
    */
-  void release() throws Exception;
+  void release(Map<String, Object> pRqVs) throws Exception;
 }

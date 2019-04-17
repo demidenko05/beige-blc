@@ -28,8 +28,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.fct;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.io.File;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
@@ -48,7 +51,7 @@ import org.beigesoft.hld.HldNmCnFrStXml;
 import org.beigesoft.hnd.HndI18nRq;
 import org.beigesoft.prp.UtlPrp;
 import org.beigesoft.prp.Setng;
-import org.beigesoft.log.ILog;
+import org.beigesoft.log.LogFile;
 import org.beigesoft.cnv.FilEntRs;
 import org.beigesoft.cnv.FilEntRq;
 import org.beigesoft.cnv.FilCvEnt;
@@ -210,19 +213,38 @@ public class FctBlc<RS> implements IFctApp {
    **/
   private Boolean wrReSpTr = Boolean.FALSE;
 
+  /**
+   * <p>Log files path.</p>
+   **/
+  private String logPth;
+
+  /**
+   * <p>Log files size in bytes.</p>
+   **/
+  private int logSize = 1048576;
+
+  /**
+   * <p>Standard log file name.</p>
+   **/
+  private String logStdNm = LOGSTDNM;
+
+  /**
+   * <p>WEB-APP files path.</p>
+   **/
+  private String appPth;
+
   //parts/services:
   /**
-   * <p>Outside app-beans/parts factory final configuration.
-   * It must throws exception if bean not found. It may consist of
-   * sub-factories. It puts its beans into this main factory beans.</p>
+   * <p>Outside app-beans/parts factories final configuration.
+   *  They put its beans into this main factory beans.</p>
    **/
-  private IFctAux fctConf;
+  private List<IFctAux<RS>> fctsAux = new ArrayList<IFctAux<RS>>();
 
     //cached services/parts:
   /**
    * <p>Logger.</p>
    **/
-  private ILog logStd;
+  private LogFile logStd;
 
   //requested beans map, it's filled by this and external factories,
   //it's for high performance:
@@ -320,10 +342,20 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazSqlEsc(pRqVs);
           } else if (IUtlXml.class.getSimpleName().equals(pBnNm)) {
             rz = lazUtlXml(pRqVs);
+          } else if (LOGSTDNM.equals(pBnNm)) {
+            rz = lazLogStd(pRqVs);
           } else if (IReflect.class.getSimpleName().equals(pBnNm)) {
             rz = lazReflect(pRqVs);
           } else {
-            rz = this.fctConf.crePut(pRqVs, pBnNm, this);
+            for (IFctAux<RS> fau : this.fctsAux) {
+              rz = fau.crePut(pRqVs, pBnNm, this);
+              if (rz != null) {
+                break;
+              }
+            }
+            if (rz == null) {
+              throw new ExcCode(ExcCode.WRPR, "There is no bean: " + pBnNm);
+            }
           }
         }
       }
@@ -353,12 +385,21 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Release beans (memory). This is "memory friendly" factory.</p>
+   * @param pRqVs request scoped vars
    * @throws Exception - an exception
    */
   @Override
-  public final synchronized void release() throws Exception {
+  public final synchronized void release(
+    final Map<String, Object> pRqVs) throws Exception {
     this.beans.clear();
-    this.fctConf.release();
+    for (IFctAux<RS> fau : this.fctsAux) {
+      fau.release(pRqVs, this);
+    }
+    if (this.logStd != null) {
+      this.logStd.info(pRqVs, getClass(), "Send stop to LOG STD...");
+      this.logStd.setNeedRun(false);
+      this.logStd = null;
+    }
   }
 
   //Request handlers:
@@ -368,7 +409,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HndI18nRq
    * @throws Exception - an exception
    */
-  private HndI18nRq<RS> lazHndI18nRq(
+  public final synchronized HndI18nRq<RS> lazHndI18nRq(
     final Map<String, Object> pRqVs) throws Exception {
     @SuppressWarnings("unchecked")
     HndI18nRq<RS> rz = (HndI18nRq<RS>) this.beans
@@ -394,7 +435,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return RpEntReadXmlDbCp
    * @throws Exception - an exception
    */
-  private RpEntReadXml lazRpEntReadXmlDbCp(
+  public final synchronized RpEntReadXml lazRpEntReadXmlDbCp(
     final Map<String, Object> pRqVs) throws Exception {
     RpEntReadXml rz = (RpEntReadXml) this.beans.get(ENRDDBCPNM);
     if (rz == null) {
@@ -417,7 +458,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return RpEntWriXmlDbCp
    * @throws Exception - an exception
    */
-  private RpEntWriXml lazRpEntWriXmlDbCp(
+  public final synchronized RpEntWriXml lazRpEntWriXmlDbCp(
     final Map<String, Object> pRqVs) throws Exception {
     RpEntWriXml rz = (RpEntWriXml) this.beans.get(ENWRDBCPNM);
     if (rz == null) {
@@ -440,7 +481,8 @@ public class FctBlc<RS> implements IFctApp {
    * @return Setng
    * @throws Exception - an exception
    */
-  private Setng lazStgDbCp(final Map<String, Object> pRqVs) throws Exception {
+  public final synchronized Setng lazStgDbCp(
+    final Map<String, Object> pRqVs) throws Exception {
     Setng rz = (Setng) this.beans.get(STGDBCPNM);
     if (rz == null) {
       rz = new Setng();
@@ -462,7 +504,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldNmFilFdSt
    * @throws Exception - an exception
    */
-  private HldNmFilFdSt lazHldNmFilFdStDbCp(
+  public final synchronized HldNmFilFdSt lazHldNmFilFdStDbCp(
     final Map<String, Object> pRqVs) throws Exception {
     HldNmFilFdSt rz = (HldNmFilFdSt) this.beans
       .get(HLFILFDNMDBCP);
@@ -485,7 +527,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldNmCnToStXml
    * @throws Exception - an exception
    */
-  private HldNmCnToStXml lazHldNmCnToStXml(
+  public final synchronized HldNmCnToStXml lazHldNmCnToStXml(
     final Map<String, Object> pRqVs) throws Exception {
     HldNmCnToStXml rz = (HldNmCnToStXml) this.beans
       .get(HldNmCnToStXml.class.getSimpleName());
@@ -507,7 +549,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldNmCnFrStXml
    * @throws Exception - an exception
    */
-  private HldNmCnFrStXml lazHldNmCnFrStXml(
+  public final synchronized HldNmCnFrStXml lazHldNmCnFrStXml(
     final Map<String, Object> pRqVs) throws Exception {
     HldNmCnFrStXml rz = (HldNmCnFrStXml) this.beans
       .get(HldNmCnFrStXml.class.getSimpleName());
@@ -528,7 +570,8 @@ public class FctBlc<RS> implements IFctApp {
    * @return Orm
    * @throws Exception - an exception
    */
-  private Orm<RS> lazOrm(final Map<String, Object> pRqVs) throws Exception {
+  public final synchronized Orm<RS> lazOrm(
+    final Map<String, Object> pRqVs) throws Exception {
     @SuppressWarnings("unchecked")
     Orm<RS> rz = (Orm<RS>) this.beans.get(IOrm.class.getSimpleName());
     if (rz == null) {
@@ -561,7 +604,8 @@ public class FctBlc<RS> implements IFctApp {
    * @return Setng ORM
    * @throws Exception - an exception
    */
-  private Setng lazStgOrm(final Map<String, Object> pRqVs) throws Exception {
+  public final synchronized Setng lazStgOrm(
+    final Map<String, Object> pRqVs) throws Exception {
     Setng rz = (Setng) this.beans.get(STGORMNM);
     if (rz == null) {
       rz = new Setng();
@@ -582,7 +626,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return SrvClVl
    * @throws Exception - an exception
    */
-  private SrvClVl lazSrvClVl(
+  public final synchronized SrvClVl lazSrvClVl(
     final Map<String, Object> pRqVs) throws Exception {
     SrvClVl rz = (SrvClVl) this.beans.get(SrvClVl.class.getSimpleName());
     if (rz == null) {
@@ -601,7 +645,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return SqlQu
    * @throws Exception - an exception
    */
-  private SqlQu lazSqlQu(
+  public final synchronized SqlQu lazSqlQu(
     final Map<String, Object> pRqVs) throws Exception {
     SqlQu rz = (SqlQu) this.beans.get(ISqlQu.class.getSimpleName());
     if (rz == null) {
@@ -623,7 +667,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return FilCvEnt
    * @throws Exception - an exception
    */
-  private FilCvEnt<IHasId<?>, ?> lazFilCvEnt(
+  public final synchronized FilCvEnt<IHasId<?>, ?> lazFilCvEnt(
     final Map<String, Object> pRqVs) throws Exception {
     @SuppressWarnings("unchecked")
     FilCvEnt<IHasId<?>, ?> rz = (FilCvEnt<IHasId<?>, ?>) this.beans
@@ -647,7 +691,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return FilEntRs
    * @throws Exception - an exception
    */
-  private FilEntRs<RS> lazFilEntRs(
+  public final synchronized FilEntRs<RS> lazFilEntRs(
     final Map<String, Object> pRqVs) throws Exception {
     FilEntRs<RS> rz = (FilEntRs<RS>) this.beans
       .get(FilEntRs.class.getSimpleName());
@@ -672,7 +716,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldCnvFdCv
    * @throws Exception - an exception
    */
-  private HldCnvFdCv lazHldCnvFdCv(
+  public final synchronized HldCnvFdCv lazHldCnvFdCv(
     final Map<String, Object> pRqVs) throws Exception {
     HldCnvFdCv rz = (HldCnvFdCv) this.beans
       .get(HldCnvFdCv.class.getSimpleName());
@@ -692,7 +736,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldNmFilFdRs
    * @throws Exception - an exception
    */
-  private HldNmFilFdRs lazHldNmFilFdRs(
+  public final synchronized HldNmFilFdRs lazHldNmFilFdRs(
     final Map<String, Object> pRqVs) throws Exception {
     HldNmFilFdRs rz = (HldNmFilFdRs) this.beans
       .get(HldNmFilFdRs.class.getSimpleName());
@@ -712,7 +756,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldFilFdCv
    * @throws Exception - an exception
    */
-  private HldFilFdCv lazHldFilFdCv(
+  public final synchronized HldFilFdCv lazHldFilFdCv(
     final Map<String, Object> pRqVs) throws Exception {
     HldFilFdCv rz = (HldFilFdCv) this.beans
       .get(HldFilFdCv.class.getSimpleName());
@@ -732,7 +776,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldNmCnFrRs
    * @throws Exception - an exception
    */
-  private HldNmCnFrRs lazHldNmCnFrRs(
+  public final synchronized HldNmCnFrRs lazHldNmCnFrRs(
     final Map<String, Object> pRqVs) throws Exception {
     HldNmCnFrRs rz = (HldNmCnFrRs) this.beans
       .get(HldNmCnFrRs.class.getSimpleName());
@@ -752,7 +796,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return FctCnvCv
    * @throws Exception - an exception
    */
-  private FctCnvCv lazFctCnvCv(
+  public final synchronized FctCnvCv lazFctCnvCv(
     final Map<String, Object> pRqVs) throws Exception {
     FctCnvCv rz = (FctCnvCv) this.beans
       .get(FctCnvCv.class.getSimpleName());
@@ -773,7 +817,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return FctNmCnFrRs
    * @throws Exception - an exception
    */
-  private FctNmCnFrRs<RS> lazFctNmCnFrRs(
+  public final synchronized FctNmCnFrRs<RS> lazFctNmCnFrRs(
     final Map<String, Object> pRqVs) throws Exception {
     @SuppressWarnings("unchecked")
     FctNmCnFrRs<RS> rz = (FctNmCnFrRs<RS>) this.beans
@@ -794,7 +838,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return FctFilFdCv
    * @throws Exception - an exception
    */
-  private FctFilFdCv lazFctFilFdCv(
+  public final synchronized FctFilFdCv lazFctFilFdCv(
     final Map<String, Object> pRqVs) throws Exception {
     FctFilFdCv rz = (FctFilFdCv) this.beans
       .get(FctFilFdCv.class.getSimpleName());
@@ -820,7 +864,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return FctNmFilFdRs
    * @throws Exception - an exception
    */
-  private FctNmFilFdRs<RS> lazFctNmFilFdRs(
+  public final synchronized FctNmFilFdRs<RS> lazFctNmFilFdRs(
     final Map<String, Object> pRqVs) throws Exception {
     @SuppressWarnings("unchecked")
     FctNmFilFdRs<RS> rz = (FctNmFilFdRs<RS>) this.beans
@@ -846,7 +890,8 @@ public class FctBlc<RS> implements IFctApp {
    * @return Setng
    * @throws Exception - an exception
    */
-  private Setng lazStgUvd(final Map<String, Object> pRqVs) throws Exception {
+  public final synchronized Setng lazStgUvd(
+    final Map<String, Object> pRqVs) throws Exception {
     Setng rz = (Setng) this.beans.get(STGUVDNM);
     if (rz == null) {
       rz = new Setng();
@@ -867,7 +912,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return FilEntRq
    * @throws Exception - an exception
    */
-  private FilEntRq lazFilEntRq(
+  public final synchronized FilEntRq lazFilEntRq(
     final Map<String, Object> pRqVs) throws Exception {
     FilEntRq rz = (FilEntRq) this.beans
       .get(FilEntRq.class.getSimpleName());
@@ -890,7 +935,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldNmFilFdSt
    * @throws Exception - an exception
    */
-  private HldNmFilFdSt lazHldNmFilFdStUvd(
+  public final synchronized HldNmFilFdSt lazHldNmFilFdStUvd(
     final Map<String, Object> pRqVs) throws Exception {
     HldNmFilFdSt rz = (HldNmFilFdSt) this.beans
       .get(HLFILFDNMUVD);
@@ -913,7 +958,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldNmCnFrSt
    * @throws Exception - an exception
    */
-  private HldNmCnFrSt lazHldNmCnFrSt(
+  public final synchronized HldNmCnFrSt lazHldNmCnFrSt(
     final Map<String, Object> pRqVs) throws Exception {
     HldNmCnFrSt rz = (HldNmCnFrSt) this.beans
       .get(HldNmCnFrSt.class.getSimpleName());
@@ -934,7 +979,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldNmCnToSt
    * @throws Exception - an exception
    */
-  private HldNmCnToSt lazHldNmCnToSt(
+  public final synchronized HldNmCnToSt lazHldNmCnToSt(
     final Map<String, Object> pRqVs) throws Exception {
     HldNmCnToSt rz = (HldNmCnToSt) this.beans
       .get(HldNmCnToSt.class.getSimpleName());
@@ -956,7 +1001,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return FctNmCnFrSt
    * @throws Exception - an exception
    */
-  private FctNmCnFrSt lazFctNmCnFrSt(
+  public final synchronized FctNmCnFrSt lazFctNmCnFrSt(
     final Map<String, Object> pRqVs) throws Exception {
     FctNmCnFrSt rz = (FctNmCnFrSt) this.beans
       .get(FctNmCnFrSt.class.getSimpleName());
@@ -977,7 +1022,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return FctNmFilFdSt
    * @throws Exception - an exception
    */
-  private FctNmFilFdSt lazFctNmFilFd(
+  public final synchronized FctNmFilFdSt lazFctNmFilFd(
     final Map<String, Object> pRqVs) throws Exception {
     FctNmFilFdSt rz = (FctNmFilFdSt) this.beans
       .get(FctNmFilFdSt.class.getSimpleName());
@@ -1006,7 +1051,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return FctNmCnToSt
    * @throws Exception - an exception
    */
-  private FctNmCnToSt lazFctNmCnToSt(
+  public final synchronized FctNmCnToSt lazFctNmCnToSt(
     final Map<String, Object> pRqVs) throws Exception {
     FctNmCnToSt rz = (FctNmCnToSt) this.beans
       .get(FctNmCnToSt.class.getSimpleName());
@@ -1033,7 +1078,8 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldSets
    * @throws Exception - an exception
    */
-  private HldSets lazHldSets(final Map<String, Object> pRqVs) throws Exception {
+  public final synchronized HldSets lazHldSets(
+    final Map<String, Object> pRqVs) throws Exception {
     HldSets rz = (HldSets) this.beans
       .get(HldSets.class.getSimpleName());
     if (rz == null) {
@@ -1052,7 +1098,8 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldGets
    * @throws Exception - an exception
    */
-  private HldGets lazHldGets(final Map<String, Object> pRqVs) throws Exception {
+  public final synchronized HldGets lazHldGets(
+    final Map<String, Object> pRqVs) throws Exception {
     HldGets rz = (HldGets) this.beans
       .get(HldGets.class.getSimpleName());
     if (rz == null) {
@@ -1071,7 +1118,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldFldCls
    * @throws Exception - an exception
    */
-  private HldFldCls lazHldFldCls(
+  public final synchronized HldFldCls lazHldFldCls(
     final Map<String, Object> pRqVs) throws Exception {
     HldFldCls rz = (HldFldCls) this.beans
       .get(HldFldCls.class.getSimpleName());
@@ -1091,7 +1138,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return FctFctEnt
    * @throws Exception - an exception
    */
-  private FctFctEnt lazFctFctEnt(
+  public final synchronized FctFctEnt lazFctFctEnt(
     final Map<String, Object> pRqVs) throws Exception {
     FctFctEnt rz = (FctFctEnt) this.beans.get(FctFctEnt.class.getSimpleName());
     if (rz == null) {
@@ -1109,7 +1156,8 @@ public class FctBlc<RS> implements IFctApp {
    * @return UtlPrp
    * @throws Exception - an exception
    */
-  private UtlPrp lazUtlPrp(final Map<String, Object> pRqVs) throws Exception {
+  public final synchronized UtlPrp lazUtlPrp(
+    final Map<String, Object> pRqVs) throws Exception {
     UtlPrp rz = (UtlPrp) this.beans.get(UtlPrp.class.getSimpleName());
     if (rz == null) {
       rz = new UtlPrp();
@@ -1126,7 +1174,8 @@ public class FctBlc<RS> implements IFctApp {
    * @return NumStr
    * @throws Exception - an exception
    */
-  private NumStr lazNumStr(final Map<String, Object> pRqVs) throws Exception {
+  public final synchronized NumStr lazNumStr(
+    final Map<String, Object> pRqVs) throws Exception {
     NumStr rz = (NumStr) this.beans.get(INumStr.class.getSimpleName());
     if (rz == null) {
       rz = new NumStr();
@@ -1143,7 +1192,8 @@ public class FctBlc<RS> implements IFctApp {
    * @return SqlEsc
    * @throws Exception - an exception
    */
-  private SqlEsc lazSqlEsc(final Map<String, Object> pRqVs) throws Exception {
+  public final synchronized SqlEsc lazSqlEsc(
+    final Map<String, Object> pRqVs) throws Exception {
     SqlEsc rz = (SqlEsc) this.beans.get(ISqlEsc.class.getSimpleName());
     if (rz == null) {
       rz = new SqlEsc();
@@ -1160,7 +1210,8 @@ public class FctBlc<RS> implements IFctApp {
    * @return UtlXml
    * @throws Exception - an exception
    */
-  private UtlXml lazUtlXml(final Map<String, Object> pRqVs) throws Exception {
+  public final synchronized UtlXml lazUtlXml(
+    final Map<String, Object> pRqVs) throws Exception {
     UtlXml rz = (UtlXml) this.beans.get(IUtlXml.class.getSimpleName());
     if (rz == null) {
       rz = new UtlXml();
@@ -1177,7 +1228,8 @@ public class FctBlc<RS> implements IFctApp {
    * @return Reflect
    * @throws Exception - an exception
    */
-  private Reflect lazReflect(final Map<String, Object> pRqVs) throws Exception {
+  public final synchronized Reflect lazReflect(
+    final Map<String, Object> pRqVs) throws Exception {
     Reflect rz = (Reflect) this.beans.get(IReflect.class.getSimpleName());
     if (rz == null) {
       rz = new Reflect();
@@ -1194,9 +1246,14 @@ public class FctBlc<RS> implements IFctApp {
    * @return Log
    * @throws Exception - an exception
    */
-  private ILog lazLogStd(final Map<String, Object> pRqVs) throws Exception {
+  public final synchronized LogFile lazLogStd(
+    final Map<String, Object> pRqVs) throws Exception {
     if (this.logStd == null) {
-      this.logStd = (ILog) this.fctConf.crePut(pRqVs, LOGSTDNM, this);
+      this.logStd = new LogFile();
+      this.logStd.setPath(this.logPth + File.separator + this.logStdNm);
+      this.logStd.setMaxSize(this.logSize);
+      this.beans.put(LOGSTDNM, this.logStd);
+      this.logStd.info(pRqVs, getClass(), LOGSTDNM + " has been created");
     }
     return this.logStd;
   }
@@ -1206,16 +1263,8 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for fctConf.</p>
    * @return IFctNm
    **/
-  public final synchronized IFctAux getFctConf() {
-    return this.fctConf;
-  }
-
-  /**
-   * <p>Setter for fctConf.</p>
-   * @param pFctConf reference
-   **/
-  public final synchronized void setFctConf(final IFctAux pFctConf) {
-    this.fctConf = pFctConf;
+  public final synchronized List<IFctAux<RS>> getFctsAux() {
+    return this.fctsAux;
   }
 
   /**
@@ -1488,5 +1537,69 @@ public class FctBlc<RS> implements IFctApp {
    **/
   public final void setWrReSpTr(final Boolean pWrReSpTr) {
     this.wrReSpTr = pWrReSpTr;
+  }
+
+  /**
+   * <p>Getter for logPth.</p>
+   * @return String
+   **/
+  public final String getLogPth() {
+    return this.logPth;
+  }
+
+  /**
+   * <p>Setter for logPth.</p>
+   * @param pLogPth reference
+   **/
+  public final void setLogPth(final String pLogPth) {
+    this.logPth = pLogPth;
+  }
+
+  /**
+   * <p>Getter for logSize.</p>
+   * @return size
+   **/
+  public final int getLogSize() {
+    return this.logSize;
+  }
+
+  /**
+   * <p>Setter for logSize.</p>
+   * @param pLogSize value
+   **/
+  public final void setLogSize(final int pLogSize) {
+    this.logSize = pLogSize;
+  }
+
+  /**
+   * <p>Getter for logStdNm.</p>
+   * @return String
+   **/
+  public final String getLogStdNm() {
+    return this.logStdNm;
+  }
+
+  /**
+   * <p>Setter for logStdNm.</p>
+   * @param pLogStdNm reference
+   **/
+  public final void setLogStdNm(final String pLogStdNm) {
+    this.logStdNm = pLogStdNm;
+  }
+
+  /**
+   * <p>Getter for appPth.</p>
+   * @return String
+   **/
+  public final String getAppPth() {
+    return this.appPth;
+  }
+
+  /**
+   * <p>Setter for appPth.</p>
+   * @param pAppPth reference
+   **/
+  public final void setAppPth(final String pAppPth) {
+    this.appPth = pAppPth;
   }
 }

@@ -79,7 +79,7 @@ public class CnvTest<RS> {
   private final DateFormat dateTimeNoTzFormatIso8601 =
     new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
-  private FctBlc<RS> fctApp;
+  private FctTst<RS> fctApp;
 
   private UsPrf upf;
 
@@ -89,19 +89,11 @@ public class CnvTest<RS> {
 
   private HndI18nRq hndI18nRq;
 
-  private ILog logStd;
-
   public CnvTest() throws Exception {
     this.rqVs = new HashMap<String, Object>();
-    this.fctApp = new FctBlc<RS>();
-    FctTst fctTst = new FctTst();
-    fctTst.setLogStdNm(CnvTest.class.getSimpleName());
-    this.fctApp.setStgUvdDir("uvd");
-    this.fctApp.setFctConf(fctTst);
-    this.logStd = (ILog) fctApp.laz(this.rqVs, FctBlc.LOGSTDNM);
-    this.logStd.setDbgSh(true);
-    this.logStd.setDbgFl(4001);
-    this.logStd.setDbgCl(7002);
+    this.fctApp = new FctTst<RS>();
+    this.fctApp.getFctBlc().setLogStdNm(CnvTest.class.getSimpleName());
+    this.fctApp.getFctBlc().setStgUvdDir("uvd");
     this.upf = new UsPrf();
     DcSp sp = new DcSp();
     sp.setIid(".");
@@ -123,7 +115,7 @@ public class CnvTest<RS> {
     FctNmCnToSt fctNmCnvStr = (FctNmCnToSt) this.fctApp.laz(this.rqVs, FctNmCnToSt.class.getSimpleName());
     Reflect reflect = (Reflect) this.fctApp.laz(this.rqVs, IReflect.class.getSimpleName());
     FilEntRq filEntRq = (FilEntRq) this.fctApp.laz(this.rqVs, FilEntRq.class.getSimpleName());
-    Setng stgUvd = (Setng) this.fctApp.laz(this.rqVs, this.fctApp.STGUVDNM);
+    Setng stgUvd = (Setng) this.fctApp.laz(this.rqVs, FctBlc.STGUVDNM);
     stgUvd.lazConf();
     //write:
     PersistableHead prsh = new PersistableHead();
@@ -145,7 +137,7 @@ public class CnvTest<RS> {
       Method gets = reflect.retGet(PersistableHead.class, fdNm);
       Object fdVl = gets.invoke(prsh);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
-      this.logStd.test(null, CnvTest.class, "Class/fieldId/value: PersistableHead/" + fdNm + "/" + fdSvl);
+      this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(null, CnvTest.class, "Class/fieldId/value: PersistableHead/" + fdNm + "/" + fdSvl);
       reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
     }
     for (String fdNm : stgUvd.lazFldNms(PersistableHead.class)) {
@@ -154,7 +146,7 @@ public class CnvTest<RS> {
       Method gets = reflect.retGet(PersistableHead.class, fdNm);
       Object fdVl = gets.invoke(prsh);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
-      this.logStd.test(null, CnvTest.class, "Class/field/value: PersistableHead/" + fdNm + "/" + fdSvl);
+      this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(null, CnvTest.class, "Class/field/value: PersistableHead/" + fdNm + "/" + fdSvl);
       reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
     }
     assertNull(stgUvd.getClsFs().get(PersistableHead.class));
@@ -180,7 +172,7 @@ public class CnvTest<RS> {
       Method gets = reflect.retGet(UsRlTmc.class, fdNm);
       Object fdVl = gets.invoke(usRlTmc);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
-      this.logStd.test(null, CnvTest.class, "Class/fieldId/value: UsRlTmc/" + fdNm + "/" + fdSvl);
+      this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(null, CnvTest.class, "Class/fieldId/value: UsRlTmc/" + fdNm + "/" + fdSvl);
       reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
     }
     for (String fdNm : stgUvd.lazFldNms(UsRlTmc.class)) {
@@ -189,7 +181,7 @@ public class CnvTest<RS> {
       Method gets = reflect.retGet(UsRlTmc.class, fdNm);
       Object fdVl = gets.invoke(usRlTmc);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
-      this.logStd.test(null, CnvTest.class, "Class/field/value: UsRlTmc/" + fdNm + "/" + fdSvl);
+      this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(null, CnvTest.class, "Class/field/value: UsRlTmc/" + fdNm + "/" + fdSvl);
       reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
     }
     //assertEquals("usr=adminu,rol=adminr", reqDt.getParam(parPref + "iid"));
@@ -227,7 +219,7 @@ public class CnvTest<RS> {
       Method gets = reflect.retGet(PersistableHead.class, fdNm);
       Object fdVl = gets.invoke(prsh);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
-      this.logStd.test(null, CnvTest.class, "Class/fieldId/value: PersistableHead/" + fdNm + "/" + fdSvl);
+      this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(null, CnvTest.class, "Class/fieldId/value: PersistableHead/" + fdNm + "/" + fdSvl);
       reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
     }
     for (String fdNm : stgUvd.lazFldNms(PersistableHead.class)) {
@@ -236,7 +228,7 @@ public class CnvTest<RS> {
       Method gets = reflect.retGet(PersistableHead.class, fdNm);
       Object fdVl = gets.invoke(prsh);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
-      this.logStd.test(null, CnvTest.class, "Class/field/value: PersistableHead/" + fdNm + "/" + fdSvl);
+      this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(null, CnvTest.class, "Class/field/value: PersistableHead/" + fdNm + "/" + fdSvl);
       reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
     }
     assertNull(stgUvd.getClsFs().get(PersistableHead.class));
@@ -280,7 +272,7 @@ public class CnvTest<RS> {
       Method gets = reflect.retGet(GoodsRating.class, fdNm);
       Object fdVl = gets.invoke(goodsRating);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
-      this.logStd.test(null, CnvTest.class, "Class/fieldId/value: GoodsRating/" + fdNm + "/" + fdSvl);
+      this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(null, CnvTest.class, "Class/fieldId/value: GoodsRating/" + fdNm + "/" + fdSvl);
       reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
     }
     for (String fdNm : stgUvd.lazFldNms(GoodsRating.class)) {
@@ -289,7 +281,7 @@ public class CnvTest<RS> {
       Method gets = reflect.retGet(GoodsRating.class, fdNm);
       Object fdVl = gets.invoke(goodsRating);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
-      this.logStd.test(null, CnvTest.class, "Class/field/value: GoodsRating/" + fdNm + "/" + fdSvl);
+      this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(null, CnvTest.class, "Class/field/value: GoodsRating/" + fdNm + "/" + fdSvl);
       reqDt.getParamsMp().put(parPref + fdNm, fdSvl);
     }
     assertEquals(gvt.getIid().toString(), reqDt.getParam(parPref + "goods"));
@@ -301,5 +293,6 @@ public class CnvTest<RS> {
     assertEquals(goodsRating.getIsNew(), goodsRatingf.getIsNew());
     assertEquals(goodsRating.getGoods().getIid(), goodsRatingf.getGoods().getIid());
     assertEquals(goodsRating.getAverageRating(), goodsRatingf.getAverageRating());
+    this.fctApp.release(this.rqVs);
   }
 }

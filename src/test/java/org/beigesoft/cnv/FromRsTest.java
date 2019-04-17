@@ -74,22 +74,16 @@ import org.beigesoft.srv.IReflect;
  */
 public class FromRsTest<RS> {
 
-  private FctBlc<RS> fctApp;
-
-  private ILog logStd;
+  private FctTst<RS> fctApp;
  
   private Map<String, Object> rqVs = new HashMap<String, Object>();
 
   public FromRsTest() throws Exception {
-    this.fctApp = new FctBlc<RS>();
-    FctTst fctTst = new FctTst();
-    fctTst.setLogStdNm(FromRsTest.class.getSimpleName());
-    this.fctApp.setStgOrmDir("sqlite");
-    this.fctApp.setFctConf(fctTst);
-    this.logStd = (ILog) fctApp.laz(this.rqVs, FctBlc.LOGSTDNM);
-    this.logStd.setDbgSh(true);
-    this.logStd.setDbgFl(4001);
-    this.logStd.setDbgCl(8002);
+    this.fctApp = new FctTst<RS>();
+    this.fctApp.getFctBlc().setLogStdNm(FromRsTest.class.getSimpleName());
+    this.fctApp.getFctBlc().setStgOrmDir("sqlite");
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgFl(4001);
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgCl(8002);
   }
 
   @Test
@@ -158,9 +152,9 @@ public class FromRsTest<RS> {
     PersistableLine plf = new PersistableLine();
     ISqlQu selct = (ISqlQu) this.fctApp.laz(this.rqVs, ISqlQu.class.getSimpleName());
     String sel = selct.evSel(this.rqVs, vs, pl.getClass()).toString();
-    this.logStd.test(this.rqVs, getClass(), sel);
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), sel);
     String cr = selct.evCreate(this.rqVs, pl.getClass());
-    this.logStd.test(this.rqVs, getClass(), cr);
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), cr);
     assertTrue(sel.contains("PERSISTABLELINE.VER as VER"));
     assertTrue(sel.contains("GDCAT2.NME as GDCAT2NME"));
     assertTrue(sel.contains("left join DEPARTMENT as DEP3 on GDCAT2.DEP=DEP3.IID"));
@@ -191,7 +185,7 @@ public class FromRsTest<RS> {
     vs.put("PersistableHeadndFds", ndFds);
     sel = selct.evSel(this.rqVs, vs, pl.getClass()).toString();
     assertTrue(sel.contains("OWNR1.ITSSTATUS as OWNR1ITSSTATUS"));
-    this.logStd.test(this.rqVs, getClass(), sel);
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), sel);
     rs.getData().put("OWNR1ITSSTATUS", pl.getOwnr().getItsStatus().ordinal());
     rs.getData().put("OWNR1ITSDATE", pl.getOwnr().getItsDate().getTime());
     rs.getData().put("OWNR1ISCLOSED", pl.getOwnr().getIsClosed() ? 1 : 0);
@@ -209,20 +203,21 @@ public class FromRsTest<RS> {
     assertEquals(pl.getOwnr().getIsClosed(), plf.getOwnr().getIsClosed());
     assertNull(plf.getOwnr().getVer());
     sel = selct.evSel(this.rqVs, vs, UsRlTmc.class).toString();
-    this.logStd.test(this.rqVs, getClass(), sel);
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), sel);
     cr = selct.evCreate(this.rqVs, UsRlTmc.class);
-    this.logStd.test(this.rqVs, getClass(), cr);
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), cr);
     sel = selct.evSel(this.rqVs, vs, UserRoleTomcatPriority.class).toString();
-    this.logStd.test(this.rqVs, getClass(), sel);
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), sel);
     cr = selct.evCreate(this.rqVs, UserRoleTomcatPriority.class);
-    this.logStd.test(this.rqVs, getClass(), cr);
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), cr);
     assertTrue(cr.contains("constraint urtpprioritygt0 check (PRIORITY>0)"));
-    Setng stgOrm = (Setng) this.fctApp.laz(this.rqVs, this.fctApp.STGORMNM);
+    Setng stgOrm = (Setng) this.fctApp.laz(this.rqVs, FctBlc.STGORMNM);
     String jdbcCls = stgOrm.lazCmnst().get(IOrm.JDBCCLS);
     assertEquals("org.sqlite.JDBC", jdbcCls);
     cr = selct.evCreate(this.rqVs, UsTmc.class);
-    this.logStd.test(this.rqVs, getClass(), cr);
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), cr);
     cr = selct.evCreate(this.rqVs, DbInf.class);
-    this.logStd.test(this.rqVs, getClass(), cr);
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), cr);
+    this.fctApp.release(this.rqVs);
   }
 }

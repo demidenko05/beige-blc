@@ -72,7 +72,7 @@ public class WriReXmlTest<RS> {
 
   String strXmlPersHead = "class=\"org.beigesoft.test.persistable.PersistableHead\" itsDate=\"1475156484845\" itsStatus=\"0\" isClosed=\"true\" itsTotal=\"523.66\" itsInteger=\"NULL\"/&gt;";
 
-  private FctBlc<RS> fctApp;
+  private FctTst<RS> fctApp;
 
   private Map<String, Object> rqVs;
 
@@ -80,23 +80,19 @@ public class WriReXmlTest<RS> {
 
   public WriReXmlTest() throws Exception {
     this.rqVs = new HashMap<String, Object>();
-    this.fctApp = new FctBlc<RS>();
-    FctTst fctTst = new FctTst();
-    fctTst.setLogStdNm(WriReXmlTest.class.getSimpleName());
-    this.fctApp.setStgDbCpDir("dbcp");
-    this.fctApp.setFctConf(fctTst);
-    this.logStd = (ILog) fctApp.laz(this.rqVs, FctBlc.LOGSTDNM);
-    this.logStd.setDbgSh(true);
-    this.logStd.setDbgFl(4001);
-    this.logStd.setDbgCl(7002);
+    this.fctApp = new FctTst<RS>();
+    this.fctApp.getFctBlc().setLogStdNm(WriReXmlTest.class.getSimpleName());
+    this.fctApp.getFctBlc().setStgDbCpDir("dbcp");
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgFl(4001);
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgCl(7002);
   }
 
   @Test
   public void tst1() throws Exception {
     //String:
     UtlXml utlXml = (UtlXml) this.fctApp.laz(this.rqVs, IUtlXml.class.getSimpleName());
-    this.logStd.test(this.rqVs, getClass(), this.strXmlDepartment + " ->:");
-    this.logStd.test(this.rqVs, getClass(), utlXml.unescStr(this.strXmlDepartment));
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), this.strXmlDepartment + " ->:");
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), utlXml.unescStr(this.strXmlDepartment));
     StringReader reader = new StringReader(this.strXmlDepartment);
     Map<String, String> attributesMap = utlXml.readAttrs(this.rqVs, reader);
     assertEquals("org.beigesoft.test.persistable.Department", attributesMap.get("class")); 
@@ -241,5 +237,6 @@ public class WriReXmlTest<RS> {
     assertEquals(goodsRating.getIsNew(), goodsRatingf.getIsNew());
     assertEquals(goodsRating.getGoods().getIid(), goodsRatingf.getGoods().getIid());
     assertEquals(goodsRating.getAverageRating(), goodsRatingf.getAverageRating());
+    this.fctApp.release(this.rqVs);
   }
 }

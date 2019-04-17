@@ -29,99 +29,77 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.fct;
 
 import java.util.Map;
-import java.util.HashMap;
 import java.io.File;
 
-import org.beigesoft.exc.ExcCode;
-import org.beigesoft.log.ILog;
-import org.beigesoft.log.LogFile;
-
 /**
- * <p>Tests final configuration auxiliary factory.</p>
+ * <p>Tests final configuration factory.</p>
  *
  * @author Yury Demidenko
  */
-public class FctTst implements IFctAux {
+public class FctTst<RS> implements IFctAsm<RS> {
 
-  //configuration data:
   /**
-   * <p>Standard log file name.</p>
+   * <p>Main only factory.</p>
    **/
-  private String logStdNm = "tst-blc";
-
-  //cached services/parts:
-  /**
-   * <p>Logger.</p>
-   **/
-  private ILog logStd;
+  private FctBlc<RS> fctBlc;
 
   /**
-   * <p>Creates requested bean and put into given main factory.
-   * The main factory is already synchronized when invokes this.</p>
+   * <p>Only constructor.</p>
+   */
+  public FctTst() {
+    this.fctBlc = new FctBlc<RS>();
+    String tstDir = System.getProperty("user.dir") + File.separator
+        + "target";
+    this.fctBlc.setLogPth(tstDir);
+    this.fctBlc.setDbgSh(true);
+    this.fctBlc.setDbgFl(0);
+    this.fctBlc.setDbgCl(100000);
+    this.fctBlc.getFctsAux().add(new FctAuxTst<RS>());
+  }
+
+  /**
+   * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
    * @param pRqVs request scoped vars
    * @param pBnNm - bean name
-   * @param pFctApp main factory
-   * @return Object - requested bean
-   * @throws Exception - an exception, e.g. if bean name not found
-   */
-  @Override
-  public final Object crePut(final Map<String, Object> pRqVs,
-    final String pBnNm, final IFctApp pFctApp) throws Exception {
-    Object rz = null;
-    if (FctBlc.LOGSTDNM.equals(pBnNm)) {
-      rz = lazLogStd(pRqVs, pFctApp);
-    //} else {
-      //throw new ExcCode(ExcCode.WRPR, "There is no bean: " + pBnNm);
-    }
-    return rz;
-  }
-
-  /**
-   * <p>Releases state when main factory is releasing.</p>
+   * @return Object - requested bean or exception if not found
    * @throws Exception - an exception
    */
   @Override
-  public final void release() throws Exception {
-    this.logStd = null;
+  public final Object laz(final Map<String, Object> pRqVs,
+    final String pBnNm) throws Exception {
+    return this.fctBlc.laz(pRqVs, pBnNm);
   }
 
   /**
-   * <p>Lazy getter standard logger.</p>
+   * <p>Releases memory.</p>
    * @param pRqVs request scoped vars
-   * @param pFctApp main factory
-   * @return Logger
    * @throws Exception - an exception
    */
-  private ILog lazLogStd(final Map<String, Object> pRqVs,
-    final IFctApp pFctApp) throws Exception {
-    if (this.logStd == null) {
-      LogFile log = new LogFile();
-      String currDir = System.getProperty("user.dir") + File.separator
-        + "target" + File.separator;
-      log.setPath(currDir + this.logStdNm);
-      log.setClsImm(true);
-      this.logStd = log;
-      pFctApp.put(pRqVs, FctBlc.LOGSTDNM, this.logStd);
-      this.logStd.info(pRqVs, getClass(), FctBlc.LOGSTDNM
-        + " has been created");
-    }
-    return this.logStd;
+  @Override
+  public final void release(final Map<String, Object> pRqVs) throws Exception {
+    this.fctBlc.release(pRqVs);
   }
 
-  //Simple getters and setters:
+
   /**
-   * <p>Getter for logStdNm.</p>
-   * @return String
+   * <p>Puts beans by external AUX factory.</p>
+   * @param pRqVs request scoped vars
+   * @param pBnNm - bean name
+   * @param pBean - bean
+   * @throws Exception - an exception, e.g. if bean exists
    **/
-  public final String getLogStdNm() {
-    return this.logStdNm;
+  @Override
+  public final void put(final Map<String, Object> pRqVs,
+    final String pBnNm, final Object pBean) throws Exception {
+    this.fctBlc.put(pRqVs, pBnNm, pBean);
   }
 
   /**
-   * <p>Setter for logStdNm.</p>
-   * @param pLogStdNm reference
-   **/
-  public final void setLogStdNm(final String pLogStdNm) {
-    this.logStdNm = pLogStdNm;
+   * <p>Gets main factory for setting configuration parameters.</p>
+   * @return Object - requested bean
+   */
+  @Override
+  public final FctBlc<RS> getFctBlc() {
+    return this.fctBlc;
   }
 }
