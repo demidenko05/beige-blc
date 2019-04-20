@@ -33,7 +33,7 @@ package org.beigesoft.mdlp;
  *
  * @author Yury Demidenko
  */
-public class DcSp extends AI18nFtr {
+public class DcSp extends AIdStrNm {
 
   /**
    * <p>Space ID.</p>

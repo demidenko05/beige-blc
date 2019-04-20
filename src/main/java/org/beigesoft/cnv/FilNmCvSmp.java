@@ -82,6 +82,7 @@ public class FilNmCvSmp<S> implements IFilNm<S, ColVals> {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7022 && this.log.getDbgCl() > 7020;
     String cnvFdNm = this.hldCnvFdNms.get(pEnt.getClass(), pFdNm);
+    @SuppressWarnings("unchecked")
     IConvNmInto<Object, ColVals> cnvFl = (IConvNmInto<Object, ColVals>)
       this.fctCnvFld.laz(pRqVs, cnvFdNm);
     Method getter = this.hldGets.get(pEnt.getClass(), pFdNm);

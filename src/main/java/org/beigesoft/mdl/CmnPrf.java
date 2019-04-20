@@ -76,6 +76,16 @@ public class CmnPrf  {
    **/
   private Lng lngDef;
 
+  /**
+   * <p>Page size.</p>
+   **/
+  private Integer pgSz = 50;
+
+  /**
+   * <p>Page tile.</p>
+   **/
+  private Integer pgTl = 3;
+
   //User preferences:
   /**
    * <p>Preferred/current locale.</p>
@@ -209,5 +219,37 @@ public class CmnPrf  {
    **/
   public final void setUsLoc(final Locale pUsLoc) {
     this.usLoc = pUsLoc;
+  }
+
+  /**
+   * <p>Getter for pgSz.</p>
+   * @return Integer
+   **/
+  public final Integer getPgSz() {
+    return this.pgSz;
+  }
+
+  /**
+   * <p>Setter for pgSz.</p>
+   * @param pPgSz reference
+   **/
+  public final void setPgSz(final Integer pPgSz) {
+    this.pgSz = pPgSz;
+  }
+
+  /**
+   * <p>Getter for pgTl.</p>
+   * @return Integer
+   **/
+  public final Integer getPgTl() {
+    return this.pgTl;
+  }
+
+  /**
+   * <p>Setter for pgTl.</p>
+   * @param pPgTl reference
+   **/
+  public final void setPgTl(final Integer pPgTl) {
+    this.pgTl = pPgTl;
   }
 }

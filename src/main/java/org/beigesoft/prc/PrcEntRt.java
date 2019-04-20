@@ -29,7 +29,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.prc;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,8 +38,8 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IOwned;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.hld.IHld;
+import org.beigesoft.hld.HldUvd;
 import org.beigesoft.cnv.ICnvId;
-import org.beigesoft.prp.ISetng;
 import org.beigesoft.rdb.IOrm;
 
 /**
@@ -58,11 +57,6 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
   private IOrm orm;
 
   /**
-   * <p>Settings service.</p>
-   **/
-  private ISetng setng;
-
-  /**
    * <p>Holder of converters ID-SQL/HTML names.</p>
    **/
   private IHld<Class<?>, String> hldCnvId;
@@ -73,10 +67,9 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
   private IFctNm<ICnvId<T, ID>> fctCnvId;
 
   /**
-   * <p>Owned entities map.</p>
-   **/
-  private final Map<Class<?>, List<Class<IOwned<T, ?>>>> owdEnts =
-    new HashMap<Class<?>, List<Class<IOwned<T, ?>>>>();
+   * <p>Holder transformed UVD settings.</p>
+   */
+  private HldUvd<T> hldUvd;
 
   /**
    * <p>Process that retrieves entity from DB.</p>
@@ -94,33 +87,9 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
     this.orm.refrEnt(pRvs, vs, pEnt);
     pEnt.setIsNew(false);
     pRqDt.setAttr("ent",  pEnt);
-    if (!this.owdEnts.keySet().contains(pEnt.getClass())) {
-      synchronized (this) {
-        if (!this.owdEnts.keySet().contains(pEnt.getClass())) {
-          String owdes = null;
-          synchronized (this.setng) {
-            owdes = this.setng.lazClsStg(pEnt.getClass(), "owdEnts");
-            if (owdes != null) {
-              this.setng.getClsStgs().get(pEnt.getClass()).remove("owdEnts");
-            }
-          }
-          if (owdes != null) {
-            List<Class<IOwned<T, ?>>> oeLst =
-              new ArrayList<Class<IOwned<T, ?>>>();
-            for (String oec : owdes.split(",")) {
-              @SuppressWarnings("unchecked")
-              Class<IOwned<T, ?>> cl = (Class<IOwned<T, ?>>)
-                Class.forName(oec);
-              oeLst.add(cl);
-            }
-            this.owdEnts.put(pEnt.getClass(), oeLst);
-          } else {
-            this.owdEnts.put(pEnt.getClass(), null);
-          }
-        }
-      }
-    }
-    List<Class<IOwned<T, ?>>> oeLst = this.owdEnts.get(pEnt.getClass());
+    @SuppressWarnings("unchecked")
+    List<Class<IOwned<T, ?>>> oeLst = this.hldUvd
+      .lazOwnd((Class<T>) pEnt.getClass());
     if (oeLst != null) {
       Map<Class<IOwned<T, ?>>, List<IOwned<T, ?>>> owdEntsMp =
         new LinkedHashMap<Class<IOwned<T, ?>>, List<IOwned<T, ?>>>();
@@ -140,23 +109,6 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
       pRqDt.setAttr("owdEntsMp",  owdEntsMp);
     }
     return pEnt;
-  }
-
-  //Synchronized SGS:
-  /**
-   * <p>Getter for setng.</p>
-   * @return ISetng
-   **/
-  public final synchronized ISetng getSetng() {
-    return this.setng;
-  }
-
-  /**
-   * <p>Setter for setng.</p>
-   * @param pSetng reference
-   **/
-  public final synchronized void setSetng(final ISetng pSetng) {
-    this.setng = pSetng;
   }
 
   //Simple getters and setters:
@@ -206,5 +158,21 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
    **/
   public final void setFctCnvId(final IFctNm<ICnvId<T, ID>> pFctCnvId) {
     this.fctCnvId = pFctCnvId;
+  }
+
+  /**
+   * <p>Getter for hldUvd.</p>
+   * @return HldUvd<T>
+   **/
+  public final HldUvd<T> getHldUvd() {
+    return this.hldUvd;
+  }
+
+  /**
+   * <p>Setter for hldUvd.</p>
+   * @param pHldUvd reference
+   **/
+  public final void setHldUvd(final HldUvd<T> pHldUvd) {
+    this.hldUvd = pHldUvd;
   }
 }

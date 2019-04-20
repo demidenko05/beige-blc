@@ -384,6 +384,7 @@ public class SqlQu implements ISqlQu {
             + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
       }
       String tbAl = pFdNm.toUpperCase() + lvDeps.get(0).getCur();
+      @SuppressWarnings("unchecked")
       List<String> tbAls = (List<String>) pVs.get("tbAls");
       tbAls.add(tbAl);
       String owEnNm;

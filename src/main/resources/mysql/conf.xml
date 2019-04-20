@@ -10,7 +10,21 @@ See LICENSE in base folder
 <entry key="clss">org.beigesoft.mdlp.DbInf,
   org.beigesoft.mdlp.UsTmc,
   org.beigesoft.mdlp.UsRlTmc,
-  org.beigesoft.mdlp.Lng</entry>
+  org.beigesoft.mdlp.Lng,
+  org.beigesoft.mdlp.Cntr,
+  org.beigesoft.mdlp.DcSp,
+  org.beigesoft.mdlp.DcGrSp,
+  org.beigesoft.mdlp.UsPrf,
+  org.beigesoft.mdlp.MaFrn,
+  org.beigesoft.mdlp.MaFrnLn,
+  org.beigesoft.mdlp.CsvMth,
+  org.beigesoft.mdlp.CsvCl,
+  org.beigesoft.mdlp.EmCon,
+  org.beigesoft.mdlp.EmInt,
+  org.beigesoft.mdlp.EmStr,
+  org.beigesoft.mdlp.EmMsg,
+  org.beigesoft.mdlp.EmRcp,
+  org.beigesoft.mdlp.EmAtch</entry>
 <entry key="stgClsNms">exlFlds,idFlds,vrAlg,cnstr</entry>
 <entry key="stgFldNms">def,nul</entry>
 <entry key="exlFlds">isNew</entry>

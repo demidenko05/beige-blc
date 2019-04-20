@@ -34,17 +34,20 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Arrays;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.Page;
+import org.beigesoft.mdl.CmnPrf;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.dlg.IEvalFr;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.IConv;
 import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.HldUvd;
 import org.beigesoft.rdb.IOrm;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.rdb.ISqlQu;
@@ -101,6 +104,11 @@ public class HlpEntPg<RS> {
   private ISetng setng;
 
   /**
+   * <p>Holder transformed UVD settings, other holders and vars.</p>
+   */
+  private HldUvd<IHasId<?>> hldUvd;
+
+  /**
    * <p>Fields converters factory.</p>
    **/
   private IFctNm<IConv<?, String>> fctCnvFd;
@@ -131,20 +139,20 @@ public class HlpEntPg<RS> {
     final Map<String, Class<IHasId<?>>> pEntMp, final boolean pDbgSh,
       final IEvalFr<IReqDt, String> pMkFlt) throws Exception {
     Map<String, Object> vs = new HashMap<String, Object>();
-    String nmEnt;
-    if (pRvs.get("nmEntOw") != null) {
+    String ent;
+    if (pRvs.get("entOw") != null) {
       // owned entity put it to refresh owner list
-      nmEnt = (String) pRvs.get("nmEntOw");
+      ent = (String) pRvs.get("entOw");
       if (pDbgSh) {
-        this.log.debug(pRvs, getClass(), "It's used nmEntOw: " + nmEnt);
+        this.log.debug(pRvs, getClass(), "It's used entOw: " + ent);
       }
     } else {
-      nmEnt = pRqd.getParam("nmEnt");
+      ent = pRqd.getParam("ent");
       if (pDbgSh) {
-        this.log.debug(pRvs, getClass(), "It's used nmEnt: " + nmEnt);
+        this.log.debug(pRvs, getClass(), "It's used ent: " + ent);
       }
     }
-    Class<IHasId<?>> cls = pEntMp.get(nmEnt);
+    Class<IHasId<?>> cls = pEntMp.get(ent);
     Set<String> fltAp = null;
     if (pRqd.getParam("flyNeedFltAppear") != null) {
       fltAp = new HashSet<String>();
@@ -158,10 +166,10 @@ public class HlpEntPg<RS> {
     Map<String, String> ordMp = new HashMap<String, String>();
     String quOrdBy = "";
     String flOrPrf;
-    String nmRnd = pRqd.getParam("nmRnd");
-    if (nmRnd.contains("pickerDub")) {
+    String rnd = pRqd.getParam("rnd");
+    if (rnd.contains("pickerDub")) {
       flOrPrf = "fltordPD";
-    } else if (nmRnd.contains("picker")) {
+    } else if (rnd.contains("picker")) {
       flOrPrf = "fltordP";
     } else {
       flOrPrf = "fltordM";
@@ -181,7 +189,7 @@ public class HlpEntPg<RS> {
         desc = " desc";
         ordMp.put(flOrPrf + "orderByDesc", "on");
       }
-      quOrdBy = " order by " + nmEnt.toUpperCase() + "."
+      quOrdBy = " order by " + ent.toUpperCase() + "."
         + ordBy.toUpperCase() + desc;
     } else {
       ordMp.put(flOrPrf + "ordBy", this.setng.lazClsStg(cls, "ordDf"));
@@ -191,7 +199,7 @@ public class HlpEntPg<RS> {
         ordMp.put(flOrPrf + "orderByDesc", orderByDesc);
         ordDescSt = " desc";
       }
-      quOrdBy = " order by " + nmEnt.toUpperCase() + "."
+      quOrdBy = " order by " + ent.toUpperCase() + "."
         + ordMp.get(flOrPrf + "ordBy").toUpperCase() + ordDescSt;
     }
     if (pDbgSh) {
@@ -230,13 +238,18 @@ public class HlpEntPg<RS> {
       roCnt = this.orm.evRowCnt(pRvs, vs, cls);
     }
     Integer pg = Integer.valueOf(pRqd.getParam("pg"));
-    Integer pgSz = Integer.valueOf(setng.lazCmnst().get("pgSz"));
+    CmnPrf cpf = (CmnPrf) pRvs.get("cpf");
+    Integer pgSz = cpf.getPgSz();
     int pgCnt = srvPg.evPgCnt(roCnt, pgSz);
     if (pg > pgCnt) {
       pg = pgCnt;
     }
     int fstRz = (pg - 1) * pgSz; //0-20,20-40
-    List ents;
+    List<IHasId<?>> ents;
+    String[] lstFds = this.hldUvd.lazLstFds(cls);
+    String[] ndFds = Arrays.copyOf(lstFds, lstFds.length);
+    Arrays.sort(ndFds);
+    vs.put(cls.getSimpleName() + "ndFds", ndFds);
     if (strWhe != null || quOrdBy.length() > 0) {
       if (strWhe != null) {
         ents = this.orm.retPgCnd(pRvs, vs, cls, "where " + strWhe + quOrdBy,
@@ -247,17 +260,13 @@ public class HlpEntPg<RS> {
     } else {
       ents = this.orm.retPg(pRvs, vs, cls, fstRz, pgSz);
     }
-    Integer pgTl = Integer.valueOf(setng.lazCmnst().get("pgTl"));
+    vs.remove(cls.getSimpleName() + "ndFds", ndFds);
+    Integer pgTl = cpf.getPgTl();
     List<Page> pgs = srvPg.evPgs(pg, pgCnt, pgTl);
-    pRqd.setAttr("roCnt", roCnt);
-    pRqd.setAttr("pgs", pgs);
-    pRqd.setAttr("ordMp", ordMp);
-    pRqd.setAttr("ents", ents);
-    pRqd.setAttr("cls", cls);
-    pRqd.setAttr("stgUvd", this.setng);
-    pRqd.setAttr("orm", this.orm);
-    pRqd.setAttr("hldNmCnFd", this.hldNmCnFd);
-    pRqd.setAttr("fctCnvFd", this.fctCnvFd);
+    this.hldUvd.setPgs(pgs);
+    this.hldUvd.setEnts(ents);
+    this.hldUvd.setLstFds(lstFds);
+    this.hldUvd.setCls(cls);
     if (fltAp != null) {
       pRqd.setAttr("fltAp", fltAp);
     }
@@ -276,10 +285,11 @@ public class HlpEntPg<RS> {
     final IReqDt pRqd, final Class<?> pCls,
       final boolean pDbgSh) throws Exception {
     // it is not null if need to client e.g. for bulk operations
+    @SuppressWarnings("unchecked")
     Set<String> fltAp = (Set<String>) pRvs.get("fltAp");
     StringBuffer sbWhe = new StringBuffer("");
     Map<String, Object> fltMp = new HashMap<String, Object>();
-    String nmEnt = pCls.getSimpleName();
+    String ent = pCls.getSimpleName();
     for (String fdNm : this.setng.lazFldNms(pCls)) {
       String wFl = this.setng.lazFldStg(pCls, fdNm, "wFl");
       if (pDbgSh) {
@@ -287,12 +297,12 @@ public class HlpEntPg<RS> {
       }
       if (wFl != null) {
         if ("fEnt".equals(wFl)) {
-          mkWheEnt(sbWhe, pRqd, nmEnt, fdNm, fltMp, fltAp);
+          mkWheEnt(sbWhe, pRqd, ent, fdNm, fltMp, fltAp);
         } else if ("flSt".equals(wFl)) {
-          mkWheStr(sbWhe, pRqd, nmEnt, fdNm, fltMp, fltAp);
+          mkWheStr(sbWhe, pRqd, ent, fdNm, fltMp, fltAp);
         } else if (wFl.startsWith("filterDate")) {
-          mkWheDtTm(sbWhe, pRqd, nmEnt, fdNm, "1", fltMp, fltAp);
-          mkWheDtTm(sbWhe, pRqd, nmEnt, fdNm, "2", fltMp, fltAp);
+          mkWheDtTm(sbWhe, pRqd, ent, fdNm, "1", fltMp, fltAp);
+          mkWheDtTm(sbWhe, pRqd, ent, fdNm, "2", fltMp, fltAp);
         } else if ("filterEnum".equals(wFl)) {
           mkWheEnm(sbWhe, pRqd, pCls, fdNm, fltMp, fltAp);
         } else if ("filterBoolean".equals(wFl)) {
@@ -300,8 +310,8 @@ public class HlpEntPg<RS> {
         } else if (wFl.startsWith("explFlt")) {
           mkWheExcpl(sbWhe, pRqd, pCls, fdNm, fltMp, fltAp);
         } else {
-          mkWheStd(sbWhe, pRqd, nmEnt, fdNm, "1", fltMp, fltAp);
-          mkWheStd(sbWhe, pRqd, nmEnt, fdNm, "2", fltMp, fltAp);
+          mkWheStd(sbWhe, pRqd, ent, fdNm, "1", fltMp, fltAp);
+          mkWheStd(sbWhe, pRqd, ent, fdNm, "2", fltMp, fltAp);
         }
       }
     }
@@ -323,11 +333,11 @@ public class HlpEntPg<RS> {
   public final void mkWheStr(final StringBuffer pSbw, final IReqDt pRqd,
     final String pEntNm, final String pFdNm, final Map<String, Object> pFltMp,
       final Set<String> pFltAp) throws Exception {
-    String nmRnd = pRqd.getParam("nmRnd");
+    String rnd = pRqd.getParam("rnd");
     String flOrPrf;
-    if (nmRnd != null && nmRnd.contains("pickerDub")) {
+    if (rnd != null && rnd.contains("pickerDub")) {
       flOrPrf = "fltordPD";
-    } else if (nmRnd != null && nmRnd.contains("picker")) {
+    } else if (rnd != null && rnd.contains("picker")) {
       flOrPrf = "fltordP";
     } else {
       flOrPrf = "fltordM";
@@ -384,11 +394,11 @@ public class HlpEntPg<RS> {
     final String pEntNm, final String pFdNm, final String pParSuffix,
       final Map<String, Object> pFltMp,
         final Set<String> pFltAp) throws Exception {
-    String nmRnd = pRqd.getParam("nmRnd");
+    String rnd = pRqd.getParam("rnd");
     String flOrPrf;
-    if (nmRnd != null && nmRnd.contains("pickerDub")) {
+    if (rnd != null && rnd.contains("pickerDub")) {
       flOrPrf = "fltordPD";
-    } else if (nmRnd != null && nmRnd.contains("picker")) {
+    } else if (rnd != null && rnd.contains("picker")) {
       flOrPrf = "fltordP";
     } else {
       flOrPrf = "fltordM";
@@ -446,11 +456,11 @@ public class HlpEntPg<RS> {
     final String pEntNm, final String pFdNm, final String pParSuffix,
       final Map<String, Object> pFltMp,
         final Set<String> pFltAp) throws Exception {
-    String nmRnd = pRqd.getParam("nmRnd");
+    String rnd = pRqd.getParam("rnd");
     String flOrPrf;
-    if (nmRnd != null && nmRnd.contains("pickerDub")) {
+    if (rnd != null && rnd.contains("pickerDub")) {
       flOrPrf = "fltordPD";
-    } else if (nmRnd != null && nmRnd.contains("picker")) {
+    } else if (rnd != null && rnd.contains("picker")) {
       flOrPrf = "fltordP";
     } else {
       flOrPrf = "fltordM";
@@ -551,11 +561,11 @@ public class HlpEntPg<RS> {
   public final void mkWheEnt(final StringBuffer pSbw, final IReqDt pRqd,
     final String pEntNm, final String pFdNm, final Map<String, Object> pFltMp,
       final Set<String> pFltAp) throws Exception {
-    String nmRnd = pRqd.getParam("nmRnd");
+    String rnd = pRqd.getParam("rnd");
     String flOrPrf;
-    if (nmRnd.contains("pickerDub")) {
+    if (rnd.contains("pickerDub")) {
       flOrPrf = "fltordPD";
-    } else if (nmRnd.contains("picker")) {
+    } else if (rnd.contains("picker")) {
       flOrPrf = "fltordP";
     } else {
       flOrPrf = "fltordM";
@@ -631,11 +641,11 @@ public class HlpEntPg<RS> {
   public final void mkWheEnm(final StringBuffer pSbw, final IReqDt pRqd,
     final Class<?> pCls, final String pFdNm, final Map<String, Object> pFltMp,
       final Set<String> pFltAp) throws Exception {
-    String nmRnd = pRqd.getParam("nmRnd");
+    String rnd = pRqd.getParam("rnd");
     String flOrPrf;
-    if (nmRnd.contains("pickerDub")) {
+    if (rnd.contains("pickerDub")) {
       flOrPrf = "fltordPD";
-    } else if (nmRnd.contains("picker")) {
+    } else if (rnd.contains("picker")) {
       flOrPrf = "fltordP";
     } else {
       flOrPrf = "fltordM";
@@ -653,7 +663,8 @@ public class HlpEntPg<RS> {
       && !fltOp.equals("disabled") && !fltOp.equals("")) {
       String val;
       String valAppear;
-      Class classEnum = this.hldFdCls.get(pCls, pFdNm);
+     @SuppressWarnings("unchecked")
+     Class<Enum<?>> classEnum = (Class<Enum<?>>) this.hldFdCls.get(pCls, pFdNm);
       if (fltOp.equals("in")) {
         StringBuffer sbVal = new StringBuffer("(");
         StringBuffer sbValAppear = new StringBuffer("(");
@@ -665,16 +676,16 @@ public class HlpEntPg<RS> {
             sbVal.append(", ");
             sbValAppear.append(", ");
           }
-          Enum enVal = Enum.valueOf(classEnum, vl);
-          sbVal.append(String.valueOf(enVal.ordinal()));
-          sbValAppear.append(getI18n().getMsg(vl));
+          Enum enVal = classEnum.getEnumConstants()[Integer.parseInt(vl)];
+          sbVal.append(vl);
+          sbValAppear.append(getI18n().getMsg(enVal.name()));
         }
         val = sbVal.toString() + ")";
         valAppear = sbValAppear.toString() + ")";
       } else {
-        Enum enVal = Enum.valueOf(classEnum, fltVal);
-        val = String.valueOf(enVal.ordinal());
-        valAppear = getI18n().getMsg(fltVal);
+        Enum enVal = classEnum.getEnumConstants()[Integer.parseInt(fltVal)];
+        val = fltVal;
+        valAppear = getI18n().getMsg(enVal.name());
       }
       pFltMp.put(flOrPrf + pFdNm + "ValAppearance", valAppear);
       pFltMp.put(nmFldVal, fltVal);
@@ -722,11 +733,11 @@ public class HlpEntPg<RS> {
   public final void mkWheExcpl(final StringBuffer pSbw, final IReqDt pRqd,
     final Class<?> pCls, final String pFdNm, final Map<String, Object> pFltMp,
       final Set<String> pFltAp) throws Exception {
-    String nmRnd = pRqd.getParam("nmRnd");
+    String rnd = pRqd.getParam("rnd");
     String flOrPrf;
-    if (nmRnd.contains("pickerDub")) {
+    if (rnd.contains("pickerDub")) {
       flOrPrf = "fltordPD";
-    } else if (nmRnd.contains("picker")) {
+    } else if (rnd.contains("picker")) {
       flOrPrf = "fltordP";
     } else {
       flOrPrf = "fltordM";
@@ -775,11 +786,11 @@ public class HlpEntPg<RS> {
   public final void mkWheBln(final StringBuffer pSbw, final IReqDt pRqd,
     final Class<?> pCls, final String pFdNm, final Map<String, Object> pFltMp,
       final Set<String> pFltAp) throws Exception {
-    String nmRnd = pRqd.getParam("nmRnd");
+    String rnd = pRqd.getParam("rnd");
     String flOrPrf;
-    if (nmRnd.contains("pickerDub")) {
+    if (rnd.contains("pickerDub")) {
       flOrPrf = "fltordPD";
-    } else if (nmRnd.contains("picker")) {
+    } else if (rnd.contains("picker")) {
       flOrPrf = "fltordP";
     } else {
       flOrPrf = "fltordM";
@@ -990,5 +1001,21 @@ public class HlpEntPg<RS> {
    **/
   public final void setSqlQu(final ISqlQu pSqlQu) {
     this.sqlQu = pSqlQu;
+  }
+
+  /**
+   * <p>Getter for hldUvd.</p>
+   * @return HldUvd<IHasId<?>>
+   **/
+  public final HldUvd<IHasId<?>> getHldUvd() {
+    return this.hldUvd;
+  }
+
+  /**
+   * <p>Setter for hldUvd.</p>
+   * @param pHldUvd reference
+   **/
+  public final void setHldUvd(final HldUvd<IHasId<?>> pHldUvd) {
+    this.hldUvd = pHldUvd;
   }
 }

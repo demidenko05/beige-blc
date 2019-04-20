@@ -116,6 +116,7 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
           + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
     }
     String tbAl = pFlNm.toUpperCase() + lvDeps.get(0).getCur();
+    @SuppressWarnings("unchecked")
     List<String> tbAls = (List<String>) pVs.get("tbAls");
     tbAls.add(tbAl);
     if (isDbgSh) {

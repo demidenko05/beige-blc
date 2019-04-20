@@ -8,7 +8,6 @@ See LICENSE in base folder
 <properties>
 <comment>Beigesoft ORM common settings</comment>
 <entry key="appInf">Beige-BLC ver1.0</entry>
-<entry key="jdbcCls">com.mysql.jdbc.Driver</entry>
 <entry key="dbUrl">jdbc:mysql://localhost/beigeacc</entry>
 <entry key="dsCls">com.mysql.jdbc.jdbc2.optional.MysqlDataSource</entry>
 <entry key="dbUsr">beigeaccounting</entry>

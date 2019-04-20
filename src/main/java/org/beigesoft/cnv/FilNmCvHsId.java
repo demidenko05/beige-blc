@@ -105,6 +105,7 @@ public class FilNmCvHsId implements IFilNm<IHasId<?>, ColVals> {
         val = null;
       }
       String cnvFdNm = this.hldCnvFdNms.get(ifdCls, fdNm);
+      @SuppressWarnings("unchecked")
       IConvNmInto<Object, ColVals> cnvFl = (IConvNmInto<Object, ColVals>)
         this.fctCnvFld.laz(pRqVs, cnvFdNm);
       if (isDbgSh) {

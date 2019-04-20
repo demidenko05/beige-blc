@@ -33,6 +33,6 @@ package org.beigesoft.mdlp;
  *
  * @author Yury Demidenko
  */
-public class Lng extends AI18nFtr {
+public class Lng extends AIdStrNm {
 
 }

@@ -1,0 +1,10 @@
+insert into LNG (IID, NME, VER) values ('ru', 'Русский', 1462867931627);
+insert into LNG (IID, NME, VER) values ('en', 'English', 1462867931627);
+insert into CNTR (IID, NME, VER) values ('US', 'USA', 1462867931627);
+insert into CNTR (IID, NME, VER) values ('RU', 'РФ', 1462867931627);
+insert into DCSP (IID, NME, VER) values (',', 'comma', 1462867931627);
+insert into DCSP (IID, NME, VER) values ('.', 'dot', 1462867931627);
+insert into DCGRSP (IID, NME, VER) values (',', 'comma', 1462867931627);
+insert into DCGRSP (IID, NME, VER) values ('space', 'space', 1462867931627);
+insert into USPRF (DCGRSP, LNG, CNTR, DCSP, DEF, VER, DGINGR) values (',', 'en', 'US', '.', 1, 1462867931627, 3);
+insert into USPRF (DCGRSP, LNG, CNTR, DCSP, DEF, VER, DGINGR) values ('SPACE', 'ru', 'RU', ',', 0, 1462867931627, 3);

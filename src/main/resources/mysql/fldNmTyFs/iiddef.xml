@@ -8,5 +8,5 @@ See LICENSE in base folder
 <properties>
 <comment>Correspondence of Java types to services that explain about property. ORDER is essential, the FIRST value will be used.</comment>
 <entry key="java.lang.Long">serial primary key</entry>
-<entry key="java.lang.String">char(25) not null primary key</entry>
+<entry key="java.lang.String">char(10) not null primary key</entry>
 </properties>

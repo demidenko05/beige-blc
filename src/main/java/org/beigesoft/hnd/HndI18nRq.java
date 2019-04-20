@@ -30,6 +30,7 @@ package org.beigesoft.hnd;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Locale;
 
 import org.beigesoft.mdl.IReqDt;
@@ -41,9 +42,12 @@ import org.beigesoft.mdlp.UsPrf;
 import org.beigesoft.log.ILog;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.rdb.IOrm;
+import org.beigesoft.srv.UtlJsp;
+import org.beigesoft.srv.II18n;
 
 /**
- * <p>It handles request internationalization and other preferences.</p>
+ * <p>It handles request internationalization and other preferences.
+ * It also adds base services to request attributes.</p>
  *
  * @param <RS> platform dependent RDBMS recordset
  * @author Yury Demidenko
@@ -64,6 +68,16 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    * <p>ORM service.</p>
    */
   private IOrm orm;
+
+  /**
+   * <p>I18N service.</p>
+   */
+  private II18n i18n;
+
+  /**
+   * <p>JSP utility.</p>
+   */
+  private UtlJsp utJsp;
 
   //Cached data:
   /**
@@ -100,6 +114,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
   public final void handle(final Map<String, Object> pRqVs,
     final IReqDt pRqDt) throws Exception {
     //unlocked references of the latest versions of shared data:
+    Map<String, Object> vs = new HashMap<String, Object>();
     List<UsPrf> upfsTmp = null;
     List<Lng> lgsTmp = null;
     List<DcSp> dssTmp = null;
@@ -112,10 +127,10 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
             this.rdb.setAcmt(false);
             this.rdb.setTrIsl(IRdb.TRRUC);
             this.rdb.begin();
-            List<UsPrf> upfs = this.orm.retLst(pRqVs, null, UsPrf.class);
-            List<Lng> lgs = this.orm.retLst(pRqVs, null, Lng.class);
-            List<DcSp> dss = this.orm.retLst(pRqVs, null, DcSp.class);
-            List<DcGrSp> dgss = this.orm.retLst(pRqVs, null, DcGrSp.class);
+            List<UsPrf> upfs = this.orm.retLst(pRqVs, vs, UsPrf.class);
+            List<Lng> lgs = this.orm.retLst(pRqVs, vs, Lng.class);
+            List<DcSp> dss = this.orm.retLst(pRqVs, vs, DcSp.class);
+            List<DcGrSp> dgss = this.orm.retLst(pRqVs, vs, DcGrSp.class);
             this.rdb.commit();
             //assigning fully initialized data:
             this.dcGrSps = dgss;
@@ -172,6 +187,11 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     cpf.setUsLoc(locCurr);
     pRqVs.put("upf", upf);
     pRqVs.put("cpf", cpf);
+    pRqVs.put("lngs", this.lngs);
+    pRqVs.put("dcSps", this.dcSps);
+    pRqVs.put("dcGrSps", this.dcGrSps);
+    pRqDt.setAttr("utJsp", this.utJsp);
+    pRqDt.setAttr("i18n", this.i18n);
   }
 
   /**
@@ -504,5 +524,37 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    **/
   public final synchronized void setOrm(final IOrm pOrm) {
     this.orm = pOrm;
+  }
+
+  /**
+   * <p>Getter for i18n.</p>
+   * @return II18n
+   **/
+  public final II18n getI18n() {
+    return this.i18n;
+  }
+
+  /**
+   * <p>Setter for i18n.</p>
+   * @param pI18n reference
+   **/
+  public final void setI18n(final II18n pI18n) {
+    this.i18n = pI18n;
+  }
+
+  /**
+   * <p>Getter for utJsp.</p>
+   * @return UtlJsp
+   **/
+  public final UtlJsp getUtJsp() {
+    return this.utJsp;
+  }
+
+  /**
+   * <p>Setter for utJsp.</p>
+   * @param pUtJsp reference
+   **/
+  public final void setUtJsp(final UtlJsp pUtJsp) {
+    this.utJsp = pUtJsp;
   }
 }

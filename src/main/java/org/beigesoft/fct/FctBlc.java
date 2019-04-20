@@ -48,6 +48,10 @@ import org.beigesoft.hld.HldNmCnFrSt;
 import org.beigesoft.hld.HldNmCnToSt;
 import org.beigesoft.hld.HldNmCnToStXml;
 import org.beigesoft.hld.HldNmCnFrStXml;
+import org.beigesoft.hld.HlNmPrFe;
+import org.beigesoft.hld.HldClsStg;
+import org.beigesoft.hld.HldUvd;
+import org.beigesoft.hnd.HndEntRq;
 import org.beigesoft.hnd.HndI18nRq;
 import org.beigesoft.prp.UtlPrp;
 import org.beigesoft.prp.Setng;
@@ -71,6 +75,14 @@ import org.beigesoft.srv.UtlXml;
 import org.beigesoft.srv.IUtlXml;
 import org.beigesoft.srv.ISqlEsc;
 import org.beigesoft.srv.SqlEsc;
+import org.beigesoft.srv.ISrvPg;
+import org.beigesoft.srv.SrvPg;
+import org.beigesoft.srv.ISrvDt;
+import org.beigesoft.srv.SrvDt;
+import org.beigesoft.srv.I18n;
+import org.beigesoft.srv.II18n;
+import org.beigesoft.srv.UtlJsp;
+import org.beigesoft.srv.HlpEntPg;
 
 /**
  * <p>Main application beans factory. All configuration dependent inner
@@ -125,6 +137,16 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Secure logger name.</p>
    **/
   public static final String LOGSECNM = "logSec";
+
+  /**
+   * <p>Handler base entities (no admin, etc) request name.</p>
+   **/
+  public static final String HNACENRQ = "hnAcEnRq";
+
+  /**
+   * <p>Processor base entities (no admin, etc) page name.</p>
+   **/
+  public static final String PRACENTPG = "prAcEnPg";
 
   //configuration data:
   /**
@@ -233,6 +255,11 @@ public class FctBlc<RS> implements IFctApp {
    **/
   private String appPth;
 
+  /**
+   * <p>Forbidden entities for base entity request handler, e.g. UsTmc.</p>
+   **/
+  private List<Class<?>> fbdEnts;
+
   //parts/services:
   /**
    * <p>Outside app-beans/parts factories final configuration.
@@ -273,6 +300,10 @@ public class FctBlc<RS> implements IFctApp {
         if (rz == null) {
           if (HndI18nRq.class.getSimpleName().equals(pBnNm)) {
             rz = lazHndI18nRq(pRqVs);
+          } else if (HNACENRQ.equals(pBnNm)) {
+            rz = lazHnAcEnRq(pRqVs);
+          } else if (FctPrcFen.class.getSimpleName().equals(pBnNm)) {
+            rz = lazFctPrcFen(pRqVs);
           } else if (STGORMNM.equals(pBnNm)) {
             rz = lazStgOrm(pRqVs);
           } else if (IOrm.class.getSimpleName().equals(pBnNm)) {
@@ -313,6 +344,8 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazFctNmFilFd(pRqVs);
           } else if (FctNmCnToSt.class.getSimpleName().equals(pBnNm)) {
             rz = lazFctNmCnToSt(pRqVs);
+          } else if (HldUvd.class.getSimpleName().equals(pBnNm)) {
+            rz = lazHldUvd(pRqVs);
           } else if (HLFILFDNMUVD.equals(pBnNm)) {
             rz = lazHldNmFilFdStUvd(pRqVs);
           } else if (HLFILFDNMDBCP.equals(pBnNm)) {
@@ -344,8 +377,18 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazUtlXml(pRqVs);
           } else if (LOGSTDNM.equals(pBnNm)) {
             rz = lazLogStd(pRqVs);
+          } else if (LOGSECNM.equals(pBnNm)) {
+            rz = lazLogSec(pRqVs);
           } else if (IReflect.class.getSimpleName().equals(pBnNm)) {
             rz = lazReflect(pRqVs);
+          } else if (ISrvDt.class.getSimpleName().equals(pBnNm)) {
+            rz = lazSrvDt(pRqVs);
+          } else if (ISrvPg.class.getSimpleName().equals(pBnNm)) {
+            rz = lazSrvPg(pRqVs);
+          } else if (II18n.class.getSimpleName().equals(pBnNm)) {
+            rz = lazI18n(pRqVs);
+          } else if (HlpEntPg.class.getSimpleName().equals(pBnNm)) {
+            rz = lazHlpEntPg(pRqVs);
           } else {
             for (IFctAux<RS> fau : this.fctsAux) {
               rz = fau.crePut(pRqVs, pBnNm, this);
@@ -404,6 +447,65 @@ public class FctBlc<RS> implements IFctApp {
 
   //Request handlers:
   /**
+   * <p>Lazy getter handler base entities request.</p>
+   * @param pRqVs request scoped vars
+   * @return HndEntRq
+   * @throws Exception - an exception
+   */
+  public final synchronized HndEntRq<RS> lazHnAcEnRq(
+    final Map<String, Object> pRqVs) throws Exception {
+    @SuppressWarnings("unchecked")
+    HndEntRq<RS> rz = (HndEntRq<RS>) this.beans.get(HNACENRQ);
+    if (rz == null) {
+      rz = new HndEntRq<RS>();
+      rz.setWriteTi(getWriteTi());
+      rz.setReadTi(getReadTi());
+      rz.setWriteReTi(getWriteReTi());
+      rz.setWrReSpTr(getWrReSpTr());
+      rz.setLogStd(lazLogStd(pRqVs));
+      rz.setLogSec(lazLogSec(pRqVs));
+      @SuppressWarnings("unchecked")
+      IRdb<RS> rdb = (IRdb<RS>) laz(pRqVs, IRdb.class.getSimpleName());
+      rz.setRdb(rdb);
+      rz.setFilEntRq(lazFilEntRq(pRqVs));
+      rz.setFctFctEnt(lazFctFctEnt(pRqVs));
+      rz.setFctPrcFen(lazFctPrcFen(pRqVs));
+      rz.setHldPrcFenNm(new HlNmPrFe());
+      rz.setEntMap(new HashMap<String, Class<?>>());
+      Setng setng = lazStgUvd(pRqVs);
+      for (Class<?> cls  : setng.lazClss()) {
+        if (this.fbdEnts == null || !this.fbdEnts.contains(cls)) {
+          rz.getEntMap().put(cls.getSimpleName(), cls);
+        }
+      }
+      this.beans.put(HNACENRQ, rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), HNACENRQ + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter FctPrcFen.</p>
+   * @param pRqVs request scoped vars
+   * @return FctPrcFen
+   * @throws Exception - an exception
+   */
+  public final synchronized FctPrcFen<RS> lazFctPrcFen(
+    final Map<String, Object> pRqVs) throws Exception {
+    @SuppressWarnings("unchecked")
+    FctPrcFen<RS> rz = (FctPrcFen<RS>) this.beans
+      .get(FctPrcFen.class.getSimpleName());
+    if (rz == null) {
+      rz = new FctPrcFen<RS>();
+      rz.setFctBlc(this);
+      this.beans.put(FctPrcFen.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), FctPrcFen.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
    * <p>Lazy getter HndI18nRq.</p>
    * @param pRqVs request scoped vars
    * @return HndI18nRq
@@ -421,6 +523,8 @@ public class FctBlc<RS> implements IFctApp {
       IRdb<RS> rdb = (IRdb<RS>) laz(pRqVs, IRdb.class.getSimpleName());
       rz.setRdb(rdb);
       rz.setLog(lazLogStd(pRqVs));
+      rz.setI18n(lazI18n(pRqVs));
+      rz.setUtJsp(new UtlJsp());
       this.beans.put(HndI18nRq.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), HndI18nRq.class.getSimpleName()
         + " has been created.");
@@ -996,6 +1100,34 @@ public class FctBlc<RS> implements IFctApp {
   }
 
   /**
+   * <p>Lazy getter HldUvd.</p>
+   * @param pRqVs request scoped vars
+   * @return HldUvd
+   * @throws Exception - an exception
+   */
+  public final synchronized HldUvd<IHasId<?>> lazHldUvd(
+    final Map<String, Object> pRqVs) throws Exception {
+    HldUvd<IHasId<?>> rz = (HldUvd<IHasId<?>>) this.beans
+      .get(HldUvd.class.getSimpleName());
+    if (rz == null) {
+      rz = new HldUvd<IHasId<?>>();
+      rz.setSetng(lazStgUvd(pRqVs));
+      String stgNm = "liHe"; //list header
+      HldClsStg hlClSt = new HldClsStg(stgNm, stgNm);
+      hlClSt.setSetng(lazStgUvd(pRqVs));
+      rz.getHlClStgMp().put(stgNm, hlClSt);
+      stgNm = "liFo"; //list footer
+      hlClSt = new HldClsStg(stgNm, stgNm);
+      hlClSt.setSetng(lazStgUvd(pRqVs));
+      rz.getHlClStgMp().put(stgNm, hlClSt);
+      this.beans.put(HldUvd.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), HldUvd.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
    * <p>Lazy getter FctNmCnFrSt.</p>
    * @param pRqVs request scoped vars
    * @return FctNmCnFrSt
@@ -1151,6 +1283,38 @@ public class FctBlc<RS> implements IFctApp {
   }
 
   /**
+   * <p>Lazy getter HlpEntPg.</p>
+   * @param pRqVs request scoped vars
+   * @return HlpEntPg
+   * @throws Exception - an exception
+   */
+  public final synchronized HlpEntPg<RS> lazHlpEntPg(
+    final Map<String, Object> pRqVs) throws Exception {
+    @SuppressWarnings("unchecked")
+    HlpEntPg<RS> rz = (HlpEntPg<RS>) this.beans
+      .get(HlpEntPg.class.getSimpleName());
+    if (rz == null) {
+      rz = new HlpEntPg<RS>();
+      rz.setLog(lazLogStd(pRqVs));
+      rz.setI18n(lazI18n(pRqVs));
+      @SuppressWarnings("unchecked")
+      IRdb<RS> rdb = (IRdb<RS>) laz(pRqVs, IRdb.class.getSimpleName());
+      rz.setRdb(rdb);
+      rz.setOrm(lazOrm(pRqVs));
+      rz.setSrvPg(lazSrvPg(pRqVs));
+      rz.setSqlQu(lazSqlQu(pRqVs));
+      rz.setSrvDt(lazSrvDt(pRqVs));
+      rz.setSetng(lazStgUvd(pRqVs));
+      rz.setHldUvd(lazHldUvd(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      this.beans.put(HlpEntPg.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), HlpEntPg.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
    * <p>Lazy getter UtlPrp.</p>
    * @param pRqVs request scoped vars
    * @return UtlPrp
@@ -1223,6 +1387,60 @@ public class FctBlc<RS> implements IFctApp {
   }
 
   /**
+   * <p>Lazy getter I18n.</p>
+   * @param pRqVs request scoped vars
+   * @return I18n
+   * @throws Exception - an exception
+   */
+  public final synchronized I18n lazI18n(
+    final Map<String, Object> pRqVs) throws Exception {
+    I18n rz = (I18n) this.beans.get(II18n.class.getSimpleName());
+    if (rz == null) {
+      rz = new I18n();
+      this.beans.put(II18n.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), II18n.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter SrvPg.</p>
+   * @param pRqVs request scoped vars
+   * @return SrvPg
+   * @throws Exception - an exception
+   */
+  public final synchronized SrvPg lazSrvPg(
+    final Map<String, Object> pRqVs) throws Exception {
+    SrvPg rz = (SrvPg) this.beans.get(ISrvPg.class.getSimpleName());
+    if (rz == null) {
+      rz = new SrvPg();
+      this.beans.put(ISrvPg.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), ISrvPg.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter SrvDt.</p>
+   * @param pRqVs request scoped vars
+   * @return SrvDt
+   * @throws Exception - an exception
+   */
+  public final synchronized SrvDt lazSrvDt(
+    final Map<String, Object> pRqVs) throws Exception {
+    SrvDt rz = (SrvDt) this.beans.get(ISrvDt.class.getSimpleName());
+    if (rz == null) {
+      rz = new SrvDt();
+      this.beans.put(ISrvDt.class.getSimpleName(), rz);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), ISrvDt.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
    * <p>Lazy getter Reflect.</p>
    * @param pRqVs request scoped vars
    * @return Reflect
@@ -1241,7 +1459,29 @@ public class FctBlc<RS> implements IFctApp {
   }
 
   /**
-   * <p>Lazy getter Log.</p>
+   * <p>Lazy getter secure logger.</p>
+   * @param pRqVs request scoped vars
+   * @return Log
+   * @throws Exception - an exception
+   */
+  public final synchronized LogFile lazLogSec(
+    final Map<String, Object> pRqVs) throws Exception {
+    LogFile logSec = (LogFile) this.beans.get(LOGSECNM);
+    if (logSec == null) {
+      logSec = new LogFile();
+      logSec.setPath(this.logPth + File.separator + LOGSECNM);
+      logSec.setDbgSh(getDbgSh());
+      logSec.setDbgFl(getDbgFl());
+      logSec.setDbgCl(getDbgCl());
+      logSec.setMaxSize(this.logSize);
+      this.beans.put(LOGSECNM, logSec);
+      lazLogStd(pRqVs).info(pRqVs, getClass(), LOGSECNM + " has been created");
+    }
+    return logSec;
+  }
+
+  /**
+   * <p>Lazy getter standard loger.</p>
    * @param pRqVs request scoped vars
    * @return Log
    * @throws Exception - an exception
@@ -1251,6 +1491,9 @@ public class FctBlc<RS> implements IFctApp {
     if (this.logStd == null) {
       this.logStd = new LogFile();
       this.logStd.setPath(this.logPth + File.separator + this.logStdNm);
+      this.logStd.setDbgSh(getDbgSh());
+      this.logStd.setDbgFl(getDbgFl());
+      this.logStd.setDbgCl(getDbgCl());
       this.logStd.setMaxSize(this.logSize);
       this.beans.put(LOGSTDNM, this.logStd);
       this.logStd.info(pRqVs, getClass(), LOGSTDNM + " has been created");
@@ -1271,7 +1514,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for stgDbCpDir.</p>
    * @return String
    **/
-  public final String getStgDbCpDir() {
+  public final synchronized String getStgDbCpDir() {
     return this.stgDbCpDir;
   }
 
@@ -1279,7 +1522,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for stgDbCpDir.</p>
    * @param pStgDbCpDir reference
    **/
-  public final void setStgDbCpDir(final String pStgDbCpDir) {
+  public final synchronized void setStgDbCpDir(final String pStgDbCpDir) {
     this.stgDbCpDir = pStgDbCpDir;
   }
 
@@ -1287,7 +1530,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for stgOrmDir.</p>
    * @return String
    **/
-  public final String getStgOrmDir() {
+  public final synchronized String getStgOrmDir() {
     return this.stgOrmDir;
   }
 
@@ -1295,7 +1538,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for stgOrmDir.</p>
    * @param pStgOrmDir reference
    **/
-  public final void setStgOrmDir(final String pStgOrmDir) {
+  public final synchronized void setStgOrmDir(final String pStgOrmDir) {
     this.stgOrmDir = pStgOrmDir;
   }
 
@@ -1303,7 +1546,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for stgUvdDir.</p>
    * @return String
    **/
-  public final String getStgUvdDir() {
+  public final synchronized String getStgUvdDir() {
     return this.stgUvdDir;
   }
 
@@ -1311,7 +1554,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for stgUvdDir.</p>
    * @param pStgUvdDir reference
    **/
-  public final void setStgUvdDir(final String pStgUvdDir) {
+  public final synchronized void setStgUvdDir(final String pStgUvdDir) {
     this.stgUvdDir = pStgUvdDir;
   }
 
@@ -1319,7 +1562,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for lngCntr.</p>
    * @return String
    **/
-  public final String getLngCntr() {
+  public final synchronized String getLngCntr() {
     return this.lngCntr;
   }
 
@@ -1327,7 +1570,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for lngCntr.</p>
    * @param pLngCntr reference
    **/
-  public final void setLngCntr(final String pLngCntr) {
+  public final synchronized void setLngCntr(final String pLngCntr) {
     this.lngCntr = pLngCntr;
   }
 
@@ -1335,7 +1578,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for dbCls.</p>
    * @return String
    **/
-  public final String getDbCls() {
+  public final synchronized String getDbCls() {
     return this.dbCls;
   }
 
@@ -1343,7 +1586,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for dbCls.</p>
    * @param pDbCls reference
    **/
-  public final void setDbCls(final String pDbCls) {
+  public final synchronized void setDbCls(final String pDbCls) {
     this.dbCls = pDbCls;
   }
 
@@ -1351,7 +1594,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for dbUrl.</p>
    * @return String
    **/
-  public final String getDbUrl() {
+  public final synchronized String getDbUrl() {
     return this.dbUrl;
   }
 
@@ -1359,7 +1602,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for dbUrl.</p>
    * @param pDbUrl reference
    **/
-  public final void setDbUrl(final String pDbUrl) {
+  public final synchronized void setDbUrl(final String pDbUrl) {
     this.dbUrl = pDbUrl;
   }
 
@@ -1367,7 +1610,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for dbUsr.</p>
    * @return String
    **/
-  public final String getDbUsr() {
+  public final synchronized String getDbUsr() {
     return this.dbUsr;
   }
 
@@ -1375,7 +1618,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for dbUsr.</p>
    * @param pDbUsr reference
    **/
-  public final void setDbUsr(final String pDbUsr) {
+  public final synchronized void setDbUsr(final String pDbUsr) {
     this.dbUsr = pDbUsr;
   }
 
@@ -1383,7 +1626,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for dbPwd.</p>
    * @return String
    **/
-  public final String getDbPwd() {
+  public final synchronized String getDbPwd() {
     return this.dbPwd;
   }
 
@@ -1391,7 +1634,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for dbPwd.</p>
    * @param pDbPwd reference
    **/
-  public final void setDbPwd(final String pDbPwd) {
+  public final synchronized void setDbPwd(final String pDbPwd) {
     this.dbPwd = pDbPwd;
   }
 
@@ -1399,7 +1642,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for isAndr.</p>
    * @return boolean
    **/
-  public final boolean getIsAndr() {
+  public final synchronized boolean getIsAndr() {
     return this.isAndr;
   }
 
@@ -1407,7 +1650,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for isAndr.</p>
    * @param pIsAndr reference
    **/
-  public final void setIsAndr(final boolean pIsAndr) {
+  public final synchronized void setIsAndr(final boolean pIsAndr) {
     this.isAndr = pIsAndr;
   }
 
@@ -1415,7 +1658,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for newDbId.</p>
    * @return int
    **/
-  public final int getNewDbId() {
+  public final synchronized int getNewDbId() {
     return this.newDbId;
   }
 
@@ -1423,7 +1666,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for newDbId.</p>
    * @param pNewDbId reference
    **/
-  public final void setNewDbId(final int pNewDbId) {
+  public final synchronized void setNewDbId(final int pNewDbId) {
     this.newDbId = pNewDbId;
   }
 
@@ -1431,7 +1674,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for dbgSh.</p>
    * @return boolean
    **/
-  public final boolean getDbgSh() {
+  public final synchronized boolean getDbgSh() {
     return this.dbgSh;
   }
 
@@ -1439,7 +1682,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for dbgSh.</p>
    * @param pDbgSh reference
    **/
-  public final void setDbgSh(final boolean pDbgSh) {
+  public final synchronized void setDbgSh(final boolean pDbgSh) {
     this.dbgSh = pDbgSh;
   }
 
@@ -1447,7 +1690,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for dbgFl.</p>
    * @return int
    **/
-  public final int getDbgFl() {
+  public final synchronized int getDbgFl() {
     return this.dbgFl;
   }
 
@@ -1455,7 +1698,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for dbgFl.</p>
    * @param pDbgFl reference
    **/
-  public final void setDbgFl(final int pDbgFl) {
+  public final synchronized void setDbgFl(final int pDbgFl) {
     this.dbgFl = pDbgFl;
   }
 
@@ -1463,7 +1706,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for dbgCl.</p>
    * @return int
    **/
-  public final int getDbgCl() {
+  public final synchronized int getDbgCl() {
     return this.dbgCl;
   }
 
@@ -1471,7 +1714,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for dbgCl.</p>
    * @param pDbgCl reference
    **/
-  public final void setDbgCl(final int pDbgCl) {
+  public final synchronized void setDbgCl(final int pDbgCl) {
     this.dbgCl = pDbgCl;
   }
 
@@ -1479,7 +1722,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for writeTi.</p>
    * @return Integer
    **/
-  public final Integer getWriteTi() {
+  public final synchronized Integer getWriteTi() {
     return this.writeTi;
   }
 
@@ -1487,7 +1730,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for writeTi.</p>
    * @param pWriteTi reference
    **/
-  public final void setWriteTi(final Integer pWriteTi) {
+  public final synchronized void setWriteTi(final Integer pWriteTi) {
     this.writeTi = pWriteTi;
   }
 
@@ -1495,7 +1738,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for readTi.</p>
    * @return Integer
    **/
-  public final Integer getReadTi() {
+  public final synchronized Integer getReadTi() {
     return this.readTi;
   }
 
@@ -1503,7 +1746,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for readTi.</p>
    * @param pReadTi reference
    **/
-  public final void setReadTi(final Integer pReadTi) {
+  public final synchronized void setReadTi(final Integer pReadTi) {
     this.readTi = pReadTi;
   }
 
@@ -1511,7 +1754,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for writeReTi.</p>
    * @return Integer
    **/
-  public final Integer getWriteReTi() {
+  public final synchronized Integer getWriteReTi() {
     return this.writeReTi;
   }
 
@@ -1519,7 +1762,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for writeReTi.</p>
    * @param pWriteReTi reference
    **/
-  public final void setWriteReTi(final Integer pWriteReTi) {
+  public final synchronized void setWriteReTi(final Integer pWriteReTi) {
     this.writeReTi = pWriteReTi;
   }
 
@@ -1527,7 +1770,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for wrReSpTr.</p>
    * @return Boolean
    **/
-  public final Boolean getWrReSpTr() {
+  public final synchronized Boolean getWrReSpTr() {
     return this.wrReSpTr;
   }
 
@@ -1535,7 +1778,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for wrReSpTr.</p>
    * @param pWrReSpTr reference
    **/
-  public final void setWrReSpTr(final Boolean pWrReSpTr) {
+  public final synchronized void setWrReSpTr(final Boolean pWrReSpTr) {
     this.wrReSpTr = pWrReSpTr;
   }
 
@@ -1543,7 +1786,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for logPth.</p>
    * @return String
    **/
-  public final String getLogPth() {
+  public final synchronized String getLogPth() {
     return this.logPth;
   }
 
@@ -1551,7 +1794,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for logPth.</p>
    * @param pLogPth reference
    **/
-  public final void setLogPth(final String pLogPth) {
+  public final synchronized void setLogPth(final String pLogPth) {
     this.logPth = pLogPth;
   }
 
@@ -1559,7 +1802,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for logSize.</p>
    * @return size
    **/
-  public final int getLogSize() {
+  public final synchronized int getLogSize() {
     return this.logSize;
   }
 
@@ -1567,7 +1810,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for logSize.</p>
    * @param pLogSize value
    **/
-  public final void setLogSize(final int pLogSize) {
+  public final synchronized void setLogSize(final int pLogSize) {
     this.logSize = pLogSize;
   }
 
@@ -1575,7 +1818,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for logStdNm.</p>
    * @return String
    **/
-  public final String getLogStdNm() {
+  public final synchronized String getLogStdNm() {
     return this.logStdNm;
   }
 
@@ -1583,7 +1826,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for logStdNm.</p>
    * @param pLogStdNm reference
    **/
-  public final void setLogStdNm(final String pLogStdNm) {
+  public final synchronized void setLogStdNm(final String pLogStdNm) {
     this.logStdNm = pLogStdNm;
   }
 
@@ -1591,7 +1834,7 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Getter for appPth.</p>
    * @return String
    **/
-  public final String getAppPth() {
+  public final synchronized String getAppPth() {
     return this.appPth;
   }
 
@@ -1599,7 +1842,23 @@ public class FctBlc<RS> implements IFctApp {
    * <p>Setter for appPth.</p>
    * @param pAppPth reference
    **/
-  public final void setAppPth(final String pAppPth) {
+  public final synchronized void setAppPth(final String pAppPth) {
     this.appPth = pAppPth;
+  }
+
+  /**
+   * <p>Getter for fbdEnts.</p>
+   * @return List<Class<?>>
+   **/
+  public final synchronized List<Class<?>> getFbdEnts() {
+    return this.fbdEnts;
+  }
+
+  /**
+   * <p>Setter for fbdEnts.</p>
+   * @param pFbdEnts reference
+   **/
+  public final synchronized void setFbdEnts(final List<Class<?>> pFbdEnts) {
+    this.fbdEnts = pFbdEnts;
   }
 }

@@ -29,7 +29,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.srv;
 
 import java.util.Map;
-import java.util.HashMap;
 
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IReqDt;
@@ -61,12 +60,7 @@ public class EntPg<RS> implements IEntPg {
   /**
    * <p>Entities map "EntitySimpleName"-"Class".</p>
    **/
-  private HashMap<String, Class<IHasId<?>>> entMp;
-
-  /**
-   * <p>Request scoped proxy of log preference.</p>
-   **/
-  private boolean isDbgSh;
+  private Map<String, Class<IHasId<?>>> entMp;
 
   //service with business-logic:
   /**
@@ -86,9 +80,9 @@ public class EntPg<RS> implements IEntPg {
   @Override
   public final void retPg(final Map<String, Object> pRvs,
     final IReqDt pRqDt) throws Exception {
-    this.isDbgSh = this.log.getDbgSh(this.getClass())
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
         && this.log.getDbgFl() < 5601 && this.log.getDbgCl() > 5599;
-    this.hlpEntPg.retPg(pRvs, pRqDt, this.entMp, this.isDbgSh, this.mkrFlt);
+    this.hlpEntPg.retPg(pRvs, pRqDt, this.entMp, isDbgSh, this.mkrFlt);
   }
 
   /**
@@ -103,7 +97,9 @@ public class EntPg<RS> implements IEntPg {
   @Override
   public final StringBuffer revPgFltDt(final Map<String, Object> pRvs,
     final IReqDt pRqDt, final Class<?> pCls) throws Exception {
-    return this.hlpEntPg.revPgFltDt(pRvs, pRqDt, pCls, this.isDbgSh);
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+        && this.log.getDbgFl() < 5601 && this.log.getDbgCl() > 5599;
+    return this.hlpEntPg.revPgFltDt(pRvs, pRqDt, pCls, isDbgSh);
   }
 
   //Simple getters and setters:
@@ -151,7 +147,7 @@ public class EntPg<RS> implements IEntPg {
    * <p>Setter for entMp.</p>
    * @param pEntMp reference
    **/
-  public final void setEntMp(final HashMap<String, Class<IHasId<?>>> pEntMp) {
+  public final void setEntMp(final Map<String, Class<IHasId<?>>> pEntMp) {
     this.entMp = pEntMp;
   }
 

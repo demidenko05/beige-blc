@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.hnd;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.io.OutputStream;
 
 import org.beigesoft.mdl.IReqDt;
@@ -89,9 +90,10 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
   public final void handle(final Map<String, Object> pRqVs,
     final IReqDt pRqDt,
       final OutputStream pSous) throws Exception {
+    Map<String, Object> vs = new HashMap<String, Object>();
     try {
-      String nmEnt = pRqDt.getParam("nmEnt");
-      Class entityClass = this.entMap.get(nmEnt);
+      String ent = pRqDt.getParam("ent");
+      Class entityClass = this.entMap.get(ent);
       this.rdb.setAcmt(false);
       this.rdb.setTrIsl(this.trIsl);
       this.rdb.begin();
@@ -100,7 +102,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
       IFctRq<IHasId<?>> entFac = (IFctRq<IHasId<?>>)
         this.fctFctEnt.laz(pRqVs, entityClass);
       entity = entFac.create(pRqVs);
-      this.filEntRq.fill(pRqVs, null, entity, pRqDt);
+      this.filEntRq.fill(pRqVs, vs, entity, pRqDt);
       String nmRep = pRqDt.getParam("nmRep");
       @SuppressWarnings("unchecked")
       IEntFlRp<IHasId<?>, ?> efr = (IEntFlRp<IHasId<?>, ?>)

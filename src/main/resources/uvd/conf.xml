@@ -14,17 +14,17 @@ See LICENSE in base folder
   org.beigesoft.mdlp.DcSp,
   org.beigesoft.mdlp.DcGrSp,
   org.beigesoft.mdlp.UsPrf,
-  org.beigesoft.mdlp.CsvMth,
-  org.beigesoft.mdlp.CsvCl,
   org.beigesoft.mdlp.MaFrn,
   org.beigesoft.mdlp.MaFrnLn,
+  org.beigesoft.mdlp.CsvMth,
+  org.beigesoft.mdlp.CsvCl,
   org.beigesoft.mdlp.EmCon,
   org.beigesoft.mdlp.EmInt,
   org.beigesoft.mdlp.EmStr,
   org.beigesoft.mdlp.EmMsg,
   org.beigesoft.mdlp.EmRcp,
   org.beigesoft.mdlp.EmAtch</entry>
-<entry key="stgClsNms">exlFlds,idFlds,owdEnts</entry>
+<entry key="stgClsNms">exlFlds,idFlds,owdEnts,lstFds</entry>
 <entry key="stgFldNms">cnToSt,cnFrSt</entry>
 <entry key="exlFlds"></entry>
 </properties>

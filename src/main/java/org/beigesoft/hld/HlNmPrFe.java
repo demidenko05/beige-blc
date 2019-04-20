@@ -26,38 +26,30 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdlp;
+package org.beigesoft.hld;
 
-import org.beigesoft.mdl.IHasNm;
+
+import org.beigesoft.fct.FctBlc;
 
 /**
- * <p>Model of I18N feature - language, country, decimal separator, etc.
- * ID is code - "en", "RU", "-", etc.</p>
+ * <p>Holder of names of processors for entities.</p>
  *
  * @author Yury Demidenko
  */
-public abstract class AI18nFtr extends AIdStr implements IHasNm {
+public class HlNmPrFe implements IHldNm<Class<?>, String> {
+
 
   /**
-   * <p>Name.</p>
-   **/
-  private String nme;
-
-  /**
-   * <p>Geter for nme.</p>
-   * @return String
+   * <p>Get processor name for given class and action name.</p>
+   * @param pCls a Class
+   * @param pAct action name
+   * @return processor FE name
    **/
   @Override
-  public final String getNme() {
-    return this.nme;
-  }
-
-  /**
-   * <p>Setter for nme.</p>
-   * @param pNme reference
-   **/
-  @Override
-  public final void setNme(final String pNme) {
-    this.nme = pNme;
+  public final String get(final Class<?> pCls, final String pAct) {
+    if ("lst".equals(pAct)) {
+      return FctBlc.PRACENTPG;
+    }
+    return null;
   }
 }

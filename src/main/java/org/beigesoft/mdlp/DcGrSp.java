@@ -33,6 +33,6 @@ package org.beigesoft.mdlp;
  *
  * @author Yury Demidenko
  */
-public class DcGrSp extends AI18nFtr {
+public class DcGrSp extends AIdStrNm {
 
 }

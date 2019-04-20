@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.hnd;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 import java.math.BigDecimal;
 import java.io.OutputStream;
@@ -101,15 +102,16 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
     CsvMth csMt = null;
     List<List<Object>> data = null;
     ICsvDtRet ret = null;
+    Map<String, Object> vs = new HashMap<String, Object>();
     try {
       this.rdb.setAcmt(false);
       this.rdb.setTrIsl(IRdb.TRRC);
       this.rdb.begin();
       CsvMth csMtt = new CsvMth();
       csMtt.setIid(csMtId);
-      csMt = getOrm().retEnt(pRqVs, null, csMtt);
-      List<CsvCl> cols = getOrm().retLstCnd(pRqVs, null,
-        CsvCl.class, "where ITSOWNER=" + csMt.getIid());
+      csMt = getOrm().retEnt(pRqVs, vs, csMtt);
+      List<CsvCl> cols = getOrm().retLstCnd(pRqVs, vs,
+        CsvCl.class, "where OWNR=" + csMt.getIid());
       csMt.setClns(cols);
       ret = this.retrs.get(csMt.getRtrNm());
       if (ret == null) {
