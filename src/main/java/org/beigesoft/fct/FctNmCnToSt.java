@@ -83,9 +83,14 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
   private INumStr numStr;
 
   /**
-   * <p>Fields converters names holder.</p>
+   * <p>Fields converters names holder UVD.</p>
    **/
-  private IHldNm<Class<?>, String> hldNmFdCn;
+  private IHldNm<Class<?>, String> hldNmFdCnUvd;
+
+  /**
+   * <p>Fields converters names holder DBCP.</p>
+   **/
+  private IHldNm<Class<?>, String> hldNmFdCnDbcp;
 
   /**
    * <p>Fields getters RAPI holder.</p>
@@ -206,7 +211,7 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
   private CnvHsIdStr<IHasId<?>> crPuCnvHsIdStrUvd() {
     CnvHsIdStr<IHasId<?>> rz = new CnvHsIdStr<IHasId<?>>();
     rz.setFctCnvFld(this);
-    rz.setHldNmFdCn(getHldNmFdCn());
+    rz.setHldNmFdCn(getHldNmFdCnUvd());
     rz.setSetng(getStgUvd());
     this.convrts.put(CNHSIDSTUVDNM, rz);
     getLogStd().info(null, getClass(), CNHSIDSTUVDNM + " has been created.");
@@ -220,7 +225,7 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
   private CnvHsIdStr<IHasId<?>> crPuCnvHsIdStrDbCp() {
     CnvHsIdStr<IHasId<?>> rz = new CnvHsIdStr<IHasId<?>>();
     rz.setFctCnvFld(this);
-    rz.setHldNmFdCn(getHldNmFdCn());
+    rz.setHldNmFdCn(getHldNmFdCnDbcp());
     rz.setSetng(getStgDbCp());
     this.convrts.put(CNHSIDSTDBCPNM, rz);
     getLogStd().info(null, getClass(), CNHSIDSTDBCPNM + " has been created.");
@@ -362,19 +367,37 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
   }
 
   /**
-   * <p>Getter for hldNmFdCn.</p>
+   * <p>Getter for hldNmFdCnDbcp.</p>
    * @return IHldNm<Class<?>, String>
    **/
-  public final IHldNm<Class<?>, String> getHldNmFdCn() {
-    return this.hldNmFdCn;
+  public final IHldNm<Class<?>, String> getHldNmFdCnDbcp() {
+    return this.hldNmFdCnDbcp;
   }
 
   /**
-   * <p>Setter for hldNmFdCn.</p>
-   * @param pHldNmFdCn reference
+   * <p>Setter for hldNmFdCnDbcp.</p>
+   * @param pHldNmFdCnDbcp reference
    **/
-  public final void setHldNmFdCn(final IHldNm<Class<?>, String> pHldNmFdCn) {
-    this.hldNmFdCn = pHldNmFdCn;
+  public final void setHldNmFdCnDbcp(
+    final IHldNm<Class<?>, String> pHldNmFdCnDbcp) {
+    this.hldNmFdCnDbcp = pHldNmFdCnDbcp;
+  }
+
+  /**
+   * <p>Getter for hldNmFdCnUvd.</p>
+   * @return IHldNm<Class<?>, String>
+   **/
+  public final IHldNm<Class<?>, String> getHldNmFdCnUvd() {
+    return this.hldNmFdCnUvd;
+  }
+
+  /**
+   * <p>Setter for hldNmFdCnUvd.</p>
+   * @param pHldNmFdCnUvd reference
+   **/
+  public final void setHldNmFdCnUvd(
+    final IHldNm<Class<?>, String> pHldNmFdCnUvd) {
+    this.hldNmFdCnUvd = pHldNmFdCnUvd;
   }
 
   /**

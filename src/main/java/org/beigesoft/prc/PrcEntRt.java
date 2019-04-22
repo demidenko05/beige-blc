@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.prc;
 
 import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -36,10 +37,7 @@ import java.util.LinkedHashMap;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IOwned;
-import org.beigesoft.fct.IFctNm;
-import org.beigesoft.hld.IHld;
 import org.beigesoft.hld.HldUvd;
-import org.beigesoft.cnv.ICnvId;
 import org.beigesoft.rdb.IOrm;
 
 /**
@@ -57,19 +55,9 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
   private IOrm orm;
 
   /**
-   * <p>Holder of converters ID-SQL/HTML names.</p>
-   **/
-  private IHld<Class<?>, String> hldCnvId;
-
-  /**
-   * <p>Factory of converters ID-SQL/HTML.</p>
-   */
-  private IFctNm<ICnvId<T, ID>> fctCnvId;
-
-  /**
    * <p>Holder transformed UVD settings.</p>
    */
-  private HldUvd<T> hldUvd;
+  private HldUvd hldUvd;
 
   /**
    * <p>Process that retrieves entity from DB.</p>
@@ -86,27 +74,28 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
     Map<String, Object> vs = new HashMap<String, Object>();
     this.orm.refrEnt(pRvs, vs, pEnt);
     pEnt.setIsNew(false);
-    pRqDt.setAttr("ent",  pEnt);
-    @SuppressWarnings("unchecked")
-    List<Class<IOwned<T, ?>>> oeLst = this.hldUvd
-      .lazOwnd((Class<T>) pEnt.getClass());
+    this.hldUvd.setEnt(pEnt);
+    List<Class<IOwned<?, ?>>> oeLst = this.hldUvd
+      .lazOwnd(pEnt.getClass());
     if (oeLst != null) {
-      Map<Class<IOwned<T, ?>>, List<IOwned<T, ?>>> owdEntsMp =
-        new LinkedHashMap<Class<IOwned<T, ?>>, List<IOwned<T, ?>>>();
-      String cvIdSqNm = this.hldCnvId.get(pEnt.getClass());
-      ICnvId<T, ID> cvIdSq = this.fctCnvId.laz(pRvs, cvIdSqNm);
-      String idOwnr = cvIdSq.idSql(pEnt);
-      for (Class<IOwned<T, ?>> oec : oeLst) {
-        vs.put(oec.getSimpleName() + "dpLv", 0);
+      Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>> owdEntsMp =
+        new LinkedHashMap<Class<IOwned<?, ?>>, List<IOwned<?, ?>>>();
+      String idOwnr = this.hldUvd.idSql(pEnt);
+      for (Class oecg : oeLst) {
+        Class<IOwned<T, ?>> oec = (Class<IOwned<T, ?>>) oecg;
+        String[] lstFds = this.hldUvd.lazLstFds(oec);
+        String[] ndFds = Arrays.copyOf(lstFds, lstFds.length);
+        Arrays.sort(ndFds);
+        vs.put(oec.getSimpleName() + "ndFds", ndFds);
         List<IOwned<T, ?>> lst = this.orm.retLstCnd(pRvs, vs, oec,
           "where OWNR=" + idOwnr);
-        vs.remove(oec.getSimpleName() + "dpLv");
-        owdEntsMp.put(oec, lst);
+        vs.remove(oec.getSimpleName() + "ndFds");
+        owdEntsMp.put(oecg, (List) lst);
         for (IOwned<T, ?> owd : lst) {
           owd.setOwnr(pEnt);
         }
       }
-      pRqDt.setAttr("owdEntsMp",  owdEntsMp);
+      this.hldUvd.setOwdEntsMp(owdEntsMp);
     }
     return pEnt;
   }
@@ -129,42 +118,10 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
   }
 
   /**
-   * <p>Getter for hldCnvId.</p>
-   * @return IHld<Class<?>, String>
-   **/
-  public final IHld<Class<?>, String> getHldCnvId() {
-    return this.hldCnvId;
-  }
-
-  /**
-   * <p>Setter for hldCnvId.</p>
-   * @param pHldCnvId reference
-   **/
-  public final void setHldCnvId(final IHld<Class<?>, String> pHldCnvId) {
-    this.hldCnvId = pHldCnvId;
-  }
-
-  /**
-   * <p>Getter for fctCnvId.</p>
-   * @return IFctNm<ICnvId<T, ID>>
-   **/
-  public final IFctNm<ICnvId<T, ID>> getFctCnvId() {
-    return this.fctCnvId;
-  }
-
-  /**
-   * <p>Setter for fctCnvId.</p>
-   * @param pFctCnvId reference
-   **/
-  public final void setFctCnvId(final IFctNm<ICnvId<T, ID>> pFctCnvId) {
-    this.fctCnvId = pFctCnvId;
-  }
-
-  /**
    * <p>Getter for hldUvd.</p>
-   * @return HldUvd<T>
+   * @return HldUvd
    **/
-  public final HldUvd<T> getHldUvd() {
+  public final HldUvd getHldUvd() {
     return this.hldUvd;
   }
 
@@ -172,7 +129,7 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
    * <p>Setter for hldUvd.</p>
    * @param pHldUvd reference
    **/
-  public final void setHldUvd(final HldUvd<T> pHldUvd) {
+  public final void setHldUvd(final HldUvd pHldUvd) {
     this.hldUvd = pHldUvd;
   }
 }

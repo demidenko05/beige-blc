@@ -30,6 +30,7 @@ package org.beigesoft.fct;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.File;
@@ -50,7 +51,9 @@ import org.beigesoft.hld.HldNmCnToStXml;
 import org.beigesoft.hld.HldNmCnFrStXml;
 import org.beigesoft.hld.HlNmPrFe;
 import org.beigesoft.hld.HldClsStg;
+import org.beigesoft.hld.HldFldStg;
 import org.beigesoft.hld.HldUvd;
+import org.beigesoft.hld.HldCnvId;
 import org.beigesoft.hnd.HndEntRq;
 import org.beigesoft.hnd.HndI18nRq;
 import org.beigesoft.prp.UtlPrp;
@@ -260,6 +263,28 @@ public class FctBlc<RS> implements IFctApp {
    **/
   private List<Class<?>> fbdEnts;
 
+  /**
+   * <p>Shared non-editable entities for base entity request handler,
+   * e.g. email connection EmCon.</p>
+   **/
+  private List<Class<?>> shrEnts;
+
+  /**
+   * <p>Holders class string settings.</p>
+   **/
+  private Map<String, HldClsStg> hlClStgMp;
+
+  /**
+   * <p>Holders filed string settings.</p>
+   **/
+  private Map<String, HldFldStg> hlFdStgMp;
+
+  /**
+   * <p>Set of classes with custom ID (composite, ID is foreign entity or custom
+   * ID name).</p>
+   **/
+  private Set<Class<?>> custIdClss;
+
   //parts/services:
   /**
    * <p>Outside app-beans/parts factories final configuration.
@@ -357,7 +382,7 @@ public class FctBlc<RS> implements IFctApp {
           } else if (HldNmCnFrSt.class.getSimpleName().equals(pBnNm)) {
             rz = lazHldNmCnFrSt(pRqVs);
           } else if (HldNmCnToSt.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldNmCnToSt(pRqVs);
+            rz = lazHldNmCnToStUvd(pRqVs);
           } else if (HldGets.class.getSimpleName().equals(pBnNm)) {
             rz = lazHldGets(pRqVs);
           } else if (HldSets.class.getSimpleName().equals(pBnNm)) {
@@ -1083,7 +1108,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldNmCnToSt
    * @throws Exception - an exception
    */
-  public final synchronized HldNmCnToSt lazHldNmCnToSt(
+  public final synchronized HldNmCnToSt lazHldNmCnToStUvd(
     final Map<String, Object> pRqVs) throws Exception {
     HldNmCnToSt rz = (HldNmCnToSt) this.beans
       .get(HldNmCnToSt.class.getSimpleName());
@@ -1105,21 +1130,26 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldUvd
    * @throws Exception - an exception
    */
-  public final synchronized HldUvd<IHasId<?>> lazHldUvd(
+  public final synchronized HldUvd lazHldUvd(
     final Map<String, Object> pRqVs) throws Exception {
-    HldUvd<IHasId<?>> rz = (HldUvd<IHasId<?>>) this.beans
+    HldUvd rz = (HldUvd) this.beans
       .get(HldUvd.class.getSimpleName());
     if (rz == null) {
-      rz = new HldUvd<IHasId<?>>();
+      rz = new HldUvd();
       rz.setSetng(lazStgUvd(pRqVs));
-      String stgNm = "liHe"; //list header
-      HldClsStg hlClSt = new HldClsStg(stgNm, stgNm);
-      hlClSt.setSetng(lazStgUvd(pRqVs));
-      rz.getHlClStgMp().put(stgNm, hlClSt);
-      stgNm = "liFo"; //list footer
-      hlClSt = new HldClsStg(stgNm, stgNm);
-      hlClSt.setSetng(lazStgUvd(pRqVs));
-      rz.getHlClStgMp().put(stgNm, hlClSt);
+      rz.setHlCnToSt(lazHldNmCnToStUvd(pRqVs));
+      rz.setFcCnToSt(lazFctNmCnToSt(pRqVs));
+      rz.setHlClStgMp(this.hlClStgMp);
+      rz.setHlFdStgMp(this.hlFdStgMp);
+      FctCnvId fci = new FctCnvId();
+      fci.setLogStd(lazLogStd(pRqVs));
+      fci.setSetng(lazStgUvd(pRqVs));
+      fci.setHldGets(lazHldGets(pRqVs));
+      fci.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setFctCnvId(fci);
+      HldCnvId hci = new HldCnvId();
+      hci.setCustIdClss(this.custIdClss);
+      rz.setHldCnvId(hci);
       this.beans.put(HldUvd.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), HldUvd.class.getSimpleName()
         + " has been created.");
@@ -1191,7 +1221,8 @@ public class FctBlc<RS> implements IFctApp {
       rz = new FctNmCnToSt();
       rz.setUtlXml(lazUtlXml(pRqVs));
       rz.setNumStr(lazNumStr(pRqVs));
-      rz.setHldNmFdCn(lazHldNmCnToSt(pRqVs));
+      rz.setHldNmFdCnUvd(lazHldNmCnToStUvd(pRqVs));
+      rz.setHldNmFdCnDbcp(lazHldNmCnToStXml(pRqVs));
       rz.setHldGets(lazHldGets(pRqVs));
       rz.setStgUvd(lazStgUvd(pRqVs));
       rz.setStgDbCp(lazStgDbCp(pRqVs));
@@ -1847,6 +1878,22 @@ public class FctBlc<RS> implements IFctApp {
   }
 
   /**
+   * <p>Getter for shrEnts.</p>
+   * @return List<Class<?>>
+   **/
+  public final synchronized List<Class<?>> getShrEnts() {
+    return this.shrEnts;
+  }
+
+  /**
+   * <p>Setter for shrEnts.</p>
+   * @param pShrEnts reference
+   **/
+  public final synchronized void setShrEnts(final List<Class<?>> pShrEnts) {
+    this.shrEnts = pShrEnts;
+  }
+
+  /**
    * <p>Getter for fbdEnts.</p>
    * @return List<Class<?>>
    **/
@@ -1860,5 +1907,56 @@ public class FctBlc<RS> implements IFctApp {
    **/
   public final synchronized void setFbdEnts(final List<Class<?>> pFbdEnts) {
     this.fbdEnts = pFbdEnts;
+  }
+
+  /**
+   * <p>Getter for hlClStgMp.</p>
+   * @return Map<String, HldClsStg>
+   **/
+  public final synchronized Map<String, HldClsStg> getHlClStgMp() {
+    return this.hlClStgMp;
+  }
+
+  /**
+   * <p>Setter for hlClStgMp.</p>
+   * @param pHlClStgMp reference
+   **/
+  public final synchronized void setHlClStgMp(
+    final Map<String, HldClsStg> pHlClStgMp) {
+    this.hlClStgMp = pHlClStgMp;
+  }
+
+  /**
+   * <p>Getter for hlFdStgMp.</p>
+   * @return Map<String, HldFldStg>
+   **/
+  public final synchronized Map<String, HldFldStg> getHlFdStgMp() {
+    return this.hlFdStgMp;
+  }
+
+  /**
+   * <p>Setter for hlFdStgMp.</p>
+   * @param pHlFdStgMp reference
+   **/
+  public final synchronized void setHlFdStgMp(
+    final Map<String, HldFldStg> pHlFdStgMp) {
+    this.hlFdStgMp = pHlFdStgMp;
+  }
+
+  /**
+   * <p>Getter for custIdClss.</p>
+   * @return Set<Class<?>>
+   **/
+  public final synchronized Set<Class<?>> getCustIdClss() {
+    return this.custIdClss;
+  }
+
+  /**
+   * <p>Setter for custIdClss.</p>
+   * @param pCustIdClss reference
+   **/
+  public final synchronized void setCustIdClss(
+    final Set<Class<?>> pCustIdClss) {
+    this.custIdClss = pCustIdClss;
   }
 }

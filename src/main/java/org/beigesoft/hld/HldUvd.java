@@ -36,17 +36,19 @@ import java.util.HashMap;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IOwned;
 import org.beigesoft.mdl.Page;
+import org.beigesoft.fct.IFctNm;
 import org.beigesoft.prp.ISetng;
+import org.beigesoft.cnv.ICnvId;
+import org.beigesoft.cnv.IConv;
 
 /**
  * <p>Service that transforms and holds part of settings from ISetng UVD.
  * It's also assembly and it consists of all UVD holders and request scoped
  * variables that are used in JSP.</p>
  *
- * @param <T> entity type
  * @author Yury Demidenko
  */
-public class HldUvd<T extends IHasId<?>> {
+public class HldUvd {
 
   //parts:
   /**
@@ -55,55 +57,124 @@ public class HldUvd<T extends IHasId<?>> {
   private ISetng setng;
 
   /**
+   * <p>Holder of converters ID-SQL/HTML names.</p>
+   **/
+  private IHld<Class<?>, String> hldCnvId;
+
+  /**
+   * <p>Factory of converters ID-SQL/HTML.</p>
+   */
+  private IFctNm<ICnvId<?, ?>> fctCnvId;
+
+  /**
    * <p>Holders class string settings.</p>
    **/
-  private final Map<String, HldClsStg> hlClStgMp =
-    new HashMap<String, HldClsStg>();
+  private Map<String, HldClsStg> hlClStgMp;
+
+  /**
+   * <p>Holders filed string settings.</p>
+   **/
+  private Map<String, HldFldStg> hlFdStgMp;
+
+  /**
+   * <p>Converters fields to string factory.</p>
+   */
+  private IFctNm<IConv<?, String>> fcCnToSt;
+
+  /**
+   * <p>Fields converters to string names holder.</p>
+   **/
+  private IHldNm<Class<?>, String> hlCnToSt;
 
   //derived/transformed settings:
   /**
    * <p>Entities fields inlist map.</p>
    **/
-  private final Map<Class<T>, String[]> lstFdsMp =
-    new HashMap<Class<T>, String[]>();
+  private final Map<Class<?>, String[]> lstFdsMp =
+    new HashMap<Class<?>, String[]>();
 
   /**
-   * <p>Owned entities map.</p>
+   * <p>Owned entities classes map.</p>
    **/
-  private final Map<Class<T>, List<Class<IOwned<T, ?>>>> owdEnts =
-    new HashMap<Class<T>, List<Class<IOwned<T, ?>>>>();
+  private final Map<Class<?>, List<Class<IOwned<?, ?>>>> owdEnts =
+    new HashMap<Class<?>, List<Class<IOwned<?, ?>>>>();
 
   //request scoped vars for JSP:
-    //list/form:
   /**
-   * <p>Requested entity class.</p>
+   * <p>Connection per thread holder.</p>
    **/
-  private Class<T> cls;
+  private final ThreadLocal<UvdVar> hldUvdVar = new ThreadLocal<UvdVar>() { };
 
-    //list:
+  //Utils(delegates):
   /**
-   * <p>Requested entity fields.</p>
+   * <p>Converts to HTML ready ID, e.g. "IID=PAYB" for Account with String ID,
+   * or "usr=User1&rol=Role1" for User-Role with composite ID.</p>
+   * @param pEnt entity
+   * @return to value
+   * @throws Exception - an exception
    **/
-  private List<T> ents;
-
-  /**
-   * <p>Requested entity fields.</p>
-   **/
-  private String[] lstFds;
-
-  /**
-   * <p>Pages.</p>
-   **/
-  private List<Page> pgs;
+  public final String idHtml(final IHasId<?> pEnt) throws Exception {
+    String cvIdSqNm = this.hldCnvId.get(pEnt.getClass());
+    @SuppressWarnings("rawtypes")
+    ICnvId cvIdSq = this.fctCnvId.laz(getRvs(), cvIdSqNm);
+    return cvIdSq.idHtml(pEnt);
+  }
 
   /**
-   * <p>Gets class string setting for current class.</p>
+   * <p>Converts to SQL ready ID, e.g. "'PAYB'" for Account with String ID,
+   * or "'User1','Role1'" for User-Role with composite ID.</p>
+   * @param pEnt entity
+   * @return to value
+   * @throws Exception - an exception
+   **/
+  public final String idSql(final IHasId<?> pEnt) throws Exception {
+    String cvIdSqNm = this.hldCnvId.get(pEnt.getClass());
+    @SuppressWarnings("rawtypes")
+    ICnvId cvIdSq = this.fctCnvId.laz(getRvs(), cvIdSqNm);
+    return cvIdSq.idSql(pEnt);
+  }
+
+  /**
+   * <p>Gets class string setting for given class.</p>
+   * @param pCls class
    * @param pStgNm setting name
    * @return string setting
    * @throws Exception - an exception
    **/
-  public final String stg(final String pStgNm) throws Exception {
-    return this.hlClStgMp.get(pStgNm).get(this.cls);
+  public final String stg(final Class<?> pCls,
+    final String pStgNm) throws Exception {
+    return this.hlClStgMp.get(pStgNm).get(pCls);
+  }
+
+  /**
+   * <p>Gets field string setting for given class, field name.</p>
+   * @param pCls class
+   * @param pFdNm field name
+   * @param pStgNm setting name
+   * @return string setting
+   * @throws Exception - an exception
+   **/
+  public final String stg(final Class<?> pCls, final String pFdNm,
+    final String pStgNm) throws Exception {
+    return this.hlFdStgMp.get(pStgNm).get(pCls, pFdNm);
+  }
+
+  /**
+   * <p>Formats (converts) field value to string for given class, field name.
+   * It delegates this to registered converter. It's for numbers.</p>
+   * @param pCls class
+   * @param pFdNm field name
+   * @param pFdVl field value
+   * @return string setting
+   * @throws Exception - an exception
+   **/
+  public final String toStr(final Class<?> pCls, final String pFdNm,
+    final Object pFdVl) throws Exception {
+    String cnm = this.hlCnToSt.get(pCls, pFdNm);
+    @SuppressWarnings("unchecked")
+    IConv<Object, String> cnv = (IConv<Object, String>) this.fcCnToSt
+      .laz(getRvs(), cnm);
+    return cnv.conv(getRvs(), pFdVl);
   }
 
   /**
@@ -113,7 +184,7 @@ public class HldUvd<T extends IHasId<?>> {
    * @throws Exception - an exception
    **/
   public final String[] lazLstFds(
-    final Class<T> pCls) throws Exception {
+    final Class<?> pCls) throws Exception {
     if (!this.owdEnts.keySet().contains(pCls)) {
       synchronized (this) {
         if (!this.lstFdsMp.keySet().contains(pCls)) {
@@ -146,8 +217,8 @@ public class HldUvd<T extends IHasId<?>> {
    * @return owned list
    * @throws Exception - an exception
    **/
-  public final List<Class<IOwned<T, ?>>> lazOwnd(
-    final Class<T> pCls) throws Exception {
+  public final List<Class<IOwned<?, ?>>> lazOwnd(
+    final Class<?> pCls) throws Exception {
     if (!this.owdEnts.keySet().contains(pCls)) {
       synchronized (this) {
         if (!this.owdEnts.keySet().contains(pCls)) {
@@ -159,11 +230,11 @@ public class HldUvd<T extends IHasId<?>> {
             }
           }
           if (owdes != null) {
-            List<Class<IOwned<T, ?>>> oeLst =
-              new ArrayList<Class<IOwned<T, ?>>>();
+            List<Class<IOwned<?, ?>>> oeLst =
+              new ArrayList<Class<IOwned<?, ?>>>();
             for (String oec : owdes.split(",")) {
               @SuppressWarnings("unchecked")
-              Class<IOwned<T, ?>> cl = (Class<IOwned<T, ?>>) Class.forName(oec);
+              Class<IOwned<?, ?>> cl = (Class<IOwned<?, ?>>) Class.forName(oec);
               oeLst.add(cl);
             }
             this.owdEnts.put(pCls, oeLst);
@@ -176,7 +247,134 @@ public class HldUvd<T extends IHasId<?>> {
     return this.owdEnts.get(pCls);
   }
 
-  //Synchronized SGS:
+  //Request/thread scoped vars:
+  /**
+   * <p>Getter variable per thread.</p>
+   * @return variables
+   **/
+  public final UvdVar lazUvdVar() {
+    UvdVar uvdVar = this.hldUvdVar.get();
+    if (uvdVar == null) {
+      uvdVar = new UvdVar();
+      hldUvdVar.set(uvdVar);
+    }
+    return uvdVar;
+  }
+
+  /**
+   * <p>Getter for cls.</p>
+   * @return Class<?>
+   **/
+  public final Class<?> getCls() {
+    return lazUvdVar().getCls();
+  }
+
+  /**
+   * <p>Setter for cls.</p>
+   * @param pCls reference
+   **/
+  public final void setCls(final Class<?> pCls) {
+    lazUvdVar().setCls(pCls);
+  }
+
+  /**
+   * <p>Getter for ents.</p>
+   * @return List<?>
+   **/
+  public final List<?> getEnts() {
+    return lazUvdVar().getEnts();
+  }
+
+  /**
+   * <p>Setter for ents.</p>
+   * @param pEnts reference
+   **/
+  public final void setEnts(final List<?> pEnts) {
+    lazUvdVar().setEnts(pEnts);
+  }
+
+  /**
+   * <p>Getter for lstFds.</p>
+   * @return String[]
+   **/
+  public final String[] getLstFds() {
+    return lazUvdVar().getLstFds();
+  }
+
+  /**
+   * <p>Setter for lstFds.</p>
+   * @param pLstFds reference
+   **/
+  public final void setLstFds(final String[] pLstFds) {
+    lazUvdVar().setLstFds(pLstFds);
+  }
+
+  /**
+   * <p>Getter for pgs.</p>
+   * @return List<Page>
+   **/
+  public final List<Page> getPgs() {
+    return lazUvdVar().getPgs();
+  }
+
+  /**
+   * <p>Setter for pgs.</p>
+   * @param pPgs reference
+   **/
+  public final void setPgs(final List<Page> pPgs) {
+    lazUvdVar().setPgs(pPgs);
+  }
+
+  /**
+   * <p>Getter for rvs.</p>
+   * @return Map<String, Object>
+   **/
+  public final Map<String, Object> getRvs() {
+    return lazUvdVar().getRvs();
+  }
+
+  /**
+   * <p>Setter for rvs.</p>
+   * @param pRvs reference
+   **/
+  public final void setRvs(final Map<String, Object> pRvs) {
+    lazUvdVar().setRvs(pRvs);
+  }
+
+  /**
+   * <p>Getter for ent.</p>
+   * @return IHasId<?>
+   **/
+  public final IHasId<?> getEnt() {
+    return lazUvdVar().getEnt();
+  }
+
+  /**
+   * <p>Setter for ent.</p>
+   * @param pEnt reference
+   **/
+  public final void setEnt(final IHasId<?> pEnt) {
+    lazUvdVar().setEnt(pEnt);
+  }
+
+  /**
+   * <p>Getter for owdEntsMp.</p>
+   * @return Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>>
+   **/
+  public final Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>> getOwdEntsMp() {
+    return lazUvdVar().getOwdEntsMp();
+  }
+
+  /**
+   * <p>Setter for owdEntsMp.</p>
+   * @param pOwdEntsMp reference
+   **/
+  public final void setOwdEntsMp(
+    final Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>> pOwdEntsMp) {
+    lazUvdVar().setOwdEntsMp(pOwdEntsMp);
+  }
+
+  //Synchronized/simple SGS:
   /**
    * <p>Getter for setng.</p>
    * @return ISetng
@@ -194,74 +392,98 @@ public class HldUvd<T extends IHasId<?>> {
   }
 
   /**
-   * <p>Getter for cls.</p>
-   * @return Class<T>
-   **/
-  public final Class<T> getCls() {
-    return this.cls;
-  }
-
-  /**
-   * <p>Setter for cls.</p>
-   * @param pCls reference
-   **/
-  public final void setCls(final Class<T> pCls) {
-    this.cls = pCls;
-  }
-
-  /**
-   * <p>Getter for ents.</p>
-   * @return List<T>
-   **/
-  public final List<T> getEnts() {
-    return this.ents;
-  }
-
-  /**
-   * <p>Setter for ents.</p>
-   * @param pEnts reference
-   **/
-  public final void setEnts(final List<T> pEnts) {
-    this.ents = pEnts;
-  }
-
-  /**
-   * <p>Getter for lstFds.</p>
-   * @return String[]
-   **/
-  public final String[] getLstFds() {
-    return this.lstFds;
-  }
-
-  /**
-   * <p>Setter for lstFds.</p>
-   * @param pLstFds reference
-   **/
-  public final void setLstFds(final String[] pLstFds) {
-    this.lstFds = pLstFds;
-  }
-
-  /**
-   * <p>Getter for pgs.</p>
-   * @return List<Page>
-   **/
-  public final List<Page> getPgs() {
-    return this.pgs;
-  }
-
-  /**
-   * <p>Setter for pgs.</p>
-   * @param pPgs reference
-   **/
-  public final void setPgs(final List<Page> pPgs) {
-    this.pgs = pPgs;
-  }
-
-  /**
    * <p>Getter for hlClStgMp.</p>
    * @return Map<String, HldClsStg>
    **/
   public final Map<String, HldClsStg> getHlClStgMp() {
     return this.hlClStgMp;
+  }
+
+  /**
+   * <p>Setter for hlClStgMp.</p>
+   * @param pHlClStgMp reference
+   **/
+  public final void setHlClStgMp(final Map<String, HldClsStg> pHlClStgMp) {
+    this.hlClStgMp = pHlClStgMp;
+  }
+
+  /**
+   * <p>Getter for hldCnvId.</p>
+   * @return IHld<Class<?>, String>
+   **/
+  public final IHld<Class<?>, String> getHldCnvId() {
+    return this.hldCnvId;
+  }
+
+  /**
+   * <p>Setter for hldCnvId.</p>
+   * @param pHldCnvId reference
+   **/
+  public final void setHldCnvId(final IHld<Class<?>, String> pHldCnvId) {
+    this.hldCnvId = pHldCnvId;
+  }
+
+  /**
+   * <p>Getter for fctCnvId.</p>
+   * @return IFctNm<ICnvId<?, ?>>
+   **/
+  public final IFctNm<ICnvId<?, ?>> getFctCnvId() {
+    return this.fctCnvId;
+  }
+
+  /**
+   * <p>Setter for fctCnvId.</p>
+   * @param pFctCnvId reference
+   **/
+  public final void setFctCnvId(final IFctNm<ICnvId<?, ?>> pFctCnvId) {
+    this.fctCnvId = pFctCnvId;
+  }
+
+  /**
+   * <p>Getter for fcCnToSt.</p>
+   * @return IFctNm<IConv<?, String>>
+   **/
+  public final IFctNm<IConv<?, String>> getFcCnToSt() {
+    return this.fcCnToSt;
+  }
+
+  /**
+   * <p>Setter for fcCnToSt.</p>
+   * @param pFcCnToSt reference
+   **/
+  public final void setFcCnToSt(final IFctNm<IConv<?, String>> pFcCnToSt) {
+    this.fcCnToSt = pFcCnToSt;
+  }
+
+  /**
+   * <p>Getter for hlCnToSt.</p>
+   * @return IHldNm<Class<?>, String>
+   **/
+  public final IHldNm<Class<?>, String> getHlCnToSt() {
+    return this.hlCnToSt;
+  }
+
+  /**
+   * <p>Setter for hlCnToSt.</p>
+   * @param pHlCnToSt reference
+   **/
+  public final void setHlCnToSt(final IHldNm<Class<?>, String> pHlCnToSt) {
+    this.hlCnToSt = pHlCnToSt;
+  }
+
+  /**
+   * <p>Getter for hlFdStgMp.</p>
+   * @return Map<String, HldFldStg>
+   **/
+  public final Map<String, HldFldStg> getHlFdStgMp() {
+    return this.hlFdStgMp;
+  }
+
+  /**
+   * <p>Setter for hlFdStgMp.</p>
+   * @param pHlFdStgMp reference
+   **/
+  public final void setHlFdStgMp(final Map<String, HldFldStg> pHlFdStgMp) {
+    this.hlFdStgMp = pHlFdStgMp;
   }
 }

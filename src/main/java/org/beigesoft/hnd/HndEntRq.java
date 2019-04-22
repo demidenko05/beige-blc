@@ -128,7 +128,7 @@ public class HndEntRq<RS> implements IHndRq {
   /**
    * <p>Holder transformed UVD settings, other holders and vars.</p>
    */
-  private HldUvd<IHasId<?>> hldUvd;
+  private HldUvd hldUvd;
 
   /**
    * <p>Handle request.
@@ -158,6 +158,7 @@ public class HndEntRq<RS> implements IHndRq {
       throw new ExcCode(ExcCode.FORB);
     }
     pRqDt.setAttr("hldUvd", this.hldUvd);
+    this.hldUvd.setRvs(pRqVs);
     boolean isDbgSh = this.logStd.getDbgSh(this.getClass())
       && this.logStd.getDbgFl() < 5001 && this.logStd.getDbgCl() > 4999;
     String[] actArr = pRqDt.getParam("act").split(",");
@@ -320,8 +321,7 @@ public class HndEntRq<RS> implements IHndRq {
             this.fctEntPrc.laz(pRqVs, entProcNm);
           if (pIsDbgSh) {
             this.logStd.debug(pRqVs, HndEntRq.class,
-              "It's used entProcNm/IPrcEnt: " + entProcNm + "/"
-                + ep.getClass());
+             "It's used entProcNm/IPrcEnt: " + entProcNm + "/" + ep.getClass());
           }
           ent = ep.process(pRqVs, ent, pRqDt);
         } else { // else actions like "list" (page)
@@ -330,8 +330,7 @@ public class HndEntRq<RS> implements IHndRq {
             this.logSec.error(pRqVs, HndEntRq.class,
               "Trying to work with forbidden ent/action/user: " + pNmEnt
                 + "/" + actNm + "/" + pRqDt.getUsrNm());
-            throw new ExcCode(ExcCode.FORB,
-              "Forbidden!");
+            throw new ExcCode(ExcCode.FORB, "Forbidden!");
           }
           IPrc proc = this.fctPrcFen.laz(pRqVs, procNm);
           if (pIsDbgSh) {
@@ -578,9 +577,9 @@ public class HndEntRq<RS> implements IHndRq {
 
   /**
    * <p>Getter for hldUvd.</p>
-   * @return HldUvd<IHasId<?>>
+   * @return HldUvd
    **/
-  public final HldUvd<IHasId<?>> getHldUvd() {
+  public final HldUvd getHldUvd() {
     return this.hldUvd;
   }
 
@@ -588,7 +587,7 @@ public class HndEntRq<RS> implements IHndRq {
    * <p>Setter for hldUvd.</p>
    * @param pHldUvd reference
    **/
-  public final void setHldUvd(final HldUvd<IHasId<?>> pHldUvd) {
+  public final void setHldUvd(final HldUvd pHldUvd) {
     this.hldUvd = pHldUvd;
   }
 }

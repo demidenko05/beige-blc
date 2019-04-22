@@ -106,7 +106,7 @@ public class HlpEntPg<RS> {
   /**
    * <p>Holder transformed UVD settings, other holders and vars.</p>
    */
-  private HldUvd<IHasId<?>> hldUvd;
+  private HldUvd hldUvd;
 
   /**
    * <p>Fields converters factory.</p>
@@ -1005,9 +1005,9 @@ public class HlpEntPg<RS> {
 
   /**
    * <p>Getter for hldUvd.</p>
-   * @return HldUvd<IHasId<?>>
+   * @return HldUvd
    **/
-  public final HldUvd<IHasId<?>> getHldUvd() {
+  public final HldUvd getHldUvd() {
     return this.hldUvd;
   }
 
@@ -1015,7 +1015,7 @@ public class HlpEntPg<RS> {
    * <p>Setter for hldUvd.</p>
    * @param pHldUvd reference
    **/
-  public final void setHldUvd(final HldUvd<IHasId<?>> pHldUvd) {
+  public final void setHldUvd(final HldUvd pHldUvd) {
     this.hldUvd = pHldUvd;
   }
 }

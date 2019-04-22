@@ -29,7 +29,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.hld;
 
 import java.util.Set;
-import java.util.HashSet;
 
 import org.beigesoft.prp.ISetng;
 /**
@@ -58,7 +57,17 @@ public class HldClsStg {
   /**
    * <p>Classes with custom setting from ISetng.</p>
    **/
-  private final Set<Class<?>> custClss = new HashSet<Class<?>>();
+  private Set<Class<?>> custClss;
+
+  /**
+   * <p>Classes with NULL setting.</p>
+   **/
+  private Set<Class<?>> nulClss;
+
+  /**
+   * <p>Super-Classes with NULL setting, e.g. IOwned.</p>
+   **/
+  private Set<Class<?>> nulSclss;
 
   /**
    * <p>Only constructor.</p>
@@ -73,10 +82,20 @@ public class HldClsStg {
   /**
    * <p>Get setting for given class.</p>
    * @param pCls a Class
-   * @return setting
+   * @return setting or NULL
    **/
   public final String get(final Class<?> pCls) {
-    if (this.custClss.contains(pCls)) {
+    if (this.nulClss != null && this.nulClss.contains(pCls)) {
+      return null;
+    }
+    if (this.nulSclss != null) {
+      for (Class<?> scls : this.nulSclss) {
+        if (scls.isAssignableFrom(pCls)) {
+          return null;
+        }
+      }
+    }
+    if (this.custClss != null && this.custClss.contains(pCls)) {
       String rez = null;
       try {
         rez = this.setng.lazClsStg(pCls, this.stgNm);
@@ -109,6 +128,7 @@ public class HldClsStg {
   public final void setSetng(final ISetng pSetng) {
     this.setng = pSetng;
   }
+
   /**
    * <p>Getter for stgNm.</p>
    * @return String
@@ -116,7 +136,6 @@ public class HldClsStg {
   public final String getStgNm() {
     return this.stgNm;
   }
-
 
   /**
    * <p>Getter for stdVal.</p>
@@ -132,5 +151,45 @@ public class HldClsStg {
    **/
   public final Set<Class<?>> getCustClss() {
     return this.custClss;
+  }
+
+  /**
+   * <p>Setter for custClss.</p>
+   * @param pCustClss reference
+   **/
+  public final void setCustClss(final Set<Class<?>> pCustClss) {
+    this.custClss = pCustClss;
+  }
+
+  /**
+   * <p>Getter for nulClss.</p>
+   * @return Set<Class<?>>
+   **/
+  public final Set<Class<?>> getNulClss() {
+    return this.nulClss;
+  }
+
+  /**
+   * <p>Setter for nulClss.</p>
+   * @param pNulClss reference
+   **/
+  public final void setNulClss(final Set<Class<?>> pNulClss) {
+    this.nulClss = pNulClss;
+  }
+
+  /**
+   * <p>Getter for nulSclss.</p>
+   * @return Set<Class<?>>
+   **/
+  public final Set<Class<?>> getNulSclss() {
+    return this.nulSclss;
+  }
+
+  /**
+   * <p>Setter for nulSclss.</p>
+   * @param pNulSclss reference
+   **/
+  public final void setNulSclss(final Set<Class<?>> pNulSclss) {
+    this.nulSclss = pNulSclss;
   }
 }
