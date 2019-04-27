@@ -44,7 +44,6 @@ import org.beigesoft.mdl.CmnPrf;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.dlg.IEvalFr;
-import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.IConv;
 import org.beigesoft.hld.IHldNm;
 import org.beigesoft.hld.HldUvd;
@@ -99,11 +98,6 @@ public class HlpEntPg<RS> {
   private ISrvDt srvDt;
 
   /**
-   * <p>Manager UVD settings.</p>
-   **/
-  private ISetng setng;
-
-  /**
    * <p>Holder transformed UVD settings, other holders and vars.</p>
    */
   private HldUvd hldUvd;
@@ -154,9 +148,10 @@ public class HlpEntPg<RS> {
     }
     Class<IHasId<?>> cls = pEntMp.get(ent);
     Set<String> fltAp = null;
-    if (pRqd.getParam("flyNeedFltAppear") != null) {
+    if (pRqd.getParam("flyNdFltAp") != null) {
+      //to print used filter, e.g. used filter in assign goods to catalog
       fltAp = new HashSet<String>();
-      pRvs.put("fltAp", fltAp);
+      this.hldUvd.setFltAp(fltAp);
       if (pDbgSh) {
         this.log.debug(pRvs, getClass(), "It's used fltAp: " + fltAp);
       }
@@ -164,47 +159,52 @@ public class HlpEntPg<RS> {
     StringBuffer sbWhe = revPgFltDt(pRvs, pRqd, cls, pDbgSh);
     //cause settled either from request or from settings
     Map<String, String> ordMp = new HashMap<String, String>();
+    this.hldUvd.setOrdMp(ordMp);
     String quOrdBy = "";
-    String flOrPrf;
+    String foprf;
     String rnd = pRqd.getParam("rnd");
-    if (rnd.contains("pickerDub")) {
-      flOrPrf = "fltordPD";
-    } else if (rnd.contains("picker")) {
-      flOrPrf = "fltordP";
+    if (rnd != null && rnd.startsWith("p")) {
+      foprf = "fopd";
+    } else if (rnd != null && rnd.startsWith("pd")) {
+      foprf = "fop";
     } else {
-      flOrPrf = "fltordM";
+      foprf = "fom";
     }
     if (pDbgSh) {
-      this.log.debug(pRvs, getClass(), "It's used flOrPrf: " + flOrPrf);
+      this.log.debug(pRvs, getClass(), "It's used foprf: " + foprf);
     }
-    String ordBy = pRqd.getParam(flOrPrf + "ordBy");
+    String ordBy = pRqd.getParam(foprf + "ordBy");
     if (pDbgSh) {
       this.log.debug(pRvs, getClass(), "It's used ordBy: " + ordBy);
     }
     if (ordBy != null && !ordBy.equals("disabled")) {
-      ordMp.put(flOrPrf + "ordBy", ordBy);
+      ordMp.put(foprf + "ordBy", ordBy);
       String desc = "";
-      if (pRqd.getParam(flOrPrf + "orderByDesc") != null) {
-        // HTML form send nothing for unchecked checkbox
-        desc = " desc";
-        ordMp.put(flOrPrf + "orderByDesc", "on");
+      String orbyde = pRqd.getParam(foprf + "ordByDe");
+      if (orbyde != null) {
+        ordMp.put(foprf + "ordByDe", orbyde);
+        if (!"off".equals(orbyde)) {
+          desc = " desc";
+        }
       }
       quOrdBy = " order by " + ent.toUpperCase() + "."
         + ordBy.toUpperCase() + desc;
     } else {
-      ordMp.put(flOrPrf + "ordBy", this.setng.lazClsStg(cls, "ordDf"));
-      String orderByDesc = this.setng.lazClsStg(cls, "ordDscDf");
+      ordMp.put(foprf + "ordBy", this.hldUvd.stg(cls, "ordDf"));
+      String orderByDesc = this.hldUvd.stg(cls, "orDeDf");
+      ordMp.put(foprf + "ordByDe", orderByDesc);
       String ordDescSt = "";
       if (orderByDesc.equals("on")) {
-        ordMp.put(flOrPrf + "orderByDesc", orderByDesc);
         ordDescSt = " desc";
       }
-      quOrdBy = " order by " + ent.toUpperCase() + "."
-        + ordMp.get(flOrPrf + "ordBy").toUpperCase() + ordDescSt;
+      String obs = ordMp.get(foprf + "ordBy");
+      if (obs.indexOf(".") == -1) {
+        obs = cls.getSimpleName() + "." + obs;
+      }
+      quOrdBy = " order by " + obs.toUpperCase() + ordDescSt;
     }
     if (pDbgSh) {
-      this.log.debug(pRvs, getClass(),
-        "It's used quOrdBy: " + quOrdBy);
+      this.log.debug(pRvs, getClass(), "It's used quOrdBy: " + quOrdBy);
     }
     Integer roCnt;
     String strWhe = null;
@@ -222,7 +222,7 @@ public class HlpEntPg<RS> {
       } else {
         strWhe = strFiWhe;
       }
-    } else if (sbWhe.length() > 0) {
+    } else if (sbWhe.length() > 1) {
       strWhe = sbWhe.toString();
     }
     if (strWhe != null) {
@@ -267,9 +267,6 @@ public class HlpEntPg<RS> {
     this.hldUvd.setEnts(ents);
     this.hldUvd.setLstFds(lstFds);
     this.hldUvd.setCls(cls);
-    if (fltAp != null) {
-      pRqd.setAttr("fltAp", fltAp);
-    }
   }
 
   /**
@@ -284,38 +281,35 @@ public class HlpEntPg<RS> {
   public final StringBuffer revPgFltDt(final Map<String, Object> pRvs,
     final IReqDt pRqd, final Class<?> pCls,
       final boolean pDbgSh) throws Exception {
-    // it is not null if need to client e.g. for bulk operations
-    @SuppressWarnings("unchecked")
-    Set<String> fltAp = (Set<String>) pRvs.get("fltAp");
     StringBuffer sbWhe = new StringBuffer("");
     Map<String, Object> fltMp = new HashMap<String, Object>();
+    this.hldUvd.setFltMp(fltMp);
     String ent = pCls.getSimpleName();
-    for (String fdNm : this.setng.lazFldNms(pCls)) {
-      String wFl = this.setng.lazFldStg(pCls, fdNm, "wFl");
+    for (String fdNm : this.hldUvd.lazLstFds(pCls)) {
+      String flt = this.hldUvd.stg(pCls, fdNm, "flt");
       if (pDbgSh) {
-  this.log.debug(pRvs, getClass(), "It's used wFl/field: " + wFl + "/" + fdNm);
+  this.log.debug(pRvs, getClass(), "It's used flt/field: " + flt + "/" + fdNm);
       }
-      if (wFl != null) {
-        if ("fEnt".equals(wFl)) {
-          mkWheEnt(sbWhe, pRqd, ent, fdNm, fltMp, fltAp);
-        } else if ("flSt".equals(wFl)) {
-          mkWheStr(sbWhe, pRqd, ent, fdNm, fltMp, fltAp);
-        } else if (wFl.startsWith("filterDate")) {
-          mkWheDtTm(sbWhe, pRqd, ent, fdNm, "1", fltMp, fltAp);
-          mkWheDtTm(sbWhe, pRqd, ent, fdNm, "2", fltMp, fltAp);
-        } else if ("filterEnum".equals(wFl)) {
-          mkWheEnm(sbWhe, pRqd, pCls, fdNm, fltMp, fltAp);
-        } else if ("filterBoolean".equals(wFl)) {
-          mkWheBln(sbWhe, pRqd, pCls, fdNm, fltMp, fltAp);
-        } else if (wFl.startsWith("explFlt")) {
-          mkWheExcpl(sbWhe, pRqd, pCls, fdNm, fltMp, fltAp);
+      if (flt != null) {
+        if ("ent".equals(flt)) {
+          mkWheEnt(sbWhe, pRqd, ent, fdNm);
+        } else if ("str".equals(flt)) {
+          mkWheStr(sbWhe, pRqd, ent, fdNm);
+        } else if (flt.startsWith("dt")) {
+          mkWheDtTm(sbWhe, pRqd, ent, fdNm, "1");
+          mkWheDtTm(sbWhe, pRqd, ent, fdNm, "2");
+        } else if ("enm".equals(flt)) {
+          mkWheEnm(sbWhe, pRqd, pCls, fdNm);
+        } else if ("bln".equals(flt)) {
+          mkWheBln(sbWhe, pRqd, pCls, fdNm);
+        } else if (flt.startsWith("expl")) {
+          mkWheExcpl(sbWhe, pRqd, pCls, fdNm);
         } else {
-          mkWheStd(sbWhe, pRqd, ent, fdNm, "1", fltMp, fltAp);
-          mkWheStd(sbWhe, pRqd, ent, fdNm, "2", fltMp, fltAp);
+          mkWheStd(sbWhe, pRqd, ent, fdNm, "1");
+          mkWheStd(sbWhe, pRqd, ent, fdNm, "2");
         }
       }
     }
-    pRqd.setAttr("fltMp", fltMp);
     return sbWhe;
   }
 
@@ -325,31 +319,27 @@ public class HlpEntPg<RS> {
    * @param pRqd - Request Data
    * @param pEntNm - entity name
    * @param pFdNm - field name
-   * @param pFltMp - map to store current filter
-   * @param pFltAp - set to store current filter appearance
-   * if null - not required
    * @throws Exception - an Exception
    **/
   public final void mkWheStr(final StringBuffer pSbw, final IReqDt pRqd,
-    final String pEntNm, final String pFdNm, final Map<String, Object> pFltMp,
-      final Set<String> pFltAp) throws Exception {
+    final String pEntNm, final String pFdNm) throws Exception {
     String rnd = pRqd.getParam("rnd");
-    String flOrPrf;
-    if (rnd != null && rnd.contains("pickerDub")) {
-      flOrPrf = "fltordPD";
-    } else if (rnd != null && rnd.contains("picker")) {
-      flOrPrf = "fltordP";
+    String foprf;
+    if (rnd != null && rnd.startsWith("pd")) {
+      foprf = "fopd";
+    } else if (rnd != null && rnd.startsWith("p")) {
+      foprf = "fop";
     } else {
-      flOrPrf = "fltordM";
+      foprf = "fom";
     }
-    String fltforcedName = flOrPrf + "forcedFor";
-    String fltforced = pRqd.getParam(fltforcedName);
-    if (fltforced != null) {
-      pFltMp.put(fltforcedName, fltforced);
+    String flFrcdNm = foprf + "frcd";
+    String flFrcdVl = pRqd.getParam(flFrcdNm);
+    if (flFrcdVl != null) {
+      this.hldUvd.getFltMp().put(flFrcdNm, flFrcdVl);
     }
-    String nmFldVal = flOrPrf + pFdNm + "Val";
+    String nmFldVal = foprf + pFdNm + "Vl";
     String fltVal = pRqd.getParam(nmFldVal);
-    String nmFldOpr = flOrPrf + pFdNm + "Opr";
+    String nmFldOpr = foprf + pFdNm + "Opr";
     String fltOp = pRqd.getParam(nmFldOpr);
     String cond = null;
     if ("isnotnull".equals(fltOp) || "isnull".equals(fltOp)) {
@@ -358,16 +348,14 @@ public class HlpEntPg<RS> {
             + toSqlOp(fltOp);
     } else if (fltVal != null && fltOp != null
       && !fltOp.equals("disabled") && !fltOp.equals("")) {
-      cond = pEntNm.toUpperCase()
-          + "." + pFdNm.toUpperCase() + " "
-          + toSqlOp(fltOp)
-          + " '" + fltVal + "'";
+      cond = pEntNm.toUpperCase() + "." + pFdNm.toUpperCase() + " "
+        + toSqlOp(fltOp) + " '" + fltVal + "'";
     }
     if (cond != null) {
-      pFltMp.put(nmFldVal, fltVal);
-      pFltMp.put(nmFldOpr, fltOp);
-      if (pFltAp != null) {
-        pFltAp.add(getI18n().getMsg(pFdNm) + " "
+      this.hldUvd.getFltMp().put(nmFldVal, fltVal);
+      this.hldUvd.getFltMp().put(nmFldOpr, fltOp);
+      if (this.hldUvd.getFltAp() != null) {
+        this.hldUvd.getFltAp().add(getI18n().getMsg(pFdNm) + " "
           + getI18n().getMsg(fltOp) + " " + fltVal);
       }
       if (pSbw.toString().length() == 0) {
@@ -385,32 +373,28 @@ public class HlpEntPg<RS> {
    * @param pEntNm - entity name
    * @param pFdNm - field name
    * @param pParSuffix - parameter suffix
-   * @param pFltMp - map to store current filter
-   * @param pFltAp - set to store current filter appearance
-   * if null - not required
    * @throws Exception - an Exception
    **/
   public final void mkWheStd(final StringBuffer pSbw, final IReqDt pRqd,
-    final String pEntNm, final String pFdNm, final String pParSuffix,
-      final Map<String, Object> pFltMp,
-        final Set<String> pFltAp) throws Exception {
+    final String pEntNm, final String pFdNm,
+      final String pParSuffix) throws Exception {
     String rnd = pRqd.getParam("rnd");
-    String flOrPrf;
-    if (rnd != null && rnd.contains("pickerDub")) {
-      flOrPrf = "fltordPD";
-    } else if (rnd != null && rnd.contains("picker")) {
-      flOrPrf = "fltordP";
+    String foprf;
+    if (rnd != null && rnd.startsWith("pd")) {
+      foprf = "fopd";
+    } else if (rnd != null && rnd.startsWith("p")) {
+      foprf = "fop";
     } else {
-      flOrPrf = "fltordM";
+      foprf = "fom";
     }
-    String fltforcedName = flOrPrf + "forcedFor";
-    String fltforced = pRqd.getParam(fltforcedName);
-    if (fltforced != null) {
-      pFltMp.put(fltforcedName, fltforced);
+    String flFrcdNm = foprf + "frcd";
+    String flFrcdVl = pRqd.getParam(flFrcdNm);
+    if (flFrcdVl != null) {
+      this.hldUvd.getFltMp().put(flFrcdNm, flFrcdVl);
     }
-    String nmFldVal = flOrPrf + pFdNm + "Val" + pParSuffix;
+    String nmFldVal = foprf + pFdNm + "Vl" + pParSuffix;
     String fltVal = pRqd.getParam(nmFldVal);
-    String nmFldOpr = flOrPrf + pFdNm
+    String nmFldOpr = foprf + pFdNm
       + "Opr" + pParSuffix;
     String fltOp = pRqd.getParam(nmFldOpr);
     String cond = null;
@@ -426,10 +410,10 @@ public class HlpEntPg<RS> {
           + " " + fltVal;
     }
     if (cond != null) {
-      pFltMp.put(nmFldVal, fltVal);
-      pFltMp.put(nmFldOpr, fltOp);
-      if (pFltAp != null) {
-        pFltAp.add(getI18n().getMsg(pFdNm) + " "
+      this.hldUvd.getFltMp().put(nmFldVal, fltVal);
+      this.hldUvd.getFltMp().put(nmFldOpr, fltOp);
+      if (this.hldUvd.getFltAp() != null) {
+        this.hldUvd.getFltAp().add(getI18n().getMsg(pFdNm) + " "
           + getI18n().getMsg(fltOp) + " " + fltVal);
       }
       if (pSbw.toString().length() == 0) {
@@ -447,32 +431,28 @@ public class HlpEntPg<RS> {
    * @param pEntNm - entity name
    * @param pFdNm - field name
    * @param pParSuffix - parameter suffix
-   * @param pFltMp - map to store current filter
-   * @param pFltAp - set to store current filter appearance
-   * if null - not required
    * @throws Exception - an Exception
    **/
   public final void mkWheDtTm(final StringBuffer pSbw, final IReqDt pRqd,
-    final String pEntNm, final String pFdNm, final String pParSuffix,
-      final Map<String, Object> pFltMp,
-        final Set<String> pFltAp) throws Exception {
+    final String pEntNm, final String pFdNm,
+      final String pParSuffix) throws Exception {
     String rnd = pRqd.getParam("rnd");
-    String flOrPrf;
-    if (rnd != null && rnd.contains("pickerDub")) {
-      flOrPrf = "fltordPD";
-    } else if (rnd != null && rnd.contains("picker")) {
-      flOrPrf = "fltordP";
+    String foprf;
+    if (rnd != null && rnd.startsWith("pd")) {
+      foprf = "fopd";
+    } else if (rnd != null && rnd.startsWith("p")) {
+      foprf = "fop";
     } else {
-      flOrPrf = "fltordM";
+      foprf = "fom";
     }
-    String fltforcedName = flOrPrf + "forcedFor";
-    String fltforced = pRqd.getParam(fltforcedName);
-    if (fltforced != null) {
-      pFltMp.put(fltforcedName, fltforced);
+    String flFrcdNm = foprf + "frcd";
+    String flFrcdVl = pRqd.getParam(flFrcdNm);
+    if (flFrcdVl != null) {
+      this.hldUvd.getFltMp().put(flFrcdNm, flFrcdVl);
     }
-    String nmFldVal = flOrPrf + pFdNm + "Val" + pParSuffix;
+    String nmFldVal = foprf + pFdNm + "Vl" + pParSuffix;
     String fltVal = pRqd.getParam(nmFldVal);
-    String nmFldOpr = flOrPrf + pFdNm
+    String nmFldOpr = foprf + pFdNm
       + "Opr" + pParSuffix;
     String fltOp = pRqd.getParam(nmFldOpr);
     String cond = null;
@@ -494,16 +474,14 @@ public class HlpEntPg<RS> {
       } else { //2001-07-04
         valDt = this.srvDt.fromIso8601DateNoTz(fltVal, null);
       }
-      cond = pEntNm.toUpperCase()
-          + "." + pFdNm.toUpperCase() + " "
-          + toSqlOp(fltOp)
-          + " " + valDt.getTime();
+      cond = pEntNm.toUpperCase() + "." + pFdNm.toUpperCase() + " "
+        + toSqlOp(fltOp) + " " + valDt.getTime();
     }
     if (cond != null) {
-      pFltMp.put(nmFldVal, fltVal);
-      pFltMp.put(nmFldOpr, fltOp);
-      if (pFltAp != null) {
-        pFltAp.add(getI18n().getMsg(pFdNm) + " "
+      this.hldUvd.getFltMp().put(nmFldVal, fltVal);
+      this.hldUvd.getFltMp().put(nmFldOpr, fltOp);
+      if (this.hldUvd.getFltAp() != null) {
+        this.hldUvd.getFltAp().add(getI18n().getMsg(pFdNm) + " "
           + getI18n().getMsg(fltOp) + " " + fltVal);
       }
       if (pSbw.toString().length() == 0) {
@@ -553,44 +531,39 @@ public class HlpEntPg<RS> {
    * @param pRqd - Request Data
    * @param pEntNm - entity name
    * @param pFdNm - field name
-   * @param pFltMp - map to store current filter
-   * @param pFltAp - set to store current filter appearance
-   * if null - not required
    * @throws Exception - an Exception
    **/
   public final void mkWheEnt(final StringBuffer pSbw, final IReqDt pRqd,
-    final String pEntNm, final String pFdNm, final Map<String, Object> pFltMp,
-      final Set<String> pFltAp) throws Exception {
+    final String pEntNm, final String pFdNm) throws Exception {
     String rnd = pRqd.getParam("rnd");
-    String flOrPrf;
-    if (rnd.contains("pickerDub")) {
-      flOrPrf = "fltordPD";
-    } else if (rnd.contains("picker")) {
-      flOrPrf = "fltordP";
+    String foprf;
+    if (rnd != null && rnd.startsWith("pd")) {
+      foprf = "fopd";
+    } else if (rnd != null && rnd.startsWith("p")) {
+      foprf = "fop";
     } else {
-      flOrPrf = "fltordM";
+      foprf = "fom";
     }
-    String nmFldValId = flOrPrf + pFdNm + "ValId";
-    String fltValId = pRqd.getParam(nmFldValId);
-    String nmFldOpr = flOrPrf + pFdNm + "Opr";
+    String nmFldVlId = foprf + pFdNm + "VlId";
+    String fltVlId = pRqd.getParam(nmFldVlId);
+    String nmFldOpr = foprf + pFdNm + "Opr";
     String fltOp = pRqd.getParam(nmFldOpr);
     if (fltOp != null && !fltOp.equals("disabled")) {
       // equals or not to empty
-      if (fltValId == null || fltValId.length() == 0) {
+      if (fltVlId == null || fltVlId.length() == 0) {
         if (fltOp.equals("eq")) {
           fltOp = "isnull";
         } else {
           fltOp = "isnotnull";
         }
       }
-      pFltMp.put(nmFldOpr, fltOp);
-      String fltforcedName = flOrPrf + "forcedFor";
-      String fltforced = pRqd.getParam(fltforcedName);
-      if (fltforced != null) {
-        pFltMp.put(fltforcedName, fltforced);
+      this.hldUvd.getFltMp().put(nmFldOpr, fltOp);
+      String flFrcdNm = foprf + "frcd";
+      String flFrcdVl = pRqd.getParam(flFrcdNm);
+      if (flFrcdVl != null) {
+        this.hldUvd.getFltMp().put(flFrcdNm, flFrcdVl);
       }
-      if (fltOp.equals("isnull")
-        || fltOp.equals("isnotnull")) {
+      if (fltOp.equals("isnull") || fltOp.equals("isnotnull")) {
         String cond = pEntNm.toUpperCase()
           + "." + pFdNm.toUpperCase() + " "
             + toSqlOp(fltOp);
@@ -599,16 +572,17 @@ public class HlpEntPg<RS> {
         } else {
           pSbw.append(" and " + cond);
         }
-        if (pFltAp != null) {
-          pFltAp.add(getI18n().getMsg(pFdNm) + " " + getI18n().getMsg(fltOp));
+        if (this.hldUvd.getFltAp() != null) {
+          this.hldUvd.getFltAp().add(getI18n().getMsg(pFdNm) + " "
+            + getI18n().getMsg(fltOp));
         }
       } else {
-        pFltMp.put(nmFldValId, fltValId);
-        String nmFldValAppearance = flOrPrf + pFdNm
-          + "ValAppearance";
-        String fltValAppearance = pRqd.getParam(nmFldValAppearance);
-        pFltMp.put(nmFldValAppearance, fltValAppearance);
-        String valId = fltValId;
+        this.hldUvd.getFltMp().put(nmFldVlId, fltVlId);
+        String nmFldVlAp = foprf + pFdNm
+          + "VlAp";
+        String fltVlAp = pRqd.getParam(nmFldVlAp);
+        this.hldUvd.getFltMp().put(nmFldVlAp, fltVlAp);
+        String valId = fltVlId;
         if (fltOp.equals("in")) {
           valId = "(" + valId + ")";
         }
@@ -619,9 +593,9 @@ public class HlpEntPg<RS> {
         } else {
           pSbw.append(" and " + cond);
         }
-        if (pFltAp != null) {
-          pFltAp.add(getI18n().getMsg(pFdNm) + " "
-            + getI18n().getMsg(fltOp) + " " + fltValAppearance);
+        if (this.hldUvd.getFltAp() != null) {
+          this.hldUvd.getFltAp().add(getI18n().getMsg(pFdNm) + " "
+            + getI18n().getMsg(fltOp) + " " + fltVlAp);
         }
       }
     }
@@ -633,31 +607,27 @@ public class HlpEntPg<RS> {
    * @param pRqd - Request Data
    * @param pCls - entity class
    * @param pFdNm - field name
-   * @param pFltMp - map to store current filter
-   * @param pFltAp - set to store current filter appearance
-   * if null - not required
    * @throws Exception - an Exception
    **/
   public final void mkWheEnm(final StringBuffer pSbw, final IReqDt pRqd,
-    final Class<?> pCls, final String pFdNm, final Map<String, Object> pFltMp,
-      final Set<String> pFltAp) throws Exception {
+    final Class<?> pCls, final String pFdNm) throws Exception {
     String rnd = pRqd.getParam("rnd");
-    String flOrPrf;
-    if (rnd.contains("pickerDub")) {
-      flOrPrf = "fltordPD";
-    } else if (rnd.contains("picker")) {
-      flOrPrf = "fltordP";
+    String foprf;
+    if (rnd != null && rnd.startsWith("pd")) {
+      foprf = "fopd";
+    } else if (rnd != null && rnd.startsWith("p")) {
+      foprf = "fop";
     } else {
-      flOrPrf = "fltordM";
+      foprf = "fom";
     }
-    String fltforcedName = flOrPrf + "forcedFor";
-    String fltforced = pRqd.getParam(fltforcedName);
-    if (fltforced != null) {
-      pFltMp.put(fltforcedName, fltforced);
+    String flFrcdNm = foprf + "frcd";
+    String flFrcdVl = pRqd.getParam(flFrcdNm);
+    if (flFrcdVl != null) {
+      this.hldUvd.getFltMp().put(flFrcdNm, flFrcdVl);
     }
-    String nmFldVal = flOrPrf + pFdNm + "Val";
+    String nmFldVal = foprf + pFdNm + "Vl";
     String fltVal = pRqd.getParam(nmFldVal);
-    String nmFldOpr = flOrPrf + pFdNm + "Opr";
+    String nmFldOpr = foprf + pFdNm + "Opr";
     String fltOp = pRqd.getParam(nmFldOpr);
     if (fltVal != null && fltVal.length() > 0 && fltOp != null
       && !fltOp.equals("disabled") && !fltOp.equals("")) {
@@ -682,25 +652,25 @@ public class HlpEntPg<RS> {
         }
         val = sbVal.toString() + ")";
         valAppear = sbValAppear.toString() + ")";
+        this.hldUvd.getFltMp().put(nmFldVal, fltVal);
       } else {
-        Enum enVal = classEnum.getEnumConstants()[Integer.parseInt(fltVal)];
+        Integer valInt = Integer.valueOf(fltVal);
+        Enum enVal = classEnum.getEnumConstants()[valInt];
         val = fltVal;
         valAppear = getI18n().getMsg(enVal.name());
+        this.hldUvd.getFltMp().put(nmFldVal, valInt);
       }
-      pFltMp.put(flOrPrf + pFdNm + "ValAppearance", valAppear);
-      pFltMp.put(nmFldVal, fltVal);
-      pFltMp.put(nmFldOpr, fltOp);
-      String cond = pCls.getSimpleName().toUpperCase()
-          + "." + pFdNm.toUpperCase() + " "
-          + toSqlOp(fltOp)
-          + " " + val;
+      this.hldUvd.getFltMp().put(foprf + pFdNm + "VlAp", valAppear);
+      this.hldUvd.getFltMp().put(nmFldOpr, fltOp);
+      String cond = pCls.getSimpleName().toUpperCase() + "."
+        + pFdNm.toUpperCase() + " "  + toSqlOp(fltOp) + " " + val;
       if (pSbw.toString().length() == 0) {
         pSbw.append(cond);
       } else {
         pSbw.append(" and " + cond);
       }
-      if (pFltAp != null) {
-        pFltAp.add(getI18n().getMsg(pFdNm) + " "
+      if (this.hldUvd.getFltAp() != null) {
+        this.hldUvd.getFltAp().add(getI18n().getMsg(pFdNm) + " "
           + getI18n().getMsg(fltOp) + " " + valAppear);
       }
     }
@@ -717,7 +687,7 @@ public class HlpEntPg<RS> {
    * " prcnt "is "%"
    * " undln "is "_"
    * e.g.:
-   * "DESCRIPTION apst prcnt 200 undln apst and PAYMENTTOTAL/ITSTOTAL gte 0.05"
+   * "DESCRIPTION apst prcnt 200 apst and PAYMENTTOTAL/ITSTOTAL gte 0.05"
    * is treated as
    * "DESCRIPTION '%200' and PAYMENTTOTAL/ITSTOTAL >= 0.05".
    * </p>
@@ -725,33 +695,29 @@ public class HlpEntPg<RS> {
    * @param pRqd - Request Data
    * @param pCls - entity class
    * @param pFdNm - field name
-   * @param pFltMp - map to store current filter
-   * @param pFltAp - set to store current filter appearance
-   * if null - not required
    * @throws Exception - an Exception
    **/
   public final void mkWheExcpl(final StringBuffer pSbw, final IReqDt pRqd,
-    final Class<?> pCls, final String pFdNm, final Map<String, Object> pFltMp,
-      final Set<String> pFltAp) throws Exception {
+    final Class<?> pCls, final String pFdNm) throws Exception {
     String rnd = pRqd.getParam("rnd");
-    String flOrPrf;
-    if (rnd.contains("pickerDub")) {
-      flOrPrf = "fltordPD";
-    } else if (rnd.contains("picker")) {
-      flOrPrf = "fltordP";
+    String foprf;
+    if (rnd != null && rnd.startsWith("pd")) {
+      foprf = "fopd";
+    } else if (rnd != null && rnd.startsWith("p")) {
+      foprf = "fop";
     } else {
-      flOrPrf = "fltordM";
+      foprf = "fom";
     }
-    String fltforcedName = flOrPrf + "forcedFor";
-    String fltforced = pRqd.getParam(fltforcedName);
-    if (fltforced != null) {
-      pFltMp.put(fltforcedName, fltforced);
+    String flFrcdNm = foprf + "frcd";
+    String flFrcdVl = pRqd.getParam(flFrcdNm);
+    if (flFrcdVl != null) {
+      this.hldUvd.getFltMp().put(flFrcdNm, flFrcdVl);
     }
-    String nmFldVal = flOrPrf + pFdNm + "Val";
+    String nmFldVal = foprf + pFdNm + "Vl";
     String fltVal = pRqd.getParam(nmFldVal);
     if (fltVal != null && fltVal.length() > 0
       && !fltVal.equals("disabled")) {
-      pFltMp.put(nmFldVal, fltVal);
+      this.hldUvd.getFltMp().put(nmFldVal, fltVal);
       String cond = fltVal.replace(" gte ", ">=");
       cond = cond.replace(" lte ", "<=");
       cond = cond.replace(" lt ", "<");
@@ -766,8 +732,8 @@ public class HlpEntPg<RS> {
       } else {
         pSbw.append(" and " + cond);
       }
-      if (pFltAp != null) {
-        pFltAp.add(cond);
+      if (this.hldUvd.getFltAp() != null) {
+        this.hldUvd.getFltAp().add(cond);
       }
     }
   }
@@ -778,49 +744,44 @@ public class HlpEntPg<RS> {
    * @param pRqd - Request Data
    * @param pCls - entity class
    * @param pFdNm - field name
-   * @param pFltMp - map to store current filter
-   * @param pFltAp - set to store current filter appearance
-   * if null - not required
    * @throws Exception - an Exception
    **/
   public final void mkWheBln(final StringBuffer pSbw, final IReqDt pRqd,
-    final Class<?> pCls, final String pFdNm, final Map<String, Object> pFltMp,
-      final Set<String> pFltAp) throws Exception {
+    final Class<?> pCls, final String pFdNm) throws Exception {
     String rnd = pRqd.getParam("rnd");
-    String flOrPrf;
-    if (rnd.contains("pickerDub")) {
-      flOrPrf = "fltordPD";
-    } else if (rnd.contains("picker")) {
-      flOrPrf = "fltordP";
+    String foprf;
+    if (rnd != null && rnd.startsWith("pd")) {
+      foprf = "fopd";
+    } else if (rnd != null && rnd.startsWith("p")) {
+      foprf = "fop";
     } else {
-      flOrPrf = "fltordM";
+      foprf = "fom";
     }
-    String fltforcedName = flOrPrf + "forcedFor";
-    String fltforced = pRqd.getParam(fltforcedName);
-    if (fltforced != null) {
-      pFltMp.put(fltforcedName, fltforced);
+    String flFrcdNm = foprf + "frcd";
+    String flFrcdVl = pRqd.getParam(flFrcdNm);
+    if (flFrcdVl != null) {
+      this.hldUvd.getFltMp().put(flFrcdNm, flFrcdVl);
     }
-    String nmFldVal = flOrPrf + pFdNm + "Val";
+    String nmFldVal = foprf + pFdNm + "Vl";
     String fltVal = pRqd.getParam(nmFldVal);
-    if (fltVal != null && (fltVal.length() == 0
-      || "null".equals(fltVal))) {
+    if (fltVal != null && (fltVal.length() == 0 || "null".equals(fltVal))) {
       fltVal = null;
     }
-    pFltMp.put(nmFldVal, fltVal);
+    this.hldUvd.getFltMp().put(nmFldVal, fltVal);
     if (fltVal != null) {
       int intVal = 0;
       if (fltVal.equals("true")) {
         intVal = 1;
       }
       String cond = pCls.getSimpleName().toUpperCase()
-          + "." + pFdNm.toUpperCase() + " = " + intVal;
+        + "." + pFdNm.toUpperCase() + " = " + intVal;
       if (pSbw.toString().length() == 0) {
         pSbw.append(cond);
       } else {
         pSbw.append(" and " + cond);
       }
-      if (pFltAp != null) {
-        pFltAp.add(getI18n().getMsg(pFdNm) + " = " + fltVal);
+      if (this.hldUvd.getFltAp() != null) {
+        this.hldUvd.getFltAp().add(getI18n().getMsg(pFdNm) + " = " + fltVal);
       }
     }
   }
@@ -904,22 +865,6 @@ public class HlpEntPg<RS> {
    **/
   public final void setSrvDt(final ISrvDt pSrvDt) {
     this.srvDt = pSrvDt;
-  }
-
-  /**
-   * <p>Getter for setng.</p>
-   * @return ISetng
-   **/
-  public final ISetng getSetng() {
-    return this.setng;
-  }
-
-  /**
-   * <p>Setter for setng.</p>
-   * @param pSetng reference
-   **/
-  public final void setSetng(final ISetng pSetng) {
-    this.setng = pSetng;
   }
 
   /**

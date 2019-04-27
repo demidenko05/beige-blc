@@ -34,15 +34,16 @@ import java.math.BigDecimal;
 
 import org.beigesoft.cnv.CnvStrBln;
 import org.beigesoft.cnv.CnvStrBgd;
-import org.beigesoft.cnv.CnvStrDbl;
-import org.beigesoft.cnv.CnvStrFlt;
-import org.beigesoft.cnv.CnvStrInt;
-import org.beigesoft.cnv.CnvStrLng;
+import org.beigesoft.cnv.CnvStrDblFm;
+import org.beigesoft.cnv.CnvStrFltFm;
+import org.beigesoft.cnv.CnvStrIntFm;
+import org.beigesoft.cnv.CnvStrLngFm;
 import org.beigesoft.cnv.CnvStrStr;
 import org.beigesoft.prp.ISetng;
 /**
- * <p>Holder of names of converters of fields values from string.
- * Floats, Ints are represented as toString values without formatting.</p>
+ * <p>UVD holder of names of converters of fields values from string
+ * for HTML inputs. Numbers are formatted with separators, BigDecimals decimal
+ * places are defined by ISetng. Dates are ISO HTML standard by ISetng.</p>
  *
  * @author Yury Demidenko
  */
@@ -76,11 +77,11 @@ public class HldNmCnFrSt implements IHldNm<Class<?>, String> {
    **/
   public HldNmCnFrSt() {
     this.stdCnvNms = new HashMap<Class<?>, String>();
-    this.stdCnvNms.put(Integer.class, CnvStrInt.class.getSimpleName());
-    this.stdCnvNms.put(Long.class, CnvStrLng.class.getSimpleName());
+    this.stdCnvNms.put(Integer.class, CnvStrIntFm.class.getSimpleName());
+    this.stdCnvNms.put(Long.class, CnvStrLngFm.class.getSimpleName());
     this.stdCnvNms.put(String.class, CnvStrStr.class.getSimpleName());
-    this.stdCnvNms.put(Float.class, CnvStrFlt.class.getSimpleName());
-    this.stdCnvNms.put(Double.class, CnvStrDbl.class.getSimpleName());
+    this.stdCnvNms.put(Float.class, CnvStrFltFm.class.getSimpleName());
+    this.stdCnvNms.put(Double.class, CnvStrDblFm.class.getSimpleName());
     this.stdCnvNms.put(Boolean.class, CnvStrBln.class.getSimpleName());
     this.stdCnvNms.put(BigDecimal.class, CnvStrBgd.class.getSimpleName());
   }

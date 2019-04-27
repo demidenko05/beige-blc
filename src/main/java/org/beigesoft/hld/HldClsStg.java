@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.hld;
 
 import java.util.Set;
+import java.util.Map;
 
 import org.beigesoft.prp.ISetng;
 /**
@@ -53,6 +54,16 @@ public class HldClsStg {
    * <p>Holder of custom field's converters. It's a settings service.</p>
    **/
   private ISetng setng;
+
+  /**
+   * <p>Map of fields settings for field's class.</p>
+   **/
+  private Map<Class<?>, String> stgClss;
+
+  /**
+   * <p>Map of fields settings for field's super class.</p>
+   **/
+  private Map<Class<?>, String> stgSclss;
 
   /**
    * <p>Classes with custom setting from ISetng.</p>
@@ -85,8 +96,18 @@ public class HldClsStg {
    * @return setting or NULL
    **/
   public final String get(final Class<?> pCls) {
+    if (this.stgClss != null && this.stgClss.keySet().contains(pCls)) {
+      return this.stgClss.get(pCls);
+    }
     if (this.nulClss != null && this.nulClss.contains(pCls)) {
       return null;
+    }
+    if (this.stgSclss != null) {
+      for (Map.Entry<Class<?>, String> enr : this.stgSclss.entrySet()) {
+        if (enr.getKey().isAssignableFrom(pCls)) {
+          return enr.getValue();
+        }
+      }
     }
     if (this.nulSclss != null) {
       for (Class<?> scls : this.nulSclss) {
@@ -143,6 +164,38 @@ public class HldClsStg {
    **/
   public final String getStdVal() {
     return this.stdVal;
+  }
+
+  /**
+   * <p>Getter for stgClss.</p>
+   * @return Map<Class<?>, String>
+   **/
+  public final Map<Class<?>, String> getStgClss() {
+    return this.stgClss;
+  }
+
+  /**
+   * <p>Setter for stgClss.</p>
+   * @param pStgClss reference
+   **/
+  public final void setStgClss(final Map<Class<?>, String> pStgClss) {
+    this.stgClss = pStgClss;
+  }
+
+  /**
+   * <p>Getter for stgSclss.</p>
+   * @return Map<Class<?>, String>
+   **/
+  public final Map<Class<?>, String> getStgSclss() {
+    return this.stgSclss;
+  }
+
+  /**
+   * <p>Setter for stgSclss.</p>
+   * @param pStgSclss reference
+   **/
+  public final void setStgSclss(final Map<Class<?>, String> pStgSclss) {
+    this.stgSclss = pStgSclss;
   }
 
   /**

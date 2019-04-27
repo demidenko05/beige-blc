@@ -28,31 +28,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.prc;
 
-import java.util.List;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IHasId;
-import org.beigesoft.mdl.IOwned;
 import org.beigesoft.hld.HldUvd;
-import org.beigesoft.rdb.IOrm;
 
 /**
- * <p>Service that retrieves entity from DB.</p>
+ * <p>Service that creates entity.</p>
  *
  * @param <T> entity type
  * @param <ID> entity ID type
  * @author Yury Demidenko
  */
-public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
-
-  /**
-   * <p>ORM service.</p>
-   **/
-  private IOrm orm;
+public class PrcEntCr<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
 
   /**
    * <p>Holder UVD settings, vars.</p>
@@ -60,7 +49,7 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
   private HldUvd hldUvd;
 
   /**
-   * <p>Process that retrieves entity from DB.</p>
+   * <p>Process that creates entity.</p>
    * @param pRvs request scoped vars, e.g. return this line's
    * owner(document) in "nextEntity" for farther processing
    * @param pRqDt Request Data
@@ -71,54 +60,14 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
   @Override
   public final T process(final Map<String, Object> pRvs, final T pEnt,
     final IReqDt pRqDt) throws Exception {
-    Map<String, Object> vs = new HashMap<String, Object>();
-    this.orm.refrEnt(pRvs, vs, pEnt);
-    pEnt.setIsNew(false);
+    pEnt.setIsNew(true);
     String[] lstFds = this.hldUvd.lazLstFds(pEnt.getClass());
     this.hldUvd.setEnt(pEnt);
     this.hldUvd.setLstFds(lstFds);
-    List<Class<IOwned<?, ?>>> oeLst = this.hldUvd
-      .lazOwnd(pEnt.getClass());
-    if (oeLst != null) {
-      Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>> owdEntsMp =
-        new LinkedHashMap<Class<IOwned<?, ?>>, List<IOwned<?, ?>>>();
-      String idOwnr = this.hldUvd.idSql(pEnt);
-      for (Class oecg : oeLst) {
-        Class<IOwned<T, ?>> oec = (Class<IOwned<T, ?>>) oecg;
-        lstFds = this.hldUvd.lazLstFds(oec);
-        String[] ndFds = Arrays.copyOf(lstFds, lstFds.length);
-        Arrays.sort(ndFds);
-        vs.put(oec.getSimpleName() + "ndFds", ndFds);
-        List<IOwned<T, ?>> lst = this.orm.retLstCnd(pRvs, vs, oec,
-          "where OWNR=" + idOwnr);
-        vs.remove(oec.getSimpleName() + "ndFds");
-        owdEntsMp.put(oecg, (List) lst);
-        for (IOwned<T, ?> owd : lst) {
-          owd.setOwnr(pEnt);
-        }
-      }
-      this.hldUvd.setOwdEntsMp(owdEntsMp);
-    }
-   return pEnt;
+    return pEnt;
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Getter for orm.</p>
-   * @return IOrm
-   **/
-  public final IOrm getOrm() {
-    return this.orm;
-  }
-
-  /**
-   * <p>Setter for orm.</p>
-   * @param pOrm reference
-   **/
-  public final void setOrm(final IOrm pOrm) {
-    this.orm = pOrm;
-  }
-
   /**
    * <p>Getter for hldUvd.</p>
    * @return HldUvd

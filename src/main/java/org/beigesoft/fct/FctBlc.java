@@ -50,6 +50,7 @@ import org.beigesoft.hld.HldNmCnToSt;
 import org.beigesoft.hld.HldNmCnToStXml;
 import org.beigesoft.hld.HldNmCnFrStXml;
 import org.beigesoft.hld.HlNmPrFe;
+import org.beigesoft.hld.HlNmAcEnPr;
 import org.beigesoft.hld.HldClsStg;
 import org.beigesoft.hld.HldFldStg;
 import org.beigesoft.hld.HldUvd;
@@ -380,7 +381,7 @@ public class FctBlc<RS> implements IFctApp {
           } else if (HldNmCnFrStXml.class.getSimpleName().equals(pBnNm)) {
             rz = lazHldNmCnFrStXml(pRqVs);
           } else if (HldNmCnFrSt.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldNmCnFrSt(pRqVs);
+            rz = lazHldNmCnFrStUvd(pRqVs);
           } else if (HldNmCnToSt.class.getSimpleName().equals(pBnNm)) {
             rz = lazHldNmCnToStUvd(pRqVs);
           } else if (HldGets.class.getSimpleName().equals(pBnNm)) {
@@ -489,12 +490,19 @@ public class FctBlc<RS> implements IFctApp {
       rz.setWrReSpTr(getWrReSpTr());
       rz.setLogStd(lazLogStd(pRqVs));
       rz.setLogSec(lazLogSec(pRqVs));
+      rz.setHldUvd(lazHldUvd(pRqVs));
       @SuppressWarnings("unchecked")
       IRdb<RS> rdb = (IRdb<RS>) laz(pRqVs, IRdb.class.getSimpleName());
       rz.setRdb(rdb);
       rz.setFilEntRq(lazFilEntRq(pRqVs));
       rz.setFctFctEnt(lazFctFctEnt(pRqVs));
       rz.setFctPrcFen(lazFctPrcFen(pRqVs));
+      HlNmAcEnPr hlep = new HlNmAcEnPr();
+      hlep.setShrEnts(this.shrEnts);
+      rz.setHldEntPrcNm(hlep);
+      FctAcEnPrc<RS> fep = new FctAcEnPrc<RS>();
+      fep.setFctBlc(this);
+      rz.setFctEntPrc(fep);
       rz.setHldPrcFenNm(new HlNmPrFe());
       rz.setEntMap(new HashMap<String, Class<?>>());
       Setng setng = lazStgUvd(pRqVs);
@@ -1087,7 +1095,7 @@ public class FctBlc<RS> implements IFctApp {
    * @return HldNmCnFrSt
    * @throws Exception - an exception
    */
-  public final synchronized HldNmCnFrSt lazHldNmCnFrSt(
+  public final synchronized HldNmCnFrSt lazHldNmCnFrStUvd(
     final Map<String, Object> pRqVs) throws Exception {
     HldNmCnFrSt rz = (HldNmCnFrSt) this.beans
       .get(HldNmCnFrSt.class.getSimpleName());
@@ -1137,6 +1145,8 @@ public class FctBlc<RS> implements IFctApp {
     if (rz == null) {
       rz = new HldUvd();
       rz.setSetng(lazStgUvd(pRqVs));
+      rz.setStgOrm(lazStgOrm(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRqVs));
       rz.setHlCnToSt(lazHldNmCnToStUvd(pRqVs));
       rz.setFcCnToSt(lazFctNmCnToSt(pRqVs));
       rz.setHlClStgMp(this.hlClStgMp);
@@ -1195,7 +1205,7 @@ public class FctBlc<RS> implements IFctApp {
       rz.setStgUvd(lazStgUvd(pRqVs));
       rz.setStgDbCp(lazStgDbCp(pRqVs));
       rz.setHldFdCls(lazHldFldCls(pRqVs));
-      rz.setHldNmFdCnUvd(lazHldNmCnFrSt(pRqVs));
+      rz.setHldNmFdCnUvd(lazHldNmCnFrStUvd(pRqVs));
       rz.setHldNmFdCnDbCp(lazHldNmCnFrStXml(pRqVs));
       rz.setFctCnvFld(lazFctNmCnFrSt(pRqVs));
       rz.setHldFilFdNmsUvd(lazHldNmFilFdStUvd(pRqVs));
@@ -1335,7 +1345,6 @@ public class FctBlc<RS> implements IFctApp {
       rz.setSrvPg(lazSrvPg(pRqVs));
       rz.setSqlQu(lazSqlQu(pRqVs));
       rz.setSrvDt(lazSrvDt(pRqVs));
-      rz.setSetng(lazStgUvd(pRqVs));
       rz.setHldUvd(lazHldUvd(pRqVs));
       rz.setHldFdCls(lazHldFldCls(pRqVs));
       this.beans.put(HlpEntPg.class.getSimpleName(), rz);

@@ -30,6 +30,7 @@ package org.beigesoft.hld;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.beigesoft.mdl.Page;
 import org.beigesoft.mdl.IOwned;
@@ -67,6 +68,23 @@ public class UvdVar {
    * <p>Pages.</p>
    **/
   private List<Page> pgs;
+
+      //filter/order:
+  /**
+   * <p>Filter appearance to print used filter,
+   *  e.g. used filter in assign goods to catalog.</p>
+   **/
+  private Set<String> fltAp;
+
+  /**
+   * <p>List filter map data.</p>
+   **/
+  private Map<String, Object> fltMp;
+
+  /**
+   * <p>List order map data.</p>
+   **/
+  private Map<String, String> ordMp;
 
     //form:
   /**
@@ -192,5 +210,53 @@ public class UvdVar {
   public final void setOwdEntsMp(
     final Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>> pOwdEntsMp) {
     this.owdEntsMp = pOwdEntsMp;
+  }
+
+  /**
+   * <p>Getter for fltAp.</p>
+   * @return Set<String>
+   **/
+  public final Set<String> getFltAp() {
+    return this.fltAp;
+  }
+
+  /**
+   * <p>Setter for fltAp.</p>
+   * @param pFltAp reference
+   **/
+  public final void setFltAp(final Set<String> pFltAp) {
+    this.fltAp = pFltAp;
+  }
+
+  /**
+   * <p>Getter for fltMp.</p>
+   * @return Map<String, Object>
+   **/
+  public final Map<String, Object> getFltMp() {
+    return this.fltMp;
+  }
+
+  /**
+   * <p>Setter for fltMp.</p>
+   * @param pFltMp reference
+   **/
+  public final void setFltMp(final Map<String, Object> pFltMp) {
+    this.fltMp = pFltMp;
+  }
+
+  /**
+   * <p>Getter for ordMp.</p>
+   * @return Map<String, String>
+   **/
+  public final Map<String, String> getOrdMp() {
+    return this.ordMp;
+  }
+
+  /**
+   * <p>Setter for ordMp.</p>
+   * @param pOrdMp reference
+   **/
+  public final void setOrdMp(final Map<String, String> pOrdMp) {
+    this.ordMp = pOrdMp;
   }
 }

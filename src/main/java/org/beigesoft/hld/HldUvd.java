@@ -30,12 +30,16 @@ package org.beigesoft.hld;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.beigesoft.exc.ExcCode;
+import org.beigesoft.mdl.CmnPrf;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IOwned;
 import org.beigesoft.mdl.Page;
+import org.beigesoft.mdlp.UsPrf;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.ICnvId;
@@ -51,6 +55,11 @@ import org.beigesoft.cnv.IConv;
 public class HldUvd {
 
   //parts:
+  /**
+   * <p>Orm settings service.</p>
+   **/
+  private ISetng stgOrm;
+
   /**
    * <p>Settings service.</p>
    **/
@@ -86,9 +95,14 @@ public class HldUvd {
    **/
   private IHldNm<Class<?>, String> hlCnToSt;
 
+  /**
+   * <p>Holder of an entity's field's class.</p>
+   **/
+  private IHldNm<Class<?>, Class<?>> hldFdCls;
+
   //derived/transformed settings:
   /**
-   * <p>Entities fields inlist map.</p>
+   * <p>Entities fields in list map.</p>
    **/
   private final Map<Class<?>, String[]> lstFdsMp =
     new HashMap<Class<?>, String[]>();
@@ -99,6 +113,12 @@ public class HldUvd {
   private final Map<Class<?>, List<Class<IOwned<?, ?>>>> owdEnts =
     new HashMap<Class<?>, List<Class<IOwned<?, ?>>>>();
 
+  /**
+   * <p>Entities fields nullable, [ClassSimpleName+FieldName]-[isNullable].</p>
+   **/
+  private final Map<String, Boolean> fldNulMp =
+    new HashMap<String, Boolean>();
+
   //request scoped vars for JSP:
   /**
    * <p>Connection per thread holder.</p>
@@ -106,6 +126,18 @@ public class HldUvd {
   private final ThreadLocal<UvdVar> hldUvdVar = new ThreadLocal<UvdVar>() { };
 
   //Utils(delegates):
+  /**
+   * <p>Set JS variables JS function.</p>
+   * @return JS function
+   * @throws Exception - an exception
+   **/
+  public final String setJs() {
+    CmnPrf cpf = (CmnPrf) getRvs().get("cpf");
+    UsPrf upf = (UsPrf) getRvs().get("upf");
+    return "bsSetNumVs('" + cpf.getDcSpv() + "','" + cpf.getDcSpv() + "',"
+      + upf.getDgInGr() + ");";
+  }
+
   /**
    * <p>Converts to HTML ready ID, e.g. "IID=PAYB" for Account with String ID,
    * or "usr=User1&rol=Role1" for User-Role with composite ID.</p>
@@ -160,8 +192,19 @@ public class HldUvd {
   }
 
   /**
+   * <p>Gets field's class.</p>
+   * @param pCls class
+   * @param pFdNm field name
+   * @return field class
+   * @throws Exception - an exception
+   **/
+  public final Class<?> fldCls(final Class<?> pCls, final String pFdNm) {
+    return this.hldFdCls.get(pCls, pFdNm);
+  }
+
+  /**
    * <p>Formats (converts) field value to string for given class, field name.
-   * It delegates this to registered converter. It's for numbers.</p>
+   * It delegates this to registered converter.</p>
    * @param pCls class
    * @param pFdNm field name
    * @param pFdVl field value
@@ -191,9 +234,7 @@ public class HldUvd {
           String lFdSt = null;
           synchronized (this.setng) {
             lFdSt = this.setng.lazClsStg(pCls, "lstFds");
-            if (lFdSt != null) {
-              this.setng.getClsStgs().get(pCls).remove("lstFds");
-            }
+            this.setng.getClsStgs().get(pCls).remove("lstFds");
           }
           if (lFdSt != null) {
             List<String> lFdLst = new ArrayList<String>();
@@ -209,6 +250,43 @@ public class HldUvd {
       }
     }
     return this.lstFdsMp.get(pCls);
+  }
+
+  /**
+   * <p>Gets if field nullable in lazy mode.</p>
+   * @param pCls Entity class
+   * @param pFdNm field name
+   * @return if field nullable
+   * @throws Exception - an exception
+   **/
+  public final Boolean lazNulb(final Class<?> pCls,
+    final String pFdNm) throws Exception {
+    String key = pCls.getSimpleName() + pFdNm;
+    if (!this.fldNulMp.keySet().contains(key)) {
+      synchronized (this) {
+        if (!this.fldNulMp.keySet().contains(key)) {
+          String def = null;
+          synchronized (this.stgOrm) {
+            def = this.stgOrm.lazFldStg(pCls, pFdNm, "def");
+            if (this.stgOrm.getFldStgs().get(pCls).get(pFdNm).size() == 1) {
+              this.stgOrm.getFldStgs().get(pCls).remove(pFdNm);
+              if (this.stgOrm.getFldStgs().get(pCls).size() == 1) {
+                this.stgOrm.getFldStgs().remove(pCls);
+              }
+            } else {
+              this.stgOrm.getFldStgs().get(pCls).get(pFdNm).remove("def");
+            }
+          }
+          if (def != null) {
+            this.fldNulMp.put(key, def.contains("not null"));
+          } else {
+            throw new ExcCode(ExcCode.WR, "There is no fld def for cls/fld: "
+              + pCls + "/" + pFdNm);
+          }
+        }
+      }
+    }
+    return this.fldNulMp.get(key);
   }
 
   /**
@@ -355,6 +433,11 @@ public class HldUvd {
    **/
   public final void setEnt(final IHasId<?> pEnt) {
     lazUvdVar().setEnt(pEnt);
+    if (pEnt == null) {
+      lazUvdVar().setCls(null);
+    } else {
+      lazUvdVar().setCls(pEnt.getClass());
+    }
   }
 
   /**
@@ -374,6 +457,54 @@ public class HldUvd {
     lazUvdVar().setOwdEntsMp(pOwdEntsMp);
   }
 
+  /**
+   * <p>Getter for fltAp.</p>
+   * @return Set<String>
+   **/
+  public final Set<String> getFltAp() {
+    return lazUvdVar().getFltAp();
+  }
+
+  /**
+   * <p>Setter for fltAp.</p>
+   * @param pFltAp reference
+   **/
+  public final void setFltAp(final Set<String> pFltAp) {
+    lazUvdVar().setFltAp(pFltAp);
+  }
+
+  /**
+   * <p>Getter for fltMp.</p>
+   * @return Map<String, Object>
+   **/
+  public final Map<String, Object> getFltMp() {
+    return lazUvdVar().getFltMp();
+  }
+
+  /**
+   * <p>Setter for fltMp.</p>
+   * @param pFltMp reference
+   **/
+  public final void setFltMp(final Map<String, Object> pFltMp) {
+    lazUvdVar().setFltMp(pFltMp);
+  }
+
+  /**
+   * <p>Getter for ordMp.</p>
+   * @return Map<String, String>
+   **/
+  public final Map<String, String> getOrdMp() {
+    return lazUvdVar().getOrdMp();
+  }
+
+  /**
+   * <p>Setter for ordMp.</p>
+   * @param pOrdMp reference
+   **/
+  public final void setOrdMp(final Map<String, String> pOrdMp) {
+    lazUvdVar().setOrdMp(pOrdMp);
+  }
+
   //Synchronized/simple SGS:
   /**
    * <p>Getter for setng.</p>
@@ -389,6 +520,22 @@ public class HldUvd {
    **/
   public final synchronized void setSetng(final ISetng pSetng) {
     this.setng = pSetng;
+  }
+
+  /**
+   * <p>Getter for stgOrm.</p>
+   * @return ISetng
+   **/
+  public final synchronized ISetng getStgOrm() {
+    return this.stgOrm;
+  }
+
+  /**
+   * <p>Setter for stgOrm.</p>
+   * @param pStgOrm reference
+   **/
+  public final synchronized void setStgOrm(final ISetng pStgOrm) {
+    this.stgOrm = pStgOrm;
   }
 
   /**
@@ -485,5 +632,21 @@ public class HldUvd {
    **/
   public final void setHlFdStgMp(final Map<String, HldFldStg> pHlFdStgMp) {
     this.hlFdStgMp = pHlFdStgMp;
+  }
+
+  /**
+   * <p>Getter for hldFdCls.</p>
+   * @return IHldNm<Class<?>, Class<?>>
+   **/
+  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+    return this.hldFdCls;
+  }
+
+  /**
+   * <p>Setter for hldFdCls.</p>
+   * @param pHldFdCls reference
+   **/
+  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+    this.hldFdCls = pHldFdCls;
   }
 }

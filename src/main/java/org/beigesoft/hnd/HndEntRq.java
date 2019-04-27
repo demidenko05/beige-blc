@@ -88,7 +88,7 @@ public class HndEntRq<RS> implements IHndRq {
   /**
    * <p>Entities processors factory.</p>
    **/
-  private IFctNm<IPrcEnt> fctEntPrc;
+  private IFctNm<IPrcEnt<IHasId<?>, ?>> fctEntPrc;
 
   /**
    * <p>Processors for entities names holder.</p>
@@ -155,7 +155,7 @@ public class HndEntRq<RS> implements IHndRq {
     "Trying to work with forbidden ent/host/addr/port/user: " + entNm + "/"
   + pRqDt.getRemHost() + "/" + pRqDt.getRemAddr() + "/"
 + pRqDt.getRemPort() + "/" + pRqDt.getUsrNm());
-      throw new ExcCode(ExcCode.FORB);
+      throw new ExcCode(ExcCode.FORB, "FORB");
     }
     pRqDt.setAttr("hldUvd", this.hldUvd);
     this.hldUvd.setRvs(pRqVs);
@@ -316,9 +316,7 @@ public class HndEntRq<RS> implements IHndRq {
                 + "/" + actNm + "/" + pRqDt.getUsrNm());
             throw new ExcCode(ExcCode.FORB, "Forbidden!");
           }
-          @SuppressWarnings("unchecked")
-          IPrcEnt<IHasId<?>, ?> ep = (IPrcEnt<IHasId<?>, ?>)
-            this.fctEntPrc.laz(pRqVs, entProcNm);
+          IPrcEnt<IHasId<?>, ?> ep = this.fctEntPrc.laz(pRqVs, entProcNm);
           if (pIsDbgSh) {
             this.logStd.debug(pRqVs, HndEntRq.class,
              "It's used entProcNm/IPrcEnt: " + entProcNm + "/" + ep.getClass());
@@ -416,9 +414,9 @@ public class HndEntRq<RS> implements IHndRq {
 
   /**
    * <p>Getter for fctEntPrc.</p>
-   * @return IFctNm<IPrcEnt>
+   * @return IFctNm<IPrcEnt<IHasId<?>, ?>>
    **/
-  public final IFctNm<IPrcEnt> getFctEntPrc() {
+  public final IFctNm<IPrcEnt<IHasId<?>, ?>> getFctEntPrc() {
     return this.fctEntPrc;
   }
 
@@ -426,7 +424,8 @@ public class HndEntRq<RS> implements IHndRq {
    * <p>Setter for fctEntPrc.</p>
    * @param pFctEntPrc reference
    **/
-  public final void setFctEntPrc(final IFctNm<IPrcEnt> pFctEntPrc) {
+  public final void setFctEntPrc(
+    final IFctNm<IPrcEnt<IHasId<?>, ?>> pFctEntPrc) {
     this.fctEntPrc = pFctEntPrc;
   }
 

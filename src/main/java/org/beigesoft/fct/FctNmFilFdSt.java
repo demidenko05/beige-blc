@@ -198,7 +198,7 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
   private FilFldHsIdStr crPuFilFldHsIdStrDbCp() {
     FilFldHsIdStr rz = new FilFldHsIdStr();
     rz.setHldSets(getHldSets());
-    rz.setHldFilFdNms(getHldFilFdNmsUvd());
+    rz.setHldFilFdNms(getHldFilFdNmsDbCp());
     rz.setSetng(getStgDbCp());
     rz.setHldFdCls(getHldFdCls());
     rz.setFctFilFld(this);

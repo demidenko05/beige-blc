@@ -236,10 +236,10 @@ public class CnvTest<RS> {
     assertEquals(dt, reqDt.getParam(parPref + "itsDate"));
     assertEquals("12,345.60", reqDt.getParam(parPref + "itsTotal"));
     assertEquals(prsh.getIid().toString(), reqDt.getParam(parPref + "iid"));
-    assertEquals(prsh.getItsInteger().toString(), reqDt.getParam(parPref + "itsInteger"));
-    assertEquals(prsh.getItsLong().toString(), reqDt.getParam(parPref + "itsLong"));
-    assertEquals(prsh.getItsFloat().toString(), reqDt.getParam(parPref + "itsFloat"));
-    assertEquals(prsh.getItsDouble().toString(), reqDt.getParam(parPref + "itsDouble"));
+    assertEquals("12,397", reqDt.getParam(parPref + "itsInteger"));
+    assertEquals("5,674", reqDt.getParam(parPref + "itsLong"));
+    assertEquals("123.6934", reqDt.getParam(parPref + "itsFloat"));
+    assertEquals("56,325.5687", reqDt.getParam(parPref + "itsDouble"));
     assertEquals(prsh.getItsStatus().name(), reqDt.getParam(parPref + "itsStatus"));
     assertEquals("3", reqDt.getParam(parPref + "itsDepartment"));
     assertEquals("124", reqDt.getParam(parPref + "ver"));

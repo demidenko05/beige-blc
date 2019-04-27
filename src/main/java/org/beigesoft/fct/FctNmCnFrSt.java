@@ -46,6 +46,10 @@ import org.beigesoft.cnv.CnvStrDtTm;
 import org.beigesoft.cnv.CnvStrStr;
 import org.beigesoft.cnv.CnvStrDtMs;
 import org.beigesoft.cnv.CnvStrFrStrXml;
+import org.beigesoft.cnv.CnvStrDblFm;
+import org.beigesoft.cnv.CnvStrFltFm;
+import org.beigesoft.cnv.CnvStrIntFm;
+import org.beigesoft.cnv.CnvStrLngFm;
 import org.beigesoft.srv.IUtlXml;
 
 /**
@@ -103,6 +107,14 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
             rz = crPuCnvStrInt();
           } else if (CnvStrFlt.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvStrFlt();
+          } else if (CnvStrDblFm.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrDblFm();
+          } else if (CnvStrFltFm.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrFltFm();
+          } else if (CnvStrIntFm.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrIntFm();
+          } else if (CnvStrLngFm.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrLngFm();
           } else if (CnvStrDbl.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvStrDbl();
           } else if (CnvStrBln.class.getSimpleName().equals(pCnNm)) {
@@ -213,6 +225,54 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
     CnvStrFlt rz = new CnvStrFlt();
     this.convrts.put(CnvStrFlt.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvStrFlt.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrDblFm.</p>
+   * @return CnvStrDblFm
+   */
+  private CnvStrDblFm crPuCnvStrDblFm() {
+    CnvStrDblFm rz = new CnvStrDblFm();
+    this.convrts.put(CnvStrDblFm.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrDblFm.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrFltFm.</p>
+   * @return CnvStrFltFm
+   */
+  private CnvStrFltFm crPuCnvStrFltFm() {
+    CnvStrFltFm rz = new CnvStrFltFm();
+    this.convrts.put(CnvStrFltFm.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrFltFm.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrIntFm.</p>
+   * @return CnvStrIntFm
+   */
+  private CnvStrIntFm crPuCnvStrIntFm() {
+    CnvStrIntFm rz = new CnvStrIntFm();
+    this.convrts.put(CnvStrIntFm.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrIntFm.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrLngFm.</p>
+   * @return CnvStrLngFm
+   */
+  private CnvStrLngFm crPuCnvStrLngFm() {
+    CnvStrLngFm rz = new CnvStrLngFm();
+    this.convrts.put(CnvStrLngFm.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrLngFm.class.getSimpleName()
       + " has been created.");
     return rz;
   }

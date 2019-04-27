@@ -66,7 +66,7 @@ public class I18n implements II18n {
   public final void initDefault() {
     try {
       this.messages = null;
-      this.messages = ResourceBundle.getBundle("Messages");
+      this.messages = ResourceBundle.getBundle("Msgs");
     } catch (Exception e) {
       this.log.error(null, I18n.class,
         " when loading msgs for default locale ", e);

@@ -594,7 +594,6 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
       final Class<T> pCls, final Integer pFst,
         final Integer pPgSz) throws Exception {
     StringBuffer sb = this.sqlQu.evSel(pRvs, pVs, pCls);
-    sb.append(";");
     return retPgQu(pRvs, pVs, pCls, sb.toString(), pFst, pPgSz);
   }
 
@@ -604,7 +603,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
    * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pVs invoker scoped vars, e.g. "needed fields", nullable
    * @param pCls entity class
-   * @param pCond not null e.g. "name='U1' ORDER BY id"
+   * @param pCond not null e.g. "where name='U1' ORDER BY id"
    * @param pFst number of the first record (from 0)
    * @param pPgSz page size (max records)
    * @return list of business objects or empty list, not null
@@ -616,7 +615,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
       final Class<T> pCls, final String pCond, final Integer pFst,
         final Integer pPgSz) throws Exception {
     StringBuffer sb = this.sqlQu.evSel(pRvs, pVs, pCls);
-    sb.append(" where " + pCond + ";");
+    sb.append(" " + pCond);
     return retPgQu(pRvs, pVs, pCls, sb.toString(), pFst, pPgSz);
   }
 
@@ -644,7 +643,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
     List<T> ents = new ArrayList<T>();
     IRecSet<RS> rs = null;
     try {
-      rs = this.rdb.retRs(pQu + " limit " + pPgSz + " offset" + pFst + ";");
+      rs = this.rdb.retRs(pQu + " limit " + pPgSz + " offset " + pFst + ";");
       if (rs.first()) {
         @SuppressWarnings("unchecked")
         IFctRq<T> fctEnt = (IFctRq<T>) this.fctFctEnt.laz(pRvs, pCls);

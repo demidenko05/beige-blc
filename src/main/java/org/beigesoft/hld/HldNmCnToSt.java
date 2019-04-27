@@ -35,11 +35,16 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.cnv.CnvSmpStr;
 import org.beigesoft.cnv.CnvBlnStr;
 import org.beigesoft.cnv.CnvEnmStr;
+import org.beigesoft.cnv.CnvDblStrFm;
+import org.beigesoft.cnv.CnvFltStrFm;
+import org.beigesoft.cnv.CnvIntStrFm;
+import org.beigesoft.cnv.CnvLngStrFm;
 import org.beigesoft.prp.ISetng;
 
 /**
- * <p>Holder of names of converters of fields values to string.
- * Floats, Ints are represented as toString values without formatting.</p>
+ * <p>UVD holder of names of converters of fields values to string
+ * for HTML inputs. Numbers are formatted with separators, BigDecimals decimal
+ * places are defined by ISetng. Dates are ISO HTML standard by ISetng.</p>
  *
  * @author Yury Demidenko
  */
@@ -81,12 +86,11 @@ public class HldNmCnToSt implements IHldNm<Class<?>, String> {
    **/
   public HldNmCnToSt() {
     this.stdCnvNms = new HashMap<Class<?>, String>();
-    this.stdCnvNms.put(Short.class, CnvSmpStr.class.getSimpleName());
-    this.stdCnvNms.put(Integer.class, CnvSmpStr.class.getSimpleName());
-    this.stdCnvNms.put(Long.class, CnvSmpStr.class.getSimpleName());
+    this.stdCnvNms.put(Integer.class, CnvIntStrFm.class.getSimpleName());
+    this.stdCnvNms.put(Long.class, CnvLngStrFm.class.getSimpleName());
     this.stdCnvNms.put(String.class, CnvSmpStr.class.getSimpleName());
-    this.stdCnvNms.put(Float.class, CnvSmpStr.class.getSimpleName());
-    this.stdCnvNms.put(Double.class, CnvSmpStr.class.getSimpleName());
+    this.stdCnvNms.put(Float.class, CnvFltStrFm.class.getSimpleName());
+    this.stdCnvNms.put(Double.class, CnvDblStrFm.class.getSimpleName());
     this.stdCnvNms.put(Boolean.class, CnvBlnStr.class.getSimpleName());
   }
 
