@@ -37,6 +37,7 @@ import org.beigesoft.prc.IPrcEnt;
 import org.beigesoft.prc.PrcEntRt;
 import org.beigesoft.prc.PrcEntCr;
 import org.beigesoft.prc.PrcEntSv;
+import org.beigesoft.prc.PrcEnoSv;
 
 /**
  * <p>Factory of entity processors.</p>
@@ -76,6 +77,8 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
             rz = crPuPrcEntCr(pRqVs);
           } else if (PrcEntSv.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEntSv(pRqVs);
+          } else if (PrcEnoSv.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEnoSv(pRqVs);
           } else if (PrcEntRt.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEntRt(pRqVs);
           } else {
@@ -99,6 +102,23 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
     rz.setHldUvd(this.fctBlc.lazHldUvd(pRqVs));
     this.procs.put(PrcEntCr.class.getSimpleName(), rz);
     this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEntCr.class
+      .getSimpleName() + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map PrcEnoSv.</p>
+   * @param pRqVs request scoped vars
+   * @return PrcEnoSv
+   * @throws Exception - an exception
+   */
+  private PrcEnoSv crPuPrcEnoSv(
+    final Map<String, Object> pRqVs) throws Exception {
+    PrcEnoSv rz = new PrcEnoSv();
+    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
+    rz.setHldUvd(this.fctBlc.lazHldUvd(pRqVs));
+    this.procs.put(PrcEnoSv.class.getSimpleName(), rz);
+    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEnoSv.class
       .getSimpleName() + " has been created.");
     return rz;
   }

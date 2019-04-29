@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @author Yury Demidenko
  */
-public class CsvMth extends AIdLnNm {
+public class CsvMth extends AOrIdNm {
 
   /**
    * <p>Charset encoding name, "UTF-8" default.</p>

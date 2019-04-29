@@ -33,6 +33,7 @@ import java.util.List;
 import org.beigesoft.prc.PrcEntRt;
 import org.beigesoft.prc.PrcEntCr;
 import org.beigesoft.prc.PrcEntSv;
+import org.beigesoft.prc.PrcEnoSv;
 
 /**
  * <p>Holder of names of ACC entities processors.</p>
@@ -66,6 +67,9 @@ public class HlNmAcEnPr implements IHldNm<Class<?>, String> {
     }
     if ("entSv".equals(pAct)) {
       return PrcEntSv.class.getSimpleName();
+    }
+    if ("entFoSv".equals(pAct)) {
+      return PrcEnoSv.class.getSimpleName();
     }
     return null;
   }

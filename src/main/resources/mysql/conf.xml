@@ -19,6 +19,7 @@ See LICENSE in base folder
   org.beigesoft.mdlp.MaFrnLn,
   org.beigesoft.mdlp.CsvMth,
   org.beigesoft.mdlp.CsvCl,
+  org.beigesoft.mdlp.EmAdr,
   org.beigesoft.mdlp.EmCon,
   org.beigesoft.mdlp.EmInt,
   org.beigesoft.mdlp.EmStr,

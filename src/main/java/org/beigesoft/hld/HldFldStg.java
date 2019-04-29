@@ -63,6 +63,11 @@ public class HldFldStg implements IHldNm<Class<?>, String> {
 
   //configuration:
   /**
+   * <p>Map of fields settings for field's name.</p>
+   **/
+  private Map<String, String> stgFdNm;
+
+  /**
    * <p>Map of fields settings for field's class.</p>
    **/
   private Map<Class<?>, String> stgClss;
@@ -101,6 +106,9 @@ public class HldFldStg implements IHldNm<Class<?>, String> {
   @Override
   public final String get(final Class<?> pCls, final String pFlNm) {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
+    if (fdCls.isEnum() && this.enumVal != null) {
+      return this.enumVal;
+    }
     if (this.setng != null && this.custClss.contains(fdCls)) {
       try {
         return this.setng.lazFldStg(pCls, pFlNm, this.stgNm);
@@ -111,12 +119,16 @@ public class HldFldStg implements IHldNm<Class<?>, String> {
     if (this.stgClss != null && this.stgClss.keySet().contains(fdCls)) {
       return this.stgClss.get(fdCls);
     }
-    if (fdCls.isEnum() && this.enumVal != null) {
-      return this.enumVal;
-    }
     if (this.stgSclss != null) {
       for (Map.Entry<Class<?>, String> enr : this.stgSclss.entrySet()) {
         if (enr.getKey().isAssignableFrom(fdCls)) {
+          return enr.getValue();
+        }
+      }
+    }
+    if (this.stgFdNm != null) {
+      for (Map.Entry<String, String> enr : this.stgFdNm.entrySet()) {
+        if (enr.getKey().equals(pFlNm)) {
           return enr.getValue();
         }
       }
@@ -187,6 +199,22 @@ public class HldFldStg implements IHldNm<Class<?>, String> {
    **/
   public final void setStgClss(final Map<Class<?>, String> pStgClss) {
     this.stgClss = pStgClss;
+  }
+
+  /**
+   * <p>Getter for stgFdNm.</p>
+   * @return Map<String, String>
+   **/
+  public final Map<String, String> getStgFdNm() {
+    return this.stgFdNm;
+  }
+
+  /**
+   * <p>Setter for stgFdNm.</p>
+   * @param pStgFdNm reference
+   **/
+  public final void setStgFdNm(final Map<String, String> pStgFdNm) {
+    this.stgFdNm = pStgFdNm;
   }
 
   /**

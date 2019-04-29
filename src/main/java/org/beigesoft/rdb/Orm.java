@@ -537,7 +537,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
     final Map<String, Object> pRvs, final Map<String, Object> pVs,
       final Class<T> pCls, final String pCond) throws Exception {
     StringBuffer sb = this.sqlQu.evSel(pRvs, pVs, pCls);
-    sb.append(" where " + pCond + ";");
+    sb.append(" " + pCond + ";");
     return retLstQu(pRvs, pVs, pCls, sb.toString());
   }
 

@@ -215,7 +215,7 @@ public class HndEntRq<RS> implements IHndRq {
             String actNm = actArr[i];
             if (actNm.startsWith("ent")) {
               if (ent == null) { // it's may be change ent to owner:
-                ent = (IHasId<?>) pRqVs.get("entNx");
+                ent = this.hldUvd.getOwnr();
                 if (ent == null) {
                   throw new ExcCode(ExcCode.WRPR,
                     "wrong_request_entity_not_filled");
@@ -302,7 +302,7 @@ public class HndEntRq<RS> implements IHndRq {
       for (String actNm : pActArr) {
         if (actNm.startsWith("ent")) {
           if (ent == null) { // it's may be change ent to owner:
-           ent = (IHasId<?>) pRqVs.get("entNx");
+           ent = this.hldUvd.getOwnr();
            if (ent == null) {
               throw new ExcCode(ExcCode.WRPR,
                 "wrong_request_entity_not_filled");

@@ -86,6 +86,11 @@ public class UvdVar {
    **/
   private Map<String, String> ordMp;
 
+  /**
+   * <p>Requested entity's owner.</p>
+   **/
+  private IHasId<?> ownr;
+
     //form:
   /**
    * <p>Requested entity.</p>
@@ -177,6 +182,22 @@ public class UvdVar {
    **/
   public final void setPgs(final List<Page> pPgs) {
     this.pgs = pPgs;
+  }
+
+  /**
+   * <p>Getter for ownr.</p>
+   * @return IHasId<?>
+   **/
+  public final IHasId<?> getOwnr() {
+    return this.ownr;
+  }
+
+  /**
+   * <p>Setter for ownr.</p>
+   * @param pOwnr reference
+   **/
+  public final void setOwnr(final IHasId<?> pOwnr) {
+    this.ownr = pOwnr;
   }
 
   /**

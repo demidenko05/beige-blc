@@ -1437,6 +1437,8 @@ public class FctBlc<RS> implements IFctApp {
     I18n rz = (I18n) this.beans.get(II18n.class.getSimpleName());
     if (rz == null) {
       rz = new I18n();
+      rz.setLog(lazLogStd(pRqVs));
+      rz.add(this.lngCntr.split(","));
       this.beans.put(II18n.class.getSimpleName(), rz);
       lazLogStd(pRqVs).info(pRqVs, getClass(), II18n.class.getSimpleName()
         + " has been created.");

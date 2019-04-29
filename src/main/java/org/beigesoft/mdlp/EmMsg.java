@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author Yury Demidenko
  */
-public class EmMsg extends AIdLn {
+public class EmMsg extends AOrId {
 
   /**
    * <p>Subject.</p>

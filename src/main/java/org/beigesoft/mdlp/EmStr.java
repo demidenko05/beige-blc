@@ -36,7 +36,7 @@ import org.beigesoft.mdl.IOwned;
  *
  * @author Yury Demidenko
  */
-public class EmStr extends AIdLn implements IOwned<EmCon, Long> {
+public class EmStr extends AOrId implements IOwned<EmCon, Long> {
 
   /**
    * <p>Email connection.</p>

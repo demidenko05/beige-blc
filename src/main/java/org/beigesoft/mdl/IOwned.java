@@ -36,7 +36,7 @@ package org.beigesoft.mdl;
  * @param <ID> type of ID
  * @author Yury Demidenko
  */
-public interface IOwned<T, ID> extends IHasId<ID> {
+public interface IOwned<T extends IHasId<?>, ID> extends IHasId<ID> {
 
   /**
    * <p>Usually it's simple getter that return owner.</p>

@@ -36,7 +36,7 @@ import org.beigesoft.mdl.IOwned;
  *
  * @author Yury Demidenko
  */
-public class MaFrnLn extends AIdLn implements IOwned<MaFrn, Long> {
+public class MaFrnLn extends AOrId implements IOwned<MaFrn, Long> {
 
   /**
    * <p>not null, owner.</p>

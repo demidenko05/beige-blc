@@ -28,57 +28,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.mdlp;
 
-import org.beigesoft.mdl.IOwned;
-
 /**
- * <p>Persistable model of recipient in email.</p>
+ * <p>Persistable model of email address.</p>
  *
  * @author Yury Demidenko
  */
-public class EmRcp extends AOrId implements IOwned<EmMsg, Long> {
+public class EmAdr extends AIdStrNm {
 
-  /**
-   * <p>Email message.</p>
-   **/
-  private EmMsg ownr;
-
-  /**
-   * <p>Email.</p>
-   **/
-  private EmAdr eml;
-
-  /**
-   * <p>Getter for ownr.</p>
-   * @return EmMsg
-   **/
-  @Override
-  public final EmMsg getOwnr() {
-    return this.ownr;
-  }
-
-  /**
-   * <p>Setter for ownr.</p>
-   * @param pOwnr reference
-   **/
-  @Override
-  public final void setOwnr(final EmMsg pOwnr) {
-    this.ownr = pOwnr;
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for eml.</p>
-   * @return EmAdr
-   **/
-  public final EmAdr getEml() {
-    return this.eml;
-  }
-
-  /**
-   * <p>Setter for eml.</p>
-   * @param pEml reference
-   **/
-  public final void setEml(final EmAdr pEml) {
-    this.eml = pEml;
-  }
 }

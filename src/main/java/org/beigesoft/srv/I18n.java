@@ -95,7 +95,7 @@ public class I18n implements II18n {
         if (!(messages != null && locale.equals(Locale.getDefault()))) {
           ResourceBundle msgs = null;
           try {
-            msgs = ResourceBundle.getBundle("Messages", locale);
+            msgs = ResourceBundle.getBundle("Msgs", locale);
           } catch (Exception e) {
             this.log.error(null, I18n.class,
               " when loading msg for locale " + locale, e);

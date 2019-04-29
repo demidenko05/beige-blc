@@ -134,9 +134,9 @@ public class HlpEntPg<RS> {
       final IEvalFr<IReqDt, String> pMkFlt) throws Exception {
     Map<String, Object> vs = new HashMap<String, Object>();
     String ent;
-    if (pRvs.get("entOw") != null) {
+    if (this.hldUvd.getOwnr() != null) {
       // owned entity put it to refresh owner list
-      ent = (String) pRvs.get("entOw");
+      ent = this.hldUvd.getOwnr().getClass().getSimpleName();
       if (pDbgSh) {
         this.log.debug(pRvs, getClass(), "It's used entOw: " + ent);
       }

@@ -128,14 +128,31 @@ public class HldUvd {
   //Utils(delegates):
   /**
    * <p>Set JS variables JS function.</p>
+   * @param pUsdDp used decimal places
+   * @param pPlNm ID DOM place name
    * @return JS function
    * @throws Exception - an exception
    **/
-  public final String setJs() {
+  public final String setJs(final Map<String, String> pUsdDp,
+    final String pPlNm) {
     CmnPrf cpf = (CmnPrf) getRvs().get("cpf");
     UsPrf upf = (UsPrf) getRvs().get("upf");
-    return "bsSetNumVs('" + cpf.getDcSpv() + "','" + cpf.getDcSpv() + "',"
-      + upf.getDgInGr() + ");";
+    StringBuffer sb = new StringBuffer("bsSetNumVs('" + cpf.getDcSpv() + "','"
+      + cpf.getDcSpv() + "'," + upf.getDgInGr() + ");");
+    if (pUsdDp != null && pUsdDp.size() > 0) {
+      sb.append("bsIniInpNum('");
+      boolean isFst = true;
+      for (String udp : pUsdDp.keySet()) {
+        if (isFst) {
+          isFst = false;
+        } else {
+          sb.append(",");
+        }
+        sb.append(udp);
+      }
+      sb.append("','" + pPlNm + "');");
+    }
+    return sb.toString();
   }
 
   /**
@@ -417,6 +434,22 @@ public class HldUvd {
    **/
   public final void setRvs(final Map<String, Object> pRvs) {
     lazUvdVar().setRvs(pRvs);
+  }
+
+  /**
+   * <p>Getter for ownr.</p>
+   * @return IHasId<?>
+   **/
+  public final IHasId<?> getOwnr() {
+    return lazUvdVar().getOwnr();
+  }
+
+  /**
+   * <p>Setter for ownr.</p>
+   * @param pOwnr reference
+   **/
+  public final void setOwnr(final IHasId<?> pOwnr) {
+    lazUvdVar().setOwnr(pOwnr);
   }
 
   /**
