@@ -123,7 +123,8 @@ public class HldUvd {
   /**
    * <p>Connection per thread holder.</p>
    **/
-  private final ThreadLocal<UvdVar> hldUvdVar = new ThreadLocal<UvdVar>() { };
+  private static final ThreadLocal<UvdVar> hldUvdVar =
+    new ThreadLocal<UvdVar>() { };
 
   //Utils(delegates):
   /**
@@ -138,7 +139,7 @@ public class HldUvd {
     CmnPrf cpf = (CmnPrf) getRvs().get("cpf");
     UsPrf upf = (UsPrf) getRvs().get("upf");
     StringBuffer sb = new StringBuffer("bsSetNumVs('" + cpf.getDcSpv() + "','"
-      + cpf.getDcSpv() + "'," + upf.getDgInGr() + ");");
+      + cpf.getDcGrSpv() + "'," + upf.getDgInGr() + ");");
     if (pUsdDp != null && pUsdDp.size() > 0) {
       sb.append("bsIniInpNum('");
       boolean isFst = true;

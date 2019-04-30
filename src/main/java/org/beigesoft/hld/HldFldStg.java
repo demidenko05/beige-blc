@@ -41,6 +41,11 @@ import org.beigesoft.prp.ISetng;
 public class HldFldStg implements IHldNm<Class<?>, String> {
 
   /**
+   * <p>There is no standard setting.</p>
+   **/
+  public static final String NOSTD = "NOSTD";
+
+  /**
    * <p>Setting name.</p>
    **/
   private final String stgNm;
@@ -83,6 +88,11 @@ public class HldFldStg implements IHldNm<Class<?>, String> {
   private Set<Class<?>> custClss;
 
   /**
+   * <p>Field's super-classes with custom setting from ISetng.</p>
+   **/
+  private Set<Class<?>> custSclss;
+
+  /**
    * <p>Setting for any enum field.</p>
    **/
   private String enumVal;
@@ -116,6 +126,17 @@ public class HldFldStg implements IHldNm<Class<?>, String> {
         throw new RuntimeException(e);
       }
     }
+    if (this.setng != null && this.custSclss != null) {
+      for (Class<?> cl : this.custSclss) {
+        if (cl.isAssignableFrom(fdCls)) {
+          try {
+            return this.setng.lazFldStg(pCls, pFlNm, this.stgNm);
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        }
+      }
+    }
     if (this.stgClss != null && this.stgClss.keySet().contains(fdCls)) {
       return this.stgClss.get(fdCls);
     }
@@ -132,6 +153,10 @@ public class HldFldStg implements IHldNm<Class<?>, String> {
           return enr.getValue();
         }
       }
+    }
+    if (NOSTD.equals(this.stdVal)) {
+      throw new RuntimeException("There is no setting for cls/fld/stg: "
+        + pCls + "/" + pFlNm + "/" + this.stgNm);
     }
     return this.stdVal;
   }
@@ -231,6 +256,22 @@ public class HldFldStg implements IHldNm<Class<?>, String> {
    **/
   public final void setStgSclss(final Map<Class<?>, String> pStgSclss) {
     this.stgSclss = pStgSclss;
+  }
+
+  /**
+   * <p>Getter for custSclss.</p>
+   * @return Set<Class<?>>
+   **/
+  public final Set<Class<?>> getCustSclss() {
+    return this.custSclss;
+  }
+
+  /**
+   * <p>Setter for custSclss.</p>
+   * @param pCustSclss reference
+   **/
+  public final void setCustSclss(final Set<Class<?>> pCustSclss) {
+    this.custSclss = pCustSclss;
   }
 
   /**
