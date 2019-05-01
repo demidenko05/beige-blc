@@ -48,21 +48,11 @@ public class UvdVar {
    **/
   private Class<?> cls;
 
-  /**
-   * <p>Request scoped vars.</p>
-   **/
-  private Map<String, Object> rvs;
-
     //list:
   /**
    * <p>Requested entity fields.</p>
    **/
   private List<?> ents;
-
-  /**
-   * <p>Requested entity fields.</p>
-   **/
-  private String[] lstFds;
 
   /**
    * <p>Pages.</p>
@@ -121,22 +111,6 @@ public class UvdVar {
   }
 
   /**
-   * <p>Getter for rvs.</p>
-   * @return Map<String, Object>
-   **/
-  public final Map<String, Object> getRvs() {
-    return this.rvs;
-  }
-
-  /**
-   * <p>Setter for rvs.</p>
-   * @param pRvs reference
-   **/
-  public final void setRvs(final Map<String, Object> pRvs) {
-    this.rvs = pRvs;
-  }
-
-  /**
    * <p>Getter for ents.</p>
    * @return List<?>
    **/
@@ -150,22 +124,6 @@ public class UvdVar {
    **/
   public final void setEnts(final List<?> pEnts) {
     this.ents = pEnts;
-  }
-
-  /**
-   * <p>Getter for lstFds.</p>
-   * @return String[]
-   **/
-  public final String[] getLstFds() {
-    return this.lstFds;
-  }
-
-  /**
-   * <p>Setter for lstFds.</p>
-   * @param pLstFds reference
-   **/
-  public final void setLstFds(final String[] pLstFds) {
-    this.lstFds = pLstFds;
   }
 
   /**
@@ -214,6 +172,11 @@ public class UvdVar {
    **/
   public final void setEnt(final IHasId<?> pEnt) {
     this.ent = pEnt;
+    if (this.ent == null) {
+      this.cls = null;
+    } else {
+      this.cls = this.ent.getClass();
+    }
   }
 
   /**

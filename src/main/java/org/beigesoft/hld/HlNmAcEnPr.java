@@ -33,6 +33,7 @@ import java.util.List;
 import org.beigesoft.prc.PrcEntRt;
 import org.beigesoft.prc.PrcEntCr;
 import org.beigesoft.prc.PrcEntSv;
+import org.beigesoft.prc.PrcEntDl;
 import org.beigesoft.prc.PrcEnoSv;
 
 /**
@@ -59,11 +60,14 @@ public class HlNmAcEnPr implements IHldNm<Class<?>, String> {
     if (this.shrEnts != null && this.shrEnts.contains(pCls)) {
       return null;
     }
-    if ("entEd".equals(pAct)) {
+    if ("entEd".equals(pAct) || "entCd".equals(pAct) || "entPr".equals(pAct)) {
       return PrcEntRt.class.getSimpleName();
     }
     if ("entCr".equals(pAct)) {
       return PrcEntCr.class.getSimpleName();
+    }
+    if ("entDl".equals(pAct)) {
+      return PrcEntDl.class.getSimpleName();
     }
     if ("entSv".equals(pAct)) {
       return PrcEntSv.class.getSimpleName();

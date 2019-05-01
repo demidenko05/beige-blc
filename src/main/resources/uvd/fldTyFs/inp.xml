@@ -11,4 +11,5 @@ See LICENSE in base folder
 <entry key="java.util.Date">dtTm</entry>
 <entry key="java.lang.String">str</entry>
 <entry key="java.lang.Long">int</entry>
+<entry key="java.lang.Boolean">bln</entry>
 </properties>

@@ -34,10 +34,13 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IOwned;
+import org.beigesoft.mdlp.IOrId;
 import org.beigesoft.hld.HldUvd;
+import org.beigesoft.hld.UvdVar;
 import org.beigesoft.rdb.IOrm;
 
 /**
@@ -71,21 +74,29 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
   @Override
   public final T process(final Map<String, Object> pRvs, final T pEnt,
     final IReqDt pRqDt) throws Exception {
+    if (IOrId.class.isAssignableFrom(pEnt.getClass())) {
+      IOrId oid = (IOrId) pEnt;
+      if (!oid.getDbOr().equals(this.orm.getDbId())) {
+        String[] aar = pRqDt.getParam("act").split(",");
+        if ("entEd".equals(aar[0]) || "entCd".equals(aar[0])) {
+          throw new ExcCode(ExcCode.WRPR, "can_not_change_foreign_src");
+        }
+      }
+    }
     Map<String, Object> vs = new HashMap<String, Object>();
     this.orm.refrEnt(pRvs, vs, pEnt);
     pEnt.setIsNew(false);
-    String[] lstFds = this.hldUvd.lazLstFds(pEnt.getClass());
-    this.hldUvd.setEnt(pEnt);
-    this.hldUvd.setLstFds(lstFds);
+    UvdVar uvs = (UvdVar) pRvs.get("uvs");
+    uvs.setEnt(pEnt);
     List<Class<IOwned<?, ?>>> oeLst = this.hldUvd
       .lazOwnd(pEnt.getClass());
     if (oeLst != null) {
       Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>> owdEntsMp =
         new LinkedHashMap<Class<IOwned<?, ?>>, List<IOwned<?, ?>>>();
-      String idOwnr = this.hldUvd.idSql(pEnt);
+      String idOwnr = this.hldUvd.idSql(pRvs, pEnt);
       for (Class oecg : oeLst) {
         Class<IOwned<T, ?>> oec = (Class<IOwned<T, ?>>) oecg;
-        lstFds = this.hldUvd.lazLstFds(oec);
+        String[] lstFds = this.hldUvd.lazLstFds(oec);
         String[] ndFds = Arrays.copyOf(lstFds, lstFds.length);
         Arrays.sort(ndFds);
         vs.put(oec.getSimpleName() + "ndFds", ndFds);
@@ -97,7 +108,7 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
           owd.setOwnr(pEnt);
         }
       }
-      this.hldUvd.setOwdEntsMp(owdEntsMp);
+      uvs.setOwdEntsMp(owdEntsMp);
     }
    return pEnt;
   }

@@ -32,7 +32,7 @@ import java.util.Map;
 
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IHasId;
-import org.beigesoft.hld.HldUvd;
+import org.beigesoft.hld.UvdVar;
 
 /**
  * <p>Service that creates entity.</p>
@@ -42,11 +42,6 @@ import org.beigesoft.hld.HldUvd;
  * @author Yury Demidenko
  */
 public class PrcEntCr<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
-
-  /**
-   * <p>Holder UVD settings, vars.</p>
-   */
-  private HldUvd hldUvd;
 
   /**
    * <p>Process that creates entity.</p>
@@ -61,26 +56,8 @@ public class PrcEntCr<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
   public final T process(final Map<String, Object> pRvs, final T pEnt,
     final IReqDt pRqDt) throws Exception {
     pEnt.setIsNew(true);
-    String[] lstFds = this.hldUvd.lazLstFds(pEnt.getClass());
-    this.hldUvd.setEnt(pEnt);
-    this.hldUvd.setLstFds(lstFds);
+    UvdVar uvs = (UvdVar) pRvs.get("uvs");
+    uvs.setEnt(pEnt);
     return pEnt;
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for hldUvd.</p>
-   * @return HldUvd
-   **/
-  public final HldUvd getHldUvd() {
-    return this.hldUvd;
-  }
-
-  /**
-   * <p>Setter for hldUvd.</p>
-   * @param pHldUvd reference
-   **/
-  public final void setHldUvd(final HldUvd pHldUvd) {
-    this.hldUvd = pHldUvd;
   }
 }

@@ -36,6 +36,7 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.prc.IPrcEnt;
 import org.beigesoft.prc.PrcEntRt;
 import org.beigesoft.prc.PrcEntCr;
+import org.beigesoft.prc.PrcEntDl;
 import org.beigesoft.prc.PrcEntSv;
 import org.beigesoft.prc.PrcEnoSv;
 
@@ -75,6 +76,8 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
         if (rz == null) {
           if (PrcEntCr.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEntCr(pRqVs);
+          } else if (PrcEntDl.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEntDl(pRqVs);
           } else if (PrcEntSv.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEntSv(pRqVs);
           } else if (PrcEnoSv.class.getSimpleName().equals(pPrNm)) {
@@ -99,7 +102,6 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
   private PrcEntCr crPuPrcEntCr(
     final Map<String, Object> pRqVs) throws Exception {
     PrcEntCr rz = new PrcEntCr();
-    rz.setHldUvd(this.fctBlc.lazHldUvd(pRqVs));
     this.procs.put(PrcEntCr.class.getSimpleName(), rz);
     this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEntCr.class
       .getSimpleName() + " has been created.");
@@ -116,9 +118,24 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
     final Map<String, Object> pRqVs) throws Exception {
     PrcEnoSv rz = new PrcEnoSv();
     rz.setOrm(this.fctBlc.lazOrm(pRqVs));
-    rz.setHldUvd(this.fctBlc.lazHldUvd(pRqVs));
     this.procs.put(PrcEnoSv.class.getSimpleName(), rz);
     this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEnoSv.class
+      .getSimpleName() + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map PrcEntDl.</p>
+   * @param pRqVs request scoped vars
+   * @return PrcEntDl
+   * @throws Exception - an exception
+   */
+  private PrcEntDl crPuPrcEntDl(
+    final Map<String, Object> pRqVs) throws Exception {
+    PrcEntDl rz = new PrcEntDl();
+    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
+    this.procs.put(PrcEntDl.class.getSimpleName(), rz);
+    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEntDl.class
       .getSimpleName() + " has been created.");
     return rz;
   }

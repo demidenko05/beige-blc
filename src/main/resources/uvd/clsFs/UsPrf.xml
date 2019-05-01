@@ -8,5 +8,7 @@ See LICENSE in base folder
 <properties>
 <comment>Explicit final definition.</comment>
 <entry key="lnginp">ide</entry>
+<entry key="lngwde">ide</entry>
 <entry key="cntrinp">idec</entry>
+<entry key="cntrwde">idec</entry>
 </properties>

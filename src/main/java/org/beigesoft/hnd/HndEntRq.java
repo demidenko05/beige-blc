@@ -40,6 +40,7 @@ import org.beigesoft.fct.IFctCls;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHldNm;
 import org.beigesoft.hld.HldUvd;
+import org.beigesoft.hld.UvdVar;
 import org.beigesoft.cnv.IFilObj;
 import org.beigesoft.prc.IPrc;
 import org.beigesoft.prc.IPrcEnt;
@@ -158,7 +159,8 @@ public class HndEntRq<RS> implements IHndRq {
       throw new ExcCode(ExcCode.FORB, "FORB");
     }
     pRqDt.setAttr("hldUvd", this.hldUvd);
-    this.hldUvd.setRvs(pRqVs);
+    UvdVar uvs = new UvdVar();
+    pRqVs.put("uvs", uvs);
     boolean isDbgSh = this.logStd.getDbgSh(this.getClass())
       && this.logStd.getDbgFl() < 5001 && this.logStd.getDbgCl() > 4999;
     String[] actArr = pRqDt.getParam("act").split(",");
@@ -215,7 +217,7 @@ public class HndEntRq<RS> implements IHndRq {
             String actNm = actArr[i];
             if (actNm.startsWith("ent")) {
               if (ent == null) { // it's may be change ent to owner:
-                ent = this.hldUvd.getOwnr();
+                ent = uvs.getOwnr();
                 if (ent == null) {
                   throw new ExcCode(ExcCode.WRPR,
                     "wrong_request_entity_not_filled");
@@ -285,6 +287,7 @@ public class HndEntRq<RS> implements IHndRq {
       final String[] pActArr, final boolean pIsDbgSh,
         final String pNmEnt) throws Exception {
     Map<String, Object> vs = new HashMap<String, Object>();
+    UvdVar uvs = (UvdVar) pRqVs.get("uvs");
     Class<?> cls = pCls;
     try {
       this.rdb.setAcmt(false);
@@ -302,7 +305,7 @@ public class HndEntRq<RS> implements IHndRq {
       for (String actNm : pActArr) {
         if (actNm.startsWith("ent")) {
           if (ent == null) { // it's may be change ent to owner:
-           ent = this.hldUvd.getOwnr();
+           ent = uvs.getOwnr();
            if (ent == null) {
               throw new ExcCode(ExcCode.WRPR,
                 "wrong_request_entity_not_filled");

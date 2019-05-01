@@ -30,7 +30,6 @@ package org.beigesoft.hld;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -38,7 +37,6 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.CmnPrf;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IOwned;
-import org.beigesoft.mdl.Page;
 import org.beigesoft.mdlp.UsPrf;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.prp.ISetng;
@@ -47,8 +45,8 @@ import org.beigesoft.cnv.IConv;
 
 /**
  * <p>Service that transforms and holds part of settings from ISetng UVD.
- * It's also assembly and it consists of all UVD holders and request scoped
- * variables that are used in JSP.</p>
+ * It's also assembly and it consists of all UVD holders variables
+ * that are used in JSP.</p>
  *
  * @author Yury Demidenko
  */
@@ -119,25 +117,19 @@ public class HldUvd {
   private final Map<String, Boolean> fldNulMp =
     new HashMap<String, Boolean>();
 
-  //request scoped vars for JSP:
-  /**
-   * <p>Connection per thread holder.</p>
-   **/
-  private static final ThreadLocal<UvdVar> hldUvdVar =
-    new ThreadLocal<UvdVar>() { };
-
   //Utils(delegates):
   /**
    * <p>Set JS variables JS function.</p>
+   * @param pRvs request scoped vars
    * @param pUsdDp used decimal places
    * @param pPlNm ID DOM place name
    * @return JS function
    * @throws Exception - an exception
    **/
-  public final String setJs(final Map<String, String> pUsdDp,
-    final String pPlNm) {
-    CmnPrf cpf = (CmnPrf) getRvs().get("cpf");
-    UsPrf upf = (UsPrf) getRvs().get("upf");
+  public final String setJs(final Map<String, Object> pRvs,
+    final Map<String, String> pUsdDp, final String pPlNm) {
+    CmnPrf cpf = (CmnPrf) pRvs.get("cpf");
+    UsPrf upf = (UsPrf) pRvs.get("upf");
     StringBuffer sb = new StringBuffer("bsSetNumVs('" + cpf.getDcSpv() + "','"
       + cpf.getDcGrSpv() + "'," + upf.getDgInGr() + ");");
     if (pUsdDp != null && pUsdDp.size() > 0) {
@@ -159,28 +151,32 @@ public class HldUvd {
   /**
    * <p>Converts to HTML ready ID, e.g. "IID=PAYB" for Account with String ID,
    * or "usr=User1&rol=Role1" for User-Role with composite ID.</p>
+   * @param pRvs request scoped vars
    * @param pEnt entity
    * @return to value
    * @throws Exception - an exception
    **/
-  public final String idHtml(final IHasId<?> pEnt) throws Exception {
+  public final String idHtml(final Map<String, Object> pRvs,
+    final IHasId<?> pEnt) throws Exception {
     String cvIdSqNm = this.hldCnvId.get(pEnt.getClass());
     @SuppressWarnings("rawtypes")
-    ICnvId cvIdSq = this.fctCnvId.laz(getRvs(), cvIdSqNm);
+    ICnvId cvIdSq = this.fctCnvId.laz(pRvs, cvIdSqNm);
     return cvIdSq.idHtml(pEnt);
   }
 
   /**
    * <p>Converts to SQL ready ID, e.g. "'PAYB'" for Account with String ID,
    * or "'User1','Role1'" for User-Role with composite ID.</p>
+   * @param pRvs request scoped vars
    * @param pEnt entity
    * @return to value
    * @throws Exception - an exception
    **/
-  public final String idSql(final IHasId<?> pEnt) throws Exception {
+  public final String idSql(final Map<String, Object> pRvs,
+    final IHasId<?> pEnt) throws Exception {
     String cvIdSqNm = this.hldCnvId.get(pEnt.getClass());
     @SuppressWarnings("rawtypes")
-    ICnvId cvIdSq = this.fctCnvId.laz(getRvs(), cvIdSqNm);
+    ICnvId cvIdSq = this.fctCnvId.laz(pRvs, cvIdSqNm);
     return cvIdSq.idSql(pEnt);
   }
 
@@ -223,19 +219,20 @@ public class HldUvd {
   /**
    * <p>Formats (converts) field value to string for given class, field name.
    * It delegates this to registered converter.</p>
+   * @param pRvs request scoped vars
    * @param pCls class
    * @param pFdNm field name
    * @param pFdVl field value
    * @return string setting
    * @throws Exception - an exception
    **/
-  public final String toStr(final Class<?> pCls, final String pFdNm,
-    final Object pFdVl) throws Exception {
+  public final String toStr(final Map<String, Object> pRvs, final Class<?> pCls,
+    final String pFdNm, final Object pFdVl) throws Exception {
     String cnm = this.hlCnToSt.get(pCls, pFdNm);
     @SuppressWarnings("unchecked")
     IConv<Object, String> cnv = (IConv<Object, String>) this.fcCnToSt
-      .laz(getRvs(), cnm);
-    return cnv.conv(getRvs(), pFdVl);
+      .laz(pRvs, cnm);
+    return cnv.conv(pRvs, pFdVl);
   }
 
   /**
@@ -341,202 +338,6 @@ public class HldUvd {
       }
     }
     return this.owdEnts.get(pCls);
-  }
-
-  //Request/thread scoped vars:
-  /**
-   * <p>Getter variable per thread.</p>
-   * @return variables
-   **/
-  public final UvdVar lazUvdVar() {
-    UvdVar uvdVar = this.hldUvdVar.get();
-    if (uvdVar == null) {
-      uvdVar = new UvdVar();
-      hldUvdVar.set(uvdVar);
-    }
-    return uvdVar;
-  }
-
-  /**
-   * <p>Getter for cls.</p>
-   * @return Class<?>
-   **/
-  public final Class<?> getCls() {
-    return lazUvdVar().getCls();
-  }
-
-  /**
-   * <p>Setter for cls.</p>
-   * @param pCls reference
-   **/
-  public final void setCls(final Class<?> pCls) {
-    lazUvdVar().setCls(pCls);
-  }
-
-  /**
-   * <p>Getter for ents.</p>
-   * @return List<?>
-   **/
-  public final List<?> getEnts() {
-    return lazUvdVar().getEnts();
-  }
-
-  /**
-   * <p>Setter for ents.</p>
-   * @param pEnts reference
-   **/
-  public final void setEnts(final List<?> pEnts) {
-    lazUvdVar().setEnts(pEnts);
-  }
-
-  /**
-   * <p>Getter for lstFds.</p>
-   * @return String[]
-   **/
-  public final String[] getLstFds() {
-    return lazUvdVar().getLstFds();
-  }
-
-  /**
-   * <p>Setter for lstFds.</p>
-   * @param pLstFds reference
-   **/
-  public final void setLstFds(final String[] pLstFds) {
-    lazUvdVar().setLstFds(pLstFds);
-  }
-
-  /**
-   * <p>Getter for pgs.</p>
-   * @return List<Page>
-   **/
-  public final List<Page> getPgs() {
-    return lazUvdVar().getPgs();
-  }
-
-  /**
-   * <p>Setter for pgs.</p>
-   * @param pPgs reference
-   **/
-  public final void setPgs(final List<Page> pPgs) {
-    lazUvdVar().setPgs(pPgs);
-  }
-
-  /**
-   * <p>Getter for rvs.</p>
-   * @return Map<String, Object>
-   **/
-  public final Map<String, Object> getRvs() {
-    return lazUvdVar().getRvs();
-  }
-
-  /**
-   * <p>Setter for rvs.</p>
-   * @param pRvs reference
-   **/
-  public final void setRvs(final Map<String, Object> pRvs) {
-    lazUvdVar().setRvs(pRvs);
-  }
-
-  /**
-   * <p>Getter for ownr.</p>
-   * @return IHasId<?>
-   **/
-  public final IHasId<?> getOwnr() {
-    return lazUvdVar().getOwnr();
-  }
-
-  /**
-   * <p>Setter for ownr.</p>
-   * @param pOwnr reference
-   **/
-  public final void setOwnr(final IHasId<?> pOwnr) {
-    lazUvdVar().setOwnr(pOwnr);
-  }
-
-  /**
-   * <p>Getter for ent.</p>
-   * @return IHasId<?>
-   **/
-  public final IHasId<?> getEnt() {
-    return lazUvdVar().getEnt();
-  }
-
-  /**
-   * <p>Setter for ent.</p>
-   * @param pEnt reference
-   **/
-  public final void setEnt(final IHasId<?> pEnt) {
-    lazUvdVar().setEnt(pEnt);
-    if (pEnt == null) {
-      lazUvdVar().setCls(null);
-    } else {
-      lazUvdVar().setCls(pEnt.getClass());
-    }
-  }
-
-  /**
-   * <p>Getter for owdEntsMp.</p>
-   * @return Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>>
-   **/
-  public final Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>> getOwdEntsMp() {
-    return lazUvdVar().getOwdEntsMp();
-  }
-
-  /**
-   * <p>Setter for owdEntsMp.</p>
-   * @param pOwdEntsMp reference
-   **/
-  public final void setOwdEntsMp(
-    final Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>> pOwdEntsMp) {
-    lazUvdVar().setOwdEntsMp(pOwdEntsMp);
-  }
-
-  /**
-   * <p>Getter for fltAp.</p>
-   * @return Set<String>
-   **/
-  public final Set<String> getFltAp() {
-    return lazUvdVar().getFltAp();
-  }
-
-  /**
-   * <p>Setter for fltAp.</p>
-   * @param pFltAp reference
-   **/
-  public final void setFltAp(final Set<String> pFltAp) {
-    lazUvdVar().setFltAp(pFltAp);
-  }
-
-  /**
-   * <p>Getter for fltMp.</p>
-   * @return Map<String, Object>
-   **/
-  public final Map<String, Object> getFltMp() {
-    return lazUvdVar().getFltMp();
-  }
-
-  /**
-   * <p>Setter for fltMp.</p>
-   * @param pFltMp reference
-   **/
-  public final void setFltMp(final Map<String, Object> pFltMp) {
-    lazUvdVar().setFltMp(pFltMp);
-  }
-
-  /**
-   * <p>Getter for ordMp.</p>
-   * @return Map<String, String>
-   **/
-  public final Map<String, String> getOrdMp() {
-    return lazUvdVar().getOrdMp();
-  }
-
-  /**
-   * <p>Setter for ordMp.</p>
-   * @param pOrdMp reference
-   **/
-  public final void setOrdMp(final Map<String, String> pOrdMp) {
-    lazUvdVar().setOrdMp(pOrdMp);
   }
 
   //Synchronized/simple SGS:

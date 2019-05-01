@@ -34,7 +34,8 @@ import java.util.HashMap;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IOwned;
-import org.beigesoft.hld.HldUvd;
+import org.beigesoft.mdlp.IOrId;
+import org.beigesoft.hld.UvdVar;
 import org.beigesoft.rdb.IOrm;
 
 /**
@@ -52,11 +53,6 @@ public class PrcEnoSv<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
   private IOrm orm;
 
   /**
-   * <p>Holder UVD settings, vars.</p>
-   */
-  private HldUvd hldUvd;
-
-  /**
    * <p>Process that saves entity.</p>
    * @param pRvs request scoped vars, e.g. return this line's
    * owner(document) in "nextEntity" for farther processing
@@ -68,6 +64,12 @@ public class PrcEnoSv<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
   @Override
   public final T process(final Map<String, Object> pRvs, final T pEnt,
     final IReqDt pRqDt) throws Exception {
+    if (IOrId.class.isAssignableFrom(pEnt.getClass())) {
+      IOrId oid = (IOrId) pEnt;
+      if (!oid.getDbOr().equals(this.orm.getDbId())) {
+        throw new ExcCode(ExcCode.WRPR, "can_not_change_foreign_src");
+      }
+    }
     Map<String, Object> vs = new HashMap<String, Object>();
     if (pEnt.getIsNew()) {
       this.orm.insert(pRvs, vs, pEnt);
@@ -79,7 +81,8 @@ public class PrcEnoSv<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
     if (owVrWs != pEnt.getOwnr().getVer()) {
       throw new ExcCode(IOrm.DRTREAD, "dirty_read");
     }
-    this.hldUvd.setOwnr(pEnt.getOwnr());
+    UvdVar uvs = (UvdVar) pRvs.get("uvs");
+    uvs.setOwnr(pEnt.getOwnr());
     return null;
   }
 
@@ -98,21 +101,5 @@ public class PrcEnoSv<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
    **/
   public final void setOrm(final IOrm pOrm) {
     this.orm = pOrm;
-  }
-
-  /**
-   * <p>Getter for hldUvd.</p>
-   * @return HldUvd
-   **/
-  public final HldUvd getHldUvd() {
-    return this.hldUvd;
-  }
-
-  /**
-   * <p>Setter for hldUvd.</p>
-   * @param pHldUvd reference
-   **/
-  public final void setHldUvd(final HldUvd pHldUvd) {
-    this.hldUvd = pHldUvd;
   }
 }

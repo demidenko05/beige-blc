@@ -31,8 +31,10 @@ package org.beigesoft.prc;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IHasId;
+import org.beigesoft.mdlp.IOrId;
 import org.beigesoft.rdb.IOrm;
 
 /**
@@ -61,6 +63,12 @@ public class PrcEntDl<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
   @Override
   public final T process(final Map<String, Object> pRvs, final T pEnt,
     final IReqDt pRqDt) throws Exception {
+    if (IOrId.class.isAssignableFrom(pEnt.getClass())) {
+      IOrId oid = (IOrId) pEnt;
+      if (!oid.getDbOr().equals(this.orm.getDbId())) {
+        throw new ExcCode(ExcCode.WRPR, "can_not_change_foreign_src");
+      }
+    }
     Map<String, Object> vs = new HashMap<String, Object>();
     this.orm.del(pRvs, vs, pEnt);
     return null;
