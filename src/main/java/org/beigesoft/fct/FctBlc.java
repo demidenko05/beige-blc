@@ -50,13 +50,16 @@ import org.beigesoft.hld.HldNmCnToSt;
 import org.beigesoft.hld.HldNmCnToStXml;
 import org.beigesoft.hld.HldNmCnFrStXml;
 import org.beigesoft.hld.HlNmPrFe;
+import org.beigesoft.hld.HlNmPrFeAd;
 import org.beigesoft.hld.HlNmAcEnPr;
+import org.beigesoft.hld.HlNmAdEnPr;
 import org.beigesoft.hld.HldClsStg;
 import org.beigesoft.hld.HldFldStg;
 import org.beigesoft.hld.HldUvd;
 import org.beigesoft.hld.HldCnvId;
 import org.beigesoft.hnd.HndEntRq;
 import org.beigesoft.hnd.HndI18nRq;
+import org.beigesoft.hnd.HndNtrRq;
 import org.beigesoft.prp.UtlPrp;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.log.LogFile;
@@ -143,9 +146,24 @@ public class FctBlc<RS> implements IFctApp {
   public static final String LOGSECNM = "logSec";
 
   /**
+   * <p>Handler base, secure non-transaction requests name.</p>
+   **/
+  public static final String HNNTRQSC = "hnNtRqSc";
+
+  /**
+   * <p>Handler admin/web-store entities request name.</p>
+   **/
+  public static final String HNADENRQ = "hnAdEnRq";
+
+  /**
    * <p>Handler base entities (no admin, etc) request name.</p>
    **/
   public static final String HNACENRQ = "hnAcEnRq";
+
+  /**
+   * <p>Processor admin/web-store entities page name.</p>
+   **/
+  public static final String PRADENTPG = "prAdEnPg";
 
   /**
    * <p>Processor base entities (no admin, etc) page name.</p>
@@ -260,6 +278,11 @@ public class FctBlc<RS> implements IFctApp {
   private String appPth;
 
   /**
+   * <p>Admin/webstore non-shared entities.</p>
+   **/
+  private List<Class<?>> admEnts;
+
+  /**
    * <p>Forbidden entities for base entity request handler, e.g. UsTmc.</p>
    **/
   private List<Class<?>> fbdEnts;
@@ -308,13 +331,13 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pBnNm - bean name
    * @return Object - requested bean or exception if not found
    * @throws Exception - an exception
    */
   @Override
-  public final Object laz(final Map<String, Object> pRqVs,
+  public final Object laz(final Map<String, Object> pRvs,
     final String pBnNm) throws Exception {
     if (pBnNm == null) {
       throw new ExcCode(ExcCode.WRPR, "Null bean name!!!");
@@ -325,99 +348,103 @@ public class FctBlc<RS> implements IFctApp {
         rz = this.beans.get(pBnNm);
         if (rz == null) {
           if (HndI18nRq.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHndI18nRq(pRqVs);
+            rz = lazHndI18nRq(pRvs);
+          } else if (HNNTRQSC.equals(pBnNm)) {
+            rz = lazHndNtrRq(pRvs);
           } else if (HNACENRQ.equals(pBnNm)) {
-            rz = lazHnAcEnRq(pRqVs);
+            rz = lazHnAcEnRq(pRvs);
+          } else if (HNADENRQ.equals(pBnNm)) {
+            rz = lazHnAdEnRq(pRvs);
           } else if (FctPrcFen.class.getSimpleName().equals(pBnNm)) {
-            rz = lazFctPrcFen(pRqVs);
+            rz = lazFctPrcFen(pRvs);
           } else if (STGORMNM.equals(pBnNm)) {
-            rz = lazStgOrm(pRqVs);
+            rz = lazStgOrm(pRvs);
           } else if (IOrm.class.getSimpleName().equals(pBnNm)) {
-            rz = lazOrm(pRqVs);
+            rz = lazOrm(pRvs);
           } else if (SrvClVl.class.getSimpleName().equals(pBnNm)) {
-            rz = lazSrvClVl(pRqVs);
+            rz = lazSrvClVl(pRvs);
           } else if (ISqlQu.class.getSimpleName().equals(pBnNm)) {
-            rz = lazSqlQu(pRqVs);
+            rz = lazSqlQu(pRvs);
           } else if (FilCvEnt.class.getSimpleName().equals(pBnNm)) {
-            rz = lazFilCvEnt(pRqVs);
+            rz = lazFilCvEnt(pRvs);
           } else if (FilEntRs.class.getSimpleName().equals(pBnNm)) {
-            rz = lazFilEntRs(pRqVs);
+            rz = lazFilEntRs(pRvs);
           } else if (HldCnvFdCv.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldCnvFdCv(pRqVs);
+            rz = lazHldCnvFdCv(pRvs);
           } else if (HldNmFilFdRs.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldNmFilFdRs(pRqVs);
+            rz = lazHldNmFilFdRs(pRvs);
           } else if (HldFilFdCv.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldFilFdCv(pRqVs);
+            rz = lazHldFilFdCv(pRvs);
           } else if (HldNmCnFrRs.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldNmCnFrRs(pRqVs);
+            rz = lazHldNmCnFrRs(pRvs);
           } else if (FctCnvCv.class.getSimpleName().equals(pBnNm)) {
-            rz = lazFctCnvCv(pRqVs);
+            rz = lazFctCnvCv(pRvs);
           } else if (FctNmCnFrRs.class.getSimpleName().equals(pBnNm)) {
-            rz = lazFctNmCnFrRs(pRqVs);
+            rz = lazFctNmCnFrRs(pRvs);
           } else if (FilEntRq.class.getSimpleName().equals(pBnNm)) {
-            rz = lazFilEntRq(pRqVs);
+            rz = lazFilEntRq(pRvs);
           } else if (ENWRDBCPNM.equals(pBnNm)) {
-            rz = lazRpEntWriXmlDbCp(pRqVs);
+            rz = lazRpEntWriXmlDbCp(pRvs);
           } else if (ENRDDBCPNM.equals(pBnNm)) {
-            rz = lazRpEntReadXmlDbCp(pRqVs);
+            rz = lazRpEntReadXmlDbCp(pRvs);
           } else if (STGDBCPNM.equals(pBnNm)) {
-            rz = lazStgDbCp(pRqVs);
+            rz = lazStgDbCp(pRvs);
           } else if (STGUVDNM.equals(pBnNm)) {
-            rz = lazStgUvd(pRqVs);
+            rz = lazStgUvd(pRvs);
           } else if (FctNmCnFrSt.class.getSimpleName().equals(pBnNm)) {
-            rz = lazFctNmCnFrSt(pRqVs);
+            rz = lazFctNmCnFrSt(pRvs);
           } else if (FctNmFilFdSt.class.getSimpleName().equals(pBnNm)) {
-            rz = lazFctNmFilFd(pRqVs);
+            rz = lazFctNmFilFd(pRvs);
           } else if (FctNmCnToSt.class.getSimpleName().equals(pBnNm)) {
-            rz = lazFctNmCnToSt(pRqVs);
+            rz = lazFctNmCnToSt(pRvs);
           } else if (HldUvd.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldUvd(pRqVs);
+            rz = lazHldUvd(pRvs);
           } else if (HLFILFDNMUVD.equals(pBnNm)) {
-            rz = lazHldNmFilFdStUvd(pRqVs);
+            rz = lazHldNmFilFdStUvd(pRvs);
           } else if (HLFILFDNMDBCP.equals(pBnNm)) {
-            rz = lazHldNmFilFdStDbCp(pRqVs);
+            rz = lazHldNmFilFdStDbCp(pRvs);
           } else if (HldNmCnToStXml.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldNmCnToStXml(pRqVs);
+            rz = lazHldNmCnToStXml(pRvs);
           } else if (HldNmCnFrStXml.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldNmCnFrStXml(pRqVs);
+            rz = lazHldNmCnFrStXml(pRvs);
           } else if (HldNmCnFrSt.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldNmCnFrStUvd(pRqVs);
+            rz = lazHldNmCnFrStUvd(pRvs);
           } else if (HldNmCnToSt.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldNmCnToStUvd(pRqVs);
+            rz = lazHldNmCnToStUvd(pRvs);
           } else if (HldGets.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldGets(pRqVs);
+            rz = lazHldGets(pRvs);
           } else if (HldSets.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldSets(pRqVs);
+            rz = lazHldSets(pRvs);
           } else if (HldFldCls.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHldFldCls(pRqVs);
+            rz = lazHldFldCls(pRvs);
           } else if (FctFctEnt.class.getSimpleName().equals(pBnNm)) {
             //IT DEPENDS OF ORM!
-            rz = lazFctFctEnt(pRqVs);
+            rz = lazFctFctEnt(pRvs);
           } else if (UtlPrp.class.getSimpleName().equals(pBnNm)) {
-            rz = lazUtlPrp(pRqVs);
+            rz = lazUtlPrp(pRvs);
           } else if (INumStr.class.getSimpleName().equals(pBnNm)) {
-            rz = lazNumStr(pRqVs);
+            rz = lazNumStr(pRvs);
           } else if (ISqlEsc.class.getSimpleName().equals(pBnNm)) {
-            rz = lazSqlEsc(pRqVs);
+            rz = lazSqlEsc(pRvs);
           } else if (IUtlXml.class.getSimpleName().equals(pBnNm)) {
-            rz = lazUtlXml(pRqVs);
+            rz = lazUtlXml(pRvs);
           } else if (LOGSTDNM.equals(pBnNm)) {
-            rz = lazLogStd(pRqVs);
+            rz = lazLogStd(pRvs);
           } else if (LOGSECNM.equals(pBnNm)) {
-            rz = lazLogSec(pRqVs);
+            rz = lazLogSec(pRvs);
           } else if (IReflect.class.getSimpleName().equals(pBnNm)) {
-            rz = lazReflect(pRqVs);
+            rz = lazReflect(pRvs);
           } else if (ISrvDt.class.getSimpleName().equals(pBnNm)) {
-            rz = lazSrvDt(pRqVs);
+            rz = lazSrvDt(pRvs);
           } else if (ISrvPg.class.getSimpleName().equals(pBnNm)) {
-            rz = lazSrvPg(pRqVs);
+            rz = lazSrvPg(pRvs);
           } else if (II18n.class.getSimpleName().equals(pBnNm)) {
-            rz = lazI18n(pRqVs);
+            rz = lazI18n(pRvs);
           } else if (HlpEntPg.class.getSimpleName().equals(pBnNm)) {
-            rz = lazHlpEntPg(pRqVs);
+            rz = lazHlpEntPg(pRvs);
           } else {
             for (IFctAux<RS> fau : this.fctsAux) {
-              rz = fau.crePut(pRqVs, pBnNm, this);
+              rz = fau.crePut(pRvs, pBnNm, this);
               if (rz != null) {
                 break;
               }
@@ -434,13 +461,13 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Puts beans by external AUX factory.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pBnNm - bean name
    * @param pBean - bean
    * @throws Exception - an exception, e.g. if bean exists
    **/
   @Override
-  public final synchronized void put(final Map<String, Object> pRqVs,
+  public final synchronized void put(final Map<String, Object> pRvs,
     final String pBnNm, final Object pBean) throws Exception {
     if (pBnNm == null || pBean == null) {
       throw new ExcCode(ExcCode.WRPR, "Null bean or name: nm/bn"
@@ -454,18 +481,18 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Release beans (memory). This is "memory friendly" factory.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @throws Exception - an exception
    */
   @Override
   public final synchronized void release(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     this.beans.clear();
     for (IFctAux<RS> fau : this.fctsAux) {
-      fau.release(pRqVs, this);
+      fau.release(pRvs, this);
     }
     if (this.logStd != null) {
-      this.logStd.info(pRqVs, getClass(), "Send stop to LOG STD...");
+      this.logStd.info(pRvs, getClass(), "Send stop to LOG STD...");
       this.logStd.setNeedRun(false);
       this.logStd = null;
     }
@@ -473,13 +500,61 @@ public class FctBlc<RS> implements IFctApp {
 
   //Request handlers:
   /**
+   * <p>Lazy getter handler admin/webstore entities request.</p>
+   * @param pRvs request scoped vars
+   * @return HndEntRq
+   * @throws Exception - an exception
+   */
+  public final synchronized HndEntRq<RS> lazHnAdEnRq(
+    final Map<String, Object> pRvs) throws Exception {
+    @SuppressWarnings("unchecked")
+    HndEntRq<RS> rz = (HndEntRq<RS>) this.beans.get(HNADENRQ);
+    if (rz == null) {
+      rz = new HndEntRq<RS>();
+      rz.setWriteTi(getWriteTi());
+      rz.setReadTi(getReadTi());
+      rz.setWriteReTi(getWriteReTi());
+      rz.setWrReSpTr(getWrReSpTr());
+      rz.setLogStd(lazLogStd(pRvs));
+      rz.setLogSec(lazLogSec(pRvs));
+      rz.setHldUvd(lazHldUvd(pRvs));
+      @SuppressWarnings("unchecked")
+      IRdb<RS> rdb = (IRdb<RS>) laz(pRvs, IRdb.class.getSimpleName());
+      rz.setRdb(rdb);
+      rz.setFilEntRq(lazFilEntRq(pRvs));
+      rz.setFctFctEnt(lazFctFctEnt(pRvs));
+      rz.setHldPrcFenNm(new HlNmPrFeAd());
+      FctPrcFenAd<RS> fen = new FctPrcFenAd<RS>();
+      fen.setFctBlc(this);
+      rz.setFctPrcFen(fen);
+      rz.setHldEntPrcNm(new HlNmAdEnPr());
+      FctAcEnPrc<RS> fep = new FctAcEnPrc<RS>();
+      fep.setFctBlc(this);
+      rz.setFctEntPrc(fep);
+      rz.setEntMap(new HashMap<String, Class<?>>());
+      Setng setng = lazStgUvd(pRvs);
+      for (Class<?> cls  : setng.lazClss()) {
+        if (this.admEnts == null || this.admEnts.contains(cls)) {
+          rz.getEntMap().put(cls.getSimpleName(), cls);
+        }
+      }
+      /*if (this.admEnts != null) {
+        this.admEnts.clear();
+      }*/
+      this.beans.put(HNADENRQ, rz);
+      lazLogStd(pRvs).info(pRvs, getClass(), HNADENRQ + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
    * <p>Lazy getter handler base entities request.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HndEntRq
    * @throws Exception - an exception
    */
   public final synchronized HndEntRq<RS> lazHnAcEnRq(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     @SuppressWarnings("unchecked")
     HndEntRq<RS> rz = (HndEntRq<RS>) this.beans.get(HNACENRQ);
     if (rz == null) {
@@ -488,15 +563,15 @@ public class FctBlc<RS> implements IFctApp {
       rz.setReadTi(getReadTi());
       rz.setWriteReTi(getWriteReTi());
       rz.setWrReSpTr(getWrReSpTr());
-      rz.setLogStd(lazLogStd(pRqVs));
-      rz.setLogSec(lazLogSec(pRqVs));
-      rz.setHldUvd(lazHldUvd(pRqVs));
+      rz.setLogStd(lazLogStd(pRvs));
+      rz.setLogSec(lazLogSec(pRvs));
+      rz.setHldUvd(lazHldUvd(pRvs));
       @SuppressWarnings("unchecked")
-      IRdb<RS> rdb = (IRdb<RS>) laz(pRqVs, IRdb.class.getSimpleName());
+      IRdb<RS> rdb = (IRdb<RS>) laz(pRvs, IRdb.class.getSimpleName());
       rz.setRdb(rdb);
-      rz.setFilEntRq(lazFilEntRq(pRqVs));
-      rz.setFctFctEnt(lazFctFctEnt(pRqVs));
-      rz.setFctPrcFen(lazFctPrcFen(pRqVs));
+      rz.setFilEntRq(lazFilEntRq(pRvs));
+      rz.setFctFctEnt(lazFctFctEnt(pRvs));
+      rz.setFctPrcFen(lazFctPrcFen(pRvs));
       HlNmAcEnPr hlep = new HlNmAcEnPr();
       hlep.setShrEnts(this.shrEnts);
       rz.setHldEntPrcNm(hlep);
@@ -505,26 +580,29 @@ public class FctBlc<RS> implements IFctApp {
       rz.setFctEntPrc(fep);
       rz.setHldPrcFenNm(new HlNmPrFe());
       rz.setEntMap(new HashMap<String, Class<?>>());
-      Setng setng = lazStgUvd(pRqVs);
+      Setng setng = lazStgUvd(pRvs);
       for (Class<?> cls  : setng.lazClss()) {
         if (this.fbdEnts == null || !this.fbdEnts.contains(cls)) {
           rz.getEntMap().put(cls.getSimpleName(), cls);
         }
       }
+      /*if (this.fbdEnts != null) {
+        this.fbdEnts.clear();
+      }*/
       this.beans.put(HNACENRQ, rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HNACENRQ + " has been created.");
+      lazLogStd(pRvs).info(pRvs, getClass(), HNACENRQ + " has been created.");
     }
     return rz;
   }
 
   /**
    * <p>Lazy getter FctPrcFen.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return FctPrcFen
    * @throws Exception - an exception
    */
   public final synchronized FctPrcFen<RS> lazFctPrcFen(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     @SuppressWarnings("unchecked")
     FctPrcFen<RS> rz = (FctPrcFen<RS>) this.beans
       .get(FctPrcFen.class.getSimpleName());
@@ -532,7 +610,7 @@ public class FctBlc<RS> implements IFctApp {
       rz = new FctPrcFen<RS>();
       rz.setFctBlc(this);
       this.beans.put(FctPrcFen.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), FctPrcFen.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), FctPrcFen.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -540,26 +618,47 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter HndI18nRq.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HndI18nRq
    * @throws Exception - an exception
    */
   public final synchronized HndI18nRq<RS> lazHndI18nRq(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     @SuppressWarnings("unchecked")
     HndI18nRq<RS> rz = (HndI18nRq<RS>) this.beans
       .get(HndI18nRq.class.getSimpleName());
     if (rz == null) {
       rz = new HndI18nRq<RS>();
-      rz.setOrm(lazOrm(pRqVs));
+      rz.setOrm(lazOrm(pRvs));
       @SuppressWarnings("unchecked")
-      IRdb<RS> rdb = (IRdb<RS>) laz(pRqVs, IRdb.class.getSimpleName());
+      IRdb<RS> rdb = (IRdb<RS>) laz(pRvs, IRdb.class.getSimpleName());
       rz.setRdb(rdb);
-      rz.setLog(lazLogStd(pRqVs));
-      rz.setI18n(lazI18n(pRqVs));
+      rz.setLog(lazLogStd(pRvs));
+      rz.setI18n(lazI18n(pRvs));
       rz.setUtJsp(new UtlJsp());
       this.beans.put(HndI18nRq.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HndI18nRq.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), HndI18nRq.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter HndNtrRq.</p>
+   * @param pRvs request scoped vars
+   * @return HndNtrRq
+   * @throws Exception - an exception
+   */
+  public final synchronized HndNtrRq lazHndNtrRq(
+    final Map<String, Object> pRvs) throws Exception {
+    HndNtrRq rz = (HndNtrRq) this.beans.get(HNNTRQSC);
+    if (rz == null) {
+      rz = new HndNtrRq();
+      FctPrcNtr<RS> fct = new FctPrcNtr<RS>();
+      fct.setFctBlc(this);
+      rz.setFctPrc(fct);
+      this.beans.put(HNNTRQSC, rz);
+      lazLogStd(pRvs).info(pRvs, getClass(), HNNTRQSC
         + " has been created.");
     }
     return rz;
@@ -568,22 +667,22 @@ public class FctBlc<RS> implements IFctApp {
   //Database full copy:
   /**
    * <p>Lazy getter RpEntReadXmlDbCp.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return RpEntReadXmlDbCp
    * @throws Exception - an exception
    */
   public final synchronized RpEntReadXml lazRpEntReadXmlDbCp(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     RpEntReadXml rz = (RpEntReadXml) this.beans.get(ENRDDBCPNM);
     if (rz == null) {
       rz = new RpEntReadXml();
-      rz.setLog(lazLogStd(pRqVs));
-      rz.setSetng(lazStgDbCp(pRqVs));
-      rz.setHldFilFdNms(lazHldNmFilFdStDbCp(pRqVs));
-      rz.setUtlXml(lazUtlXml(pRqVs));
-      rz.setFctFilFld(lazFctNmFilFd(pRqVs));
+      rz.setLog(lazLogStd(pRvs));
+      rz.setSetng(lazStgDbCp(pRvs));
+      rz.setHldFilFdNms(lazHldNmFilFdStDbCp(pRvs));
+      rz.setUtlXml(lazUtlXml(pRvs));
+      rz.setFctFilFld(lazFctNmFilFd(pRvs));
       this.beans.put(ENWRDBCPNM, rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), ENRDDBCPNM
+      lazLogStd(pRvs).info(pRvs, getClass(), ENRDDBCPNM
         + " has been created.");
     }
     return rz;
@@ -591,22 +690,22 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter RpEntWriXmlDbCp.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return RpEntWriXmlDbCp
    * @throws Exception - an exception
    */
   public final synchronized RpEntWriXml lazRpEntWriXmlDbCp(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     RpEntWriXml rz = (RpEntWriXml) this.beans.get(ENWRDBCPNM);
     if (rz == null) {
       rz = new RpEntWriXml();
-      rz.setLog(lazLogStd(pRqVs));
-      rz.setSetng(lazStgDbCp(pRqVs));
-      rz.setHldGets(lazHldGets(pRqVs));
-      rz.setHldNmFdCn(lazHldNmCnToStXml(pRqVs));
-      rz.setFctCnvFld(lazFctNmCnToSt(pRqVs));
+      rz.setLog(lazLogStd(pRvs));
+      rz.setSetng(lazStgDbCp(pRvs));
+      rz.setHldGets(lazHldGets(pRvs));
+      rz.setHldNmFdCn(lazHldNmCnToStXml(pRvs));
+      rz.setFctCnvFld(lazFctNmCnToSt(pRvs));
       this.beans.put(ENWRDBCPNM, rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), ENWRDBCPNM
+      lazLogStd(pRvs).info(pRvs, getClass(), ENWRDBCPNM
         + " has been created.");
     }
     return rz;
@@ -614,22 +713,22 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter DB copy Setng.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return Setng
    * @throws Exception - an exception
    */
   public final synchronized Setng lazStgDbCp(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     Setng rz = (Setng) this.beans.get(STGDBCPNM);
     if (rz == null) {
       rz = new Setng();
       rz.setDir(getStgDbCpDir());
-      rz.setReflect(lazReflect(pRqVs));
-      rz.setUtlPrp(lazUtlPrp(pRqVs));
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
-      rz.setLog(lazLogStd(pRqVs));
+      rz.setReflect(lazReflect(pRvs));
+      rz.setUtlPrp(lazUtlPrp(pRvs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
+      rz.setLog(lazLogStd(pRvs));
       this.beans.put(STGDBCPNM, rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), STGDBCPNM
+      lazLogStd(pRvs).info(pRvs, getClass(), STGDBCPNM
         + " has been created.");
     }
     return rz;
@@ -637,22 +736,22 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter DBCP HldNmFilFdSt.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldNmFilFdSt
    * @throws Exception - an exception
    */
   public final synchronized HldNmFilFdSt lazHldNmFilFdStDbCp(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldNmFilFdSt rz = (HldNmFilFdSt) this.beans
       .get(HLFILFDNMDBCP);
     if (rz == null) {
       rz = new HldNmFilFdSt();
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
       rz.setFilHasIdNm(FctNmFilFdSt.FILHSIDSTDBCPNM);
       rz.setFilSmpNm(FctNmFilFdSt.FILSMPSTDBCPNM);
-      rz.setSetng(lazStgDbCp(pRqVs));
+      rz.setSetng(lazStgDbCp(pRvs));
       this.beans.put(HLFILFDNMDBCP, rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(),
+      lazLogStd(pRvs).info(pRvs, getClass(),
         HLFILFDNMDBCP + " has been created.");
     }
     return rz;
@@ -660,20 +759,20 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter HldNmCnToStXml.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldNmCnToStXml
    * @throws Exception - an exception
    */
   public final synchronized HldNmCnToStXml lazHldNmCnToStXml(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldNmCnToStXml rz = (HldNmCnToStXml) this.beans
       .get(HldNmCnToStXml.class.getSimpleName());
     if (rz == null) {
       rz = new HldNmCnToStXml();
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
       rz.setCnHsIdToStNm(FctNmCnToSt.CNHSIDSTDBCPNM);
       this.beans.put(HldNmCnToStXml.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HldNmCnToStXml.class
+      lazLogStd(pRvs).info(pRvs, getClass(), HldNmCnToStXml.class
         .getSimpleName() + " has been created.");
     }
     return rz;
@@ -682,19 +781,19 @@ public class FctBlc<RS> implements IFctApp {
   //Shared replication services:
   /**
    * <p>Lazy getter HldNmCnFrStXml.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldNmCnFrStXml
    * @throws Exception - an exception
    */
   public final synchronized HldNmCnFrStXml lazHldNmCnFrStXml(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldNmCnFrStXml rz = (HldNmCnFrStXml) this.beans
       .get(HldNmCnFrStXml.class.getSimpleName());
     if (rz == null) {
       rz = new HldNmCnFrStXml();
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
       this.beans.put(HldNmCnFrStXml.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HldNmCnFrStXml.class
+      lazLogStd(pRvs).info(pRvs, getClass(), HldNmCnFrStXml.class
         .getSimpleName() + " has been created.");
     }
     return rz;
@@ -703,33 +802,33 @@ public class FctBlc<RS> implements IFctApp {
   //ORM:
   /**
    * <p>Lazy getter Orm.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return Orm
    * @throws Exception - an exception
    */
   public final synchronized Orm<RS> lazOrm(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     @SuppressWarnings("unchecked")
     Orm<RS> rz = (Orm<RS>) this.beans.get(IOrm.class.getSimpleName());
     if (rz == null) {
       rz = new Orm<RS>();
-      rz.setLog(lazLogStd(pRqVs));
-      rz.setSetng(lazStgOrm(pRqVs));
+      rz.setLog(lazLogStd(pRvs));
+      rz.setSetng(lazStgOrm(pRvs));
       @SuppressWarnings("unchecked")
-      IRdb<RS> rdb = (IRdb<RS>) laz(pRqVs, IRdb.class.getSimpleName());
+      IRdb<RS> rdb = (IRdb<RS>) laz(pRvs, IRdb.class.getSimpleName());
       rz.setIsAndr(this.isAndr);
       rz.setNewDbId(this.newDbId);
       rz.setRdb(rdb);
-      rz.setSqlQu(lazSqlQu(pRqVs));
-      rz.setSrvClVl(lazSrvClVl(pRqVs));
-      rz.setFilEntRs(lazFilEntRs(pRqVs));
-      rz.setFilCvEn(lazFilCvEnt(pRqVs));
-      FctFctEnt fctFctEnt = lazFctFctEnt(pRqVs);
+      rz.setSqlQu(lazSqlQu(pRvs));
+      rz.setSrvClVl(lazSrvClVl(pRvs));
+      rz.setFilEntRs(lazFilEntRs(pRvs));
+      rz.setFilCvEn(lazFilCvEnt(pRvs));
+      FctFctEnt fctFctEnt = lazFctFctEnt(pRvs);
       fctFctEnt.setOrm(rz);
       rz.setFctFctEnt(fctFctEnt);
       //initialization must be by the first invoker (servlet)
       this.beans.put(IOrm.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), Orm.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), Orm.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -737,40 +836,40 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter Setng ORM.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return Setng ORM
    * @throws Exception - an exception
    */
   public final synchronized Setng lazStgOrm(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     Setng rz = (Setng) this.beans.get(STGORMNM);
     if (rz == null) {
       rz = new Setng();
       rz.setDir(getStgOrmDir());
-      rz.setReflect(lazReflect(pRqVs));
-      rz.setUtlPrp(lazUtlPrp(pRqVs));
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
-      rz.setLog(lazLogStd(pRqVs));
+      rz.setReflect(lazReflect(pRvs));
+      rz.setUtlPrp(lazUtlPrp(pRvs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
+      rz.setLog(lazLogStd(pRvs));
       this.beans.put(STGORMNM, rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), STGORMNM + " has been created.");
+      lazLogStd(pRvs).info(pRvs, getClass(), STGORMNM + " has been created.");
     }
     return rz;
   }
 
   /**
    * <p>Lazy getter SrvClVl.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return SrvClVl
    * @throws Exception - an exception
    */
   public final synchronized SrvClVl lazSrvClVl(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     SrvClVl rz = (SrvClVl) this.beans.get(SrvClVl.class.getSimpleName());
     if (rz == null) {
       rz = new SrvClVl();
-      rz.setSetng(lazStgOrm(pRqVs));
+      rz.setSetng(lazStgOrm(pRvs));
       this.beans.put(SrvClVl.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), SrvClVl.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), SrvClVl.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -778,21 +877,21 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter SqlQu.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return SqlQu
    * @throws Exception - an exception
    */
   public final synchronized SqlQu lazSqlQu(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     SqlQu rz = (SqlQu) this.beans.get(ISqlQu.class.getSimpleName());
     if (rz == null) {
       rz = new SqlQu();
-      rz.setLog(lazLogStd(pRqVs));
-      rz.setSetng(lazStgOrm(pRqVs));
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
-      rz.setHldGets(lazHldGets(pRqVs));
+      rz.setLog(lazLogStd(pRvs));
+      rz.setSetng(lazStgOrm(pRvs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
+      rz.setHldGets(lazHldGets(pRvs));
       this.beans.put(ISqlQu.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), SqlQu.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), SqlQu.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -800,23 +899,23 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter FilCvEnt.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return FilCvEnt
    * @throws Exception - an exception
    */
   public final synchronized FilCvEnt<IHasId<?>, ?> lazFilCvEnt(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     @SuppressWarnings("unchecked")
     FilCvEnt<IHasId<?>, ?> rz = (FilCvEnt<IHasId<?>, ?>) this.beans
       .get(FilCvEnt.class.getSimpleName());
     if (rz == null) {
       rz = new FilCvEnt();
-      rz.setLog(lazLogStd(pRqVs));
-      rz.setSetng(lazStgOrm(pRqVs));
-      rz.setHldFilFdNms(lazHldFilFdCv(pRqVs));
-      rz.setFctFilFld(lazFctFilFdCv(pRqVs));
+      rz.setLog(lazLogStd(pRvs));
+      rz.setSetng(lazStgOrm(pRvs));
+      rz.setHldFilFdNms(lazHldFilFdCv(pRvs));
+      rz.setFctFilFld(lazFctFilFdCv(pRvs));
       this.beans.put(FilCvEnt.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), FilCvEnt.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), FilCvEnt.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -824,24 +923,24 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter FilEntRs.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return FilEntRs
    * @throws Exception - an exception
    */
   public final synchronized FilEntRs<RS> lazFilEntRs(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     FilEntRs<RS> rz = (FilEntRs<RS>) this.beans
       .get(FilEntRs.class.getSimpleName());
     if (rz == null) {
       rz = new FilEntRs<RS>();
-      rz.setLog(lazLogStd(pRqVs));
-      rz.setSetng(lazStgOrm(pRqVs));
-      rz.setHldFilFdNms(lazHldNmFilFdRs(pRqVs));
-      FctNmFilFdRs<RS> fffd = lazFctNmFilFdRs(pRqVs);
+      rz.setLog(lazLogStd(pRvs));
+      rz.setSetng(lazStgOrm(pRvs));
+      rz.setHldFilFdNms(lazHldNmFilFdRs(pRvs));
+      FctNmFilFdRs<RS> fffd = lazFctNmFilFdRs(pRvs);
       fffd.setFilEnt(rz);
       rz.setFctFilFld(fffd);
       this.beans.put(FilEntRs.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), FilEntRs.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), FilEntRs.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -849,19 +948,19 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter HldCnvFdCv.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldCnvFdCv
    * @throws Exception - an exception
    */
   public final synchronized HldCnvFdCv lazHldCnvFdCv(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldCnvFdCv rz = (HldCnvFdCv) this.beans
       .get(HldCnvFdCv.class.getSimpleName());
     if (rz == null) {
       rz = new HldCnvFdCv();
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
       this.beans.put(HldCnvFdCv.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(),
+      lazLogStd(pRvs).info(pRvs, getClass(),
         HldCnvFdCv.class.getSimpleName() + " has been created.");
     }
     return rz;
@@ -869,19 +968,19 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter HldNmFilFdRs.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldNmFilFdRs
    * @throws Exception - an exception
    */
   public final synchronized HldNmFilFdRs lazHldNmFilFdRs(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldNmFilFdRs rz = (HldNmFilFdRs) this.beans
       .get(HldNmFilFdRs.class.getSimpleName());
     if (rz == null) {
       rz = new HldNmFilFdRs();
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
       this.beans.put(HldNmFilFdRs.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(),
+      lazLogStd(pRvs).info(pRvs, getClass(),
         HldNmFilFdRs.class.getSimpleName() + " has been created.");
     }
     return rz;
@@ -889,19 +988,19 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter HldFilFdCv.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldFilFdCv
    * @throws Exception - an exception
    */
   public final synchronized HldFilFdCv lazHldFilFdCv(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldFilFdCv rz = (HldFilFdCv) this.beans
       .get(HldFilFdCv.class.getSimpleName());
     if (rz == null) {
       rz = new HldFilFdCv();
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
       this.beans.put(HldFilFdCv.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HldFilFdCv.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), HldFilFdCv.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -909,19 +1008,19 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter HldNmCnFrRs.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldNmCnFrRs
    * @throws Exception - an exception
    */
   public final synchronized HldNmCnFrRs lazHldNmCnFrRs(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldNmCnFrRs rz = (HldNmCnFrRs) this.beans
       .get(HldNmCnFrRs.class.getSimpleName());
     if (rz == null) {
       rz = new HldNmCnFrRs();
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
       this.beans.put(HldNmCnFrRs.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HldNmCnFrRs.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), HldNmCnFrRs.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -929,20 +1028,20 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter FctCnvCv.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return FctCnvCv
    * @throws Exception - an exception
    */
   public final synchronized FctCnvCv lazFctCnvCv(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     FctCnvCv rz = (FctCnvCv) this.beans
       .get(FctCnvCv.class.getSimpleName());
     if (rz == null) {
       rz = new FctCnvCv();
-      rz.setLogStd(lazLogStd(pRqVs));
-      rz.setSqlEsc(lazSqlEsc(pRqVs));
+      rz.setLogStd(lazLogStd(pRvs));
+      rz.setSqlEsc(lazSqlEsc(pRvs));
       this.beans.put(FctCnvCv.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), FctCnvCv.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), FctCnvCv.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -950,20 +1049,20 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter FctNmCnFrRs.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return FctNmCnFrRs
    * @throws Exception - an exception
    */
   public final synchronized FctNmCnFrRs<RS> lazFctNmCnFrRs(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     @SuppressWarnings("unchecked")
     FctNmCnFrRs<RS> rz = (FctNmCnFrRs<RS>) this.beans
       .get(FctNmCnFrRs.class.getSimpleName());
     if (rz == null) {
       rz = new FctNmCnFrRs<RS>();
-      rz.setLogStd(lazLogStd(pRqVs));
+      rz.setLogStd(lazLogStd(pRvs));
       this.beans.put(FctNmCnFrRs.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), FctNmCnFrRs.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), FctNmCnFrRs.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -971,25 +1070,25 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter FctFilFdCv. Mutual dependency with FilEntRs.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return FctFilFdCv
    * @throws Exception - an exception
    */
   public final synchronized FctFilFdCv lazFctFilFdCv(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     FctFilFdCv rz = (FctFilFdCv) this.beans
       .get(FctFilFdCv.class.getSimpleName());
     if (rz == null) {
       rz = new FctFilFdCv();
-      rz.setLogStd(lazLogStd(pRqVs));
-      rz.setSetng(lazStgOrm(pRqVs));
-      rz.setHldGets(lazHldGets(pRqVs));
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
-      rz.setHldNmFdCn(lazHldCnvFdCv(pRqVs));
-      rz.setFctCnvFld(lazFctCnvCv(pRqVs));
-      rz.setHldFilFdNms(lazHldFilFdCv(pRqVs));
+      rz.setLogStd(lazLogStd(pRvs));
+      rz.setSetng(lazStgOrm(pRvs));
+      rz.setHldGets(lazHldGets(pRvs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
+      rz.setHldNmFdCn(lazHldCnvFdCv(pRvs));
+      rz.setFctCnvFld(lazFctCnvCv(pRvs));
+      rz.setHldFilFdNms(lazHldFilFdCv(pRvs));
       this.beans.put(FctFilFdCv.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(),
+      lazLogStd(pRvs).info(pRvs, getClass(),
         FctFilFdCv.class.getSimpleName() + " has been created.");
     }
     return rz;
@@ -997,24 +1096,24 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter FctNmFilFdRs. Mutual dependency with FilEntRs.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return FctNmFilFdRs
    * @throws Exception - an exception
    */
   public final synchronized FctNmFilFdRs<RS> lazFctNmFilFdRs(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     @SuppressWarnings("unchecked")
     FctNmFilFdRs<RS> rz = (FctNmFilFdRs<RS>) this.beans
       .get(FctNmFilFdRs.class.getSimpleName());
     if (rz == null) {
       rz = new FctNmFilFdRs<RS>();
-      rz.setLogStd(lazLogStd(pRqVs));
-      rz.setHldSets(lazHldSets(pRqVs));
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
-      rz.setHldNmFdCn(lazHldNmCnFrRs(pRqVs));
-      rz.setFctCnvFld(lazFctNmCnFrRs(pRqVs));
+      rz.setLogStd(lazLogStd(pRvs));
+      rz.setHldSets(lazHldSets(pRvs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
+      rz.setHldNmFdCn(lazHldNmCnFrRs(pRvs));
+      rz.setFctCnvFld(lazFctNmCnFrRs(pRvs));
       this.beans.put(FctNmFilFdRs.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(),
+      lazLogStd(pRvs).info(pRvs, getClass(),
         FctNmFilFdRs.class.getSimpleName() + " has been created.");
     }
     return rz;
@@ -1023,44 +1122,44 @@ public class FctBlc<RS> implements IFctApp {
   //UVD:
   /**
    * <p>Lazy getter Setng.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return Setng
    * @throws Exception - an exception
    */
   public final synchronized Setng lazStgUvd(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     Setng rz = (Setng) this.beans.get(STGUVDNM);
     if (rz == null) {
       rz = new Setng();
       rz.setDir(getStgUvdDir());
-      rz.setReflect(lazReflect(pRqVs));
-      rz.setUtlPrp(lazUtlPrp(pRqVs));
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
-      rz.setLog(lazLogStd(pRqVs));
+      rz.setReflect(lazReflect(pRvs));
+      rz.setUtlPrp(lazUtlPrp(pRvs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
+      rz.setLog(lazLogStd(pRvs));
       this.beans.put(STGUVDNM, rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), STGUVDNM + " has been created.");
+      lazLogStd(pRvs).info(pRvs, getClass(), STGUVDNM + " has been created.");
     }
     return rz;
   }
 
   /**
    * <p>Lazy getter FilEntRq.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return FilEntRq
    * @throws Exception - an exception
    */
   public final synchronized FilEntRq lazFilEntRq(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     FilEntRq rz = (FilEntRq) this.beans
       .get(FilEntRq.class.getSimpleName());
     if (rz == null) {
       rz = new FilEntRq();
-      rz.setLog(lazLogStd(pRqVs));
-      rz.setSetng(lazStgUvd(pRqVs));
-      rz.setHldFilFdNms(lazHldNmFilFdStUvd(pRqVs));
-      rz.setFctFilFld(lazFctNmFilFd(pRqVs));
+      rz.setLog(lazLogStd(pRvs));
+      rz.setSetng(lazStgUvd(pRvs));
+      rz.setHldFilFdNms(lazHldNmFilFdStUvd(pRvs));
+      rz.setFctFilFld(lazFctNmFilFd(pRvs));
       this.beans.put(FilEntRq.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), FilEntRq.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), FilEntRq.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1068,22 +1167,22 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter UVD HldNmFilFdSt.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldNmFilFdSt
    * @throws Exception - an exception
    */
   public final synchronized HldNmFilFdSt lazHldNmFilFdStUvd(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldNmFilFdSt rz = (HldNmFilFdSt) this.beans
       .get(HLFILFDNMUVD);
     if (rz == null) {
       rz = new HldNmFilFdSt();
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
       rz.setFilHasIdNm(FctNmFilFdSt.FILHSIDSTUVDNM);
       rz.setFilSmpNm(FctNmFilFdSt.FILSMPSTUVDNM);
-      rz.setSetng(lazStgUvd(pRqVs));
+      rz.setSetng(lazStgUvd(pRvs));
       this.beans.put(HLFILFDNMUVD, rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(),
+      lazLogStd(pRvs).info(pRvs, getClass(),
         HLFILFDNMUVD + " has been created.");
     }
     return rz;
@@ -1091,20 +1190,20 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter HldNmCnFrSt.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldNmCnFrSt
    * @throws Exception - an exception
    */
   public final synchronized HldNmCnFrSt lazHldNmCnFrStUvd(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldNmCnFrSt rz = (HldNmCnFrSt) this.beans
       .get(HldNmCnFrSt.class.getSimpleName());
     if (rz == null) {
       rz = new HldNmCnFrSt();
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
-      rz.setSetng(lazStgUvd(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
+      rz.setSetng(lazStgUvd(pRvs));
       this.beans.put(HldNmCnFrSt.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HldNmCnFrSt.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), HldNmCnFrSt.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1112,21 +1211,21 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter HldNmCnToSt.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldNmCnToSt
    * @throws Exception - an exception
    */
   public final synchronized HldNmCnToSt lazHldNmCnToStUvd(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldNmCnToSt rz = (HldNmCnToSt) this.beans
       .get(HldNmCnToSt.class.getSimpleName());
     if (rz == null) {
       rz = new HldNmCnToSt();
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
       rz.setCnHsIdToStNm(FctNmCnToSt.CNHSIDSTUVDNM);
-      rz.setSetng(lazStgUvd(pRqVs));
+      rz.setSetng(lazStgUvd(pRvs));
       this.beans.put(HldNmCnToSt.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HldNmCnToSt.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), HldNmCnToSt.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1134,34 +1233,34 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter HldUvd.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldUvd
    * @throws Exception - an exception
    */
   public final synchronized HldUvd lazHldUvd(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldUvd rz = (HldUvd) this.beans
       .get(HldUvd.class.getSimpleName());
     if (rz == null) {
       rz = new HldUvd();
-      rz.setSetng(lazStgUvd(pRqVs));
-      rz.setStgOrm(lazStgOrm(pRqVs));
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
-      rz.setHlCnToSt(lazHldNmCnToStUvd(pRqVs));
-      rz.setFcCnToSt(lazFctNmCnToSt(pRqVs));
+      rz.setSetng(lazStgUvd(pRvs));
+      rz.setStgOrm(lazStgOrm(pRvs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
+      rz.setHlCnToSt(lazHldNmCnToStUvd(pRvs));
+      rz.setFcCnToSt(lazFctNmCnToSt(pRvs));
       rz.setHlClStgMp(this.hlClStgMp);
       rz.setHlFdStgMp(this.hlFdStgMp);
       FctCnvId fci = new FctCnvId();
-      fci.setLogStd(lazLogStd(pRqVs));
-      fci.setSetng(lazStgUvd(pRqVs));
-      fci.setHldGets(lazHldGets(pRqVs));
-      fci.setHldFdCls(lazHldFldCls(pRqVs));
+      fci.setLogStd(lazLogStd(pRvs));
+      fci.setSetng(lazStgUvd(pRvs));
+      fci.setHldGets(lazHldGets(pRvs));
+      fci.setHldFdCls(lazHldFldCls(pRvs));
       rz.setFctCnvId(fci);
       HldCnvId hci = new HldCnvId();
       hci.setCustIdClss(this.custIdClss);
       rz.setHldCnvId(hci);
       this.beans.put(HldUvd.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HldUvd.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), HldUvd.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1169,20 +1268,20 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter FctNmCnFrSt.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return FctNmCnFrSt
    * @throws Exception - an exception
    */
   public final synchronized FctNmCnFrSt lazFctNmCnFrSt(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     FctNmCnFrSt rz = (FctNmCnFrSt) this.beans
       .get(FctNmCnFrSt.class.getSimpleName());
     if (rz == null) {
       rz = new FctNmCnFrSt();
-      rz.setLogStd(lazLogStd(pRqVs));
-      rz.setUtlXml(lazUtlXml(pRqVs));
+      rz.setLogStd(lazLogStd(pRvs));
+      rz.setUtlXml(lazUtlXml(pRvs));
       this.beans.put(FctNmCnFrSt.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), FctNmCnFrSt.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), FctNmCnFrSt.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1190,28 +1289,28 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter FctNmFilFdSt.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return FctNmFilFdSt
    * @throws Exception - an exception
    */
   public final synchronized FctNmFilFdSt lazFctNmFilFd(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     FctNmFilFdSt rz = (FctNmFilFdSt) this.beans
       .get(FctNmFilFdSt.class.getSimpleName());
     if (rz == null) {
       rz = new FctNmFilFdSt();
-      rz.setLogStd(lazLogStd(pRqVs));
-      rz.setHldSets(lazHldSets(pRqVs));
-      rz.setStgUvd(lazStgUvd(pRqVs));
-      rz.setStgDbCp(lazStgDbCp(pRqVs));
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
-      rz.setHldNmFdCnUvd(lazHldNmCnFrStUvd(pRqVs));
-      rz.setHldNmFdCnDbCp(lazHldNmCnFrStXml(pRqVs));
-      rz.setFctCnvFld(lazFctNmCnFrSt(pRqVs));
-      rz.setHldFilFdNmsUvd(lazHldNmFilFdStUvd(pRqVs));
-      rz.setHldFilFdNmsDbCp(lazHldNmFilFdStDbCp(pRqVs));
+      rz.setLogStd(lazLogStd(pRvs));
+      rz.setHldSets(lazHldSets(pRvs));
+      rz.setStgUvd(lazStgUvd(pRvs));
+      rz.setStgDbCp(lazStgDbCp(pRvs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
+      rz.setHldNmFdCnUvd(lazHldNmCnFrStUvd(pRvs));
+      rz.setHldNmFdCnDbCp(lazHldNmCnFrStXml(pRvs));
+      rz.setFctCnvFld(lazFctNmCnFrSt(pRvs));
+      rz.setHldFilFdNmsUvd(lazHldNmFilFdStUvd(pRvs));
+      rz.setHldFilFdNmsDbCp(lazHldNmFilFdStDbCp(pRvs));
       this.beans.put(FctNmFilFdSt.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(),
+      lazLogStd(pRvs).info(pRvs, getClass(),
         FctNmFilFdSt.class.getSimpleName() + " has been created.");
     }
     return rz;
@@ -1219,26 +1318,26 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter FctNmCnToSt.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return FctNmCnToSt
    * @throws Exception - an exception
    */
   public final synchronized FctNmCnToSt lazFctNmCnToSt(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     FctNmCnToSt rz = (FctNmCnToSt) this.beans
       .get(FctNmCnToSt.class.getSimpleName());
     if (rz == null) {
       rz = new FctNmCnToSt();
-      rz.setUtlXml(lazUtlXml(pRqVs));
-      rz.setNumStr(lazNumStr(pRqVs));
-      rz.setHldNmFdCnUvd(lazHldNmCnToStUvd(pRqVs));
-      rz.setHldNmFdCnDbcp(lazHldNmCnToStXml(pRqVs));
-      rz.setHldGets(lazHldGets(pRqVs));
-      rz.setStgUvd(lazStgUvd(pRqVs));
-      rz.setStgDbCp(lazStgDbCp(pRqVs));
-      rz.setLogStd(lazLogStd(pRqVs));
+      rz.setUtlXml(lazUtlXml(pRvs));
+      rz.setNumStr(lazNumStr(pRvs));
+      rz.setHldNmFdCnUvd(lazHldNmCnToStUvd(pRvs));
+      rz.setHldNmFdCnDbcp(lazHldNmCnToStXml(pRvs));
+      rz.setHldGets(lazHldGets(pRvs));
+      rz.setStgUvd(lazStgUvd(pRvs));
+      rz.setStgDbCp(lazStgDbCp(pRvs));
+      rz.setLogStd(lazLogStd(pRvs));
       this.beans.put(FctNmCnToSt.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), FctNmCnToSt.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), FctNmCnToSt.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1247,19 +1346,19 @@ public class FctBlc<RS> implements IFctApp {
   //Common parts:
   /**
    * <p>Lazy getter HldSets.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldSets
    * @throws Exception - an exception
    */
   public final synchronized HldSets lazHldSets(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldSets rz = (HldSets) this.beans
       .get(HldSets.class.getSimpleName());
     if (rz == null) {
       rz = new HldSets();
-      rz.setReflect(lazReflect(pRqVs));
+      rz.setReflect(lazReflect(pRvs));
       this.beans.put(HldSets.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HldSets.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), HldSets.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1267,19 +1366,19 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter HldGets.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldGets
    * @throws Exception - an exception
    */
   public final synchronized HldGets lazHldGets(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldGets rz = (HldGets) this.beans
       .get(HldGets.class.getSimpleName());
     if (rz == null) {
       rz = new HldGets();
-      rz.setReflect(lazReflect(pRqVs));
+      rz.setReflect(lazReflect(pRvs));
       this.beans.put(HldGets.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HldGets.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), HldGets.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1287,19 +1386,19 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter HldFldCls.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HldFldCls
    * @throws Exception - an exception
    */
   public final synchronized HldFldCls lazHldFldCls(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     HldFldCls rz = (HldFldCls) this.beans
       .get(HldFldCls.class.getSimpleName());
     if (rz == null) {
       rz = new HldFldCls();
-      rz.setReflect(lazReflect(pRqVs));
+      rz.setReflect(lazReflect(pRvs));
       this.beans.put(HldFldCls.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HldFldCls.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), HldFldCls.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1307,17 +1406,17 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter FctFctEnt IT DEPENDS OF ORM!!</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return FctFctEnt
    * @throws Exception - an exception
    */
   public final synchronized FctFctEnt lazFctFctEnt(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     FctFctEnt rz = (FctFctEnt) this.beans.get(FctFctEnt.class.getSimpleName());
     if (rz == null) {
       rz = new FctFctEnt();
       this.beans.put(FctFctEnt.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), FctFctEnt.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), FctFctEnt.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1325,30 +1424,30 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter HlpEntPg.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return HlpEntPg
    * @throws Exception - an exception
    */
   public final synchronized HlpEntPg<RS> lazHlpEntPg(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     @SuppressWarnings("unchecked")
     HlpEntPg<RS> rz = (HlpEntPg<RS>) this.beans
       .get(HlpEntPg.class.getSimpleName());
     if (rz == null) {
       rz = new HlpEntPg<RS>();
-      rz.setLog(lazLogStd(pRqVs));
-      rz.setI18n(lazI18n(pRqVs));
+      rz.setLog(lazLogStd(pRvs));
+      rz.setI18n(lazI18n(pRvs));
       @SuppressWarnings("unchecked")
-      IRdb<RS> rdb = (IRdb<RS>) laz(pRqVs, IRdb.class.getSimpleName());
+      IRdb<RS> rdb = (IRdb<RS>) laz(pRvs, IRdb.class.getSimpleName());
       rz.setRdb(rdb);
-      rz.setOrm(lazOrm(pRqVs));
-      rz.setSrvPg(lazSrvPg(pRqVs));
-      rz.setSqlQu(lazSqlQu(pRqVs));
-      rz.setSrvDt(lazSrvDt(pRqVs));
-      rz.setHldUvd(lazHldUvd(pRqVs));
-      rz.setHldFdCls(lazHldFldCls(pRqVs));
+      rz.setOrm(lazOrm(pRvs));
+      rz.setSrvPg(lazSrvPg(pRvs));
+      rz.setSqlQu(lazSqlQu(pRvs));
+      rz.setSrvDt(lazSrvDt(pRvs));
+      rz.setHldUvd(lazHldUvd(pRvs));
+      rz.setHldFdCls(lazHldFldCls(pRvs));
       this.beans.put(HlpEntPg.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), HlpEntPg.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), HlpEntPg.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1356,17 +1455,17 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter UtlPrp.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return UtlPrp
    * @throws Exception - an exception
    */
   public final synchronized UtlPrp lazUtlPrp(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     UtlPrp rz = (UtlPrp) this.beans.get(UtlPrp.class.getSimpleName());
     if (rz == null) {
       rz = new UtlPrp();
       this.beans.put(UtlPrp.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), UtlPrp.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), UtlPrp.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1374,17 +1473,17 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter NumStr.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return NumStr
    * @throws Exception - an exception
    */
   public final synchronized NumStr lazNumStr(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     NumStr rz = (NumStr) this.beans.get(INumStr.class.getSimpleName());
     if (rz == null) {
       rz = new NumStr();
       this.beans.put(INumStr.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), INumStr.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), INumStr.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1392,17 +1491,17 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter SqlEsc.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return SqlEsc
    * @throws Exception - an exception
    */
   public final synchronized SqlEsc lazSqlEsc(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     SqlEsc rz = (SqlEsc) this.beans.get(ISqlEsc.class.getSimpleName());
     if (rz == null) {
       rz = new SqlEsc();
       this.beans.put(ISqlEsc.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), ISqlEsc.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), ISqlEsc.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1410,17 +1509,17 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter UtlXml.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return UtlXml
    * @throws Exception - an exception
    */
   public final synchronized UtlXml lazUtlXml(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     UtlXml rz = (UtlXml) this.beans.get(IUtlXml.class.getSimpleName());
     if (rz == null) {
       rz = new UtlXml();
       this.beans.put(IUtlXml.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), IUtlXml.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), IUtlXml.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1428,19 +1527,19 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter I18n.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return I18n
    * @throws Exception - an exception
    */
   public final synchronized I18n lazI18n(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     I18n rz = (I18n) this.beans.get(II18n.class.getSimpleName());
     if (rz == null) {
       rz = new I18n();
-      rz.setLog(lazLogStd(pRqVs));
+      rz.setLog(lazLogStd(pRvs));
       rz.add(this.lngCntr.split(","));
       this.beans.put(II18n.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), II18n.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), II18n.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1448,17 +1547,17 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter SrvPg.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return SrvPg
    * @throws Exception - an exception
    */
   public final synchronized SrvPg lazSrvPg(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     SrvPg rz = (SrvPg) this.beans.get(ISrvPg.class.getSimpleName());
     if (rz == null) {
       rz = new SrvPg();
       this.beans.put(ISrvPg.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), ISrvPg.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), ISrvPg.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1466,17 +1565,17 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter SrvDt.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return SrvDt
    * @throws Exception - an exception
    */
   public final synchronized SrvDt lazSrvDt(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     SrvDt rz = (SrvDt) this.beans.get(ISrvDt.class.getSimpleName());
     if (rz == null) {
       rz = new SrvDt();
       this.beans.put(ISrvDt.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), ISrvDt.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), ISrvDt.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1484,17 +1583,17 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter Reflect.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return Reflect
    * @throws Exception - an exception
    */
   public final synchronized Reflect lazReflect(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     Reflect rz = (Reflect) this.beans.get(IReflect.class.getSimpleName());
     if (rz == null) {
       rz = new Reflect();
       this.beans.put(IReflect.class.getSimpleName(), rz);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), IReflect.class.getSimpleName()
+      lazLogStd(pRvs).info(pRvs, getClass(), IReflect.class.getSimpleName()
         + " has been created.");
     }
     return rz;
@@ -1502,12 +1601,12 @@ public class FctBlc<RS> implements IFctApp {
 
   /**
    * <p>Lazy getter secure logger.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return Log
    * @throws Exception - an exception
    */
   public final synchronized LogFile lazLogSec(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     LogFile logSec = (LogFile) this.beans.get(LOGSECNM);
     if (logSec == null) {
       logSec = new LogFile();
@@ -1517,19 +1616,19 @@ public class FctBlc<RS> implements IFctApp {
       logSec.setDbgCl(getDbgCl());
       logSec.setMaxSize(this.logSize);
       this.beans.put(LOGSECNM, logSec);
-      lazLogStd(pRqVs).info(pRqVs, getClass(), LOGSECNM + " has been created");
+      lazLogStd(pRvs).info(pRvs, getClass(), LOGSECNM + " has been created");
     }
     return logSec;
   }
 
   /**
    * <p>Lazy getter standard loger.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return Log
    * @throws Exception - an exception
    */
   public final synchronized LogFile lazLogStd(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     if (this.logStd == null) {
       this.logStd = new LogFile();
       this.logStd.setPath(this.logPth + File.separator + this.logStdNm);
@@ -1538,7 +1637,7 @@ public class FctBlc<RS> implements IFctApp {
       this.logStd.setDbgCl(getDbgCl());
       this.logStd.setMaxSize(this.logSize);
       this.beans.put(LOGSTDNM, this.logStd);
-      this.logStd.info(pRqVs, getClass(), LOGSTDNM + " has been created");
+      this.logStd.info(pRvs, getClass(), LOGSTDNM + " has been created");
     }
     return this.logStd;
   }
@@ -1902,6 +2001,22 @@ public class FctBlc<RS> implements IFctApp {
    **/
   public final synchronized void setShrEnts(final List<Class<?>> pShrEnts) {
     this.shrEnts = pShrEnts;
+  }
+
+  /**
+   * <p>Getter for admEnts.</p>
+   * @return List<Class<?>>
+   **/
+  public final synchronized List<Class<?>> getAdmEnts() {
+    return this.admEnts;
+  }
+
+  /**
+   * <p>Setter for admEnts.</p>
+   * @param pAdmEnts reference
+   **/
+  public final synchronized void setAdmEnts(final List<Class<?>> pAdmEnts) {
+    this.admEnts = pAdmEnts;
   }
 
   /**

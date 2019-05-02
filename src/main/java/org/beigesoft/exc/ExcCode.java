@@ -78,28 +78,9 @@ public class ExcCode extends Exception {
   private int code;
 
   /**
-   * <p>Constructor default.</p>
+   * <p>Short internationalisable message.</p>
    **/
-  public ExcCode() {
-  }
-
-  /**
-   * <p>Constructor useful.</p>
-   * @param pCode Code
-   **/
-  public ExcCode(final int pCode) {
-    this.code = pCode;
-  }
-
-  /**
-   * <p>Constructor useful.</p>
-   * @param pCode Code
-   * @param pCause parent exception
-   **/
-  public ExcCode(final int pCode, final Throwable pCause) {
-    super(pCause);
-    this.code = pCode;
-  }
+  private String shMsg;
 
   /**
    * <p>Constructor useful.</p>
@@ -109,6 +90,7 @@ public class ExcCode extends Exception {
   public ExcCode(final int pCode, final String pMsg) {
     super(pMsg);
     this.code = pCode;
+    this.shMsg = pMsg;
   }
 
   /**
@@ -121,6 +103,7 @@ public class ExcCode extends Exception {
     final Throwable pCause) {
     super(pMsg, pCause);
     this.code = pCode;
+    this.shMsg = pMsg;
   }
 
   //Simple getters and setters:
@@ -138,5 +121,21 @@ public class ExcCode extends Exception {
    **/
   public final void setCode(final int pCode) {
     this.code = pCode;
+  }
+
+  /**
+   * <p>Getter for shMsg.</p>
+   * @return String
+   **/
+  public final String getShMsg() {
+    return this.shMsg;
+  }
+
+  /**
+   * <p>Setter for shMsg.</p>
+   * @param pShMsg reference
+   **/
+  public final void setShMsg(final String pShMsg) {
+    this.shMsg = pShMsg;
   }
 }

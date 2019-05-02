@@ -29,66 +29,49 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.prc;
 
 import java.util.Map;
-import java.util.HashMap;
 
-import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IReqDt;
-import org.beigesoft.mdl.IHasId;
-import org.beigesoft.mdlp.IOrId;
-import org.beigesoft.rdb.IOrm;
+import org.beigesoft.hnd.IHndCh;
 
 /**
- * <p>Service that deletes entity into DB.</p>
+ * <p>Service refreshes the first I18N handler.</p>
  *
- * @param <T> entity type
- * @param <ID> entity ID type
  * @author Yury Demidenko
  */
-public class PrcEntDl<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
+public class RefrI18n implements IPrc {
 
   /**
-   * <p>ORM service.</p>
+   * <p>RDB service.</p>
    **/
-  private IOrm orm;
+  private IHndCh hndI18nRq;
 
   /**
-   * <p>Process that deletes entity.</p>
-   * @param pRvs request scoped vars, e.g. return this line's
-   * owner(document) in "nextEntity" for farther processing
+   * <p>Process request.</p>
+   * @param pRvs request scoped vars
    * @param pRqDt Request Data
-   * @param pEnt Entity to process
-   * @return Entity processed for farther process or null
    * @throws Exception - an exception
    **/
   @Override
-  public final T process(final Map<String, Object> pRvs, final T pEnt,
+  public final void process(final Map<String, Object> pRvs,
     final IReqDt pRqDt) throws Exception {
-    if (IOrId.class.isAssignableFrom(pEnt.getClass())) {
-      IOrId oid = (IOrId) pEnt;
-      if (!oid.getDbOr().equals(this.orm.getDbId())) {
-        throw new ExcCode(ExcCode.WRPR, "can_not_change_foreign_src");
-      }
-    }
-    Map<String, Object> vs = new HashMap<String, Object>();
-    this.orm.del(pRvs, vs, pEnt);
-    pRvs.put("msgSuc", "update_ok");
-    return null;
+    this.hndI18nRq.hndChange();
+    pRqDt.setAttr("rnd", "rin");
   }
 
   //Simple getters and setters:
   /**
-   * <p>Getter for orm.</p>
-   * @return IOrm
+   * <p>Getter for hndI18nRq.</p>
+   * @return IHndCh
    **/
-  public final IOrm getOrm() {
-    return this.orm;
+  public final IHndCh getHndI18nRq() {
+    return this.hndI18nRq;
   }
 
   /**
-   * <p>Setter for orm.</p>
-   * @param pOrm reference
+   * <p>Setter for hndI18nRq.</p>
+   * @param pHndI18nRq reference
    **/
-  public final void setOrm(final IOrm pOrm) {
-    this.orm = pOrm;
+  public final void setHndI18nRq(final IHndCh pHndI18nRq) {
+    this.hndI18nRq = pHndI18nRq;
   }
 }

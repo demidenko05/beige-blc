@@ -60,10 +60,7 @@ public class HndTrRq<RS> implements IHndRq {
   private Integer trIsl = IRdb.TRRUC;
 
   /**
-   * <p>Handle request.
-   * WHandlerAndJsp requires handle NULL request, so if parameter
-   * "nmPrc" is null then do nothing.
-   * </p>
+   * <p>Handles request.</p>
    * @param pRqVs Request scoped variables
    * @param pRqDt Request Data
    * @throws Exception - an exception
@@ -71,7 +68,7 @@ public class HndTrRq<RS> implements IHndRq {
   @Override
   public final void handle(final Map<String, Object> pRqVs,
     final IReqDt pRqDt) throws Exception {
-    String nmPrc = pRqDt.getParam("nmPrc");
+    String nmPrc = pRqDt.getParam("prc");
     try {
       this.rdb.setAcmt(false);
       this.rdb.setTrIsl(this.trIsl);
