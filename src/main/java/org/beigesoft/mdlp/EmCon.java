@@ -45,7 +45,7 @@ public class EmCon extends AOrIdNm {
   /**
    * <p>User password.</p>
    **/
-  private String psw;
+  private String pwd;
 
   /**
    * <p>String properties e.g. "mail.transport.protocol"-"smtp".</p>
@@ -75,19 +75,19 @@ public class EmCon extends AOrIdNm {
   }
 
   /**
-   * <p>Getter for psw.</p>
+   * <p>Getter for pwd.</p>
    * @return String
    **/
-  public final String getPsw() {
-    return this.psw;
+  public final String getPwd() {
+    return this.pwd;
   }
 
   /**
-   * <p>Setter for psw.</p>
-   * @param pPsw reference
+   * <p>Setter for pwd.</p>
+   * @param pPwd reference
    **/
-  public final void setPsw(final String pPsw) {
-    this.psw = pPsw;
+  public final void setPwd(final String pPwd) {
+    this.pwd = pPwd;
   }
 
   /**

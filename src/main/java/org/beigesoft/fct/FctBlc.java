@@ -278,6 +278,12 @@ public class FctBlc<RS> implements IFctApp {
   private String appPth;
 
   /**
+   * <p>Upload directory relative to WEB-APP path
+   * without start and end separator, e.g. "static/uploads".</p>
+   **/
+  private String uplDir;
+
+  /**
    * <p>Admin/webstore non-shared entities.</p>
    **/
   private List<Class<?>> admEnts;
@@ -2084,5 +2090,21 @@ public class FctBlc<RS> implements IFctApp {
   public final synchronized void setCustIdClss(
     final Set<Class<?>> pCustIdClss) {
     this.custIdClss = pCustIdClss;
+  }
+
+  /**
+   * <p>Getter for uplDir.</p>
+   * @return String
+   **/
+  public final synchronized String getUplDir() {
+    return this.uplDir;
+  }
+
+  /**
+   * <p>Setter for uplDir.</p>
+   * @param pUplDir reference
+   **/
+  public final synchronized void setUplDir(final String pUplDir) {
+    this.uplDir = pUplDir;
   }
 }

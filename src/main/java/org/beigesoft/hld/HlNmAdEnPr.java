@@ -34,7 +34,9 @@ import org.beigesoft.prc.PrcEntRt;
 import org.beigesoft.prc.PrcEntCr;
 import org.beigesoft.prc.PrcEntSv;
 import org.beigesoft.prc.PrcEntDl;
+import org.beigesoft.prc.PrcEnoDl;
 import org.beigesoft.prc.PrcEnoSv;
+import org.beigesoft.prc.PrcEnofSv;
 
 /**
  * <p>Holder of names of admin/webstore entities processors.</p>
@@ -69,11 +71,17 @@ public class HlNmAdEnPr implements IHldNm<Class<?>, String> {
     if ("entDl".equals(pAct)) {
       return PrcEntDl.class.getSimpleName();
     }
+    if ("entFoDl".equals(pAct)) {
+      return PrcEnoDl.class.getSimpleName();
+    }
     if ("entSv".equals(pAct)) {
       return PrcEntSv.class.getSimpleName();
     }
     if ("entFoSv".equals(pAct)) {
       return PrcEnoSv.class.getSimpleName();
+    }
+    if ("entFofSv".equals(pAct)) {
+      return PrcEnofSv.class.getSimpleName();
     }
     return null;
   }

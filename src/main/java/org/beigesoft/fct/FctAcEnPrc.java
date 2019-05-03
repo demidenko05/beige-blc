@@ -36,9 +36,11 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.prc.IPrcEnt;
 import org.beigesoft.prc.PrcEntRt;
 import org.beigesoft.prc.PrcEntCr;
+import org.beigesoft.prc.PrcEnoDl;
 import org.beigesoft.prc.PrcEntDl;
 import org.beigesoft.prc.PrcEntSv;
 import org.beigesoft.prc.PrcEnoSv;
+import org.beigesoft.prc.PrcEnofSv;
 
 /**
  * <p>Factory of entity processors.</p>
@@ -76,10 +78,14 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
         if (rz == null) {
           if (PrcEntCr.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEntCr(pRqVs);
+          } else if (PrcEnoDl.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEnoDl(pRqVs);
           } else if (PrcEntDl.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEntDl(pRqVs);
           } else if (PrcEntSv.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEntSv(pRqVs);
+          } else if (PrcEnofSv.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEnofSv(pRqVs);
           } else if (PrcEnoSv.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEnoSv(pRqVs);
           } else if (PrcEntRt.class.getSimpleName().equals(pPrNm)) {
@@ -109,6 +115,26 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
   }
 
   /**
+   * <p>Create and put into the Map PrcEnofSv.</p>
+   * @param pRqVs request scoped vars
+   * @return PrcEnofSv
+   * @throws Exception - an exception
+   */
+  private PrcEnofSv crPuPrcEnofSv(
+    final Map<String, Object> pRqVs) throws Exception {
+    PrcEnofSv rz = new PrcEnofSv();
+    rz.setAppPth(this.fctBlc.getAppPth());
+    rz.setUplDir(this.fctBlc.getUplDir());
+    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
+    rz.setHldSets(this.fctBlc.lazHldSets(pRqVs));
+    rz.setHldGets(this.fctBlc.lazHldGets(pRqVs));
+    this.procs.put(PrcEnofSv.class.getSimpleName(), rz);
+    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEnofSv.class
+      .getSimpleName() + " has been created.");
+    return rz;
+  }
+
+  /**
    * <p>Create and put into the Map PrcEnoSv.</p>
    * @param pRqVs request scoped vars
    * @return PrcEnoSv
@@ -120,6 +146,22 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
     rz.setOrm(this.fctBlc.lazOrm(pRqVs));
     this.procs.put(PrcEnoSv.class.getSimpleName(), rz);
     this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEnoSv.class
+      .getSimpleName() + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map PrcEnoDl.</p>
+   * @param pRqVs request scoped vars
+   * @return PrcEnoDl
+   * @throws Exception - an exception
+   */
+  private PrcEnoDl crPuPrcEnoDl(
+    final Map<String, Object> pRqVs) throws Exception {
+    PrcEnoDl rz = new PrcEnoDl();
+    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
+    this.procs.put(PrcEnoDl.class.getSimpleName(), rz);
+    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEnoDl.class
       .getSimpleName() + " has been created.");
     return rz;
   }

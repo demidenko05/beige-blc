@@ -63,7 +63,7 @@ public class PrcEntSv<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
   @Override
   public final T process(final Map<String, Object> pRvs, final T pEnt,
     final IReqDt pRqDt) throws Exception {
-    if (IOrId.class.isAssignableFrom(pEnt.getClass())) {
+    if (!pEnt.getIsNew() && IOrId.class.isAssignableFrom(pEnt.getClass())) {
       IOrId oid = (IOrId) pEnt;
       if (!oid.getDbOr().equals(this.orm.getDbId())) {
         throw new ExcCode(ExcCode.WRPR, "can_not_change_foreign_src");

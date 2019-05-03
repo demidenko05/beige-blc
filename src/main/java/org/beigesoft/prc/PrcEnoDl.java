@@ -33,18 +33,19 @@ import java.util.HashMap;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IReqDt;
-import org.beigesoft.mdl.IHasId;
+import org.beigesoft.mdl.IOwned;
 import org.beigesoft.mdlp.IOrId;
+import org.beigesoft.hld.UvdVar;
 import org.beigesoft.rdb.IOrm;
 
 /**
- * <p>Service that deletes entity from DB.</p>
+ * <p>Service that deletes entity from owned list from DB.</p>
  *
  * @param <T> entity type
  * @param <ID> entity ID type
  * @author Yury Demidenko
  */
-public class PrcEntDl<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
+public class PrcEnoDl<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
 
   /**
    * <p>ORM service.</p>
@@ -72,6 +73,13 @@ public class PrcEntDl<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
     Map<String, Object> vs = new HashMap<String, Object>();
     this.orm.del(pRvs, vs, pEnt);
     pRvs.put("msgSuc", "delete_ok");
+    this.orm.refrEnt(pRvs, vs, pEnt.getOwnr());
+    long owVrWs = Long.parseLong(pRqDt.getParam("owVr"));
+    if (owVrWs != pEnt.getOwnr().getVer()) {
+      throw new ExcCode(IOrm.DRTREAD, "dirty_read");
+    }
+    UvdVar uvs = (UvdVar) pRvs.get("uvs");
+    uvs.setOwnr(pEnt.getOwnr());
     return null;
   }
 
