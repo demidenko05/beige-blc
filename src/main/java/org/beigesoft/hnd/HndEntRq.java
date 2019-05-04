@@ -89,7 +89,7 @@ public class HndEntRq<RS> implements IHndRq {
   /**
    * <p>Entities processors factory.</p>
    **/
-  private IFctNm<IPrcEnt<IHasId<?>, ?>> fctEntPrc;
+  private IFctNm<IPrcEnt<?, ?>> fctEntPrc;
 
   /**
    * <p>Processors for entities names holder.</p>
@@ -319,7 +319,9 @@ public class HndEntRq<RS> implements IHndRq {
                 + "/" + actNm + "/" + pRqDt.getUsrNm());
             throw new ExcCode(ExcCode.FORB, "Forbidden!");
           }
-          IPrcEnt<IHasId<?>, ?> ep = this.fctEntPrc.laz(pRqVs, entProcNm);
+          @SuppressWarnings("unchecked")
+          IPrcEnt<IHasId<?>, ?> ep = (IPrcEnt<IHasId<?>, ?>)
+            this.fctEntPrc.laz(pRqVs, entProcNm);
           if (pIsDbgSh) {
             this.logStd.debug(pRqVs, HndEntRq.class,
              "It's used entProcNm/IPrcEnt: " + entProcNm + "/" + ep.getClass());
@@ -417,9 +419,9 @@ public class HndEntRq<RS> implements IHndRq {
 
   /**
    * <p>Getter for fctEntPrc.</p>
-   * @return IFctNm<IPrcEnt<IHasId<?>, ?>>
+   * @return IFctNm<IPrcEnt<?, ?>>
    **/
-  public final IFctNm<IPrcEnt<IHasId<?>, ?>> getFctEntPrc() {
+  public final IFctNm<IPrcEnt<?, ?>> getFctEntPrc() {
     return this.fctEntPrc;
   }
 
@@ -428,7 +430,7 @@ public class HndEntRq<RS> implements IHndRq {
    * @param pFctEntPrc reference
    **/
   public final void setFctEntPrc(
-    final IFctNm<IPrcEnt<IHasId<?>, ?>> pFctEntPrc) {
+    final IFctNm<IPrcEnt<?, ?>> pFctEntPrc) {
     this.fctEntPrc = pFctEntPrc;
   }
 

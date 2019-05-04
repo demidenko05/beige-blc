@@ -32,15 +32,17 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.beigesoft.exc.ExcCode;
-import org.beigesoft.mdl.IHasId;
 import org.beigesoft.prc.IPrcEnt;
 import org.beigesoft.prc.PrcEntRt;
 import org.beigesoft.prc.PrcEntCr;
 import org.beigesoft.prc.PrcEnoDl;
+import org.beigesoft.prc.PrcEnofDl;
 import org.beigesoft.prc.PrcEntDl;
+import org.beigesoft.prc.PrcEmMsgSv;
 import org.beigesoft.prc.PrcEntSv;
 import org.beigesoft.prc.PrcEnoSv;
 import org.beigesoft.prc.PrcEnofSv;
+import org.beigesoft.srv.IEmSnd;
 
 /**
  * <p>Factory of entity processors.</p>
@@ -48,7 +50,7 @@ import org.beigesoft.prc.PrcEnofSv;
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
+public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
 
   /**
    * <p>Main factory.</p>
@@ -59,8 +61,8 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
   /**
    * <p>Processors map.</p>
    **/
-  private final Map<String, IPrcEnt<IHasId<?>, ?>> procs =
-    new HashMap<String, IPrcEnt<IHasId<?>, ?>>();
+  private final Map<String, IPrcEnt<?, ?>> procs =
+    new HashMap<String, IPrcEnt<?, ?>>();
 
   /**
    * <p>Get processor in lazy mode (if bean is null then initialize it).</p>
@@ -69,9 +71,9 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
    * @return requested processor
    * @throws Exception - an exception
    */
-  public final IPrcEnt<IHasId<?>, ?> laz(final Map<String, Object> pRqVs,
+  public final IPrcEnt<?, ?> laz(final Map<String, Object> pRqVs,
     final String pPrNm) throws Exception {
-    IPrcEnt<IHasId<?>, ?> rz = this.procs.get(pPrNm);
+    IPrcEnt<?, ?> rz = this.procs.get(pPrNm);
     if (rz == null) {
       synchronized (this) {
         rz = this.procs.get(pPrNm);
@@ -82,8 +84,12 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
             rz = crPuPrcEnoDl(pRqVs);
           } else if (PrcEntDl.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEntDl(pRqVs);
+          } else if (PrcEmMsgSv.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEmMsgSv(pRqVs);
           } else if (PrcEntSv.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEntSv(pRqVs);
+          } else if (PrcEnofDl.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEnofDl(pRqVs);
           } else if (PrcEnofSv.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEnofSv(pRqVs);
           } else if (PrcEnoSv.class.getSimpleName().equals(pPrNm)) {
@@ -110,6 +116,23 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
     PrcEntCr rz = new PrcEntCr();
     this.procs.put(PrcEntCr.class.getSimpleName(), rz);
     this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEntCr.class
+      .getSimpleName() + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map PrcEnofDl.</p>
+   * @param pRqVs request scoped vars
+   * @return PrcEnofDl
+   * @throws Exception - an exception
+   */
+  private PrcEnofDl crPuPrcEnofDl(
+    final Map<String, Object> pRqVs) throws Exception {
+    PrcEnofDl rz = new PrcEnofDl();
+    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
+    rz.setHldGets(this.fctBlc.lazHldGets(pRqVs));
+    this.procs.put(PrcEnofDl.class.getSimpleName(), rz);
+    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEnofDl.class
       .getSimpleName() + " has been created.");
     return rz;
   }
@@ -178,6 +201,23 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<IHasId<?>, ?>> {
     rz.setOrm(this.fctBlc.lazOrm(pRqVs));
     this.procs.put(PrcEntDl.class.getSimpleName(), rz);
     this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEntDl.class
+      .getSimpleName() + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map PrcEmMsgSv.</p>
+   * @param pRqVs request scoped vars
+   * @return PrcEmMsgSv
+   * @throws Exception - an exception
+   */
+  private PrcEmMsgSv crPuPrcEmMsgSv(
+    final Map<String, Object> pRqVs) throws Exception {
+    PrcEmMsgSv rz = new PrcEmMsgSv();
+    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
+    rz.setEmSnd((IEmSnd) this.fctBlc.laz(pRqVs, IEmSnd.class.getSimpleName()));
+    this.procs.put(PrcEmMsgSv.class.getSimpleName(), rz);
+    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEmMsgSv.class
       .getSimpleName() + " has been created.");
     return rz;
   }

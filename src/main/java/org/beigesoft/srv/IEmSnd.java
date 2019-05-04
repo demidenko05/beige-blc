@@ -31,7 +31,6 @@ package org.beigesoft.srv;
 import java.util.Map;
 
 import org.beigesoft.mdlp.EmMsg;
-import org.beigesoft.mdlp.EmCon;
 
 /**
  * <p>Abstraction of service to send email.</p>
@@ -47,20 +46,4 @@ public interface IEmSnd {
    * @throws Exception - an exception
    **/
   void send(Map<String, Object> pRqVs, EmMsg pMsg) throws Exception;
-
-  /**
-   * <p>Open email connection.</p>
-   * @param pRqVs request scoped vars
-   * @param pEmCon Email Connect
-   * @throws Exception - an exception
-   **/
-  void openCon(Map<String, Object> pRqVs, EmCon pEmCon) throws Exception;
-
-  /**
-   * <p>Close email connection.</p>
-   * @param pRqVs request scoped vars
-   * @param pEmCon Email Connect
-   * @throws Exception - an exception
-   **/
-  void closeCon(Map<String, Object> pRqVs, EmCon pEmCon) throws Exception;
 }

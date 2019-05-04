@@ -30,11 +30,15 @@ package org.beigesoft.hld;
 
 import java.util.List;
 
+import org.beigesoft.mdlp.EmAtch;
+import org.beigesoft.mdlp.EmMsg;
 import org.beigesoft.prc.PrcEntRt;
 import org.beigesoft.prc.PrcEntCr;
 import org.beigesoft.prc.PrcEntSv;
+import org.beigesoft.prc.PrcEmMsgSv;
 import org.beigesoft.prc.PrcEntDl;
 import org.beigesoft.prc.PrcEnoDl;
+import org.beigesoft.prc.PrcEnofDl;
 import org.beigesoft.prc.PrcEnoSv;
 import org.beigesoft.prc.PrcEnofSv;
 
@@ -72,16 +76,22 @@ public class HlNmAdEnPr implements IHldNm<Class<?>, String> {
       return PrcEntDl.class.getSimpleName();
     }
     if ("entFoDl".equals(pAct)) {
+      if (pCls == EmAtch.class) {
+        return PrcEnofDl.class.getSimpleName();
+      }
       return PrcEnoDl.class.getSimpleName();
     }
     if ("entSv".equals(pAct)) {
+      if (pCls == EmMsg.class) {
+        return PrcEmMsgSv.class.getSimpleName();
+      }
       return PrcEntSv.class.getSimpleName();
     }
     if ("entFoSv".equals(pAct)) {
+      if (pCls == EmAtch.class) {
+        return PrcEnofSv.class.getSimpleName();
+      }
       return PrcEnoSv.class.getSimpleName();
-    }
-    if ("entFofSv".equals(pAct)) {
-      return PrcEnofSv.class.getSimpleName();
     }
     return null;
   }
