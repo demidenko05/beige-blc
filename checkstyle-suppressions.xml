@@ -14,7 +14,7 @@
   <suppress checks="EmptyBlock"
     files="RplXmlHttps"/>
   <suppress checks="LineLength"
-    files="RplXmlHttps"/>
+    files="RplXmlHttps|DbImp"/>
   <suppress checks="FileLength"
     files="FctBlc"/>
 </suppressions>

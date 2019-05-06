@@ -151,6 +151,11 @@ public class FctBlc<RS> implements IFctApp {
   public static final String HNNTRQSC = "hnNtRqSc";
 
   /**
+   * <p>Handler admin, secure non-transaction requests name.</p>
+   **/
+  public static final String HNNTRQAD = "hnNtRqAd";
+
+  /**
    * <p>Handler admin/web-store entities request name.</p>
    **/
   public static final String HNADENRQ = "hnAdEnRq";
@@ -355,6 +360,8 @@ public class FctBlc<RS> implements IFctApp {
         if (rz == null) {
           if (HndI18nRq.class.getSimpleName().equals(pBnNm)) {
             rz = lazHndI18nRq(pRvs);
+          } else if (HNNTRQAD.equals(pBnNm)) {
+            rz = lazHndNtrRqAd(pRvs);
           } else if (HNNTRQSC.equals(pBnNm)) {
             rz = lazHndNtrRq(pRvs);
           } else if (HNACENRQ.equals(pBnNm)) {
@@ -644,6 +651,27 @@ public class FctBlc<RS> implements IFctApp {
       rz.setUtJsp(new UtlJsp());
       this.beans.put(HndI18nRq.class.getSimpleName(), rz);
       lazLogStd(pRvs).info(pRvs, getClass(), HndI18nRq.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter HndNtrRq.</p>
+   * @param pRvs request scoped vars
+   * @return HndNtrRq
+   * @throws Exception - an exception
+   */
+  public final synchronized HndNtrRq lazHndNtrRqAd(
+    final Map<String, Object> pRvs) throws Exception {
+    HndNtrRq rz = (HndNtrRq) this.beans.get(HNNTRQAD);
+    if (rz == null) {
+      rz = new HndNtrRq();
+      FctPrcNtrAd<RS> fct = new FctPrcNtrAd<RS>();
+      fct.setFctBlc(this);
+      rz.setFctPrc(fct);
+      this.beans.put(HNNTRQAD, rz);
+      lazLogStd(pRvs).info(pRvs, getClass(), HNNTRQAD
         + " has been created.");
     }
     return rz;

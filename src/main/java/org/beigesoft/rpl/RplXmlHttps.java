@@ -124,7 +124,7 @@ public class RplXmlHttps<RS> implements IReplicator {
   @Override
   public final void replicate(
     final Map<String, Object> pRqVs) throws Exception {
-    Writer wri = (Writer) pRqVs.get("wri");
+    Writer wri = (Writer) pRqVs.get("htmWri");
     try {
       //URL must be
       String urlSrcStr = "https://" + (String) pRqVs.get("urlSrc");
@@ -135,11 +135,11 @@ public class RplXmlHttps<RS> implements IReplicator {
       String auMt = (String) pRqVs.get("auMt");
       if ("base".equals(auMt)) {
         final String usr = (String) pRqVs.get("usr");
-        final String psw = (String) pRqVs.get("psw");
+        final String pwd = (String) pRqVs.get("pwd");
         Authenticator.setDefault(new Authenticator() {
           @Override
           protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(usr, psw.toCharArray());
+            return new PasswordAuthentication(usr, pwd.toCharArray());
           }
         });
       } else if ("form".equals(auMt)) {
@@ -362,9 +362,9 @@ public class RplXmlHttps<RS> implements IReplicator {
       final CookieManager pCoMng) throws Exception {
     String auUrl = (String) pRqVs.get("auUrl");
     String auUsr = (String) pRqVs.get("auUsr");
-    String auPsw = (String) pRqVs.get("auPsw");
+    String auPwd = (String) pRqVs.get("auPwd");
     String usr = (String) pRqVs.get("usr");
-    String psw = (String) pRqVs.get("psw");
+    String pwd = (String) pRqVs.get("pwd");
     URL url = new URL(auUrl);
     HttpsURLConnection urlCn = (HttpsURLConnection) url
       .openConnection();
@@ -378,7 +378,7 @@ public class RplXmlHttps<RS> implements IReplicator {
       urlCn.setDoOutput(true);
       urlCn.setRequestMethod("POST");
       String paramStr = auUsr + "=" + usr + "&"
-        + auPsw + "=" + psw;
+        + auPwd + "=" + pwd;
       StringBuffer cookiesSb = new StringBuffer();
       for (HttpCookie cookie : pCoMng.getCookieStore().getCookies()) {
         cookiesSb.append(cookie.getName() + "=" + cookie.getValue() + ";");

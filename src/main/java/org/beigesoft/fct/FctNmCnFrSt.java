@@ -42,6 +42,8 @@ import org.beigesoft.cnv.CnvStrBln;
 import org.beigesoft.cnv.CnvStrBgd;
 import org.beigesoft.cnv.CnvStrBgdNf;
 import org.beigesoft.cnv.CnvStrDt;
+import org.beigesoft.cnv.CnvStrDtSc;
+import org.beigesoft.cnv.CnvStrDtMsFm;
 import org.beigesoft.cnv.CnvStrDtTm;
 import org.beigesoft.cnv.CnvStrStr;
 import org.beigesoft.cnv.CnvStrDtMs;
@@ -95,6 +97,10 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
             rz = crPuCnvStrLng();
           } else if (CnvStrDt.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvStrDt();
+          } else if (CnvStrDtSc.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrDtSc();
+          } else if (CnvStrDtMsFm.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrDtMsFm();
           } else if (CnvStrDtTm.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvStrDtTm();
           } else if (CnvStrStr.class.getSimpleName().equals(pCnNm)) {
@@ -152,6 +158,30 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
     CnvStrDt rz = new CnvStrDt();
     this.convrts.put(CnvStrDt.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvStrDt.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrDtSc.</p>
+   * @return CnvStrDtSc
+   */
+  private CnvStrDtSc crPuCnvStrDtSc() {
+    CnvStrDtSc rz = new CnvStrDtSc();
+    this.convrts.put(CnvStrDtSc.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrDtSc.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrDtMsFm.</p>
+   * @return CnvStrDtMsFm
+   */
+  private CnvStrDtMsFm crPuCnvStrDtMsFm() {
+    CnvStrDtMsFm rz = new CnvStrDtMsFm();
+    this.convrts.put(CnvStrDtMsFm.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrDtMsFm.class.getSimpleName()
       + " has been created.");
     return rz;
   }
