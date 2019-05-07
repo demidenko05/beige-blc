@@ -8,8 +8,6 @@ See LICENSE in base folder
 <properties>
 <comment>Beigesoft DBCP configuration</comment>
 <entry key="clss">org.beigesoft.mdlp.DbInf,
-  org.beigesoft.mdlp.UsTmc,
-  org.beigesoft.mdlp.UsRlTmc,
   org.beigesoft.mdlp.Lng,
   org.beigesoft.mdlp.Cntr,
   org.beigesoft.mdlp.DcSp,

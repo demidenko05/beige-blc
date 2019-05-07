@@ -59,8 +59,10 @@ public class HndNtrRq implements IHndRq {
   public final void handle(final Map<String, Object> pRqVs,
     final IReqDt pRqDt) throws Exception {
     String nmPrc = pRqDt.getParam("prc");
-    IPrc proc = this.fctPrc.laz(pRqVs, nmPrc);
-    proc.process(pRqVs, pRqDt);
+    if (nmPrc != null) {
+      IPrc proc = this.fctPrc.laz(pRqVs, nmPrc);
+      proc.process(pRqVs, pRqDt);
+    } // just JSP form
   }
 
   //Simple getters and setters:

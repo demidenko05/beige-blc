@@ -33,6 +33,7 @@ import java.io.Reader;
 import java.lang.reflect.Constructor;
 
 import org.beigesoft.exc.ExcCode;
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.prp.ISetng;
@@ -45,7 +46,7 @@ import org.beigesoft.srv.IUtlXml;
  *
  * @author Yury Demidenko
  */
-public class RpEntReadXml implements IRpEntRead<Object> {
+public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
 
   /**
    * <p>Log.</p>
@@ -80,16 +81,16 @@ public class RpEntReadXml implements IRpEntRead<Object> {
    * @throws Exception - an exception
    **/
   @Override
-  public final Object read(final Map<String, Object> pRqVs,
+  public final IHasId<?> read(final Map<String, Object> pRqVs,
     final Reader pReader) throws Exception {
     Map<String, String> attrs = this.utlXml.readAttrs(pRqVs, pReader);
     if (attrs.get("class") == null) {
      throw new ExcCode(ExcCode.WRCN, "There is no class attribute for entity!");
     }
-    Class cls = Class.forName(attrs.get("class"));
     @SuppressWarnings("unchecked")
-    Constructor constructor = cls.getDeclaredConstructor();
-    Object ent = constructor.newInstance();
+    Class<IHasId<?>> cls = (Class<IHasId<?>>) Class.forName(attrs.get("class"));
+    Constructor<IHasId<?>> constructor = cls.getDeclaredConstructor();
+    IHasId<?> ent = constructor.newInstance();
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 6502 && this.log.getDbgCl() > 6500;
     if (isDbgSh) {

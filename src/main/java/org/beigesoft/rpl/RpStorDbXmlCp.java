@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.rpl;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.io.Reader;
 
 import org.beigesoft.mdl.IHasId;
@@ -89,9 +90,10 @@ public class RpStorDbXmlCp<RS> implements IRpStor {
       this.rdb.setAcmt(false);
       this.rdb.setTrIsl(IRdb.TRRUC);
       this.rdb.begin();
+      Map<String, Object> vs = new HashMap<String, Object>();
       while (this.utlXml.readUntilStart(pReader, "entity")) {
         IHasId<?> entity = this.rpEntRead.read(pRqVs, pReader);
-        this.orm.insert(pRqVs, null, entity);
+        this.orm.insert(pRqVs, vs, entity);
       }
       this.rdb.commit();
     } catch (Exception ex) {

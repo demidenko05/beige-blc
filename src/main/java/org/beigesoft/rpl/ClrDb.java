@@ -81,7 +81,7 @@ public class ClrDb<RS> implements IMake {
         this.rdb.delete(cls.getSimpleName().toUpperCase(), null);
       }
       this.rdb.commit();
-      Writer wri = (Writer) pRqVs.get("wri");
+      Writer wri = (Writer) pRqVs.get("htmWri");
       if (wri != null) {
         wri.write("<h4>" + new Date().toString() + ", "
         + ClrDb.class.getSimpleName()

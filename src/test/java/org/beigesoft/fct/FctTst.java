@@ -56,6 +56,7 @@ public class FctTst<RS> implements IFctAsm<RS> {
     this.fctBlc.setDbgFl(0);
     this.fctBlc.setDbgCl(100000);
     this.fctBlc.getFctsAux().add(new FctAuxTst<RS>());
+    this.fctBlc.getFctsAux().add(new FctDbCp<RS>());
   }
 
   /**

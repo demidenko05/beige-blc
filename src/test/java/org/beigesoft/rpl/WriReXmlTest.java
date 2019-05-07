@@ -56,6 +56,7 @@ import org.beigesoft.mdlp.GoodVersionTime;
 import org.beigesoft.log.ILog;
 import org.beigesoft.fct.FctTst;
 import org.beigesoft.fct.FctBlc;
+import org.beigesoft.fct.FctDbCp;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.srv.UtlXml;
 import org.beigesoft.srv.IUtlXml;
@@ -99,7 +100,7 @@ public class WriReXmlTest<RS> {
     assertEquals("1", attributesMap.get("itsId")); 
     assertEquals("ICT", attributesMap.get("itsName")); 
     //Entity:
-    RpEntWriXml rpEntWriXml = (RpEntWriXml) this.fctApp.laz(this.rqVs, FctBlc.ENWRDBCPNM);
+    RpEntWriXml rpEntWriXml = (RpEntWriXml) this.fctApp.laz(this.rqVs, FctDbCp.ENWRDBCPNM);
     //write:
     UsRlTmc usRlTmc = new UsRlTmc();
     usRlTmc.setRol("adminr");
@@ -121,7 +122,7 @@ public class WriReXmlTest<RS> {
     }
     //fill:
     UsRlTmc usRlTmcf = null;
-    RpEntReadXml rpEntReadXml = (RpEntReadXml) this.fctApp.laz(this.rqVs, FctBlc.ENRDDBCPNM);
+    RpEntReadXml rpEntReadXml = (RpEntReadXml) this.fctApp.laz(this.rqVs, FctDbCp.ENRDDBCPNM);
     InputStreamReader isr = new InputStreamReader(new FileInputStream(fl), Charset.forName("UTF-8").newDecoder());
     try {
       utlXml.readUntilStart(isr, "data");

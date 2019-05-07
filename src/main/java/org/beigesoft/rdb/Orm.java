@@ -222,7 +222,7 @@ public class Orm<RS> implements IOrm {
       if (appInf == null) {
         throw new ExcCode(ExcCode.WRCN, "There is no common setting appInf!");
       }
-      String insdbi = "insert into DBINF (DBVR, DBID, INF) values (1, "
+      String insdbi = "insert into DBINF (DBVR, VER, DBID, INF) values (1, 1, "
         + this.newDbId + ", '" + appInf + "');";
       try {
         this.rdb.exec(insdbi);

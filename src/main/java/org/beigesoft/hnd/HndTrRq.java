@@ -69,6 +69,9 @@ public class HndTrRq<RS> implements IHndRq {
   public final void handle(final Map<String, Object> pRqVs,
     final IReqDt pRqDt) throws Exception {
     String nmPrc = pRqDt.getParam("prc");
+    if (nmPrc == null) {
+      return; // just JSP form
+    }
     try {
       this.rdb.setAcmt(false);
       this.rdb.setTrIsl(this.trIsl);

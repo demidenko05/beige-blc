@@ -32,6 +32,7 @@ import java.util.Map;
 import java.io.PrintWriter;
 
 import org.beigesoft.mdl.IReqDt;
+import org.beigesoft.fct.IFctApp;
 import org.beigesoft.log.ILog;
 import org.beigesoft.rpl.IReplicator;
 
@@ -53,6 +54,11 @@ public class DbImp implements IPrc {
   private IReplicator repl;
 
   /**
+   * <p>APP-factory.</p>
+   **/
+  private IFctApp fctApp;
+
+  /**
    * <p>Process request.</p>
    * @param pRvs request scoped vars
    * @param pRqDt Request Data
@@ -64,15 +70,16 @@ public class DbImp implements IPrc {
     PrintWriter htmWri = (PrintWriter) pRvs.get("htmWri");
     String urlSrc = "https://" + pRqDt.getParam("urlSrc");
     String usr = pRqDt.getParam("usr");
-    pRvs.put("srDbId", pRqDt.getParam("srDbId"));
+    pRvs.put("urlSrc", pRqDt.getParam("urlSrc"));
     pRvs.put("maxRecs", pRqDt.getParam("maxRecs"));
+    pRvs.put("prc", pRqDt.getParam("prcExp"));
     if (usr != null) {
       pRvs.put("pwd", pRqDt.getParam("pwd"));
       pRvs.put("usr", usr);
       pRvs.put("auMt", "form");
       String urlBase = urlSrc.substring(0, urlSrc.indexOf("adm") - 1);
       pRvs.put("auUrl", urlBase + "/adm/j_security_check");
-      pRvs.put("urlAuCo", urlBase + "/adm/ntr");
+      pRvs.put("urlAuCo", urlBase + "/adm/srv");
       pRvs.put("auUsr", "j_username");
       pRvs.put("auPwd", "j_password");
     }
@@ -95,6 +102,7 @@ public class DbImp implements IPrc {
     htmWri.println("</div>");
     htmWri.println("</body>");
     htmWri.println("</html>");
+    this.fctApp.release(pRvs);
   }
 
   //Simple getters and setters:
@@ -128,5 +136,21 @@ public class DbImp implements IPrc {
    **/
   public final void setRepl(final IReplicator pRepl) {
     this.repl = pRepl;
+  }
+
+  /**
+   * <p>Getter for fctApp.</p>
+   * @return IFctApp
+   **/
+  public final IFctApp getFctApp() {
+    return this.fctApp;
+  }
+
+  /**
+   * <p>Setter for fctApp.</p>
+   * @param pFctApp reference
+   **/
+  public final void setFctApp(final IFctApp pFctApp) {
+    this.fctApp = pFctApp;
   }
 }

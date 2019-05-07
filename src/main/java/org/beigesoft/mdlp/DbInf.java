@@ -28,13 +28,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.mdlp;
 
+import org.beigesoft.mdl.IHasId;
+
 /**
  * <p>Every database must has ID for replication purposes
  * and version for upgrade purpose.</p>
  *
  * @author Yury Demidenko
  */
-public class DbInf {
+public class DbInf implements IHasId<Integer>{
 
   /**
    * <p>ID of type Integer.</p>
@@ -50,6 +52,70 @@ public class DbInf {
    * <p>Infription.</p>
    **/
   private String inf;
+
+  /**
+   * <p>Version to check dirty or replication.</p>
+   **/
+  private Long ver;
+
+  /**
+   * <p>Flag "is new".</p>
+   **/
+  private Boolean isNew = false;
+
+  /**
+   * <p>Geter for isNew.</p>
+   * @return boolean
+   **/
+  @Override
+  public final Boolean getIsNew() {
+    return this.isNew;
+  }
+
+  /**
+   * <p>Setter for isNew.</p>
+   * @param pIsNew value
+   **/
+  @Override
+  public final void setIsNew(final Boolean pIsNew) {
+    this.isNew = pIsNew;
+  }
+
+  /**
+   * <p>Geter for id.</p>
+   * @return Long
+   **/
+  @Override
+  public final Integer getIid() {
+    return this.dbId;
+  }
+
+  /**
+   * <p>Setter for id.</p>
+   * @param pId reference/value
+   **/
+  @Override
+  public final void setIid(final Integer pId) {
+    this.dbId = pId;
+  }
+
+  /**
+   * <p>Geter for ver.</p>
+   * @return Long
+   **/
+  @Override
+  public final Long getVer() {
+    return this.ver;
+  }
+
+  /**
+   * <p>Setter for ver.</p>
+   * @param pVer reference
+   **/
+  @Override
+  public final void setVer(final Long pVer) {
+    this.ver = pVer;
+  }
 
   //Simple getters and setters:
   /**

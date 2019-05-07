@@ -34,6 +34,16 @@ import java.util.HashMap;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.prc.IPrc;
 import org.beigesoft.prc.MngSft;
+import org.beigesoft.prc.DbImp;
+import org.beigesoft.prc.DbExp;
+import org.beigesoft.prp.ISetng;
+import org.beigesoft.rpl.RpRtrvDbXml;
+import org.beigesoft.rpl.RpStorDbXmlCp;
+import org.beigesoft.rpl.RplXmlHttps;
+import org.beigesoft.rpl.ClrDb;
+import org.beigesoft.rpl.RpEntWriXml;
+import org.beigesoft.rpl.RpEntReadXml;
+import org.beigesoft.rdb.IRdb;
 
 /**
  * <p>Factory of processors for admin, secure non-transactional requests.</p>
@@ -70,6 +80,10 @@ public class FctPrcNtrAd<RS> implements IFctNm<IPrc> {
         if (rz == null) {
           if (MngSft.class.getSimpleName().equals(pPrNm)) {
             rz = crPuMngSft(pRvs);
+          } else if (DbImp.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuDbImp(pRvs);
+          } else if (DbExp.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuDbExp(pRvs);
           } else {
             throw new ExcCode(ExcCode.WRCN, "There is no IProc: " + pPrNm);
           }
@@ -92,6 +106,67 @@ public class FctPrcNtrAd<RS> implements IFctNm<IPrc> {
     this.procs.put(MngSft.class.getSimpleName(), rz);
     this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), MngSft.class
       .getSimpleName() + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Creates and puts into MF DbExp.</p>
+   * @param pRvs request scoped vars
+   * @return DbExp
+   * @throws Exception - an exception
+   */
+  private DbExp crPuDbExp(final Map<String, Object> pRvs) throws Exception {
+    DbExp rz = new DbExp();
+    rz.setLog(this.fctBlc.lazLogStd(pRvs));
+    RpRtrvDbXml<RS> retr = new RpRtrvDbXml<RS>();
+    @SuppressWarnings("unchecked")
+    IRdb<RS> rdb = (IRdb<RS>) this.fctBlc.laz(pRvs, IRdb.class.getSimpleName());
+    retr.setRdb(rdb);
+    retr.setOrm(this.fctBlc.lazOrm(pRvs));
+    retr.setLog(this.fctBlc.lazLogStd(pRvs));
+    RpEntWriXml entWr = (RpEntWriXml) this.fctBlc.laz(pRvs, FctDbCp.ENWRDBCPNM);
+    retr.setRpEntWri(entWr);
+    rz.setRetr(retr);
+    this.procs.put(DbExp.class.getSimpleName(), rz);
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(),
+      DbExp.class.getSimpleName() + " has been created");
+    return rz;
+  }
+
+  /**
+   * <p>Creates and puts into MF DbImp.</p>
+   * @param pRvs request scoped vars
+   * @return DbImp
+   * @throws Exception - an exception
+   */
+  private DbImp crPuDbImp(final Map<String, Object> pRvs) throws Exception {
+    DbImp rz = new DbImp();
+    rz.setLog(this.fctBlc.lazLogStd(pRvs));
+    rz.setFctApp(this.fctBlc);
+    RplXmlHttps<RS> repl = new RplXmlHttps<RS>();
+    repl.setSetng((ISetng) this.fctBlc.laz(pRvs, FctBlc.STGDBCPNM));
+    @SuppressWarnings("unchecked")
+    IRdb<RS> rdb = (IRdb<RS>) this.fctBlc.laz(pRvs, IRdb.class.getSimpleName());
+    repl.setRdb(rdb);
+    repl.setLog(this.fctBlc.lazLogStd(pRvs));
+    repl.setUtlXml(this.fctBlc.lazUtlXml(pRvs));
+    RpStorDbXmlCp<RS> rpStor = new RpStorDbXmlCp<RS>();
+    rpStor.setLog(this.fctBlc.lazLogStd(pRvs));
+    rpStor.setOrm(this.fctBlc.lazOrm(pRvs));
+    rpStor.setUtlXml(this.fctBlc.lazUtlXml(pRvs));
+    rpStor.setRdb(rdb);
+    RpEntReadXml erd = (RpEntReadXml) this.fctBlc.laz(pRvs, FctDbCp.ENRDDBCPNM);
+    rpStor.setRpEntRead(erd);
+    repl.setRpStor(rpStor);
+    ClrDb<RS> clrDb = new ClrDb<RS>();
+    clrDb.setLog(this.fctBlc.lazLogStd(pRvs));
+    clrDb.setRdb(rdb);
+    clrDb.setSetng(repl.getSetng());
+    repl.setDbBefore(clrDb);
+    rz.setRepl(repl);
+    this.procs.put(DbImp.class.getSimpleName(), rz);
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(),
+      DbImp.class.getSimpleName() + " has been created");
     return rz;
   }
 

@@ -88,20 +88,14 @@ public class RplXmlHttps<RS> implements IReplicator {
   private ILog log;
 
   /**
-   * <p>Cookies.</p>
-   **/
-  private String cookies;
-
-  /**
    * <p>It prepares database before import (may be null),
-   * e.g. for full database copy it should clear database.</p>
+   * e.g. for full database copy it will clear database.</p>
    **/
   private IMake dbBefore;
 
   /**
    * <p>It prepares database after import (may be null),
-   * e.g. for full database copy it should release application's beans factory,
-   * and for Postgresql it should remake sequences.</p>
+   * e.g. for Postgresql it will remake sequences.</p>
    **/
   private IMake dbAfter;
 
@@ -118,24 +112,25 @@ public class RplXmlHttps<RS> implements IReplicator {
   /**
    * <p>It will clear current database then copy
    * data from another with XML messages trough HTTPS connection.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @throws Exception - an exception
    **/
   @Override
   public final void replicate(
-    final Map<String, Object> pRqVs) throws Exception {
-    Writer wri = (Writer) pRqVs.get("htmWri");
+    final Map<String, Object> pRvs) throws Exception {
+    Writer wri = (Writer) pRvs.get("htmWri");
     try {
       //URL must be
-      String urlSrcStr = "https://" + (String) pRqVs.get("urlSrc");
+      String urlSrcStr = "https://" + (String) pRvs.get("urlSrc");
       if (urlSrcStr == null || urlSrcStr.length() < 10) {
         throw new ExcCode(ExcCode.WRPR, "Where is no urlSrc!!!");
       }
+      this.log.info(pRvs, getClass(), "URL source: " + urlSrcStr);
       URL url = new URL(urlSrcStr);
-      String auMt = (String) pRqVs.get("auMt");
+      String auMt = (String) pRvs.get("auMt");
       if ("base".equals(auMt)) {
-        final String usr = (String) pRqVs.get("usr");
-        final String pwd = (String) pRqVs.get("pwd");
+        final String usr = (String) pRvs.get("usr");
+        final String pwd = (String) pRvs.get("pwd");
         Authenticator.setDefault(new Authenticator() {
           @Override
           protected PasswordAuthentication getPasswordAuthentication() {
@@ -146,15 +141,15 @@ public class RplXmlHttps<RS> implements IReplicator {
         CookieManager coMng = new CookieManager();
         CookieHandler.setDefault(coMng);
         coMng.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
-        reqCookies(pRqVs);
-        authForm(pRqVs, coMng);
+        reqCookies(pRvs);
+        authForm(pRvs, coMng);
       }
-      Map<String, Integer> clsCnts = makeJob(url, pRqVs);
+      Map<String, Integer> clsCnts = makeJob(url, pRvs);
       if (wri != null) {
         String statusString = ", replication has been done.";
         wri.write("<h4>" + new Date().toString()
           + statusString + "</h4>");
-        pRqVs.put("statusString", new Date().toString() + ", "
+        pRvs.put("statusString", new Date().toString() + ", "
           + RplXmlHttps.class.getSimpleName()
           + statusString);
         this.log.info(null, RplXmlHttps.class, statusString);
@@ -175,20 +170,21 @@ public class RplXmlHttps<RS> implements IReplicator {
       }
       throw ex;
     }
+    pRvs.remove("cooks");
   }
 
   /**
    * <p>It copy data from another with XML messages
    * through given HTTP connection.</p>
    * @param pUrl URL
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return Map<String, Integer> affected Class - records count
    * @throws Exception - an exception
    **/
   public final Map<String, Integer> makeJob(final URL pUrl,
-    final Map<String, Object> pRqVs) throws Exception {
-    String srDbId = (String) pRqVs.get("srDbId");
-    String maxRecsStr = (String) pRqVs.get("maxRecs");
+    final Map<String, Object> pRvs) throws Exception {
+    String srDbId = (String) pRvs.get("srDbId");
+    String maxRecsStr = (String) pRvs.get("maxRecs");
     if (maxRecsStr == null || maxRecsStr.length() == 0) {
       throw new ExcCode(ExcCode.WRPR, "Where is no maxRecs!!!");
     }
@@ -212,16 +208,17 @@ public class RplXmlHttps<RS> implements IReplicator {
         try {
           urlCn.setDoOutput(true);
           urlCn.setRequestMethod("POST");
-          if (getCookies() != null) {
-            urlCn.addRequestProperty("Cookie", getCookies());
+          String cooks = (String) pRvs.get("cooks");
+          if (cooks != null) {
+            urlCn.addRequestProperty("Cookie", cooks);
           }
           writer = new OutputStreamWriter(urlCn
             .getOutputStream(), Charset.forName("UTF-8").newEncoder());
           String fltEntNm = this.setng.lazClsStg(cls, IFltEnts.FLTENTSNM);
           String cond = "";
           if (fltEntNm != null) {
-            IFltEnts fltEnts = this.fctFltEnts.laz(pRqVs, fltEntNm);
-            String cnd = fltEnts.makeWhe(pRqVs, cls);
+            IFltEnts fltEnts = this.fctFltEnts.laz(pRvs, fltEntNm);
+            String cnd = fltEnts.makeWhe(pRvs, cls);
             if (cnd != null) {
               cond = " where " + cnd;
             }
@@ -235,9 +232,9 @@ public class RplXmlHttps<RS> implements IReplicator {
             }
             srDbIdStr = "&srDbId=" + srDbId;
           }
-          writer.write("entNm=" + cls.getCanonicalName() + "&cond=" + cond
+          writer.write("ent=" + cls.getCanonicalName() + "&cond=" + cond
             + "&dsDbVr=" + dbInf.getDbVr() + srDbIdStr);
-          writer.write("&dbRtrvNm=" + pRqVs.get("dbRtrvNm")); //TODO
+          writer.write("&prc=" + pRvs.get("prc"));
           writer.flush();
           if (HttpsURLConnection.HTTP_OK == urlCn.getResponseCode()) {
             reader = new BufferedReader(new InputStreamReader(urlCn
@@ -246,7 +243,7 @@ public class RplXmlHttps<RS> implements IReplicator {
               throw new ExcCode(ExcCode.WR,
                 "Wrong XML response without message tag!!!");
             }
-            Map<String, String> msgAttrs = this.utlXml.readAttrs(pRqVs, reader);
+            Map<String, String> msgAttrs = this.utlXml.readAttrs(pRvs, reader);
             String error = msgAttrs.get("error");
             if (error != null) {
               throw new ExcCode(ExcCode.WR,
@@ -265,11 +262,11 @@ public class RplXmlHttps<RS> implements IReplicator {
                   + cls.getCanonicalName());
               if (!isDbBefore) {
                 if (this.dbBefore != null) {
-                  this.dbBefore.make(pRqVs);
+                  this.dbBefore.make(pRvs);
                 }
                 isDbBefore = true;
               }
-              this.rpStor.storeFr(pRqVs, reader);
+              this.rpStor.storeFr(pRvs, reader);
               if (entRecd == maxRecs) {
                 fstRec += maxRecs;
               } else {
@@ -306,7 +303,7 @@ public class RplXmlHttps<RS> implements IReplicator {
       clsCnt = 0;
     }
     if (this.dbAfter != null) {
-      this.dbAfter.make(pRqVs);
+      this.dbAfter.make(pRvs);
     }
     return clsCnts;
   }
@@ -314,12 +311,12 @@ public class RplXmlHttps<RS> implements IReplicator {
   /**
    * <p>Connect to secure address with method GET to receive
    * authenticate cookies.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @throws Exception - an exception
    **/
   public final void reqCookies(
-    final Map<String, Object> pRqVs) throws Exception {
-    String urlGetAuthCookStr = (String) pRqVs.get("urlAuCo");
+    final Map<String, Object> pRvs) throws Exception {
+    String urlGetAuthCookStr = (String) pRvs.get("urlAuCo");
     URL urlAuCo = new URL(urlGetAuthCookStr);
     HttpsURLConnection urlCn = null;
     BufferedReader reader = null;
@@ -354,17 +351,17 @@ public class RplXmlHttps<RS> implements IReplicator {
 
   /**
    * <p>It authenticates by post simulate form.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pCoMng CookieManager for form auth
    * @throws Exception - an exception
    **/
-  public final void authForm(final Map<String, Object> pRqVs,
+  public final void authForm(final Map<String, Object> pRvs,
       final CookieManager pCoMng) throws Exception {
-    String auUrl = (String) pRqVs.get("auUrl");
-    String auUsr = (String) pRqVs.get("auUsr");
-    String auPwd = (String) pRqVs.get("auPwd");
-    String usr = (String) pRqVs.get("usr");
-    String pwd = (String) pRqVs.get("pwd");
+    String auUrl = (String) pRvs.get("auUrl");
+    String auUsr = (String) pRvs.get("auUsr");
+    String auPwd = (String) pRvs.get("auPwd");
+    String usr = (String) pRvs.get("usr");
+    String pwd = (String) pRvs.get("pwd");
     URL url = new URL(auUrl);
     HttpsURLConnection urlCn = (HttpsURLConnection) url
       .openConnection();
@@ -383,8 +380,9 @@ public class RplXmlHttps<RS> implements IReplicator {
       for (HttpCookie cookie : pCoMng.getCookieStore().getCookies()) {
         cookiesSb.append(cookie.getName() + "=" + cookie.getValue() + ";");
       }
-      setCookies(cookiesSb.toString());
-      urlCn.addRequestProperty("Cookie", getCookies());
+      String cooks = cookiesSb.toString();
+      pRvs.put("cooks", cooks);
+      urlCn.addRequestProperty("Cookie", cooks);
       urlCn.addRequestProperty("Connection", "keep-alive");
       urlCn.addRequestProperty("Content-Type",
         "application/x-www-form-urlencoded");
@@ -393,14 +391,14 @@ public class RplXmlHttps<RS> implements IReplicator {
       boolean isDbgSh = this.log.getDbgSh(this.getClass())
         && this.log.getDbgFl() < 5501 && this.log.getDbgCl() > 5499;
       if (isDbgSh) {
-        getLog().debug(pRqVs, RplXmlHttps.class,
+        getLog().debug(pRvs, RplXmlHttps.class,
           "Request before flush auth:");
         for (Map.Entry<String, List<String>> entry
           : urlCn.getRequestProperties().entrySet()) {
-          this.log.debug(pRqVs, RplXmlHttps.class,
+          this.log.debug(pRvs, RplXmlHttps.class,
             "  Request entry key: " + entry.getKey());
           for (String val : entry.getValue()) {
-            this.log.debug(pRqVs, RplXmlHttps.class,
+            this.log.debug(pRvs, RplXmlHttps.class,
               "   Request entry value: " + val);
           }
         }
@@ -496,22 +494,6 @@ public class RplXmlHttps<RS> implements IReplicator {
    **/
   public final void setLog(final ILog pLog) {
     this.log = pLog;
-  }
-
-  /**
-   * <p>Getter for cookies.</p>
-   * @return String
-   **/
-  public final String getCookies() {
-    return this.cookies;
-  }
-
-  /**
-   * <p>Setter for cookies.</p>
-   * @param pCookies reference
-   **/
-  public final void setCookies(final String pCookies) {
-    this.cookies = pCookies;
   }
 
   /**

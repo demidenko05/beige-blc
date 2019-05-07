@@ -109,7 +109,7 @@ public class RpRtrvDbXml<RS> implements IRpRtrv {
           }
         } //else identical copy
         Map<String, Object> vs = new HashMap<String, Object>();
-        vs.put(pCls.getSimpleName() + "dpLv", Integer.valueOf(1));
+        vs.put(pCls.getSimpleName() + "dpLv", 1);
         if (cond == null) {
           entities = getOrm().retLst(pRqVs, vs, pCls);
         } else {
