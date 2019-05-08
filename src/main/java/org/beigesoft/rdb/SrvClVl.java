@@ -55,7 +55,7 @@ public class SrvClVl {
    * @return string representation
    **/
   public final String str(final ColVals pCv) {
-    StringBuffer sb = new StringBuffer("IDs column names: ");
+    StringBuffer sb = new StringBuffer();
     strCv(pCv, sb);
     return sb.toString();
   }
@@ -469,7 +469,21 @@ public class SrvClVl {
     StringBuffer vls = new StringBuffer(" values (");
     boolean isFst = true;
     List<String> idNms = this.setng.lazIdFldNms(pCls);
-    //ID-able Long and String:
+    //ID-able Int, Long and String:
+    if (pCv.getInts() != null) {
+      for (Map.Entry<String, Integer> ent : pCv.getInts().entrySet()) {
+        if (ent.getValue() != null || !idNms.contains(ent.getKey())) {
+          if (isFst) {
+            isFst = false;
+          } else {
+            res.append(", ");
+            vls.append(", ");
+          }
+          res.append(ent.getKey().toUpperCase());
+          vls.append(evSqlVl(pCv, ent.getKey()));
+        }
+      }
+    }
     if (pCv.getLongs() != null) {
       for (Map.Entry<String, Long> ent : pCv.getLongs().entrySet()) {
         if (ent.getValue() != null || !idNms.contains(ent.getKey())) {
@@ -486,20 +500,6 @@ public class SrvClVl {
     }
     if (pCv.getStrs() != null) {
       for (Map.Entry<String, String> ent : pCv.getStrs().entrySet()) {
-        if (ent.getValue() != null || !idNms.contains(ent.getKey())) {
-          if (isFst) {
-            isFst = false;
-          } else {
-            res.append(", ");
-            vls.append(", ");
-          }
-          res.append(ent.getKey().toUpperCase());
-          vls.append(evSqlVl(pCv, ent.getKey()));
-        }
-      }
-    }
-    if (pCv.getInts() != null) {
-      for (Map.Entry<String, Integer> ent : pCv.getInts().entrySet()) {
         if (isFst) {
           isFst = false;
         } else {
@@ -593,6 +593,18 @@ public class SrvClVl {
       + pCls.getSimpleName().toUpperCase() + " set ");
     List<String> idNms = this.setng.lazIdFldNms(pCls);
     boolean isFst = true;
+    if (pCv.getInts() != null) {
+      for (String key : pCv.getInts().keySet()) {
+        if (!idNms.contains(key)) {
+          if (isFst) {
+            isFst = false;
+          } else {
+            res.append(", ");
+          }
+          res.append(key.toUpperCase() + "=" + evSqlVl(pCv, key));
+        }
+      }
+    }
     if (pCv.getLongs() != null) {
       for (String key : pCv.getLongs().keySet()) {
         if (!idNms.contains(key)) {
@@ -615,16 +627,6 @@ public class SrvClVl {
           }
           res.append(key.toUpperCase() + "=" + evSqlVl(pCv, key));
         }
-      }
-    }
-    if (pCv.getInts() != null) {
-      for (String key : pCv.getInts().keySet()) {
-        if (isFst) {
-          isFst = false;
-        } else {
-          res.append(", ");
-        }
-        res.append(key.toUpperCase() + "=" + evSqlVl(pCv, key));
       }
     }
     if (pCv.getFloats() != null) {

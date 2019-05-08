@@ -63,6 +63,7 @@ import org.beigesoft.hnd.HndNtrRq;
 import org.beigesoft.prp.UtlPrp;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.prp.ISetng;
+import org.beigesoft.log.ILog;
 import org.beigesoft.log.LogFile;
 import org.beigesoft.cnv.FilEntRs;
 import org.beigesoft.cnv.FilEntRq;
@@ -196,7 +197,7 @@ public class FctBlc<RS> implements IFctApp {
   private String dbCls;
 
   /**
-   * <p>DB URL.</p>
+   * <p>DB URL or database name for Android.</p>
    **/
   private String dbUrl;
 
@@ -325,7 +326,7 @@ public class FctBlc<RS> implements IFctApp {
   /**
    * <p>Logger.</p>
    **/
-  private LogFile logStd;
+  private ILog logStd;
 
   //requested beans map, it's filled by this and external factories,
   //it's for high performance:
@@ -488,9 +489,10 @@ public class FctBlc<RS> implements IFctApp {
     for (IFctAux<RS> fau : this.fctsAux) {
       fau.release(pRvs, this);
     }
-    if (this.logStd != null) {
-      this.logStd.info(pRvs, getClass(), "Send stop to LOG STD...");
-      this.logStd.setNeedRun(false);
+    if (this.logStd != null && this.logStd instanceof LogFile) {
+      LogFile logFl = (LogFile) this.logStd;
+      logFl.info(pRvs, getClass(), "Send stop to LOG STD...");
+      logFl.setNeedRun(false);
       this.logStd = null;
     }
   }
@@ -1537,19 +1539,33 @@ public class FctBlc<RS> implements IFctApp {
    * @return Log
    * @throws Exception - an exception
    */
-  public final synchronized LogFile lazLogStd(
+  public final synchronized ILog lazLogStd(
     final Map<String, Object> pRvs) throws Exception {
     if (this.logStd == null) {
-      this.logStd = new LogFile();
-      this.logStd.setPath(this.logPth + File.separator + this.logStdNm);
-      this.logStd.setDbgSh(getDbgSh());
-      this.logStd.setDbgFl(getDbgFl());
-      this.logStd.setDbgCl(getDbgCl());
-      this.logStd.setMaxSize(this.logSize);
+      LogFile logFl = new LogFile();
+      logFl.setPath(this.logPth + File.separator + this.logStdNm);
+      logFl.setDbgSh(getDbgSh());
+      logFl.setDbgFl(getDbgFl());
+      logFl.setDbgCl(getDbgCl());
+      logFl.setMaxSize(this.logSize);
+      this.logStd = logFl;
       this.beans.put(LOGSTDNM, this.logStd);
       this.logStd.info(pRvs, getClass(), LOGSTDNM + " has been created");
     }
     return this.logStd;
+  }
+
+  /**
+   * <p>Setter standard logger.</p>
+   * @param pLog logger
+   * @throws Exception - an exception
+   */
+  public final synchronized void setLogStd(final ILog pLog) throws Exception {
+    if (this.logStd != null) {
+      throw new ExcCode(ExcCode.WRPR, "Log STD exists!");
+    }
+    this.logStd = pLog;
+    this.beans.put(LOGSTDNM, this.logStd);
   }
 
   //Simple getters and setters:

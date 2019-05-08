@@ -36,7 +36,7 @@ import org.beigesoft.mdl.IHasId;
  *
  * @author Yury Demidenko
  */
-public class DbInf implements IHasId<Integer>{
+public class DbInf implements IHasId<Integer> {
 
   /**
    * <p>ID of type Integer.</p>
