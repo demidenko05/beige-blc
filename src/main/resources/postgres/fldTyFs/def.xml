@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--BSD 2-Clause License
+Copyright (c) 2019, Beigesoft™
+All rights reserved.
+See LICENSE in base folder
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<!--Simple types:-->
+<comment>Correspondence of Java types to services that explain about property. ORDER is essential, the FIRST value will be used.</comment>
+<entry key="java.lang.Integer">integer</entry>
+<entry key="java.lang.Long">bigint</entry>
+<entry key="java.lang.Float">float4</entry>
+<entry key="java.lang.Double">float8</entry>
+<entry key="java.lang.String">text</entry>
+<entry key="java.lang.Boolean">integer not null default 0</entry>
+<entry key="java.util.Date">bigint</entry>
+<entry key="java.lang.Enum">integer</entry>
+<entry key="java.math.BigDecimal">decimal(19,4)</entry>
+<!--Foreign entities:-->
+<entry key="org.beigesoft.mdlp.UsTmc">text</entry>
+<entry key="org.beigesoft.mdlp.AIdLn">bigint</entry>
+<entry key="org.beigesoft.mdlp.AIdStr">text</entry>
+</properties>

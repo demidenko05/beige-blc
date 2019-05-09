@@ -237,7 +237,10 @@ public class Tst1<RS> {
         srvClVl.putExpr(cv, "ver");
         srvClVl.putExpr(cv, "itsTotal");
         //without version OL/ OL by constraint itsTotal >= 0
+        String fastloc = "fastloc"; //Postgres after exception required rollback!!!
+        rdb.creSavPnt(fastloc);
         muExFstLoc(rdb, phf.getClass(), cv, srvClVl.evWheUpd(phf.getClass(), cv));
+        rdb.rollBack(fastloc);
         srvClVl.put(cv, "itsTotal", "ITSTOTAL-" + ph.getItsTotal());
         rdb.update(phf.getClass(), cv, srvClVl.evWheUpd(phf.getClass(), cv));
         orm.refrEnt(rvs, vs, phf);

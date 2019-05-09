@@ -131,9 +131,8 @@ public class Orm<RS> implements IOrm {
           rs.close();
         }
       }
-      if (tbExs) {
-        allCr = false;
-      } else { //different standards
+      if (!tbExs) {
+        //different standards:
         sel = checkTbl.replace(TBLNM, cls.getSimpleName().toLowerCase());
         rs = null;
         try {
@@ -156,6 +155,9 @@ public class Orm<RS> implements IOrm {
             this.rdb.release();
           }
         }
+      }
+      if (tbExs) {
+        allCr = false;
       }
     }
     String setPth = "/" + this.setng.getDir() + "/";
@@ -436,7 +438,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row inserted but it is " + r
         List<String> idNms = this.setng.lazIdFldNms(pEnt.getClass());
         retId = retId.replace(":RETID", idNms.get(0).toUpperCase());
         String qu = getSrvClVl().evInsert(pEnt.getClass(), cv);
-        qu = qu.substring(0, qu.length() - 2) + " " + retId;
+        qu = qu.substring(0, qu.length() - 1) + " " + retId;
         Long li = this.rdb.evLong(qu, idNms.get(0).toUpperCase());
         if (li == null) {
          throw new ExcCode(ExcCode.WRCN, "Wrong retId - " + qu);
