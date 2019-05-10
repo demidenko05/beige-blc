@@ -116,4 +116,19 @@ public interface IReqDt extends IAttrs {
    * @return remote port
    **/
   int getRemPort();
+
+
+  /**
+   * <p>Getter for context attribute.</p>
+   * @param pCtxAttrNm CtxAttr name
+   * @return CtxAttr
+   **/
+  Object getCtxAttr(String pCtxAttrNm);
+
+  /**
+   * <p>Setter for context attribute.</p>
+   * @param pCtxAttrNm CtxAttr name
+   * @param pCtxAttr reference
+   **/
+  void setCtxAttr(String pCtxAttrNm, final Object pCtxAttr);
 }

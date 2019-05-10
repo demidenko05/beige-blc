@@ -90,6 +90,7 @@ import org.beigesoft.srv.I18n;
 import org.beigesoft.srv.II18n;
 import org.beigesoft.srv.UtlJsp;
 import org.beigesoft.srv.HlpEntPg;
+import org.beigesoft.prc.IPrc;
 
 /**
  * <p>Main application beans factory. All configuration dependent inner
@@ -314,6 +315,16 @@ public class FctBlc<RS> implements IFctApp {
    * ID name).</p>
    **/
   private Set<Class<?>> custIdClss;
+
+  /**
+   * <p>Outside base processors factories.</p>
+   **/
+  private Set<IFctNm<IPrc>> fctsPrc;
+
+  /**
+   * <p>Outside admin processors factories.</p>
+   **/
+  private Set<IFctNm<IPrc>> fctsPrcAd;
 
   //parts/services:
   /**
@@ -655,6 +666,7 @@ public class FctBlc<RS> implements IFctApp {
       rz = new HndNtrRq();
       FctPrcNtrAd<RS> fct = new FctPrcNtrAd<RS>();
       fct.setFctBlc(this);
+      fct.setFctsPrc(this.fctsPrcAd);
       rz.setFctPrc(fct);
       this.beans.put(HNNTRQAD, rz);
       lazLogStd(pRvs).info(pRvs, getClass(), HNNTRQAD
@@ -676,6 +688,7 @@ public class FctBlc<RS> implements IFctApp {
       rz = new HndNtrRq();
       FctPrcNtr<RS> fct = new FctPrcNtr<RS>();
       fct.setFctBlc(this);
+      fct.setFctsPrc(this.fctsPrc);
       rz.setFctPrc(fct);
       this.beans.put(HNNTRQSC, rz);
       lazLogStd(pRvs).info(pRvs, getClass(), HNNTRQSC
@@ -2026,5 +2039,38 @@ public class FctBlc<RS> implements IFctApp {
    **/
   public final synchronized void setUplDir(final String pUplDir) {
     this.uplDir = pUplDir;
+  }
+
+  /**
+   * <p>Getter for fctsPrcAd.</p>
+   * @return Set<IFctNm<IPrc>>
+   **/
+  public final synchronized Set<IFctNm<IPrc>> getFctsPrcAd() {
+    return this.fctsPrcAd;
+  }
+
+  /**
+   * <p>Setter for fctsPrcAd.</p>
+   * @param pFctsPrcAd reference
+   **/
+  public final synchronized void setFctsPrcAd(
+    final Set<IFctNm<IPrc>> pFctsPrcAd) {
+    this.fctsPrcAd = pFctsPrcAd;
+  }
+
+  /**
+   * <p>Getter for fctsPrc.</p>
+   * @return Set<IFctNm<IPrc>>
+   **/
+  public final synchronized Set<IFctNm<IPrc>> getFctsPrc() {
+    return this.fctsPrc;
+  }
+
+  /**
+   * <p>Setter for fctsPrc.</p>
+   * @param pFctsPrc reference
+   **/
+  public final synchronized void setFctsPrc(final Set<IFctNm<IPrc>> pFctsPrc) {
+    this.fctsPrc = pFctsPrc;
   }
 }

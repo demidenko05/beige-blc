@@ -26,33 +26,48 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.fct;
-
-import java.util.Map;
+package org.beigesoft.mdl;
 
 import org.beigesoft.hld.IAttrs;
 
 /**
- * <p>Abstraction of final application beans factory. It's assembly/delegate.
- * Because of final factory must be initialized by empty constructor.
- * It instantiates/wraps main BLC factory and all auxiliary factories.</p>
+ * <p>Wrapper (adapter) of HttpReqDt for context attributes.</p>
  *
- * @param <RS> platform dependent RDBMS recordset
  * @author Yury Demidenko
  */
-public interface IFctAsm<RS> extends IFctApp {
+public class RqCtxAttr implements IAttrs {
 
   /**
-   * <p>Gets main factory for setting configuration parameters.</p>
-   * @return Object - requested bean
-   */
-  FctBlc<RS> getFctBlc();
+   * <p>Request data to adapt.</p>
+   **/
+  private final IReqDt rqDt;
 
   /**
-   * <p>Initializes factory.</p>
-   * @param pRvs request scoped vars
-   * @param pCtxAttrs context attributes
-   * @throws Exception - an exception
-   */
-  void init(Map<String, Object> pRvs, IAttrs pCtxAttrs) throws Exception;
+   * <p>Only constructor.</p>
+   * @param pRqDt reference
+   **/
+  public RqCtxAttr(final IReqDt pRqDt) {
+    this.rqDt = pRqDt;
+  }
+
+  /**
+   * <p>Getter for attribute.</p>
+   * @param pAttrName Attribute name
+   * @return Attribute
+   **/
+  @Override
+  public final Object getAttr(final String pAttrName) {
+    return this.rqDt.getCtxAttr(pAttrName);
+  }
+
+  /**
+   * <p>Setter for attribute.</p>
+   * @param pAttrName Attribute name
+   * @param pAttribute reference
+   **/
+  @Override
+  public final void setAttr(final String pAttrName,
+    final Object pAttribute) {
+    this.rqDt.setCtxAttr(pAttrName, pAttribute);
+  }
 }

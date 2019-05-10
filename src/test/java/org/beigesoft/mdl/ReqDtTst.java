@@ -51,6 +51,26 @@ public class ReqDtTst implements IReqDt {
    * @return attribute
    **/
   @Override
+  public final Object getCtxAttr(final String pName) {
+    throw new RuntimeException("NEI");
+  }
+
+  /**
+   * <p>Set attribute.</p>
+   * @param pName attribute name
+   * @param pAttr attribute
+   **/
+  @Override
+  public final void setCtxAttr(final String pName, final Object pAttr) {
+    throw new RuntimeException("NEI");
+  }
+
+  /**
+   * <p>Get attribute.</p>
+   * @param pName attribute name
+   * @return attribute
+   **/
+  @Override
   public final Object getAttr(final String pName) {
     throw new RuntimeException("NEI");
   }

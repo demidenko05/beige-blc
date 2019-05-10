@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.fct;
 
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -49,6 +50,11 @@ public class FctPrcNtr<RS> implements IFctNm<IPrc> {
    * <p>Main factory.</p>
    **/
   private FctBlc<RS> fctBlc;
+
+  /**
+   * <p>Outside factories.</p>
+   **/
+  private Set<IFctNm<IPrc>> fctsPrc;
 
   //requested data:
   /**
@@ -75,7 +81,17 @@ public class FctPrcNtr<RS> implements IFctNm<IPrc> {
           } else if (RefrI18n.class.getSimpleName().equals(pPrNm)) {
             rz = crPuRefrI18n(pRvs);
           } else {
-            throw new ExcCode(ExcCode.WRCN, "There is no IProc: " + pPrNm);
+            if (this.fctsPrc != null) {
+              for (IFctNm<IPrc> fp : this.fctsPrc) {
+                rz = fp.laz(pRvs, pPrNm);
+                if (rz != null) {
+                  break;
+                }
+              }
+            }
+            if (rz == null) {
+              throw new ExcCode(ExcCode.WRCN, "There is no IProc: " + pPrNm);
+            }
           }
         }
       }
@@ -123,7 +139,7 @@ public class FctPrcNtr<RS> implements IFctNm<IPrc> {
    * <p>Getter for fctBlc.</p>
    * @return FctBlc<RS>
    **/
-  public final FctBlc<RS> getFctBlc() {
+  public final synchronized FctBlc<RS> getFctBlc() {
     return this.fctBlc;
   }
 
@@ -131,7 +147,23 @@ public class FctPrcNtr<RS> implements IFctNm<IPrc> {
    * <p>Setter for fctBlc.</p>
    * @param pFctBlc reference
    **/
-  public final void setFctBlc(final FctBlc<RS> pFctBlc) {
+  public final synchronized void setFctBlc(final FctBlc<RS> pFctBlc) {
     this.fctBlc = pFctBlc;
+  }
+
+  /**
+   * <p>Getter for fctsPrc.</p>
+   * @return Set<IFctNm<IPrc>>
+   **/
+  public final synchronized Set<IFctNm<IPrc>> getFctsPrc() {
+    return this.fctsPrc;
+  }
+
+  /**
+   * <p>Setter for fctsPrc.</p>
+   * @param pFctsPrc reference
+   **/
+  public final synchronized void setFctsPrc(final Set<IFctNm<IPrc>> pFctsPrc) {
+    this.fctsPrc = pFctsPrc;
   }
 }
