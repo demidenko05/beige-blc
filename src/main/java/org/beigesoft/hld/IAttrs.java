@@ -48,4 +48,10 @@ public interface IAttrs {
    * @param pAttr attribute
    **/
   void setAttr(String pName, Object pAttr);
+
+  /**
+   * <p>Removes attribute.</p>
+   * @param pName attribute name
+   **/
+  void remAttr(String pName);
 }

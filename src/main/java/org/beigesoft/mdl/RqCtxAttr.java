@@ -70,4 +70,14 @@ public class RqCtxAttr implements IAttrs {
     final Object pAttribute) {
     this.rqDt.setCtxAttr(pAttrName, pAttribute);
   }
+
+  /**
+   * <p>Setter for attribute.</p>
+   * @param pAttrName Attribute name
+   * @param pAttribute reference
+   **/
+  @Override
+  public final void remAttr(final String pAttrName) {
+    this.rqDt.remCtxAttr(pAttrName);
+  }
 }

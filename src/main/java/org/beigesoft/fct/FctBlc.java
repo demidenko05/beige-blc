@@ -64,6 +64,7 @@ import org.beigesoft.prp.UtlPrp;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.log.ILog;
+import org.beigesoft.log.ALogFile;
 import org.beigesoft.log.LogFile;
 import org.beigesoft.cnv.FilEntRs;
 import org.beigesoft.cnv.FilEntRq;
@@ -500,7 +501,7 @@ public class FctBlc<RS> implements IFctApp {
     for (IFctAux<RS> fau : this.fctsAux) {
       fau.release(pRvs, this);
     }
-    if (this.logStd != null && this.logStd instanceof LogFile) {
+    if (this.logStd != null && this.logStd instanceof ALogFile) {
       LogFile logFl = (LogFile) this.logStd;
       logFl.info(pRvs, getClass(), "Send stop to LOG STD...");
       logFl.setNeedRun(false);
@@ -548,9 +549,6 @@ public class FctBlc<RS> implements IFctApp {
           rz.getEntMap().put(cls.getSimpleName(), cls);
         }
       }
-      /*if (this.admEnts != null) {
-        this.admEnts.clear();
-      }*/
       this.beans.put(HNADENRQ, rz);
       lazLogStd(pRvs).info(pRvs, getClass(), HNADENRQ + " has been created.");
     }
@@ -596,9 +594,6 @@ public class FctBlc<RS> implements IFctApp {
           rz.getEntMap().put(cls.getSimpleName(), cls);
         }
       }
-      /*if (this.fbdEnts != null) {
-        this.fbdEnts.clear();
-      }*/
       this.beans.put(HNACENRQ, rz);
       lazLogStd(pRvs).info(pRvs, getClass(), HNACENRQ + " has been created.");
     }
@@ -1536,9 +1531,7 @@ public class FctBlc<RS> implements IFctApp {
     if (logSec == null) {
       logSec = new LogFile();
       logSec.setPath(this.logPth + File.separator + LOGSECNM);
-      logSec.setDbgSh(getDbgSh());
-      logSec.setDbgFl(getDbgFl());
-      logSec.setDbgCl(getDbgCl());
+      logSec.setClsImm(true);
       logSec.setMaxSize(this.logSize);
       this.beans.put(LOGSECNM, logSec);
       lazLogStd(pRvs).info(pRvs, getClass(), LOGSECNM + " has been created");

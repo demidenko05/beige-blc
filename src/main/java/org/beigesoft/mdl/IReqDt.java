@@ -112,6 +112,12 @@ public interface IReqDt extends IAttrs {
   String getRemUsr();
 
   /**
+   * <p>Returns context path.</p>
+   * @return context path
+   **/
+  String getCtxPth();
+
+  /**
    * <p>Returns remote port.</p>
    * @return remote port
    **/
@@ -130,5 +136,11 @@ public interface IReqDt extends IAttrs {
    * @param pCtxAttrNm CtxAttr name
    * @param pCtxAttr reference
    **/
-  void setCtxAttr(String pCtxAttrNm, final Object pCtxAttr);
+  void setCtxAttr(String pCtxAttrNm, Object pCtxAttr);
+
+  /**
+   * <p>Removes context attribute.</p>
+   * @param pCtxAttrNm CtxAttr name
+   **/
+  void remCtxAttr(String pCtxAttrNm);
 }

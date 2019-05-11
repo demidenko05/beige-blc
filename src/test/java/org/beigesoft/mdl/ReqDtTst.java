@@ -66,6 +66,15 @@ public class ReqDtTst implements IReqDt {
   }
 
   /**
+   * <p>Removes attribute.</p>
+   * @param pName attribute name
+   **/
+  @Override
+  public final void remCtxAttr(final String pName) {
+    throw new RuntimeException("NEI");
+  }
+
+  /**
    * <p>Get attribute.</p>
    * @param pName attribute name
    * @return attribute
@@ -76,12 +85,30 @@ public class ReqDtTst implements IReqDt {
   }
 
   /**
+   * <p>Returns context path.</p>
+   * @return context path
+   **/
+  @Override
+  public final String getCtxPth() {
+    throw new RuntimeException("NEI");
+  }
+
+  /**
    * <p>Set attribute.</p>
    * @param pName attribute name
    * @param pAttr attribute
    **/
   @Override
   public final void setAttr(final String pName, final Object pAttr) {
+    throw new RuntimeException("NEI");
+  }
+
+  /**
+   * <p>Removes attribute.</p>
+   * @param pName attribute name
+   **/
+  @Override
+  public final void remAttr(final String pName) {
     throw new RuntimeException("NEI");
   }
 
