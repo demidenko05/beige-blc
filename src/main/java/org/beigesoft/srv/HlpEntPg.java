@@ -262,7 +262,7 @@ public class HlpEntPg<RS> {
     } else {
       ents = this.orm.retPg(pRvs, vs, cls, fstRz, pgSz);
     }
-    vs.remove(cls.getSimpleName() + "ndFds", ndFds);
+    vs.remove(cls.getSimpleName() + "ndFds");
     Integer pgTl = cpf.getPgTl();
     List<Page> pgs = srvPg.evPgs(pg, pgCnt, pgTl);
     uvs.setPgs(pgs);
