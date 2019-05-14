@@ -53,17 +53,17 @@ public interface IRdb<RS> {
   /**
    * <p>TRANSACTION ISOLATION REPEATABLE READ.</p>
    **/
-  Integer TRRPR = 3;
+  Integer TRRPR = 4;
 
   /**
    * <p>TRANSACTION ISOLATION SERIALIZABLE.</p>
    **/
-  Integer TRSR = 4;
+  Integer TRSR = 8;
 
   /**
    * <p>TRANSACTION NOT SUPPORTED.</p>
    **/
-  Integer TRNO = 5;
+  Integer TRNO = 0;
 
   /**
    * <p>SQL exception.</p>

@@ -121,7 +121,9 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
       data = ret.retData(pRqVs);
       this.rdb.commit();
     } catch (Exception ex) {
-      this.rdb.rollBack();
+      if (!this.rdb.getAcmt()) {
+        this.rdb.rollBack();
+      }
       throw ex;
     } finally {
       this.rdb.release();

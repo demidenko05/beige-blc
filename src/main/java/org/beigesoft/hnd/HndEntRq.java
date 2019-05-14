@@ -203,7 +203,9 @@ public class HndEntRq<RS> implements IHndRq {
         ent = ep.process(pRqVs, ent, pRqDt);
         this.rdb.commit();
       } catch (Exception ex) {
-        this.rdb.rollBack();
+        if (!this.rdb.getAcmt()) {
+          this.rdb.rollBack();
+        }
         throw ex;
       } finally {
         this.rdb.release();
@@ -261,7 +263,9 @@ public class HndEntRq<RS> implements IHndRq {
           }
           this.rdb.commit();
         } catch (Exception ex) {
-          this.rdb.rollBack();
+          if (!this.rdb.getAcmt()) {
+            this.rdb.rollBack();
+          }
           throw ex;
         } finally {
           this.rdb.release();
@@ -345,7 +349,9 @@ public class HndEntRq<RS> implements IHndRq {
       }
       this.rdb.commit();
     } catch (Exception ex) {
-      this.rdb.rollBack();
+      if (!this.rdb.getAcmt()) {
+        this.rdb.rollBack();
+      }
       throw ex;
     } finally {
       this.rdb.release();

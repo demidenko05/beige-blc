@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.Connection;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.ColVals;
@@ -76,6 +77,11 @@ public class Tst1<RS> {
   private IFctAsm<RS> fctApp;
 
   public void tst1() throws Exception {
+    System.out.println("TRANSACTION_NONE: " + Connection.TRANSACTION_NONE);
+    System.out.println("TRANSACTION_READ_COMMITTED: " + Connection.TRANSACTION_READ_COMMITTED);
+    System.out.println("TRANSACTION_READ_UNCOMMITTED: " + Connection.TRANSACTION_READ_UNCOMMITTED);
+    System.out.println("TRANSACTION_REPEATABLE_READ: " + Connection.TRANSACTION_REPEATABLE_READ);
+    System.out.println("TRANSACTION_SERIALIZABLE: " + Connection.TRANSACTION_SERIALIZABLE);
     Map<String, Object> rvs = new HashMap<String, Object>();
     Map<String, Object> vs = new HashMap<String, Object>();
     IOrm orm = (IOrm) this.fctApp.laz(rvs, IOrm.class.getSimpleName());
