@@ -81,8 +81,8 @@ public class ToCvTest<RS> {
 
   public ToCvTest() throws Exception {
     this.fctApp = new FctTst<RS>();
-    this.fctApp.getFctBlc().setLogStdNm(ToCvTest.class.getSimpleName());
-    this.fctApp.getFctBlc().setStgOrmDir("sqlite");
+    this.fctApp.getFctBlc().getFctDt().setLogStdNm(ToCvTest.class.getSimpleName());
+    this.fctApp.getFctBlc().getFctDt().setStgOrmDir("sqlite");
     this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgFl(4001);
     this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgCl(8002);
   }

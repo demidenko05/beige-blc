@@ -70,7 +70,7 @@ public class FctPrcFenAd<RS> implements IFctNm<IPrc> {
       synchronized (this) {
         rz = this.procs.get(pPrNm);
         if (rz == null) {
-          if (FctBlc.PRADENTPG.equals(pPrNm)) {
+          if (FctDt.PRADENTPG.equals(pPrNm)) {
             rz = crPuPrAdEnPg(pRqVs);
           } else {
             throw new ExcCode(ExcCode.WRCN, "There is no IProc: " + pPrNm);
@@ -95,14 +95,14 @@ public class FctPrcFenAd<RS> implements IFctNm<IPrc> {
     entPg.setHlpEntPg(this.fctBlc.lazHlpEntPg(pRqVs));
     entPg.setEntMp(new HashMap<String, Class<IHasId<?>>>());
     for (Class<?> cls : this.fctBlc.lazStgUvd(pRqVs).lazClss()) {
-      if (this.fctBlc.getAdmEnts() != null
-        && this.fctBlc.getAdmEnts().contains(cls)) {
+      if (this.fctBlc.getFctDt().getAdmEnts() != null
+        && this.fctBlc.getFctDt().getAdmEnts().contains(cls)) {
         entPg.getEntMp().put(cls.getSimpleName(), (Class<IHasId<?>>) cls);
       }
     }
     rz.setEntPg(entPg);
-    this.procs.put(FctBlc.PRADENTPG, rz);
-    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), FctBlc.PRACENTPG
+    this.procs.put(FctDt.PRADENTPG, rz);
+    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), FctDt.PRACENTPG
       + " has been created.");
     return rz;
   }

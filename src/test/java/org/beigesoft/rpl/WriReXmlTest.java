@@ -82,8 +82,8 @@ public class WriReXmlTest<RS> {
   public WriReXmlTest() throws Exception {
     this.rqVs = new HashMap<String, Object>();
     this.fctApp = new FctTst<RS>();
-    this.fctApp.getFctBlc().setLogStdNm(WriReXmlTest.class.getSimpleName());
-    this.fctApp.getFctBlc().setStgDbCpDir("dbcp");
+    this.fctApp.getFctBlc().getFctDt().setLogStdNm(WriReXmlTest.class.getSimpleName());
+    this.fctApp.getFctBlc().getFctDt().setStgDbCpDir("dbcp");
     this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgFl(4001);
     this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgCl(7002);
   }

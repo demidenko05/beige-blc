@@ -68,15 +68,15 @@ public class FctDbCp<RS> implements IFctAux<RS> {
   public final Object crePut(final Map<String, Object> pRvs,
     final String pBnNm, final FctBlc<RS> pFctApp) throws Exception {
     Object rz = null;
-    if (FctBlc.STGDBCPNM.equals(pBnNm)) {
+    if (FctDt.STGDBCPNM.equals(pBnNm)) {
       rz = crPuStgDbCp(pRvs, pFctApp);
     } else if (ENRDDBCPNM.equals(pBnNm)) {
       rz = crPuRpEntReadXmlDbCp(pRvs, pFctApp);
     } else if (ENWRDBCPNM.equals(pBnNm)) {
       rz = crPuRpEntWriXmlDbCp(pRvs, pFctApp);
-    } else if (FctBlc.HLCNTOSTDBCP.equals(pBnNm)) {
+    } else if (FctDt.HLCNTOSTDBCP.equals(pBnNm)) {
       rz = crPuRpHldNmCnToStXml(pRvs, pFctApp);
-    } else if (FctBlc.HLFILFDNMDBCP.equals(pBnNm)) {
+    } else if (FctDt.HLFILFDNMDBCP.equals(pBnNm)) {
       rz = crPuHldNmFilFdStDbCp(pRvs, pFctApp);
     }
     return rz;
@@ -104,13 +104,13 @@ public class FctDbCp<RS> implements IFctAux<RS> {
   private Setng crPuStgDbCp(final Map<String, Object> pRvs,
     final FctBlc<RS> pFctApp) throws Exception {
     Setng rz = new Setng();
-    rz.setDir(pFctApp.getStgDbCpDir());
+    rz.setDir(pFctApp.getFctDt().getStgDbCpDir());
     rz.setReflect(pFctApp.lazReflect(pRvs));
     rz.setUtlPrp(pFctApp.lazUtlPrp(pRvs));
     rz.setHldFdCls(pFctApp.lazHldFldCls(pRvs));
     rz.setLog(pFctApp.lazLogStd(pRvs));
-    pFctApp.put(pRvs, FctBlc.STGDBCPNM, rz);
-    pFctApp.lazLogStd(pRvs).info(pRvs, getClass(), FctBlc.STGDBCPNM
+    pFctApp.put(pRvs, FctDt.STGDBCPNM, rz);
+    pFctApp.lazLogStd(pRvs).info(pRvs, getClass(), FctDt.STGDBCPNM
       + " has been created.");
     return rz;
   }
@@ -126,10 +126,10 @@ public class FctDbCp<RS> implements IFctAux<RS> {
     final FctBlc<RS> pFctApp) throws Exception {
     RpEntWriXml rz = new RpEntWriXml();
     rz.setLog(pFctApp.lazLogStd(pRvs));
-    rz.setSetng((ISetng) pFctApp.laz(pRvs, FctBlc.STGDBCPNM));
+    rz.setSetng((ISetng) pFctApp.laz(pRvs, FctDt.STGDBCPNM));
     rz.setHldGets(pFctApp.lazHldGets(pRvs));
     HldNmCnToStXml hlCnToSt = (HldNmCnToStXml) pFctApp
-      .laz(pRvs, FctBlc.HLCNTOSTDBCP);
+      .laz(pRvs, FctDt.HLCNTOSTDBCP);
     rz.setHldNmFdCn(hlCnToSt);
     rz.setFctCnvFld(pFctApp.lazFctNmCnToSt(pRvs));
     pFctApp.put(pRvs, ENWRDBCPNM, rz);
@@ -150,8 +150,8 @@ public class FctDbCp<RS> implements IFctAux<RS> {
     HldNmCnToStXml rz = new HldNmCnToStXml();
     rz.setHldFdCls(pFctApp.lazHldFldCls(pRvs));
     rz.setCnHsIdToStNm(FctNmCnToSt.CNHSIDSTDBCPNM);
-    pFctApp.put(pRvs, FctBlc.HLCNTOSTDBCP, rz);
-    pFctApp.lazLogStd(pRvs).info(pRvs, getClass(), FctBlc.HLCNTOSTDBCP
+    pFctApp.put(pRvs, FctDt.HLCNTOSTDBCP, rz);
+    pFctApp.lazLogStd(pRvs).info(pRvs, getClass(), FctDt.HLCNTOSTDBCP
       + " has been created.");
     return rz;
   }
@@ -167,9 +167,9 @@ public class FctDbCp<RS> implements IFctAux<RS> {
     final FctBlc<RS> pFctApp) throws Exception {
     RpEntReadXml rz =  new RpEntReadXml();
     rz.setLog(pFctApp.lazLogStd(pRvs));
-    rz.setSetng((ISetng) pFctApp.laz(pRvs, FctBlc.STGDBCPNM));
+    rz.setSetng((ISetng) pFctApp.laz(pRvs, FctDt.STGDBCPNM));
     HldNmFilFdSt hldFilFdSt = (HldNmFilFdSt) pFctApp
-      .laz(pRvs, FctBlc.HLFILFDNMDBCP);
+      .laz(pRvs, FctDt.HLFILFDNMDBCP);
     rz.setHldFilFdNms(hldFilFdSt);
     rz.setUtlXml(pFctApp.lazUtlXml(pRvs));
     rz.setFctFilFld(pFctApp.lazFctNmFilFd(pRvs));
@@ -192,9 +192,9 @@ public class FctDbCp<RS> implements IFctAux<RS> {
     rz.setHldFdCls(pFctApp.lazHldFldCls(pRvs));
     rz.setFilHasIdNm(FctNmFilFdSt.FILHSIDSTDBCPNM);
     rz.setFilSmpNm(FctNmFilFdSt.FILSMPSTDBCPNM);
-    rz.setSetng((ISetng) pFctApp.laz(pRvs, FctBlc.STGDBCPNM));
-    pFctApp.put(pRvs, FctBlc.HLFILFDNMDBCP, rz);
-    pFctApp.lazLogStd(pRvs).info(pRvs, getClass(), FctBlc.HLFILFDNMDBCP
+    rz.setSetng((ISetng) pFctApp.laz(pRvs, FctDt.STGDBCPNM));
+    pFctApp.put(pRvs, FctDt.HLFILFDNMDBCP, rz);
+    pFctApp.lazLogStd(pRvs).info(pRvs, getClass(), FctDt.HLFILFDNMDBCP
       + " has been created.");
     return rz;
   }

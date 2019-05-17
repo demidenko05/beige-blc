@@ -29,7 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.hld;
 
 
-import org.beigesoft.fct.FctBlc;
+import org.beigesoft.fct.FctDt;
 
 /**
  * <p>Holder of names of processors for admin-webstore entities.</p>
@@ -48,7 +48,7 @@ public class HlNmPrFeAd implements IHldNm<Class<?>, String> {
   @Override
   public final String get(final Class<?> pCls, final String pAct) {
     if ("lst".equals(pAct)) {
-      return FctBlc.PRADENTPG;
+      return FctDt.PRADENTPG;
     }
     return null;
   }

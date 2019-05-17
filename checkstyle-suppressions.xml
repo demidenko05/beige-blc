@@ -10,11 +10,9 @@
   <suppress checks="MagicNumberCheck"
     files="HndSpam|Setng|CmnPrf|RpEntWriXml|RpEntReadXml|RplXmlHttps|FilEntRs|FilFldSmpRs|FilFldEnmRs|FilFldHsIdRs|SqlQu"/>
   <suppress checks="MagicNumberCheck"
-    files="HlpEntPg|EntPg|FctBlc|PrcEnofSv"/>
+    files="HlpEntPg|EntPg|PrcEnofSv|FctDt"/>
   <suppress checks="EmptyBlock"
     files="RplXmlHttps"/>
   <suppress checks="LineLength"
     files="RplXmlHttps|DbImp"/>
-  <suppress checks="FileLength"
-    files="FctBlc"/>
 </suppressions>

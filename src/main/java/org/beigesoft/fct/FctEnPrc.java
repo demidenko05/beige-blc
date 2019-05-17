@@ -30,6 +30,7 @@ package org.beigesoft.fct;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.prc.IPrcEnt;
@@ -50,12 +51,17 @@ import org.beigesoft.srv.IEmSnd;
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
+public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
 
   /**
    * <p>Main factory.</p>
    **/
   private FctBlc<RS> fctBlc;
+
+  /**
+   * <p>Additional factories.</p>
+   **/
+  private Set<IFctNm<IPrcEnt<?, ?>>> fctsPrc;
 
   //requested data:
   /**
@@ -146,8 +152,8 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
   private PrcEnofSv crPuPrcEnofSv(
     final Map<String, Object> pRqVs) throws Exception {
     PrcEnofSv rz = new PrcEnofSv();
-    rz.setAppPth(this.fctBlc.getAppPth());
-    rz.setUplDir(this.fctBlc.getUplDir());
+    rz.setAppPth(this.fctBlc.getFctDt().getAppPth());
+    rz.setUplDir(this.fctBlc.getFctDt().getUplDir());
     rz.setOrm(this.fctBlc.lazOrm(pRqVs));
     rz.setHldSets(this.fctBlc.lazHldSets(pRqVs));
     rz.setHldGets(this.fctBlc.lazHldGets(pRqVs));
@@ -270,5 +276,21 @@ public class FctAcEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
    **/
   public final void setFctBlc(final FctBlc<RS> pFctBlc) {
     this.fctBlc = pFctBlc;
+  }
+
+  /**
+   * <p>Getter for fctsPrc.</p>
+   * @return Set<IFctNm<IPrcEnt<?, ?>>>
+   **/
+  public final Set<IFctNm<IPrcEnt<?, ?>>> getFctsPrc() {
+    return this.fctsPrc;
+  }
+
+  /**
+   * <p>Setter for fctsPrc.</p>
+   * @param pFctsPrc reference
+   **/
+  public final void setFctsPrc(final Set<IFctNm<IPrcEnt<?, ?>>> pFctsPrc) {
+    this.fctsPrc = pFctsPrc;
   }
 }

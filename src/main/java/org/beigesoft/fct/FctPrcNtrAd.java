@@ -160,7 +160,7 @@ public class FctPrcNtrAd<RS> implements IFctNm<IPrc> {
     rz.setLog(this.fctBlc.lazLogStd(pRvs));
     rz.setFctApp(this.fctBlc);
     RplXmlHttps<RS> repl = new RplXmlHttps<RS>();
-    repl.setSetng((ISetng) this.fctBlc.laz(pRvs, FctBlc.STGDBCPNM));
+    repl.setSetng((ISetng) this.fctBlc.laz(pRvs, FctDt.STGDBCPNM));
     @SuppressWarnings("unchecked")
     IRdb<RS> rdb = (IRdb<RS>) this.fctBlc.laz(pRvs, IRdb.class.getSimpleName());
     repl.setRdb(rdb);

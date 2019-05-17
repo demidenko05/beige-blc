@@ -59,6 +59,7 @@ import org.beigesoft.mdlp.GdCat;
 import org.beigesoft.log.ILog;
 import org.beigesoft.fct.FctTst;
 import org.beigesoft.fct.FctBlc;
+import org.beigesoft.fct.FctDt;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.rdb.ISqlQu;
@@ -80,8 +81,8 @@ public class FromRsTest<RS> {
 
   public FromRsTest() throws Exception {
     this.fctApp = new FctTst<RS>();
-    this.fctApp.getFctBlc().setLogStdNm(FromRsTest.class.getSimpleName());
-    this.fctApp.getFctBlc().setStgOrmDir("sqlite");
+    this.fctApp.getFctBlc().getFctDt().setLogStdNm(FromRsTest.class.getSimpleName());
+    this.fctApp.getFctBlc().getFctDt().setStgOrmDir("sqlite");
     this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgFl(4001);
     this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgCl(8002);
   }
@@ -211,7 +212,7 @@ public class FromRsTest<RS> {
     cr = selct.evCreate(this.rqVs, UserRoleTomcatPriority.class);
     this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), cr);
     assertTrue(cr.contains("constraint urtpprioritygt0 check (PRIORITY>0)"));
-    Setng stgOrm = (Setng) this.fctApp.laz(this.rqVs, FctBlc.STGORMNM);
+    Setng stgOrm = (Setng) this.fctApp.laz(this.rqVs, FctDt.STGORMNM);
     String jdbcCls = stgOrm.lazCmnst().get(IOrm.JDBCCLS);
     assertEquals("org.sqlite.JDBC", jdbcCls);
     cr = selct.evCreate(this.rqVs, UsTmc.class);

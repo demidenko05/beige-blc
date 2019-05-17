@@ -52,11 +52,11 @@ public class FctTst<RS> implements IFctAsm<RS> {
     this.fctBlc = new FctBlc<RS>();
     String tstDir = System.getProperty("user.dir") + File.separator
         + "target";
-    this.fctBlc.setLngCntr("en,US,ru,RU");
-    this.fctBlc.setLogPth(tstDir);
-    this.fctBlc.setDbgSh(true);
-    this.fctBlc.setDbgFl(0);
-    this.fctBlc.setDbgCl(100000);
+    this.fctBlc.getFctDt().setLngCntr("en,US,ru,RU");
+    this.fctBlc.getFctDt().setLogPth(tstDir);
+    this.fctBlc.getFctDt().setDbgSh(true);
+    this.fctBlc.getFctDt().setDbgFl(0);
+    this.fctBlc.getFctDt().setDbgCl(100000);
     this.fctBlc.getFctsAux().add(new FctAuxTst<RS>());
     this.fctBlc.getFctsAux().add(new FctDbCp<RS>());
   }

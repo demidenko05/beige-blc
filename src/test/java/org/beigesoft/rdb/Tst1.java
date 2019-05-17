@@ -60,6 +60,7 @@ import org.beigesoft.mdlp.GdCat;
 import org.beigesoft.log.ILog;
 import org.beigesoft.fct.IFctAsm;
 import org.beigesoft.fct.FctBlc;
+import org.beigesoft.fct.FctDt;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.FilCvEnt;
@@ -87,7 +88,7 @@ public class Tst1<RS> {
     IOrm orm = (IOrm) this.fctApp.laz(rvs, IOrm.class.getSimpleName());
     IRdb<RS> rdb = (IRdb<RS>) this.fctApp.laz(rvs, IRdb.class.getSimpleName());
     orm.init(rvs);
-    Setng stgOrm = (Setng) this.fctApp.laz(rvs, FctBlc.STGORMNM);
+    Setng stgOrm = (Setng) this.fctApp.laz(rvs, FctDt.STGORMNM);
     stgOrm.release();
     try {
       rdb.setAcmt(false);
@@ -232,7 +233,7 @@ public class Tst1<RS> {
       assertTrue(!phf.getItsStatus().equals(ph.getItsStatus()));
       assertTrue(!phf.getVer().equals(ph.getVer()));
       vs.clear();
-      if (!this.fctApp.getFctBlc().getIsAndr()) {
+      if (!this.fctApp.getFctBlc().getFctDt().getIsAndr()) {
         //fast update:
         SrvClVl srvClVl = (SrvClVl) this.fctApp.laz(rvs, SrvClVl.class.getSimpleName());
         Long newVer = phf.getVer() + 1;

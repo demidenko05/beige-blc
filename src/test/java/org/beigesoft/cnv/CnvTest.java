@@ -55,6 +55,7 @@ import org.beigesoft.mdlp.GoodsRating;
 import org.beigesoft.mdlp.GoodVersionTime;
 import org.beigesoft.log.ILog;
 import org.beigesoft.fct.FctTst;
+import org.beigesoft.fct.FctDt;
 import org.beigesoft.fct.FctBlc;
 import org.beigesoft.fct.FctNmCnToSt;
 import org.beigesoft.hld.HldNmCnToSt;
@@ -92,8 +93,8 @@ public class CnvTest<RS> {
   public CnvTest() throws Exception {
     this.rqVs = new HashMap<String, Object>();
     this.fctApp = new FctTst<RS>();
-    this.fctApp.getFctBlc().setLogStdNm(CnvTest.class.getSimpleName());
-    this.fctApp.getFctBlc().setStgUvdDir("uvd");
+    this.fctApp.getFctBlc().getFctDt().setLogStdNm(CnvTest.class.getSimpleName());
+    this.fctApp.getFctBlc().getFctDt().setStgUvdDir("uvd");
     this.upf = new UsPrf();
     DcSp sp = new DcSp();
     sp.setIid(".");
@@ -115,7 +116,7 @@ public class CnvTest<RS> {
     FctNmCnToSt fctNmCnvStr = (FctNmCnToSt) this.fctApp.laz(this.rqVs, FctNmCnToSt.class.getSimpleName());
     Reflect reflect = (Reflect) this.fctApp.laz(this.rqVs, IReflect.class.getSimpleName());
     FilEntRq filEntRq = (FilEntRq) this.fctApp.laz(this.rqVs, FilEntRq.class.getSimpleName());
-    Setng stgUvd = (Setng) this.fctApp.laz(this.rqVs, FctBlc.STGUVDNM);
+    Setng stgUvd = (Setng) this.fctApp.laz(this.rqVs, FctDt.STGUVDNM);
     stgUvd.lazConf();
     //write:
     PersistableHead prsh = new PersistableHead();
