@@ -10,7 +10,7 @@
   <suppress checks="MagicNumberCheck"
     files="HndSpam|Setng|CmnPrf|RpEntWriXml|RpEntReadXml|RplXmlHttps|FilEntRs|FilFldSmpRs|FilFldEnmRs|FilFldHsIdRs|SqlQu"/>
   <suppress checks="MagicNumberCheck"
-    files="HlpEntPg|EntPg|PrcEnofSv|FctDt"/>
+    files="HlpEntPg|EntPg|PrcEnofSv|FctDt|Rdb"/>
   <suppress checks="EmptyBlock"
     files="RplXmlHttps"/>
   <suppress checks="LineLength"

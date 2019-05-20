@@ -48,4 +48,15 @@
      <Class name="org.beigesoft.hld.UvdVar" />
      <Bug pattern="EI_EXPOSE_REP2" />
   </Match>
+  <!-- ResultSet and Statement will be closed by invoker inside wrapper RecSet: -->
+  <Match>
+     <Class name="org.beigesoft.jdbc.Rdb" />
+     <Method name="retRs" />
+     <Bug pattern="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE" />
+  </Match>
+  <!-- Completely wrong rule: -->
+  <Match>
+     <Class name="org.beigesoft.jdbc.Rdb" />
+     <Bug pattern="SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE" />
+  </Match>
 </FindBugsFilter>
