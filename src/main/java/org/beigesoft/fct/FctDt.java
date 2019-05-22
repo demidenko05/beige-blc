@@ -36,6 +36,7 @@ import org.beigesoft.rdb.IRdb;
 import org.beigesoft.hld.HldFldStg;
 import org.beigesoft.hld.HldClsStg;
 import org.beigesoft.prc.IPrc;
+import org.beigesoft.prc.IPrcEnt;
 
 /**
  * <p>Holder of base and additional data for main factory.</p>
@@ -269,6 +270,10 @@ public class FctDt {
    **/
   private Set<IFctNm<IPrc>> fctsPrcAd;
 
+  /**
+   * <p>Additional entities processors factories.</p>
+   **/
+  private Set<IFctNm<IPrcEnt<?, ?>>> fctsPrcEnt;
 
   //Simple getters and setters:
   /**
@@ -753,5 +758,22 @@ public class FctDt {
    **/
   public final synchronized void setFctsPrc(final Set<IFctNm<IPrc>> pFctsPrc) {
     this.fctsPrc = pFctsPrc;
+  }
+
+  /**
+   * <p>Getter for fctsPrcEnt.</p>
+   * @return Set<IFctNm<IPrcEnt<?, ?>>>
+   **/
+  public final synchronized Set<IFctNm<IPrcEnt<?, ?>>> getFctsPrcEnt() {
+    return this.fctsPrcEnt;
+  }
+
+  /**
+   * <p>Setter for fctsPrcEnt.</p>
+   * @param pFctsPrcEnt reference
+   **/
+  public final synchronized void setFctsPrcEnt(
+    final Set<IFctNm<IPrcEnt<?, ?>>> pFctsPrcEnt) {
+    this.fctsPrcEnt = pFctsPrcEnt;
   }
 }

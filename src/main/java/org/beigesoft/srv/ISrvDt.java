@@ -29,7 +29,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.srv;
 
 import java.util.Date;
-import java.util.Map;
 
 /**
  * <p>Abstraction of date service.</p>
@@ -40,176 +39,161 @@ public interface ISrvDt {
 
   /**
    * <p>Format date for file name ddMMyy, 310118.</p>
-   * @param pDate date
-   * @param pRqVs request scoped varss
+   * @param pDt date
    * @return ddMMyy
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  String toDdMmYy(Date pDate,
-    Map<String, Object> pRqVs) throws Exception;
+  String toDdMmYy(Date pDt) throws Exception;
 
   /**
    * <p>Format date to ISO8601 full string,
    * e.g. 2001-07-04T12:08:56.235-07:00.</p>
-   * @param pDate date
-   * @param pRqVs request scoped varss
+   * @param pDt date
    * @return ISO8601 string
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  String toIso8601Full(Date pDate,
-    Map<String, Object> pRqVs) throws Exception;
+  String to8601FullTz(Date pDt) throws Exception;
 
   /**
    * <p>Format date to ISO8601 full string without TZ,
    * e.g. 2001-07-04T12:08:56.235.</p>
-   * @param pDate date
-   * @param pRqVs request scoped varss
+   * @param pDt date
    * @return ISO8601 string
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  String toIso8601FullNoTz(Date pDate,
-    Map<String, Object> pRqVs) throws Exception;
+  String to8601Full(Date pDt) throws Exception;
 
   /**
    * <p>Format date to ISO8601 date-time-sec string without TZ,
    * e.g. 2001-07-04T12:08:56.</p>
-   * @param pDate date
-   * @param pRqVs request scoped varss
+   * @param pDt date
    * @return ISO8601 string
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  String toIso8601DateTimeSecNoTz(Date pDate,
-    Map<String, Object> pRqVs) throws Exception;
+  String to8601DateTimeSec(Date pDt) throws Exception;
 
   /**
    * <p>Format date to ISO8601 date-time string without TZ,
    * e.g. 2001-07-04T12:08.</p>
-   * @param pDate date
-   * @param pRqVs request scoped varss
+   * @param pDt date
    * @return ISO8601 string
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  String toIso8601DateTimeNoTz(Date pDate,
-    Map<String, Object> pRqVs) throws Exception;
+  String to8601DateTime(Date pDt) throws Exception;
 
   /**
    * <p>Format date to ISO8601 date string without TZ,
    * e.g. 2001-07-04.</p>
-   * @param pDate date
-   * @param pRqVs request scoped varss
+   * @param pDt date
    * @return ISO8601 string
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  String toIso8601DateNoTz(Date pDate,
-    Map<String, Object> pRqVs) throws Exception;
+  String to8601Date(Date pDt) throws Exception;
 
   /**
    * <p>Format date to localized string with or without seconds,
    * e.g. Jan 2, 2016 12:00 AM. Can be used for logging.</p>
-   * @param pDate date
-   * @param pRqVs request scoped varss
+   * @param pDt date
    * @return date string
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  String toLocalString(Date pDate,
-    Map<String, Object> pRqVs) throws Exception;
+  String toLocal(Date pDt) throws Exception;
 
   /**
    * <p>Format date to localized date string,
    * e.g. Jan 2, 2016".</p>
-   * @param pDate date
-   * @param pRqVs request scoped varss
+   * @param pDt date
    * @return date string
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  String toDateString(Date pDate,
-    Map<String, Object> pRqVs) throws Exception;
+  String toDate(Date pDt) throws Exception;
 
   /**
    * <p>Format date to localized date-time string,
    * e.g. Jan 2, 2016 12:00 AM.</p>
-   * @param pDate date
-   * @param pRqVs request scoped varss
+   * @param pDt date
    * @return date-time string
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  String toDateTimeString(Date pDate,
-    Map<String, Object> pRqVs) throws Exception;
+  String toDateTime(Date pDt) throws Exception;
 
   /**
    * <p>Format date to localized date-time-sec string,
    * e.g. Jan 2, 2016 12:00:12 AM.</p>
-   * @param pDate date
-   * @param pRqVs request scoped varss
+   * @param pDt date
    * @return date-time-sec string
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  String toDateTimeSecString(Date pDate,
-    Map<String, Object> pRqVs) throws Exception;
+  String toDateTimeSec(Date pDt) throws Exception;
 
   /**
    * <p>Format date to localized date-time-sec-ms string,
    * e.g. Jan 2, 2016 12:00:12.12 AM.</p>
-   * @param pDate date
-   * @param pRqVs request scoped varss
+   * @param pDt date
    * @return date-time-sec-ms string
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  String toDateTimeSecMsString(Date pDate,
-    Map<String, Object> pRqVs) throws Exception;
+  String toDateTimeSecMs(Date pDt) throws Exception;
 
   /**
    * <p>Parse date from ISO8601 full string,
    * e.g. from 2001-07-04T12:08:56.235-07:00.</p>
-   * @param pDateStr date in ISO8601 format
-   * @param pRqVs request scoped varss
+   * @param pDtSt date in ISO8601 format
    * @return String representation
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  Date fromIso8601Full(String pDateStr,
-    Map<String, Object> pRqVs) throws Exception;
+  Date from8601FullTz(String pDtSt) throws Exception;
 
   /**
    * <p>Parse date from ISO8601 full string without TZ,
    * e.g. from 2001-07-04T12:08:56.235.</p>
-   * @param pDateStr date in ISO8601 format
-   * @param pRqVs request scoped varss
+   * @param pDtSt date in ISO8601 format
    * @return String representation
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  Date fromIso8601FullNoTz(String pDateStr,
-    Map<String, Object> pRqVs) throws Exception;
+  Date from8601Full(String pDtSt) throws Exception;
 
   /**
    * <p>Parse date from ISO8601 date-time-sec string without TZ,
    * e.g. from 2001-07-04T12:08:56.</p>
-   * @param pDateStr date in ISO8601 format
-   * @param pRqVs request scoped varss
+   * @param pDtSt date in ISO8601 format
    * @return String representation
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  Date fromIso8601DateTimeSecNoTz(String pDateStr,
-    Map<String, Object> pRqVs) throws Exception;
+  Date from8601DateTimeSec(String pDtSt) throws Exception;
 
   /**
    * <p>Parse date from ISO8601 date-time string without TZ,
    * e.g. from 2001-07-04T12:08.</p>
-   * @param pDateStr date in ISO8601 format
-   * @param pRqVs request scoped varss
+   * @param pDtSt date in ISO8601 format
    * @return String representation
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  Date fromIso8601DateTimeNoTz(String pDateStr,
-    Map<String, Object> pRqVs) throws Exception;
+  Date from8601DateTime(String pDtSt) throws Exception;
 
   /**
    * <p>Parse date from ISO8601 date string without TZ,
    * e.g. from 2001-07-04.</p>
-   * @param pDateStr date in ISO8601 format
-   * @param pRqVs request scoped varss
+   * @param pDtSt date in ISO8601 format
    * @return String representation
-   * @throws Exception - an exception
+   * @throws Exception - an Exception
    **/
-  Date fromIso8601DateNoTz(String pDateStr,
-    Map<String, Object> pRqVs) throws Exception;
+  Date from8601Date(String pDtSt) throws Exception;
+
+  /**
+   * <p>Parse date from ISO8601 year month,
+   * e.g. from 2001-07.</p>
+   * @param pDtSt date in ISO8601 format
+   * @return String representation
+   * @throws Exception - an Exception
+   **/
+  Date fromYearMonth(String pDtSt) throws Exception;
+
+  /**
+   * <p>Format date to IS8601 year month.</p>
+   * @param pDt date
+   * @return year-month string
+   * @throws Exception - an Exception
+   **/
+  String toYearMonth(Date pDt) throws Exception;
 }

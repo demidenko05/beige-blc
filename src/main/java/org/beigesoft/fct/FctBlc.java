@@ -203,6 +203,8 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazHldSets(pRvs);
           } else if (HldFldCls.class.getSimpleName().equals(pBnNm)) {
             rz = lazHldFldCls(pRvs);
+          } else if (FctEnPrc.class.getSimpleName().equals(pBnNm)) {
+            rz = lazFctEnPrc(pRvs);
           } else if (FctFctEnt.class.getSimpleName().equals(pBnNm)) {
             //IT DEPENDS OF ORM!
             rz = lazFctFctEnt(pRvs);
@@ -315,9 +317,7 @@ public class FctBlc<RS> implements IFctApp {
       fen.setFctBlc(this);
       rz.setFctPrcFen(fen);
       rz.setHldEntPrcNm(new HlNmAdEnPr());
-      FctEnPrc<RS> fep = new FctEnPrc<RS>();
-      fep.setFctBlc(this);
-      rz.setFctEntPrc(fep);
+      rz.setFctEntPrc(lazFctEnPrc(pRvs));
       rz.setEntMap(new HashMap<String, Class<?>>());
       Setng setng = lazStgUvd(pRvs);
       for (Class<?> cls  : setng.lazClss()) {
@@ -361,9 +361,7 @@ public class FctBlc<RS> implements IFctApp {
       HlNmAcEnPr hlep = new HlNmAcEnPr();
       hlep.setShrEnts(this.fctDt.getShrEnts());
       rz.setHldEntPrcNm(hlep);
-      FctEnPrc<RS> fep = new FctEnPrc<RS>();
-      fep.setFctBlc(this);
-      rz.setFctEntPrc(fep);
+      rz.setFctEntPrc(lazFctEnPrc(pRvs));
       rz.setHldPrcFenNm(new HlNmPrFe());
       rz.setEntMap(new HashMap<String, Class<?>>());
       Setng setng = lazStgUvd(pRvs);
@@ -1101,6 +1099,28 @@ public class FctBlc<RS> implements IFctApp {
       rz.setReflect(lazReflect(pRvs));
       this.beans.put(HldFldCls.class.getSimpleName(), rz);
       lazLogStd(pRvs).info(pRvs, getClass(), HldFldCls.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter FctEnPrc.</p>
+   * @param pRvs request scoped vars
+   * @return FctEnPrc
+   * @throws Exception - an exception
+   */
+  public final synchronized FctEnPrc<RS> lazFctEnPrc(
+    final Map<String, Object> pRvs) throws Exception {
+    @SuppressWarnings("unchecked")
+    FctEnPrc<RS> rz = (FctEnPrc<RS>) this.beans
+      .get(FctEnPrc.class.getSimpleName());
+    if (rz == null) {
+      rz = new FctEnPrc<RS>();
+      rz.setFctBlc(this);
+      rz.setFctsPrc(this.fctDt.getFctsPrcEnt());
+      this.beans.put(FctEnPrc.class.getSimpleName(), rz);
+      lazLogStd(pRvs).info(pRvs, getClass(), FctEnPrc.class.getSimpleName()
         + " has been created.");
     }
     return rz;

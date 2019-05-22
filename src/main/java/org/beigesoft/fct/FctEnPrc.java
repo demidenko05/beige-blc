@@ -72,12 +72,12 @@ public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
 
   /**
    * <p>Get processor in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pPrNm - filler name
    * @return requested processor
    * @throws Exception - an exception
    */
-  public final IPrcEnt<?, ?> laz(final Map<String, Object> pRqVs,
+  public final IPrcEnt<?, ?> laz(final Map<String, Object> pRvs,
     final String pPrNm) throws Exception {
     IPrcEnt<?, ?> rz = this.procs.get(pPrNm);
     if (rz == null) {
@@ -85,25 +85,35 @@ public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
         rz = this.procs.get(pPrNm);
         if (rz == null) {
           if (PrcEntCr.class.getSimpleName().equals(pPrNm)) {
-            rz = crPuPrcEntCr(pRqVs);
+            rz = crPuPrcEntCr(pRvs);
           } else if (PrcEnoDl.class.getSimpleName().equals(pPrNm)) {
-            rz = crPuPrcEnoDl(pRqVs);
+            rz = crPuPrcEnoDl(pRvs);
           } else if (PrcEntDl.class.getSimpleName().equals(pPrNm)) {
-            rz = crPuPrcEntDl(pRqVs);
+            rz = crPuPrcEntDl(pRvs);
           } else if (PrcEmMsgSv.class.getSimpleName().equals(pPrNm)) {
-            rz = crPuPrcEmMsgSv(pRqVs);
+            rz = crPuPrcEmMsgSv(pRvs);
           } else if (PrcEntSv.class.getSimpleName().equals(pPrNm)) {
-            rz = crPuPrcEntSv(pRqVs);
+            rz = crPuPrcEntSv(pRvs);
           } else if (PrcEnofDl.class.getSimpleName().equals(pPrNm)) {
-            rz = crPuPrcEnofDl(pRqVs);
+            rz = crPuPrcEnofDl(pRvs);
           } else if (PrcEnofSv.class.getSimpleName().equals(pPrNm)) {
-            rz = crPuPrcEnofSv(pRqVs);
+            rz = crPuPrcEnofSv(pRvs);
           } else if (PrcEnoSv.class.getSimpleName().equals(pPrNm)) {
-            rz = crPuPrcEnoSv(pRqVs);
+            rz = crPuPrcEnoSv(pRvs);
           } else if (PrcEntRt.class.getSimpleName().equals(pPrNm)) {
-            rz = crPuPrcEntRt(pRqVs);
+            rz = crPuPrcEntRt(pRvs);
           } else {
-            throw new ExcCode(ExcCode.WRCN, "There is no IProc: " + pPrNm);
+            if (this.fctsPrc != null) {
+              for (IFctNm<IPrcEnt<?, ?>> fct : this.fctsPrc) {
+                rz = fct.laz(pRvs, pPrNm);
+                if (rz != null) {
+                  break;
+                }
+              }
+            }
+            if (rz == null) {
+              throw new ExcCode(ExcCode.WRCN, "There is no IProc: " + pPrNm);
+            }
           }
         }
       }
@@ -113,150 +123,150 @@ public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
 
   /**
    * <p>Create and put into the Map PrcEntCr.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return PrcEntCr
    * @throws Exception - an exception
    */
   private PrcEntCr crPuPrcEntCr(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     PrcEntCr rz = new PrcEntCr();
     this.procs.put(PrcEntCr.class.getSimpleName(), rz);
-    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEntCr.class
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEntCr.class
       .getSimpleName() + " has been created.");
     return rz;
   }
 
   /**
    * <p>Create and put into the Map PrcEnofDl.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return PrcEnofDl
    * @throws Exception - an exception
    */
   private PrcEnofDl crPuPrcEnofDl(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     PrcEnofDl rz = new PrcEnofDl();
-    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
-    rz.setHldGets(this.fctBlc.lazHldGets(pRqVs));
+    rz.setOrm(this.fctBlc.lazOrm(pRvs));
+    rz.setHldGets(this.fctBlc.lazHldGets(pRvs));
     this.procs.put(PrcEnofDl.class.getSimpleName(), rz);
-    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEnofDl.class
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEnofDl.class
       .getSimpleName() + " has been created.");
     return rz;
   }
 
   /**
    * <p>Create and put into the Map PrcEnofSv.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return PrcEnofSv
    * @throws Exception - an exception
    */
   private PrcEnofSv crPuPrcEnofSv(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     PrcEnofSv rz = new PrcEnofSv();
     rz.setAppPth(this.fctBlc.getFctDt().getAppPth());
     rz.setUplDir(this.fctBlc.getFctDt().getUplDir());
-    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
-    rz.setHldSets(this.fctBlc.lazHldSets(pRqVs));
-    rz.setHldGets(this.fctBlc.lazHldGets(pRqVs));
+    rz.setOrm(this.fctBlc.lazOrm(pRvs));
+    rz.setHldSets(this.fctBlc.lazHldSets(pRvs));
+    rz.setHldGets(this.fctBlc.lazHldGets(pRvs));
     this.procs.put(PrcEnofSv.class.getSimpleName(), rz);
-    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEnofSv.class
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEnofSv.class
       .getSimpleName() + " has been created.");
     return rz;
   }
 
   /**
    * <p>Create and put into the Map PrcEnoSv.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return PrcEnoSv
    * @throws Exception - an exception
    */
   private PrcEnoSv crPuPrcEnoSv(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     PrcEnoSv rz = new PrcEnoSv();
-    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
+    rz.setOrm(this.fctBlc.lazOrm(pRvs));
     this.procs.put(PrcEnoSv.class.getSimpleName(), rz);
-    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEnoSv.class
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEnoSv.class
       .getSimpleName() + " has been created.");
     return rz;
   }
 
   /**
    * <p>Create and put into the Map PrcEnoDl.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return PrcEnoDl
    * @throws Exception - an exception
    */
   private PrcEnoDl crPuPrcEnoDl(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     PrcEnoDl rz = new PrcEnoDl();
-    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
+    rz.setOrm(this.fctBlc.lazOrm(pRvs));
     this.procs.put(PrcEnoDl.class.getSimpleName(), rz);
-    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEnoDl.class
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEnoDl.class
       .getSimpleName() + " has been created.");
     return rz;
   }
 
   /**
    * <p>Create and put into the Map PrcEntDl.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return PrcEntDl
    * @throws Exception - an exception
    */
   private PrcEntDl crPuPrcEntDl(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     PrcEntDl rz = new PrcEntDl();
-    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
+    rz.setOrm(this.fctBlc.lazOrm(pRvs));
     this.procs.put(PrcEntDl.class.getSimpleName(), rz);
-    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEntDl.class
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEntDl.class
       .getSimpleName() + " has been created.");
     return rz;
   }
 
   /**
    * <p>Create and put into the Map PrcEmMsgSv.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return PrcEmMsgSv
    * @throws Exception - an exception
    */
   private PrcEmMsgSv crPuPrcEmMsgSv(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     PrcEmMsgSv rz = new PrcEmMsgSv();
-    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
-    rz.setEmSnd((IEmSnd) this.fctBlc.laz(pRqVs, IEmSnd.class.getSimpleName()));
+    rz.setOrm(this.fctBlc.lazOrm(pRvs));
+    rz.setEmSnd((IEmSnd) this.fctBlc.laz(pRvs, IEmSnd.class.getSimpleName()));
     this.procs.put(PrcEmMsgSv.class.getSimpleName(), rz);
-    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEmMsgSv.class
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEmMsgSv.class
       .getSimpleName() + " has been created.");
     return rz;
   }
 
   /**
    * <p>Create and put into the Map PrcEntSv.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return PrcEntSv
    * @throws Exception - an exception
    */
   private PrcEntSv crPuPrcEntSv(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     PrcEntSv rz = new PrcEntSv();
-    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
+    rz.setOrm(this.fctBlc.lazOrm(pRvs));
     this.procs.put(PrcEntSv.class.getSimpleName(), rz);
-    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEntSv.class
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEntSv.class
       .getSimpleName() + " has been created.");
     return rz;
   }
 
   /**
    * <p>Create and put into the Map PrcEntRt.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return PrcEntRt
    * @throws Exception - an exception
    */
   private PrcEntRt crPuPrcEntRt(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     PrcEntRt rz = new PrcEntRt();
-    rz.setOrm(this.fctBlc.lazOrm(pRqVs));
-    rz.setHldUvd(this.fctBlc.lazHldUvd(pRqVs));
+    rz.setOrm(this.fctBlc.lazOrm(pRvs));
+    rz.setHldUvd(this.fctBlc.lazHldUvd(pRvs));
     this.procs.put(PrcEntRt.class.getSimpleName(), rz);
-    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), PrcEntRt.class
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEntRt.class
       .getSimpleName() + " has been created.");
     return rz;
   }
@@ -266,7 +276,7 @@ public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
    * <p>Getter for fctBlc.</p>
    * @return FctBlc<RS>
    **/
-  public final FctBlc<RS> getFctBlc() {
+  public final synchronized FctBlc<RS> getFctBlc() {
     return this.fctBlc;
   }
 
@@ -274,7 +284,7 @@ public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
    * <p>Setter for fctBlc.</p>
    * @param pFctBlc reference
    **/
-  public final void setFctBlc(final FctBlc<RS> pFctBlc) {
+  public final synchronized void setFctBlc(final FctBlc<RS> pFctBlc) {
     this.fctBlc = pFctBlc;
   }
 
@@ -282,7 +292,7 @@ public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
    * <p>Getter for fctsPrc.</p>
    * @return Set<IFctNm<IPrcEnt<?, ?>>>
    **/
-  public final Set<IFctNm<IPrcEnt<?, ?>>> getFctsPrc() {
+  public final synchronized Set<IFctNm<IPrcEnt<?, ?>>> getFctsPrc() {
     return this.fctsPrc;
   }
 
@@ -290,7 +300,8 @@ public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
    * <p>Setter for fctsPrc.</p>
    * @param pFctsPrc reference
    **/
-  public final void setFctsPrc(final Set<IFctNm<IPrcEnt<?, ?>>> pFctsPrc) {
+  public final synchronized void setFctsPrc(
+    final Set<IFctNm<IPrcEnt<?, ?>>> pFctsPrc) {
     this.fctsPrc = pFctsPrc;
   }
 }

@@ -46,42 +46,94 @@ public class ReqDtTst implements IReqDt {
   private final Map<String, String> paramsMp = new HashMap<String, String>();
 
   /**
+   * <p>Cookies map.</p>
+   **/
+  private final Map<String, String> cookies = new HashMap<String, String>();
+
+  /**
+   * <p>Attributes map.</p>
+   **/
+  private final Map<String, Object> attrs = new HashMap<String, Object>();
+
+  /**
+   * <p>Context attributes map.</p>
+   **/
+  private final Map<String, Object> ctxAttrs = new HashMap<String, Object>();
+
+  /**
+   * <p>User name.</p>
+   **/
+  private String usrNm;
+
+  /**
+   * <p>Context path.</p>
+   **/
+  private String ctxPth;
+
+  /**
+   * <p>Preferred locale.</p>
+   **/
+  private Locale usLoc;
+
+  private StringBuffer reqUrl;
+
+  /**
+   * <p>remote host.</p>
+   **/
+  private String remHost;
+
+  /**
+   * <p>remote address.</p>
+   **/
+  private String remAddr;
+
+  /**
+   * <p>remote user.</p>
+   **/
+  private String remUsr;
+
+  /**
+   * <p>remote port.</p>
+   **/
+  private int remPort;
+
+  /**
    * <p>Get attribute.</p>
-   * @param pName attribute name
+   * @param pNm attribute name
    * @return attribute
    **/
   @Override
-  public final Object getCtxAttr(final String pName) {
-    throw new RuntimeException("NEI");
+  public final Object getCtxAttr(final String pNm) {
+    return this.ctxAttrs.get(pNm);
   }
 
   /**
    * <p>Set attribute.</p>
-   * @param pName attribute name
+   * @param pNm attribute name
    * @param pAttr attribute
    **/
   @Override
-  public final void setCtxAttr(final String pName, final Object pAttr) {
-    throw new RuntimeException("NEI");
+  public final void setCtxAttr(final String pNm, final Object pAttr) {
+    this.ctxAttrs.put(pNm, pAttr);
   }
 
   /**
    * <p>Removes attribute.</p>
-   * @param pName attribute name
+   * @param pNm attribute name
    **/
   @Override
-  public final void remCtxAttr(final String pName) {
-    throw new RuntimeException("NEI");
+  public final void remCtxAttr(final String pNm) {
+    this.ctxAttrs.remove(pNm);
   }
 
   /**
    * <p>Get attribute.</p>
-   * @param pName attribute name
+   * @param pNm attribute name
    * @return attribute
    **/
   @Override
-  public final Object getAttr(final String pName) {
-    throw new RuntimeException("NEI");
+  public final Object getAttr(final String pNm) {
+    return this.attrs.get(pNm);
   }
 
   /**
@@ -90,26 +142,26 @@ public class ReqDtTst implements IReqDt {
    **/
   @Override
   public final String getCtxPth() {
-    throw new RuntimeException("NEI");
+    return this.ctxPth;
   }
 
   /**
    * <p>Set attribute.</p>
-   * @param pName attribute name
+   * @param pNm attribute name
    * @param pAttr attribute
    **/
   @Override
-  public final void setAttr(final String pName, final Object pAttr) {
-    throw new RuntimeException("NEI");
+  public final void setAttr(final String pNm, final Object pAttr) {
+    this.attrs.put(pNm, pAttr);
   }
 
   /**
    * <p>Removes attribute.</p>
-   * @param pName attribute name
+   * @param pNm attribute name
    **/
   @Override
-  public final void remAttr(final String pName) {
-    throw new RuntimeException("NEI");
+  public final void remAttr(final String pNm) {
+    this.attrs.remove(pNm);
   }
 
   /**
@@ -148,27 +200,27 @@ public class ReqDtTst implements IReqDt {
    **/
   @Override
   public final String getUsrNm() {
-    throw new RuntimeException("NEI");
+    return this.usrNm;
   }
 
   /**
    * <p>Get cookie value by name.</p>
-   * @param pName Name
+   * @param pNm Name
    * @return cookie value or null
    **/
   @Override
-  public final String getCookVl(final String pName) {
-    throw new RuntimeException("NEI");
+  public final String getCookVl(final String pNm) {
+    return this.cookies.get(pNm);
   }
 
   /**
    * <p>Set(add/change) cookie value.</p>
-   * @param pName Name
-   * @param pValue Value
+   * @param pNm Name
+   * @param pVal Value
    **/
   @Override
-  public final void setCookVl(final String pName, final String pValue) {
-    throw new RuntimeException("NEI");
+  public final void setCookVl(final String pNm, final String pVal) {
+   this.cookies.put(pNm, pVal) ;
   }
 
   /**
@@ -177,7 +229,7 @@ public class ReqDtTst implements IReqDt {
    **/
   @Override
   public final Locale getLocale() {
-    throw new RuntimeException("NEI");
+    return this.usLoc;
   }
 
   /**
@@ -186,7 +238,7 @@ public class ReqDtTst implements IReqDt {
    **/
   @Override
   public final StringBuffer getReqUrl() {
-    throw new RuntimeException("NEI");
+    return this.reqUrl;
   }
 
   /**
@@ -195,7 +247,7 @@ public class ReqDtTst implements IReqDt {
    **/
   @Override
   public final String getRemHost() {
-    throw new RuntimeException("NEI");
+    return this.remHost;
   }
 
   /**
@@ -204,7 +256,7 @@ public class ReqDtTst implements IReqDt {
    **/
   @Override
   public final String getRemAddr() {
-    throw new RuntimeException("NEI");
+    return this.remAddr;
   }
 
   /**
@@ -213,7 +265,7 @@ public class ReqDtTst implements IReqDt {
    **/
   @Override
   public final String getRemUsr() {
-    throw new RuntimeException("NEI");
+    return this.remUsr;
   }
 
   /**
@@ -222,7 +274,7 @@ public class ReqDtTst implements IReqDt {
    **/
   @Override
   public final int getRemPort() {
-    throw new RuntimeException("NEI");
+    return this.remPort;
   }
 
   //Simple getters and setters:
@@ -232,5 +284,92 @@ public class ReqDtTst implements IReqDt {
    **/
   public final Map<String, String> getParamsMp() {
     return this.paramsMp;
+  }
+  /**
+   * <p>Getter for cookies.</p>
+   * @return Map<String, String>
+   **/
+  public final Map<String, String> getCookies() {
+    return this.cookies;
+  }
+
+  /**
+   * <p>Getter for attrs.</p>
+   * @return Map<String, Object>
+   **/
+  public final Map<String, Object> getAttrs() {
+    return this.attrs;
+  }
+
+  /**
+   * <p>Getter for ctxAttrs.</p>
+   * @return Map<String, Object>
+   **/
+  public final Map<String, Object> getCtxAttrs() {
+    return this.ctxAttrs;
+  }
+
+  /**
+   * <p>Setter for usrNm.</p>
+   * @param pUsrNm reference
+   **/
+  public final void setUsrNm(final String pUsrNm) {
+    this.usrNm = pUsrNm;
+  }
+
+  /**
+   * <p>Setter for ctxPth.</p>
+   * @param pCtxPth reference
+   **/
+  public final void setCtxPth(final String pCtxPth) {
+    this.ctxPth = pCtxPth;
+  }
+
+  /**
+   * <p>Setter for usLoc.</p>
+   * @param pUsLoc reference
+   **/
+  public final void setUsLoc(final Locale pUsLoc) {
+    this.usLoc = pUsLoc;
+  }
+
+  /**
+   * <p>Setter for reqUrl.</p>
+   * @param pReqUrl reference
+   **/
+  public final void setReqUrl(final StringBuffer pReqUrl) {
+    this.reqUrl = pReqUrl;
+  }
+
+  /**
+   * <p>Setter for remHost.</p>
+   * @param pRemHost reference
+   **/
+  public final void setRemHost(final String pRemHost) {
+    this.remHost = pRemHost;
+  }
+
+  /**
+   * <p>Setter for remAddr.</p>
+   * @param pRemAddr reference
+   **/
+  public final void setRemAddr(final String pRemAddr) {
+    this.remAddr = pRemAddr;
+  }
+
+  /**
+   * <p>Setter for remUsr.</p>
+   * @param pRemUsr reference
+   **/
+  public final void setRemUsr(final String pRemUsr) {
+    this.remUsr = pRemUsr;
+  }
+
+  /**
+   * <p>Setter for remPort.</p>
+   * @param pRemPort reference
+   **/
+  public final void setRemPort(final int pRemPort) {
+    this.remPort = pRemPort;
   }
 }

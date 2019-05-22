@@ -470,15 +470,15 @@ public class HlpEntPg<RS> {
       && !fltOp.equals("disabled") && !fltOp.equals("")) {
       Date valDt;
       if (fltVal.contains(".")) { //2001-07-04T12:08:56.235
-        valDt = this.srvDt.fromIso8601FullNoTz(fltVal, null);
+        valDt = this.srvDt.from8601Full(fltVal);
       } else if (fltVal.contains(":")) {
         if (fltVal.length() == 19) { //2001-07-04T12:08:56
-          valDt = this.srvDt.fromIso8601DateTimeSecNoTz(fltVal, null);
+          valDt = this.srvDt.from8601DateTimeSec(fltVal);
         } else { //2001-07-04T12:08
-          valDt = this.srvDt.fromIso8601DateTimeNoTz(fltVal, null);
+          valDt = this.srvDt.from8601DateTime(fltVal);
         }
       } else { //2001-07-04
-        valDt = this.srvDt.fromIso8601DateNoTz(fltVal, null);
+        valDt = this.srvDt.from8601Date(fltVal);
       }
       cond = pEntNm.toUpperCase() + "." + pFdNm.toUpperCase() + " "
         + toSqlOp(fltOp) + " " + valDt.getTime();
