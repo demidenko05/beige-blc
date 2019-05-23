@@ -40,20 +40,27 @@ import org.beigesoft.hld.IAttrs;
  */
 public class ReqDtTst implements IReqDt {
 
+  //request scoped:
   /**
    * <p>Params map.</p>
    **/
   private final Map<String, String> paramsMp = new HashMap<String, String>();
 
   /**
-   * <p>Cookies map.</p>
-   **/
-  private final Map<String, String> cookies = new HashMap<String, String>();
-
-  /**
    * <p>Attributes map.</p>
    **/
   private final Map<String, Object> attrs = new HashMap<String, Object>();
+
+  /**
+   * <p>Param map.</p>
+   **/
+  private final Map<String, String[]> paramMp = new HashMap<String, String[]>();
+
+  //"global" scoped:
+  /**
+   * <p>Cookies map.</p>
+   **/
+  private final Map<String, String> cookies = new HashMap<String, String>();
 
   /**
    * <p>Context attributes map.</p>
@@ -73,7 +80,7 @@ public class ReqDtTst implements IReqDt {
   /**
    * <p>Preferred locale.</p>
    **/
-  private Locale usLoc;
+  private Locale usLoc = Locale.getDefault();
 
   private StringBuffer reqUrl;
 
@@ -181,17 +188,7 @@ public class ReqDtTst implements IReqDt {
    **/
   @Override
   public final String[] getParamVls(final String pPrNm) {
-    throw new RuntimeException("NEI");
-  }
-
-
-  /**
-   * <p>Getter for Params Map.</p>
-   * @return parameters map
-   **/
-  @Override
-  public final Map<String, String[]> getParamMap() {
-    throw new RuntimeException("NEI");
+    return this.paramMp.get(pPrNm);
   }
 
   /**
@@ -277,6 +274,25 @@ public class ReqDtTst implements IReqDt {
     return this.remPort;
   }
 
+  /**
+   * <p>Getter for paramMp.</p>
+   * @return Map<String, String[]>
+   **/
+  @Override
+  public final Map<String, String[]> getParamMap() {
+    return this.paramMp;
+  }
+
+  /**
+   * <p>Initialize like new request, i.e cookie, port, etc are
+   * still the same, only request data and attributes will be cleared.</p>
+   **/
+  public final void iniNewRq() {
+    this.attrs.clear();
+    this.paramMp.clear();
+    this.paramsMp.clear();
+  }
+
   //Simple getters and setters:
   /**
    * <p>Getter for paramsMp.</p>
@@ -285,6 +301,7 @@ public class ReqDtTst implements IReqDt {
   public final Map<String, String> getParamsMp() {
     return this.paramsMp;
   }
+
   /**
    * <p>Getter for cookies.</p>
    * @return Map<String, String>

@@ -73,6 +73,7 @@ public class PrcEntSv<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
     if (pEnt.getIsNew()) {
       this.orm.insert(pRvs, vs, pEnt);
       pRvs.put("msgSuc", "insert_ok");
+      pEnt.setIsNew(false);
     } else {
       this.orm.update(pRvs, vs, pEnt);
       pRvs.put("msgSuc", "update_ok");
