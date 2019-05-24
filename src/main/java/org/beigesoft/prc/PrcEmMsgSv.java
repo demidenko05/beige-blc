@@ -81,7 +81,6 @@ public class PrcEmMsgSv implements IPrcEnt<EmMsg, Long> {
     if (pEnt.getIsNew()) {
       this.orm.insert(pRvs, vs, pEnt);
       pRvs.put("msgSuc", "insert_ok");
-      pEnt.setIsNew(false);
     } else {
       if (pEnt.getSent()) {
         throw new ExcCode(ExcCode.WRPR, "can_not_change_sent_email");

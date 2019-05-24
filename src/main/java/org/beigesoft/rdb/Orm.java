@@ -395,6 +395,7 @@ public class Orm<RS> implements IOrm {
 throw new ExcCode(ACTROWERR, "It should be 1 row inserted but it is " + r
 + ", query:\n" + qu + ";\n" + "CV - "  + getSrvClVl().str(pEnt.getClass(), cv));
     }
+    pEnt.setIsNew(Boolean.FALSE);
   }
 
   /**
@@ -453,6 +454,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row inserted but it is " + r
 throw new ExcCode(ACTROWERR, "It should be 1 row inserted but it is " + r
 + ", query:\n" + qu + ";\n" + "CV - "  + getSrvClVl().str(pEnt.getClass(), cv));
     }
+    pEnt.setIsNew(Boolean.FALSE);
   }
 
   /**

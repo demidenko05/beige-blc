@@ -279,7 +279,7 @@ public class Rdb extends ARdb<ResultSet> {
   public final int update(final Class<?> pCls, final ColVals pCv,
     final String pWhe) throws Exception {
     Statement stmt = null;
-    String qu = getSrvClVl().evUpdate(pCls, pCv);
+    String qu = getSrvClVl().evUpdateCnd(pCls, pCv, pWhe);
     try {
       boolean isDbgSh = getLog().getDbgSh(getClass())
         && getLog().getDbgFl() < 8003 && getLog().getDbgCl() > 8001;
