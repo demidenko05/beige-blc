@@ -38,7 +38,7 @@ import org.beigesoft.prp.ISetng;
  *
  * @author Yury Demidenko
  */
-public class HldFldStg implements IHldNm<Class<?>, String> {
+public class HldFldStg implements IHlNmClSt {
 
   /**
    * <p>There is no standard setting.</p>

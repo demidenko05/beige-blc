@@ -37,7 +37,7 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.prp.ISetng;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.cnv.IFilFld;
 import org.beigesoft.srv.IUtlXml;
 
@@ -61,7 +61,7 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
   /**
    * <p>Holder of fillers fields names.</p>
    **/
-  private IHldNm<Class<?>, String> hldFilFdNms;
+  private IHlNmClSt hldFilFdNms;
 
   /**
    * <p>Fillers fields factory.</p>
@@ -145,9 +145,9 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
 
   /**
    * <p>Getter for hldFilFdNms.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldFilFdNms() {
+  public final IHlNmClSt getHldFilFdNms() {
     return this.hldFilFdNms;
   }
 
@@ -155,8 +155,7 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
    * <p>Setter for hldFilFdNms.</p>
    * @param pHldFilFdNms reference
    **/
-  public final void setHldFilFdNms(
-    final IHldNm<Class<?>, String> pHldFilFdNms) {
+  public final void setHldFilFdNms(final IHlNmClSt pHldFilFdNms) {
     this.hldFilFdNms = pHldFilFdNms;
   }
 

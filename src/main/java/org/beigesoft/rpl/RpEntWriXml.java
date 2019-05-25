@@ -36,6 +36,7 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.IConv;
 
@@ -73,7 +74,7 @@ public class RpEntWriXml implements IRpEntWri {
   /**
    * <p>Fields converters names holder.</p>
    **/
-  private IHldNm<Class<?>, String> hldNmFdCn;
+  private IHlNmClSt hldNmFdCn;
 
   /**
    * <p>Writes given entity into given stream (writer) in XML format.</p>
@@ -194,9 +195,9 @@ public class RpEntWriXml implements IRpEntWri {
 
   /**
    * <p>Getter for hldNmFdCn.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldNmFdCn() {
+  public final IHlNmClSt getHldNmFdCn() {
     return this.hldNmFdCn;
   }
 
@@ -204,7 +205,7 @@ public class RpEntWriXml implements IRpEntWri {
    * <p>Setter for hldNmFdCn.</p>
    * @param pHldNmFdCn reference
    **/
-  public final void setHldNmFdCn(final IHldNm<Class<?>, String> pHldNmFdCn) {
+  public final void setHldNmFdCn(final IHlNmClSt pHldNmFdCn) {
     this.hldNmFdCn = pHldNmFdCn;
   }
 }

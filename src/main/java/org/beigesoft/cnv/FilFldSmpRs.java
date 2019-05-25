@@ -36,6 +36,7 @@ import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 
 /**
  * <p>Standard service that fills/converts object's field of simple type from
@@ -60,7 +61,7 @@ public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
   /**
    * <p>Fields converters names holder.</p>
    **/
-  private IHldNm<Class<?>, String> hldNmFdCn;
+  private IHlNmClSt hldNmFdCn;
 
   /**
    * <p>Factory simple converters.</p>
@@ -159,9 +160,9 @@ public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
 
   /**
    * <p>Getter for hldNmFdCn.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldNmFdCn() {
+  public final IHlNmClSt getHldNmFdCn() {
     return this.hldNmFdCn;
   }
 
@@ -169,7 +170,7 @@ public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
    * <p>Setter for hldNmFdCn.</p>
    * @param pHldNmFdCn reference
    **/
-  public final void setHldNmFdCn(final IHldNm<Class<?>, String> pHldNmFdCn) {
+  public final void setHldNmFdCn(final IHlNmClSt pHldNmFdCn) {
     this.hldNmFdCn = pHldNmFdCn;
   }
 }

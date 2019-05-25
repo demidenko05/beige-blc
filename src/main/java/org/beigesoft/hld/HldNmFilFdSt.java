@@ -42,7 +42,7 @@ import org.beigesoft.prp.ISetng;
  *
  * @author Yury Demidenko
  */
-public class HldNmFilFdSt implements IHldNm<Class<?>, String> {
+public class HldNmFilFdSt implements IHlNmClSt {
 
   /**
    * <p>Setting name of filler from string.</p>

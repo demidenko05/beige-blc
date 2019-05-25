@@ -44,7 +44,7 @@ import org.beigesoft.cnv.FilFldSmpRs;
  *
  * @author Yury Demidenko
  */
-public class HldNmFilFdRs implements IHldNm<Class<?>, String> {
+public class HldNmFilFdRs implements IHlNmClSt {
 
   //Services:
   /**

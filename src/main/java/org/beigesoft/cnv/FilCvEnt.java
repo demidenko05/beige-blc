@@ -38,7 +38,7 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.ColVals;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 
 /**
@@ -64,7 +64,7 @@ public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
   /**
    * <p>Holder of fillers fields names.</p>
   **/
-  private IHldNm<Class<?>, String> hldFilFdNms;
+  private IHlNmClSt hldFilFdNms;
 
   /**
    * <p>Fillers fields factory.</p>
@@ -188,9 +188,9 @@ public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
 
   /**
    * <p>Getter for hldFilFdNms.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldFilFdNms() {
+  public final IHlNmClSt getHldFilFdNms() {
     return this.hldFilFdNms;
   }
 
@@ -198,7 +198,7 @@ public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
    * <p>Setter for hldFilFdNms.</p>
    * @param pHdFlFdNms reference
    **/
-  public final void setHldFilFdNms(final IHldNm<Class<?>, String> pHdFlFdNms) {
+  public final void setHldFilFdNms(final IHlNmClSt pHdFlFdNms) {
     this.hldFilFdNms = pHdFlFdNms;
   }
 

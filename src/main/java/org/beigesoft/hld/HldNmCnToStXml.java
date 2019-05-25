@@ -48,7 +48,7 @@ import org.beigesoft.cnv.CnvStrToStrXml;
  *
  * @author Yury Demidenko
  */
-public class HldNmCnToStXml implements IHldNm<Class<?>, String> {
+public class HldNmCnToStXml implements IHlNmClSt {
 
   /**
    * <p>Setting name of converter to string.</p>

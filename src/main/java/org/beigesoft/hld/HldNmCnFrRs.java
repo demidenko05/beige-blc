@@ -48,7 +48,7 @@ import org.beigesoft.cnv.CnvBnRsStr;
  *
  * @author Yury Demidenko
  */
-public class HldNmCnFrRs implements IHldNm<Class<?>, String> {
+public class HldNmCnFrRs implements IHlNmClSt {
 
   /**
    * <p>Holder of an entity's field's class.</p>

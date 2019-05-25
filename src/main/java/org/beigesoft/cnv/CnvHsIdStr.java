@@ -34,7 +34,7 @@ import java.util.Map;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 
 /**
@@ -55,7 +55,7 @@ public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
   /**
    * <p>Fields converters names holder.</p>
    **/
-  private IHldNm<Class<?>, String> hldNmFdCn;
+  private IHlNmClSt hldNmFdCn;
 
   /**
    * <p>Settings service.</p>
@@ -106,9 +106,9 @@ public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
 
   /**
    * <p>Getter for hldNmFdCn.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldNmFdCn() {
+  public final IHlNmClSt getHldNmFdCn() {
     return this.hldNmFdCn;
   }
 
@@ -116,7 +116,7 @@ public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
    * <p>Setter for hldNmFdCn.</p>
    * @param pHldNmFdCn reference
    **/
-  public final void setHldNmFdCn(final IHldNm<Class<?>, String> pHldNmFdCn) {
+  public final void setHldNmFdCn(final IHlNmClSt pHldNmFdCn) {
     this.hldNmFdCn = pHldNmFdCn;
   }
 

@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.hld;
 
+import java.util.Set;
 import java.util.List;
 
 import org.beigesoft.mdlp.EmAtch;
@@ -47,13 +48,19 @@ import org.beigesoft.prc.PrcEnofSv;
  *
  * @author Yury Demidenko
  */
-public class HlNmAdEnPr implements IHldNm<Class<?>, String> {
+public class HlNmAdEnPr implements IHlNmClSt {
 
   /**
    * <p>Shared non-editable entities for admin/web-store entity request handler,
    * e.g. email connection EmCon.</p>
    **/
   private List<Class<?>> shrEnts;
+
+  /**
+   * <p>Additional admin entity processors names holders
+   *  with high priority.</p>
+   **/
+  private Set<IHlNmClSt> hldsAdEnPr;
 
   /**
    * <p>Get processor name for given class and action name.</p>
@@ -65,6 +72,14 @@ public class HlNmAdEnPr implements IHldNm<Class<?>, String> {
   public final String get(final Class<?> pCls, final String pAct) {
     if (this.shrEnts != null && this.shrEnts.contains(pCls)) {
       return null;
+    }
+    if (this.hldsAdEnPr != null) {
+      for (IHlNmClSt hep : this.hldsAdEnPr) {
+        String rz = hep.get(pCls, pAct);
+        if (rz != null) {
+          return rz;
+        }
+      }
     }
     if ("entEd".equals(pAct) || "entCd".equals(pAct) || "entPr".equals(pAct)) {
       return PrcEntRt.class.getSimpleName();
@@ -111,5 +126,21 @@ public class HlNmAdEnPr implements IHldNm<Class<?>, String> {
    **/
   public final void setShrEnts(final List<Class<?>> pShrEnts) {
     this.shrEnts = pShrEnts;
+  }
+
+  /**
+   * <p>Getter for hldsAdEnPr.</p>
+   * @return Set<IHlNmClSt>
+   **/
+  public final Set<IHlNmClSt> getHldsAdEnPr() {
+    return this.hldsAdEnPr;
+  }
+
+  /**
+   * <p>Setter for hldsAdEnPr.</p>
+   * @param pHldsAdEnPr reference
+   **/
+  public final void setHldsAdEnPr(final Set<IHlNmClSt> pHldsAdEnPr) {
+    this.hldsAdEnPr = pHldsAdEnPr;
   }
 }

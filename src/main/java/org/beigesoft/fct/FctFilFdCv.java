@@ -37,6 +37,7 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.ColVals;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.cnv.IConvNmInto;
 import org.beigesoft.cnv.IFilNm;
 import org.beigesoft.cnv.FilNmCvHsId;
@@ -75,7 +76,7 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
   /**
    * <p>Fields converters names.</p>
    **/
-  private IHldNm<Class<?>, String> hldNmFdCn;
+  private IHlNmClSt hldNmFdCn;
 
   /**
    * <p>Factory simple converters.</p>
@@ -85,7 +86,7 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
   /**
    * <p>Holder of fillers fields names.</p>
   **/
-  private IHldNm<Class<?>, String> hldFilFdNms;
+  private IHlNmClSt hldFilFdNms;
 
   //requested data:
   /**
@@ -224,9 +225,9 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
 
   /**
    * <p>Getter for hldNmFdCn.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldNmFdCn() {
+  public final IHlNmClSt getHldNmFdCn() {
     return this.hldNmFdCn;
   }
 
@@ -234,7 +235,7 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
    * <p>Setter for hldNmFdCn.</p>
    * @param pHlNmFdCn reference
    **/
-  public final void setHldNmFdCn(final IHldNm<Class<?>, String> pHlNmFdCn) {
+  public final void setHldNmFdCn(final IHlNmClSt pHlNmFdCn) {
     this.hldNmFdCn = pHlNmFdCn;
   }
 
@@ -256,9 +257,9 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
 
   /**
    * <p>Getter for hldFilFdNms.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldFilFdNms() {
+  public final IHlNmClSt getHldFilFdNms() {
     return this.hldFilFdNms;
   }
 
@@ -266,7 +267,7 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
    * <p>Setter for hldFilFdNms.</p>
    * @param pHdCnFdNms reference
    **/
-  public final void setHldFilFdNms(final IHldNm<Class<?>, String> pHdCnFdNms) {
+  public final void setHldFilFdNms(final IHlNmClSt pHdCnFdNms) {
     this.hldFilFdNms = pHdCnFdNms;
   }
 }

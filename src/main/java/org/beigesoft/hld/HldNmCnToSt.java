@@ -48,7 +48,7 @@ import org.beigesoft.prp.ISetng;
  *
  * @author Yury Demidenko
  */
-public class HldNmCnToSt implements IHldNm<Class<?>, String> {
+public class HldNmCnToSt implements IHlNmClSt {
 
   /**
    * <p>Setting name of converter to string.</p>

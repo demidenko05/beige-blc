@@ -36,6 +36,7 @@ import org.beigesoft.mdl.ColVals;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 
 /**
@@ -68,7 +69,7 @@ public class FilNmCvHsId implements IFilNm<IHasId<?>, ColVals> {
   /**
    * <p>Holder of converters fields names.</p>
   **/
-  private IHldNm<Class<?>, String> hldCnvFdNms;
+  private IHlNmClSt hldCnvFdNms;
 
   /**
    * <p>Converters fields factory.</p>
@@ -184,9 +185,9 @@ public class FilNmCvHsId implements IFilNm<IHasId<?>, ColVals> {
 
   /**
    * <p>Getter for hldCnvFdNms.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldCnvFdNms() {
+  public final IHlNmClSt getHldCnvFdNms() {
     return this.hldCnvFdNms;
   }
 
@@ -194,7 +195,7 @@ public class FilNmCvHsId implements IFilNm<IHasId<?>, ColVals> {
    * <p>Setter for hldCnvFdNms.</p>
    * @param pHdCnFdNms reference
    **/
-  public final void setHldCnvFdNms(final IHldNm<Class<?>, String> pHdCnFdNms) {
+  public final void setHldCnvFdNms(final IHlNmClSt pHdCnFdNms) {
     this.hldCnvFdNms = pHdCnFdNms;
   }
 

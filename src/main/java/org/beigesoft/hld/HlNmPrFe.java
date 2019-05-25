@@ -36,7 +36,7 @@ import org.beigesoft.fct.FctDt;
  *
  * @author Yury Demidenko
  */
-public class HlNmPrFe implements IHldNm<Class<?>, String> {
+public class HlNmPrFe implements IHlNmClSt {
 
 
   /**

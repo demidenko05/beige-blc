@@ -38,7 +38,7 @@ import org.beigesoft.fct.IFctRq;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.fct.IFctCls;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.hld.HldUvd;
 import org.beigesoft.hld.UvdVar;
 import org.beigesoft.cnv.IFilObj;
@@ -84,7 +84,7 @@ public class HndEntRq<RS> implements IHndRq {
   /**
    * <p>Entities processors names holder.</p>
    **/
-  private IHldNm<Class<?>, String> hldEntPrcNm;
+  private IHlNmClSt hldEntPrcNm;
 
   /**
    * <p>Entities processors factory.</p>
@@ -94,7 +94,7 @@ public class HndEntRq<RS> implements IHndRq {
   /**
    * <p>Processors for entities names holder.</p>
    **/
-  private IHldNm<Class<?>, String> hldPrcFenNm;
+  private IHlNmClSt hldPrcFenNm;
 
   /**
    * <p>Processors for entities factory.</p>
@@ -442,9 +442,9 @@ public class HndEntRq<RS> implements IHndRq {
 
   /**
    * <p>Getter for hldEntPrcNm.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldEntPrcNm() {
+  public final IHlNmClSt getHldEntPrcNm() {
     return this.hldEntPrcNm;
   }
 
@@ -453,7 +453,7 @@ public class HndEntRq<RS> implements IHndRq {
    * @param pHldEntPrcNm reference
    **/
   public final void setHldEntPrcNm(
-    final IHldNm<Class<?>, String> pHldEntPrcNm) {
+    final IHlNmClSt pHldEntPrcNm) {
     this.hldEntPrcNm = pHldEntPrcNm;
   }
 
@@ -475,9 +475,9 @@ public class HndEntRq<RS> implements IHndRq {
 
   /**
    * <p>Getter for hldPrcFenNm.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldPrcFenNm() {
+  public final IHlNmClSt getHldPrcFenNm() {
     return this.hldPrcFenNm;
   }
 
@@ -485,7 +485,7 @@ public class HndEntRq<RS> implements IHndRq {
    * <p>Setter for hldPrcFenNm.</p>
    * @param pHdPrcFenNm reference
    **/
-  public final void setHldPrcFenNm(final IHldNm<Class<?>, String> pHdPrcFenNm) {
+  public final void setHldPrcFenNm(final IHlNmClSt pHdPrcFenNm) {
     this.hldPrcFenNm = pHdPrcFenNm;
   }
 

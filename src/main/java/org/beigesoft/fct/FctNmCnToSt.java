@@ -36,6 +36,7 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.IConv;
 import org.beigesoft.cnv.CnvDtStr;
@@ -91,12 +92,12 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
   /**
    * <p>Fields converters names holder UVD.</p>
    **/
-  private IHldNm<Class<?>, String> hldNmFdCnUvd;
+  private IHlNmClSt hldNmFdCnUvd;
 
   /**
    * <p>Fields converters names holder DBCP.</p>
    **/
-  private IHldNm<Class<?>, String> hldNmFdCnDbcp;
+  private IHlNmClSt hldNmFdCnDbcp;
 
   /**
    * <p>Fields getters RAPI holder.</p>
@@ -462,9 +463,9 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
 
   /**
    * <p>Getter for hldNmFdCnDbcp.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldNmFdCnDbcp() {
+  public final IHlNmClSt getHldNmFdCnDbcp() {
     return this.hldNmFdCnDbcp;
   }
 
@@ -472,16 +473,15 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    * <p>Setter for hldNmFdCnDbcp.</p>
    * @param pHldNmFdCnDbcp reference
    **/
-  public final void setHldNmFdCnDbcp(
-    final IHldNm<Class<?>, String> pHldNmFdCnDbcp) {
+  public final void setHldNmFdCnDbcp(final IHlNmClSt pHldNmFdCnDbcp) {
     this.hldNmFdCnDbcp = pHldNmFdCnDbcp;
   }
 
   /**
    * <p>Getter for hldNmFdCnUvd.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldNmFdCnUvd() {
+  public final IHlNmClSt getHldNmFdCnUvd() {
     return this.hldNmFdCnUvd;
   }
 
@@ -489,8 +489,7 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    * <p>Setter for hldNmFdCnUvd.</p>
    * @param pHldNmFdCnUvd reference
    **/
-  public final void setHldNmFdCnUvd(
-    final IHldNm<Class<?>, String> pHldNmFdCnUvd) {
+  public final void setHldNmFdCnUvd(final IHlNmClSt pHldNmFdCnUvd) {
     this.hldNmFdCnUvd = pHldNmFdCnUvd;
   }
 

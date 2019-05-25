@@ -36,7 +36,7 @@ import java.io.File;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.hld.HldFldCls;
 import org.beigesoft.hld.HldGets;
 import org.beigesoft.hld.HldSets;
@@ -316,7 +316,9 @@ public class FctBlc<RS> implements IFctApp {
       FctPrcFenAd<RS> fen = new FctPrcFenAd<RS>();
       fen.setFctBlc(this);
       rz.setFctPrcFen(fen);
-      rz.setHldEntPrcNm(new HlNmAdEnPr());
+      HlNmAdEnPr hlNmAdEnPr = new HlNmAdEnPr();
+      hlNmAdEnPr.setHldsAdEnPr(this.fctDt.getHldsAdEnPr());
+      rz.setHldEntPrcNm(hlNmAdEnPr);
       rz.setFctEntPrc(lazFctEnPrc(pRvs));
       rz.setEntMap(new HashMap<String, Class<?>>());
       Setng setng = lazStgUvd(pRvs);
@@ -360,6 +362,7 @@ public class FctBlc<RS> implements IFctApp {
       rz.setFctPrcFen(lazFctPrcFen(pRvs));
       HlNmAcEnPr hlep = new HlNmAcEnPr();
       hlep.setShrEnts(this.fctDt.getShrEnts());
+      hlep.setHldsAcEnPr(this.fctDt.getHldsAcEnPr());
       rz.setHldEntPrcNm(hlep);
       rz.setFctEntPrc(lazFctEnPrc(pRvs));
       rz.setHldPrcFenNm(new HlNmPrFe());
@@ -1002,9 +1005,7 @@ public class FctBlc<RS> implements IFctApp {
       rz.setHldNmFdCnDbCp(lazHldNmCnFrStXml(pRvs));
       rz.setFctCnvFld(lazFctNmCnFrSt(pRvs));
       rz.setHldFilFdNmsUvd(lazHldNmFilFdStUvd(pRvs));
-      @SuppressWarnings("unchecked")
-      IHldNm<Class<?>, String> hlFilFd = (IHldNm<Class<?>, String>)
-        laz(pRvs, FctDt.HLFILFDNMDBCP);
+      IHlNmClSt hlFilFd = (IHlNmClSt) laz(pRvs, FctDt.HLFILFDNMDBCP);
       rz.setHldFilFdNmsDbCp(hlFilFd);
       this.beans.put(FctNmFilFdSt.class.getSimpleName(), rz);
       lazLogStd(pRvs).info(pRvs, getClass(),
@@ -1028,9 +1029,7 @@ public class FctBlc<RS> implements IFctApp {
       rz.setUtlXml(lazUtlXml(pRvs));
       rz.setNumStr(lazNumStr(pRvs));
       rz.setHldNmFdCnUvd(lazHldNmCnToStUvd(pRvs));
-      @SuppressWarnings("unchecked")
-      IHldNm<Class<?>, String> hlFdCnDbCp = (IHldNm<Class<?>, String>)
-        laz(pRvs, FctDt.HLCNTOSTDBCP);
+      IHlNmClSt hlFdCnDbCp = (IHlNmClSt) laz(pRvs, FctDt.HLCNTOSTDBCP);
       rz.setHldNmFdCnDbcp(hlFdCnDbCp);
       rz.setHldGets(lazHldGets(pRvs));
       rz.setStgUvd(lazStgUvd(pRvs));

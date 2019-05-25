@@ -50,7 +50,7 @@ import org.beigesoft.cnv.CnvStrDtMs;
  *
  * @author Yury Demidenko
  */
-public class HldNmCnFrStXml implements IHldNm<Class<?>, String> {
+public class HldNmCnFrStXml implements IHlNmClSt {
 
   /**
    * <p>Setting name of converter from string.</p>

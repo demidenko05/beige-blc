@@ -35,6 +35,7 @@ import java.util.Map;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.hld.HldFldStg;
 import org.beigesoft.hld.HldClsStg;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prc.IPrc;
 import org.beigesoft.prc.IPrcEnt;
 
@@ -274,6 +275,18 @@ public class FctDt {
    * <p>Additional entities processors factories.</p>
    **/
   private Set<IFctNm<IPrcEnt<?, ?>>> fctsPrcEnt;
+
+  /**
+   * <p>Additional accounting entity processors names holders
+   *  with high priority.</p>
+   **/
+  private Set<IHlNmClSt> hldsAcEnPr;
+
+  /**
+   * <p>Additional admin entity processors names holders
+   *  with high priority.</p>
+   **/
+  private Set<IHlNmClSt> hldsAdEnPr;
 
   //Simple getters and setters:
   /**
@@ -775,5 +788,39 @@ public class FctDt {
   public final synchronized void setFctsPrcEnt(
     final Set<IFctNm<IPrcEnt<?, ?>>> pFctsPrcEnt) {
     this.fctsPrcEnt = pFctsPrcEnt;
+  }
+
+  /**
+   * <p>Getter for hldsAcEnPr.</p>
+   * @return Set<IHlNmClSt>
+   **/
+  public final synchronized Set<IHlNmClSt> getHldsAcEnPr() {
+    return this.hldsAcEnPr;
+  }
+
+  /**
+   * <p>Setter for hldsAcEnPr.</p>
+   * @param pHldsAcEnPr reference
+   **/
+  public final synchronized void setHldsAcEnPr(
+    final Set<IHlNmClSt> pHldsAcEnPr) {
+    this.hldsAcEnPr = pHldsAcEnPr;
+  }
+
+  /**
+   * <p>Getter for hldsAdEnPr.</p>
+   * @return Set<IHlNmClSt>
+   **/
+  public final synchronized Set<IHlNmClSt> getHldsAdEnPr() {
+    return this.hldsAdEnPr;
+  }
+
+  /**
+   * <p>Setter for hldsAdEnPr.</p>
+   * @param pHldsAdEnPr reference
+   **/
+  public final synchronized void setHldsAdEnPr(
+    final Set<IHlNmClSt> pHldsAdEnPr) {
+    this.hldsAdEnPr = pHldsAdEnPr;
   }
 }

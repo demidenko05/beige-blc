@@ -28,28 +28,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.hld;
 
-
-import org.beigesoft.fct.FctDt;
-
 /**
- * <p>Holder of names of processors for admin-webstore entities.</p>
+ * <p>Abstraction of holder of a thing of type String that is associated with
+ * given Class by given name.</p>
  *
  * @author Yury Demidenko
  */
-public class HlNmPrFeAd implements IHlNmClSt {
-
+public interface IHlNmClSt {
 
   /**
-   * <p>Get processor name for given class and action name.</p>
-   * @param pCls a Class
-   * @param pAct action name
-   * @return processor FE name
+   * <p>Gets String thing for given Class and name.</p>
+   * @param pKey key Class
+   * @param pNm fing name
+   * @return associated thing
    **/
-  @Override
-  public final String get(final Class<?> pCls, final String pAct) {
-    if ("lst".equals(pAct)) {
-      return FctDt.PRADENTPG;
-    }
-    return null;
-  }
+  String get(Class<?> pKey, String pNm);
 }

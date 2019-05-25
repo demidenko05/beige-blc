@@ -91,7 +91,7 @@ public class HldUvd {
   /**
    * <p>Fields converters to string names holder.</p>
    **/
-  private IHldNm<Class<?>, String> hlCnToSt;
+  private IHlNmClSt hlCnToSt;
 
   /**
    * <p>Holder of an entity's field's class.</p>
@@ -439,9 +439,9 @@ public class HldUvd {
 
   /**
    * <p>Getter for hlCnToSt.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHlCnToSt() {
+  public final IHlNmClSt getHlCnToSt() {
     return this.hlCnToSt;
   }
 
@@ -449,7 +449,7 @@ public class HldUvd {
    * <p>Setter for hlCnToSt.</p>
    * @param pHlCnToSt reference
    **/
-  public final void setHlCnToSt(final IHldNm<Class<?>, String> pHlCnToSt) {
+  public final void setHlCnToSt(final IHlNmClSt pHlCnToSt) {
     this.hlCnToSt = pHlCnToSt;
   }
 

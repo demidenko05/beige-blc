@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.IConv;
 import org.beigesoft.cnv.IFilFld;
@@ -89,12 +90,12 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
   /**
    * <p>Fields converters names holder DBCP.</p>
    **/
-  private IHldNm<Class<?>, String> hldNmFdCnDbCp;
+  private IHlNmClSt hldNmFdCnDbCp;
 
   /**
    * <p>Fields converters names holder UVD.</p>
    **/
-  private IHldNm<Class<?>, String> hldNmFdCnUvd;
+  private IHlNmClSt hldNmFdCnUvd;
 
   /**
    * <p>Factory simple converters.</p>
@@ -104,12 +105,12 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
   /**
    * <p>Holder of fillers fields names UVD.</p>
    **/
-  private IHldNm<Class<?>, String> hldFilFdNmsUvd;
+  private IHlNmClSt hldFilFdNmsUvd;
 
   /**
    * <p>Holder of fillers fields names DBCP.</p>
    **/
-  private IHldNm<Class<?>, String> hldFilFdNmsDbCp;
+  private IHlNmClSt hldFilFdNmsDbCp;
 
   /**
    * <p>Settings service UVD.</p>
@@ -288,9 +289,9 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
 
   /**
    * <p>Getter for DBCP hldNmFdCn.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldNmFdCnDbCp() {
+  public final IHlNmClSt getHldNmFdCnDbCp() {
     return this.hldNmFdCnDbCp;
   }
 
@@ -298,15 +299,15 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
    * <p>Setter for DBCP hldNmFdCn.</p>
    * @param pHlNmFdCn DBCP reference
    **/
-  public final void setHldNmFdCnDbCp(final IHldNm<Class<?>, String> pHlNmFdCn) {
+  public final void setHldNmFdCnDbCp(final IHlNmClSt pHlNmFdCn) {
     this.hldNmFdCnDbCp = pHlNmFdCn;
   }
 
   /**
    * <p>Getter for UVD hldNmFdCn.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldNmFdCnUvd() {
+  public final IHlNmClSt getHldNmFdCnUvd() {
     return this.hldNmFdCnUvd;
   }
 
@@ -314,7 +315,7 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
    * <p>Setter for UVD hldNmFdCn.</p>
    * @param pHldNmFdCn UVD reference
    **/
-  public final void setHldNmFdCnUvd(final IHldNm<Class<?>, String> pHldNmFdCn) {
+  public final void setHldNmFdCnUvd(final IHlNmClSt pHldNmFdCn) {
     this.hldNmFdCnUvd = pHldNmFdCn;
   }
 
@@ -336,9 +337,9 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
 
   /**
    * <p>Getter for UVD hldFilFdNms.</p>
-   * @return UVD IHldNm<Class<?>, String>
+   * @return UVD IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldFilFdNmsUvd() {
+  public final IHlNmClSt getHldFilFdNmsUvd() {
     return this.hldFilFdNmsUvd;
   }
 
@@ -346,16 +347,15 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
    * <p>Setter for UVD hldFilFdNms.</p>
    * @param pHldFilFdNmsUvd reference
    **/
-  public final void setHldFilFdNmsUvd(
-    final IHldNm<Class<?>, String> pHldFilFdNmsUvd) {
+  public final void setHldFilFdNmsUvd(final IHlNmClSt pHldFilFdNmsUvd) {
     this.hldFilFdNmsUvd = pHldFilFdNmsUvd;
   }
 
   /**
    * <p>Getter for DBCP hldFilFdNms.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldFilFdNmsDbCp() {
+  public final IHlNmClSt getHldFilFdNmsDbCp() {
     return this.hldFilFdNmsDbCp;
   }
 
@@ -363,8 +363,7 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
    * <p>Setter for DBCP hldFilFdNms.</p>
    * @param pHldFilFdNmsDbCp reference
    **/
-  public final void setHldFilFdNmsDbCp(
-    final IHldNm<Class<?>, String> pHldFilFdNmsDbCp) {
+  public final void setHldFilFdNmsDbCp(final IHlNmClSt pHldFilFdNmsDbCp) {
     this.hldFilFdNmsDbCp = pHldFilFdNmsDbCp;
   }
 

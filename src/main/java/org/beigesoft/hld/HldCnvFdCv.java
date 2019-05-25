@@ -48,7 +48,7 @@ import org.beigesoft.cnv.CnvIbnStrCv;
  *
  * @author Yury Demidenko
  */
-public class HldCnvFdCv implements IHldNm<Class<?>, String> {
+public class HldCnvFdCv implements IHlNmClSt {
 
   //Services:
   /**

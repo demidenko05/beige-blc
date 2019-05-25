@@ -33,7 +33,7 @@ import java.util.Map;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.log.ILog;
 import org.beigesoft.fct.IFctNm;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 
 /**
@@ -56,7 +56,7 @@ public class FilEntRq implements IFilObj<IReqDt> {
   /**
    * <p>Holder of fillers fields names.</p>
   **/
-  private IHldNm<Class<?>, String> hldFilFdNms;
+  private IHlNmClSt hldFilFdNms;
 
   /**
    * <p>Fillers fields factory.</p>
@@ -167,9 +167,9 @@ public class FilEntRq implements IFilObj<IReqDt> {
 
   /**
    * <p>Getter for hldFilFdNms.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldFilFdNms() {
+  public final IHlNmClSt getHldFilFdNms() {
     return this.hldFilFdNms;
   }
 
@@ -178,7 +178,7 @@ public class FilEntRq implements IFilObj<IReqDt> {
    * @param pHldFilFdNms reference
    **/
   public final void setHldFilFdNms(
-    final IHldNm<Class<?>, String> pHldFilFdNms) {
+    final IHlNmClSt pHldFilFdNms) {
     this.hldFilFdNms = pHldFilFdNms;
   }
 }

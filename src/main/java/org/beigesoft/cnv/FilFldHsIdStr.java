@@ -36,6 +36,7 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 
 /**
@@ -62,7 +63,7 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
   /**
    * <p>Holder of fillers fields names.</p>
    **/
-  private IHldNm<Class<?>, String> hldFilFdNms;
+  private IHlNmClSt hldFilFdNms;
 
   /**
    * <p>Fillers fields factory.</p>
@@ -141,9 +142,9 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
 
   /**
    * <p>Getter for hldFilFdNms.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldFilFdNms() {
+  public final IHlNmClSt getHldFilFdNms() {
     return this.hldFilFdNms;
   }
 
@@ -152,7 +153,7 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
    * @param pHldFilFdNms reference
    **/
   public final void setHldFilFdNms(
-    final IHldNm<Class<?>, String> pHldFilFdNms) {
+    final IHlNmClSt pHldFilFdNms) {
     this.hldFilFdNms = pHldFilFdNms;
   }
 

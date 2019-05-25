@@ -42,7 +42,7 @@ import org.beigesoft.cnv.FilNmCvSmp;
  *
  * @author Yury Demidenko
  */
-public class HldFilFdCv implements IHldNm<Class<?>, String> {
+public class HldFilFdCv implements IHlNmClSt {
 
   //Services:
   /**

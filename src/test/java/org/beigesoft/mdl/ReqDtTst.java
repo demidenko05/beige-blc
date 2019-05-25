@@ -70,7 +70,7 @@ public class ReqDtTst implements IReqDt {
   /**
    * <p>User name.</p>
    **/
-  private String usrNm;
+  private String usrNm = "test user";
 
   /**
    * <p>Context path.</p>

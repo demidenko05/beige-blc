@@ -46,6 +46,7 @@ import org.beigesoft.log.ILog;
 import org.beigesoft.dlg.IEvalFr;
 import org.beigesoft.cnv.IConv;
 import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.hld.HldUvd;
 import org.beigesoft.hld.UvdVar;
 import org.beigesoft.rdb.IOrm;
@@ -111,7 +112,7 @@ public class HlpEntPg<RS> {
   /**
    * <p>Field converter names holder.</p>
    **/
-  private IHldNm<Class<?>, String> hldNmCnFd;
+  private IHlNmClSt hldNmCnFd;
 
   /**
    * <p>Fields classes holder.</p>
@@ -899,9 +900,9 @@ public class HlpEntPg<RS> {
 
   /**
    * <p>Getter for hldNmCnFd.</p>
-   * @return IHldNm<Class<?>, String>
+   * @return IHlNmClSt
    **/
-  public final IHldNm<Class<?>, String> getHldNmCnFd() {
+  public final IHlNmClSt getHldNmCnFd() {
     return this.hldNmCnFd;
   }
 
@@ -909,7 +910,7 @@ public class HlpEntPg<RS> {
    * <p>Setter for hldNmCnFd.</p>
    * @param pHldNmCnFd reference
    **/
-  public final void setHldNmCnFd(final IHldNm<Class<?>, String> pHldNmCnFd) {
+  public final void setHldNmCnFd(final IHlNmClSt pHldNmCnFd) {
     this.hldNmCnFd = pHldNmCnFd;
   }
 
