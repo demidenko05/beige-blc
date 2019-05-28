@@ -37,6 +37,12 @@ package org.beigesoft.hld;
 public interface IHlNmClSt {
 
   /**
+   * <p>High priority holder returns this when result is actually null and
+   * it isn't need farther revealing.</p>
+   **/
+  String NULL = "NULL";
+
+  /**
    * <p>Gets String thing for given Class and name.</p>
    * @param pKey key Class
    * @param pNm fing name

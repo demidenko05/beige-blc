@@ -77,7 +77,11 @@ public class HlNmAdEnPr implements IHlNmClSt {
       for (IHlNmClSt hep : this.hldsAdEnPr) {
         String rz = hep.get(pCls, pAct);
         if (rz != null) {
-          return rz;
+          if (NULL.equals(rz)) {
+            return null;
+          } else {
+            return rz;
+          }
         }
       }
     }

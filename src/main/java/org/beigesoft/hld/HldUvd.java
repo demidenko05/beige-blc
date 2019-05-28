@@ -30,6 +30,7 @@ package org.beigesoft.hld;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -39,6 +40,7 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IOwned;
 import org.beigesoft.mdlp.UsPrf;
 import org.beigesoft.fct.IFctNm;
+import org.beigesoft.log.ILog;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.ICnvId;
 import org.beigesoft.cnv.IConv;
@@ -62,6 +64,11 @@ public class HldUvd {
    * <p>Settings service.</p>
    **/
   private ISetng setng;
+
+  /**
+   * <p>Logger.</p>
+   **/
+  private ILog log;
 
   /**
    * <p>Holder of converters ID-SQL/HTML names.</p>
@@ -184,12 +191,24 @@ public class HldUvd {
    * <p>Gets class string setting for given class.</p>
    * @param pCls class
    * @param pStgNm setting name
-   * @return string setting
+   * @return string setting, not null
    * @throws Exception - an exception
    **/
   public final String stg(final Class<?> pCls,
     final String pStgNm) throws Exception {
-    return this.hlClStgMp.get(pStgNm).get(pCls);
+    HldClsStg hl = this.hlClStgMp.get(pStgNm);
+    if (hl == null) {
+      throw new ExcCode(ExcCode.WRCN, "There is no HldClsStg for cls/stgNm: "
+        + pCls.getSimpleName() + "/" + pStgNm);
+    }
+    String rz = hl.get(pCls);
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 6101 && this.log.getDbgCl() > 6099;
+    if (isDbgSh) {
+      this.log.debug(null, getClass(), "Setting for cls/stgNm/stg: "
+        + pCls.getSimpleName() + "/" + pStgNm + "/" + rz);
+    }
+    return rz;
   }
 
   /**
@@ -197,12 +216,24 @@ public class HldUvd {
    * @param pCls class
    * @param pFdNm field name
    * @param pStgNm setting name
-   * @return string setting
+   * @return string setting, not null
    * @throws Exception - an exception
    **/
   public final String stg(final Class<?> pCls, final String pFdNm,
     final String pStgNm) throws Exception {
-    return this.hlFdStgMp.get(pStgNm).get(pCls, pFdNm);
+    HldFldStg hl = this.hlFdStgMp.get(pStgNm);
+    if (hl == null) {
+      throw new ExcCode(ExcCode.WRCN, "There is no HldFldStg for cls/fd/stg: "
+        + pCls.getSimpleName() + "/" + pFdNm + "/" + pStgNm);
+    }
+    String rz = hl.get(pCls, pFdNm);
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 6102 && this.log.getDbgCl() > 6100;
+    if (isDbgSh) {
+      this.log.debug(null, getClass(), "Setting for cls/fdNm/stgNm/stg: "
+        + pCls.getSimpleName() + "/" + pFdNm + "/" + pStgNm + "/" + rz);
+    }
+    return rz;
   }
 
   /**
@@ -238,7 +269,7 @@ public class HldUvd {
   /**
    * <p>Gets class fields in list in lazy mode.</p>
    * @param pCls Entity class
-   * @return fields list
+   * @return fields list, not null
    * @throws Exception - an exception
    **/
   public final String[] lazLstFds(
@@ -256,15 +287,22 @@ public class HldUvd {
             for (String fn : lFdSt.split(",")) {
               lFdLst.add(fn);
             }
-            String[] rz = new String[lFdLst.size()];
-            this.lstFdsMp.put(pCls, lFdLst.toArray(rz));
+            String[] rzt = new String[lFdLst.size()];
+            this.lstFdsMp.put(pCls, lFdLst.toArray(rzt));
           } else {
             this.lstFdsMp.put(pCls, null);
           }
         }
       }
     }
-    return this.lstFdsMp.get(pCls);
+    String[] rz = this.lstFdsMp.get(pCls);
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 6103 && this.log.getDbgCl() > 6101;
+    if (isDbgSh) {
+      this.log.debug(null, getClass(), "lstFds for cls/lstFds: "
+        + pCls.getSimpleName() + "/" + Arrays.toString(rz));
+    }
+    return rz;
   }
 
   /**
@@ -341,6 +379,22 @@ public class HldUvd {
   }
 
   //Synchronized/simple SGS:
+  /**
+   * <p>Geter for log.</p>
+   * @return ILog
+   **/
+  public final synchronized ILog getLog() {
+    return this.log;
+  }
+
+  /**
+   * <p>Setter for log.</p>
+   * @param pLog reference
+   **/
+  public final synchronized void setLog(final ILog pLog) {
+    this.log = pLog;
+  }
+
   /**
    * <p>Getter for setng.</p>
    * @return ISetng

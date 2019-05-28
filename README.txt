@@ -6,7 +6,7 @@ It's based on beige-bcommon.
 It consists of common business logic, e.g. persistable models to store languages, countries, users,
 abstraction and implementations of services like ORM, JDBC, CSV writer, etc.
 
-debug range #5-7 (5000..7999)
+debug range #5-8 (5000..8999)
 
 licenses:
 BSD 2-Clause License

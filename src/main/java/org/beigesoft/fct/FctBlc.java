@@ -940,6 +940,7 @@ public class FctBlc<RS> implements IFctApp {
       .get(HldUvd.class.getSimpleName());
     if (rz == null) {
       rz = new HldUvd();
+      rz.setLog(lazLogStd(pRvs));
       rz.setSetng(lazStgUvd(pRvs));
       rz.setStgOrm(lazStgOrm(pRvs));
       rz.setHldFdCls(lazHldFldCls(pRvs));
