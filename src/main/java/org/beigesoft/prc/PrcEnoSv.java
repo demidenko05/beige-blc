@@ -71,17 +71,17 @@ public class PrcEnoSv<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
       }
     }
     Map<String, Object> vs = new HashMap<String, Object>();
+    this.orm.refrEnt(pRvs, vs, pEnt.getOwnr());
+    long owVrWs = Long.parseLong(pRqDt.getParam("owVr"));
+    if (owVrWs != pEnt.getOwnr().getVer()) {
+      throw new ExcCode(IOrm.DRTREAD, "dirty_read");
+    }
     if (pEnt.getIsNew()) {
       this.orm.insert(pRvs, vs, pEnt);
       pRvs.put("msgSuc", "insert_ok");
     } else {
       this.orm.update(pRvs, vs, pEnt);
       pRvs.put("msgSuc", "update_ok");
-    }
-    this.orm.refrEnt(pRvs, vs, pEnt.getOwnr());
-    long owVrWs = Long.parseLong(pRqDt.getParam("owVr"));
-    if (owVrWs != pEnt.getOwnr().getVer()) {
-      throw new ExcCode(IOrm.DRTREAD, "dirty_read");
     }
     UvdVar uvs = (UvdVar) pRvs.get("uvs");
     uvs.setOwnr(pEnt.getOwnr());

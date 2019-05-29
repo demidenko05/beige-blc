@@ -188,10 +188,11 @@ public class HldUvd {
   }
 
   /**
-   * <p>Gets class string setting for given class.</p>
+   * <p>Gets class string setting for given class.
+   * Maybe null, e.g. widget list header for entities in small numbers.</p>
    * @param pCls class
    * @param pStgNm setting name
-   * @return string setting, not null
+   * @return string setting, maybe null
    * @throws Exception - an exception
    **/
   public final String stg(final Class<?> pCls,
@@ -212,11 +213,13 @@ public class HldUvd {
   }
 
   /**
-   * <p>Gets field string setting for given class, field name.</p>
+   * <p>Gets field string setting for given class, field name.
+   * Maybe null, e.g. widget input for field whose input
+   * is inside another field's input, or without any.</p>
    * @param pCls class
    * @param pFdNm field name
    * @param pStgNm setting name
-   * @return string setting, not null
+   * @return string setting, maybe null
    * @throws Exception - an exception
    **/
   public final String stg(final Class<?> pCls, final String pFdNm,
@@ -274,7 +277,7 @@ public class HldUvd {
    **/
   public final String[] lazLstFds(
     final Class<?> pCls) throws Exception {
-    if (!this.owdEnts.keySet().contains(pCls)) {
+    if (!this.lstFdsMp.keySet().contains(pCls)) {
       synchronized (this) {
         if (!this.lstFdsMp.keySet().contains(pCls)) {
           String lFdSt = null;
@@ -290,7 +293,8 @@ public class HldUvd {
             String[] rzt = new String[lFdLst.size()];
             this.lstFdsMp.put(pCls, lFdLst.toArray(rzt));
           } else {
-            this.lstFdsMp.put(pCls, null);
+            throw new ExcCode(ExcCode.WRCN, "There is no lstFds for cls: "
+              + pCls);
           }
         }
       }

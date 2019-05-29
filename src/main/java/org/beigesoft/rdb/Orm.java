@@ -47,7 +47,12 @@ import org.beigesoft.cnv.IFiller;
 import org.beigesoft.prp.ISetng;
 
 /**
- * <p>ORM service.</p>
+ * <p>ORM service.
+ * For insert and update use sorted array of fields names pVs["ndFds"]
+ * to restrict affected fields.
+ * For select use sorted array of fields names pVs["[entitySimpleName]ndFds"]
+ * to retrieve only needed fields.
+ * </p>
  *
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
