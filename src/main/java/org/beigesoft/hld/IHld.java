@@ -37,7 +37,7 @@ package org.beigesoft.hld;
  * @author Yury Demidenko
  */
 public interface IHld<K, A> {
-
+//TODO substitute to less generic abstractions
   /**
    * <p>Get associated thing for given one,
    * e.g. ID of native entity associated with ID of foreign entity.</p>

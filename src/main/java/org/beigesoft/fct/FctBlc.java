@@ -415,6 +415,7 @@ public class FctBlc<RS> implements IFctApp {
       .get(HndI18nRq.class.getSimpleName());
     if (rz == null) {
       rz = new HndI18nRq<RS>();
+      rz.setSrvDt(lazSrvDt(pRvs));
       rz.setOrm(lazOrm(pRvs));
       @SuppressWarnings("unchecked")
       IRdb<RS> rdb = (IRdb<RS>) laz(pRvs, IRdb.class.getSimpleName());
@@ -978,6 +979,7 @@ public class FctBlc<RS> implements IFctApp {
       rz = new FctNmCnFrSt();
       rz.setLogStd(lazLogStd(pRvs));
       rz.setUtlXml(lazUtlXml(pRvs));
+      rz.setSrvDt(lazSrvDt(pRvs));
       this.beans.put(FctNmCnFrSt.class.getSimpleName(), rz);
       lazLogStd(pRvs).info(pRvs, getClass(), FctNmCnFrSt.class.getSimpleName()
         + " has been created.");
@@ -1028,6 +1030,7 @@ public class FctBlc<RS> implements IFctApp {
     if (rz == null) {
       rz = new FctNmCnToSt();
       rz.setUtlXml(lazUtlXml(pRvs));
+      rz.setSrvDt(lazSrvDt(pRvs));
       rz.setNumStr(lazNumStr(pRvs));
       rz.setHldNmFdCnUvd(lazHldNmCnToStUvd(pRvs));
       IHlNmClSt hlFdCnDbCp = (IHlNmClSt) laz(pRvs, FctDt.HLCNTOSTDBCP);

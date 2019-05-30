@@ -44,6 +44,7 @@ import org.beigesoft.rdb.IRdb;
 import org.beigesoft.rdb.IOrm;
 import org.beigesoft.srv.UtlJsp;
 import org.beigesoft.srv.II18n;
+import org.beigesoft.srv.ISrvDt;
 
 /**
  * <p>It handles request internationalization and other preferences.
@@ -78,6 +79,11 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    * <p>JSP utility.</p>
    */
   private UtlJsp utJsp;
+
+  /**
+   * <p>Date service.</p>
+   **/
+  private ISrvDt srvDt;
 
   //Cached data:
   /**
@@ -192,6 +198,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     pRqVs.put("dcGrSps", this.dcGrSps);
     pRqDt.setAttr("utJsp", this.utJsp);
     pRqDt.setAttr("i18n", this.i18n);
+    pRqDt.setAttr("srvDt", this.srvDt);
   }
 
   /**
@@ -556,5 +563,21 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    **/
   public final void setUtJsp(final UtlJsp pUtJsp) {
     this.utJsp = pUtJsp;
+  }
+
+  /**
+   * <p>Getter for srvDt.</p>
+   * @return ISrvDt
+   **/
+  public final ISrvDt getSrvDt() {
+    return this.srvDt;
+  }
+
+  /**
+   * <p>Setter for srvDt.</p>
+   * @param pSrvDt reference
+   **/
+  public final void setSrvDt(final ISrvDt pSrvDt) {
+    this.srvDt = pSrvDt;
   }
 }

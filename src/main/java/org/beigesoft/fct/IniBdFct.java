@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.math.BigDecimal;
+import java.io.File;
 
 import org.beigesoft.mdl.IOwned;
 import org.beigesoft.mdl.IHasNm;
@@ -56,6 +57,9 @@ import org.beigesoft.mdlp.Cntr;
 import org.beigesoft.mdlp.Lng;
 import org.beigesoft.hld.HldFldStg;
 import org.beigesoft.hld.HldClsStg;
+import org.beigesoft.hld.ICtx;
+import org.beigesoft.prp.ISetng;
+import org.beigesoft.rdb.IOrm;
 
 /**
  * <p>Business-logic dependent sub-initializer main
@@ -70,14 +74,66 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
    * <p>Initializes factory.</p>
    * @param pRvs request scoped vars
    * @param pFct factory
-   * @param pCtxAttr Context attributes
+   * @param pCtx Context
    * @throws Exception - an exception
    **/
   @Override
   public final void iniBd(final Map<String, Object> pRvs,
-    final IFctAsm<RS> pFct) throws Exception {
+    final IFctAsm<RS> pFct, final ICtx pCtx) throws Exception {
+    makeVars(pRvs, pFct, pCtx);
     makeUvdCls(pRvs, pFct);
     makeUvdFds(pRvs, pFct);
+  }
+
+  /**
+   * <p>Makes variables from web.xml.</p>
+   * @param pRvs request scoped vars
+   * @param pFct factory app
+   * @param pCtx Context
+   * @throws Exception - an exception
+   **/
+  public final void makeVars(final Map<String, Object> pRvs,
+    final IFctAsm<RS> pFct, final ICtx pCtx) throws Exception {
+    pFct.getFctBlc().getFctDt().setUplDir(pCtx.getParam("uplDir"));
+    pFct.getFctBlc().getFctDt().setStgUvdDir(pCtx.getParam("uvdDir"));
+    pFct.getFctBlc().getFctDt().setStgOrmDir(pCtx.getParam("ormDir"));
+    pFct.getFctBlc().getFctDt().setStgDbCpDir(pCtx.getParam("dbcpDir"));
+    pFct.getFctBlc().getFctDt().setLngCntr(pCtx.getParam("lngCntr"));
+    pFct.getFctBlc().getFctDt().setNewDbId(Integer.parseInt(pCtx
+      .getParam("newDbId")));
+    pFct.getFctBlc().getFctDt().setDbgSh(Boolean.parseBoolean(pCtx
+      .getParam("dbgSh")));
+    pFct.getFctBlc().getFctDt().setDbgFl(Integer.parseInt(pCtx
+      .getParam("dbgFl")));
+    pFct.getFctBlc().getFctDt().setDbgCl(Integer.parseInt(pCtx
+      .getParam("dbgCl")));
+    pFct.getFctBlc().getFctDt().setWriteTi(Integer.valueOf(pCtx
+      .getParam("writeTi")));
+    pFct.getFctBlc().getFctDt().setReadTi(Integer.valueOf(pCtx
+      .getParam("readTi")));
+    pFct.getFctBlc().getFctDt().setWriteReTi(Integer.valueOf(pCtx
+      .getParam("writeReTi")));
+    pFct.getFctBlc().getFctDt().setWrReSpTr(Boolean.valueOf(pCtx
+      .getParam("wrReSpTr")));
+    pFct.getFctBlc().getFctDt().setLogSize(Integer.parseInt(pCtx
+      .getParam("logSize")));
+    pFct.getFctBlc().getFctDt().setAppPth(pCtx.getAppPth());
+    pFct.getFctBlc().getFctDt()
+      .setLogPth(pFct.getFctBlc().getFctDt().getAppPth());
+    ISetng setng = pFct.getFctBlc().lazStgOrm(pRvs);
+    String dbUrl = setng.lazCmnst().get(IOrm.DBURL);
+    if (dbUrl.contains(IOrm.CURDIR)) { //sqlite
+      dbUrl = dbUrl.replace(IOrm.CURDIR, pFct.getFctBlc().getFctDt().getAppPth()
+        + File.separator);
+    }
+    pFct.getFctBlc().getFctDt().setDbUrl(dbUrl);
+    String dbCls = setng.lazCmnst().get(IOrm.JDBCCLS);
+    if (dbCls == null) {
+      dbCls = setng.lazCmnst().get(IOrm.DSCLS);
+    }
+    pFct.getFctBlc().getFctDt().setDbCls(dbCls);
+    pFct.getFctBlc().getFctDt().setDbUsr(setng.lazCmnst().get(IOrm.DBUSR));
+    pFct.getFctBlc().getFctDt().setDbPwd(setng.lazCmnst().get(IOrm.DBPSW));
   }
 
   /**
@@ -274,8 +330,9 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.getCustSclss().add(IHasNm.class);
     //Standard:
     hlFdSt.setStgClss(new HashMap<Class<?>, String>());
-    hlFdSt.getStgClss().put(Integer.class, "int");
+    hlFdSt.getStgClss().put(Integer.class, "int"); //WARN avoid use as ID
     hlFdSt.getStgClss().put(Float.class, "max");
+    hlFdSt.getStgClss().put(Double.class, "max");
     hlFdSt.getStgClss().put(UsTmc.class, "usr");
     pFct.getFctBlc().getFctDt().getHlFdStgMp().put(stgNm, hlFdSt);
     stgNm = "wde"; //confirm delete input

@@ -25,7 +25,7 @@ See LICENSE in base folder
   org.beigesoft.mdlp.EmMsg,
   org.beigesoft.mdlp.EmRcp,
   org.beigesoft.mdlp.EmAtch</entry>
-<entry key="stgClsNms">exlFlds,idFlds,owdEnts,lstFds</entry>
+<entry key="stgClsNms">exlFlds,idFlds,owdEnts,frmFds,lstFds,pickFds</entry>
 <entry key="stgFldNms">cnToSt,cnFrSt,inp,flt,str,wde</entry>
 <entry key="exlFlds"></entry>
 </properties>

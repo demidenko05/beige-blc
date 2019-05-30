@@ -26,28 +26,54 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.fct;
+package org.beigesoft.cnv;
 
 import java.util.Map;
+import java.util.Date;
 
-import org.beigesoft.hld.ICtx;
+import org.beigesoft.srv.ISrvDt;
 
 /**
- * <p>Abstraction of business-logic dependent sub-initializer main
- * factory during startup.</p>
+ * <p>Converter month to string ISO8601 no time, e.g. "2001-07".</p>
  *
- * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public interface IIniBdFct<RS> {
+public class CnvMnthStr implements IConv<Date, String> {
 
   /**
-   * <p>Initializes business-dependent things in factory.</p>
-   * @param pRvs request scoped vars
-   * @param pFct factory
-   * @param pCtx context params holder
+   * <p>Date service.</p>
+   **/
+  private ISrvDt srvDt;
+
+  /**
+   * <p>Converts Date to string.</p>
+   * @param pRqVs request scoped vars
+   * @param pObj object
+   * @return string representation
    * @throws Exception - an exception
    **/
-  void iniBd(Map<String, Object> pRvs, IFctAsm<RS> pFct,
-    ICtx pCtx) throws Exception;
+  @Override
+  public final String conv(final Map<String, Object> pRqVs,
+    final Date pObj) throws Exception {
+    if (pObj == null) {
+      return "";
+    }
+    return this.srvDt.toYearMonth(pObj);
+  }
+
+  /**
+   * <p>Getter for srvDt.</p>
+   * @return ISrvDt
+   **/
+  public final ISrvDt getSrvDt() {
+    return this.srvDt;
+  }
+
+  /**
+   * <p>Setter for srvDt.</p>
+   * @param pSrvDt reference
+   **/
+  public final void setSrvDt(final ISrvDt pSrvDt) {
+    this.srvDt = pSrvDt;
+  }
 }

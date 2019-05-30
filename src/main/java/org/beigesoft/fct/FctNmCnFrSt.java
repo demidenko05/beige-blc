@@ -52,7 +52,9 @@ import org.beigesoft.cnv.CnvStrDblFm;
 import org.beigesoft.cnv.CnvStrFltFm;
 import org.beigesoft.cnv.CnvStrIntFm;
 import org.beigesoft.cnv.CnvStrLngFm;
+import org.beigesoft.cnv.CnvStrMnth;
 import org.beigesoft.srv.IUtlXml;
+import org.beigesoft.srv.ISrvDt;
 
 /**
  * <p>Factory of fields converters from string.</p>
@@ -71,6 +73,11 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
    * <p>XML utility.</p>
    **/
   private IUtlXml utlXml;
+
+  /**
+   * <p>Date service.</p>
+   **/
+  private ISrvDt srvDt;
 
   //requested data:
   /**
@@ -101,6 +108,8 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
             rz = crPuCnvStrDtSc();
           } else if (CnvStrDtMsFm.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvStrDtMsFm();
+          } else if (CnvStrMnth.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvStrMnth();
           } else if (CnvStrDtTm.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvStrDtTm();
           } else if (CnvStrStr.class.getSimpleName().equals(pCnNm)) {
@@ -182,6 +191,19 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
     CnvStrDtMsFm rz = new CnvStrDtMsFm();
     this.convrts.put(CnvStrDtMsFm.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvStrDtMsFm.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvStrMnth.</p>
+   * @return CnvStrMnth
+   */
+  private CnvStrMnth crPuCnvStrMnth() {
+    CnvStrMnth rz = new CnvStrMnth();
+    rz.setSrvDt(getSrvDt());
+    this.convrts.put(CnvStrMnth.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvStrMnth.class.getSimpleName()
       + " has been created.");
     return rz;
   }
@@ -386,5 +408,21 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
    **/
   public final void setUtlXml(final IUtlXml pUtlXml) {
     this.utlXml = pUtlXml;
+  }
+
+  /**
+   * <p>Getter for srvDt.</p>
+   * @return ISrvDt
+   **/
+  public final ISrvDt getSrvDt() {
+    return this.srvDt;
+  }
+
+  /**
+   * <p>Setter for srvDt.</p>
+   * @param pSrvDt reference
+   **/
+  public final void setSrvDt(final ISrvDt pSrvDt) {
+    this.srvDt = pSrvDt;
   }
 }

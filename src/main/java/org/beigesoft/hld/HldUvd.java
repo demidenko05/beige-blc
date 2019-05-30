@@ -107,9 +107,21 @@ public class HldUvd {
 
   //derived/transformed settings:
   /**
-   * <p>Entities fields in list map.</p>
+   * <p>Entities fields in form map.</p>
+   **/
+  private final Map<Class<?>, String[]> frmFdsMp =
+    new HashMap<Class<?>, String[]>();
+
+  /**
+   * <p>Entities fields in list map that is different from frmFds.</p>
    **/
   private final Map<Class<?>, String[]> lstFdsMp =
+    new HashMap<Class<?>, String[]>();
+
+  /**
+   * <p>Entities fields in picker list map that is different from frmFds.</p>
+   **/
+  private final Map<Class<?>, String[]> pickFdsMp =
     new HashMap<Class<?>, String[]>();
 
   /**
@@ -134,7 +146,7 @@ public class HldUvd {
    * @throws Exception - an exception
    **/
   public final String setJs(final Map<String, Object> pRvs,
-    final Map<String, String> pUsdDp, final String pPlNm) {
+    final Map<String, String> pUsdDp, final String pPlNm) throws Exception {
     CmnPrf cpf = (CmnPrf) pRvs.get("cpf");
     UsPrf upf = (UsPrf) pRvs.get("upf");
     StringBuffer sb = new StringBuffer("bsSetNumVs('" + cpf.getDcSpv() + "','"
@@ -165,6 +177,9 @@ public class HldUvd {
    **/
   public final String idHtml(final Map<String, Object> pRvs,
     final IHasId<?> pEnt) throws Exception {
+    if (pEnt == null) {
+      throw new Exception("NULL pEnt!!!");
+    }
     String cvIdSqNm = this.hldCnvId.get(pEnt.getClass());
     @SuppressWarnings("rawtypes")
     ICnvId cvIdSq = this.fctCnvId.laz(pRvs, cvIdSqNm);
@@ -181,6 +196,9 @@ public class HldUvd {
    **/
   public final String idSql(final Map<String, Object> pRvs,
     final IHasId<?> pEnt) throws Exception {
+    if (pEnt == null) {
+      throw new Exception("NULL pEnt!!!");
+    }
     String cvIdSqNm = this.hldCnvId.get(pEnt.getClass());
     @SuppressWarnings("rawtypes")
     ICnvId cvIdSq = this.fctCnvId.laz(pRvs, cvIdSqNm);
@@ -197,6 +215,12 @@ public class HldUvd {
    **/
   public final String stg(final Class<?> pCls,
     final String pStgNm) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (pStgNm == null) {
+      throw new Exception("NULL pStgNm!!!");
+    }
     HldClsStg hl = this.hlClStgMp.get(pStgNm);
     if (hl == null) {
       throw new ExcCode(ExcCode.WRCN, "There is no HldClsStg for cls/stgNm: "
@@ -213,6 +237,29 @@ public class HldUvd {
   }
 
   /**
+   * <p>Gets class string setting for given class, not null.</p>
+   * @param pCls class
+   * @param pStgNm setting name
+   * @return string setting, not null
+   * @throws Exception - an exception
+   **/
+  public final String stgNn(final Class<?> pCls,
+    final String pStgNm) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (pStgNm == null) {
+      throw new Exception("NULL pStgNm!!!");
+    }
+    String rz = stg(pCls, pStgNm);
+    if (rz == null) {
+      throw new Exception("NULL stg for cls/stgNm: "
+        + pCls.getSimpleName() + "/" + pStgNm);
+    }
+    return rz;
+  }
+
+  /**
    * <p>Gets field string setting for given class, field name.
    * Maybe null, e.g. widget input for field whose input
    * is inside another field's input, or without any.</p>
@@ -224,6 +271,15 @@ public class HldUvd {
    **/
   public final String stg(final Class<?> pCls, final String pFdNm,
     final String pStgNm) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (pFdNm == null) {
+      throw new Exception("NULL pFdNm!!!");
+    }
+    if (pStgNm == null) {
+      throw new Exception("NULL pStgNm!!!");
+    }
     HldFldStg hl = this.hlFdStgMp.get(pStgNm);
     if (hl == null) {
       throw new ExcCode(ExcCode.WRCN, "There is no HldFldStg for cls/fd/stg: "
@@ -240,13 +296,47 @@ public class HldUvd {
   }
 
   /**
+   * <p>Gets non-null field string setting for given class, field name.</p>
+   * @param pCls class
+   * @param pFdNm field name
+   * @param pStgNm setting name
+   * @return string setting, not null
+   * @throws Exception - an exception
+   **/
+  public final String stgNn(final Class<?> pCls, final String pFdNm,
+    final String pStgNm) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (pFdNm == null) {
+      throw new Exception("NULL pFdNm!!!");
+    }
+    if (pStgNm == null) {
+      throw new Exception("NULL pStgNm!!!");
+    }
+    String rz = stg(pCls, pFdNm, pStgNm);
+    if (rz == null) {
+      throw new Exception("NULL setting for cls/fdNm/stgNm: "
+        + pCls.getSimpleName() + "/" + pFdNm + "/" + pStgNm);
+    }
+    return rz;
+  }
+
+  /**
    * <p>Gets field's class.</p>
    * @param pCls class
    * @param pFdNm field name
    * @return field class
    * @throws Exception - an exception
    **/
-  public final Class<?> fldCls(final Class<?> pCls, final String pFdNm) {
+  public final Class<?> fldCls(final Class<?> pCls,
+    final String pFdNm) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (pFdNm == null) {
+      throw new Exception("NULL pFdNm!!!");
+    }
     return this.hldFdCls.get(pCls, pFdNm);
   }
 
@@ -262,6 +352,12 @@ public class HldUvd {
    **/
   public final String toStr(final Map<String, Object> pRvs, final Class<?> pCls,
     final String pFdNm, final Object pFdVl) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (pFdNm == null) {
+      throw new Exception("NULL pFdNm!!!");
+    }
     String cnm = this.hlCnToSt.get(pCls, pFdNm);
     @SuppressWarnings("unchecked")
     IConv<Object, String> cnv = (IConv<Object, String>) this.fcCnToSt
@@ -270,13 +366,59 @@ public class HldUvd {
   }
 
   /**
-   * <p>Gets class fields in list in lazy mode.</p>
+   * <p>Gets class fields for form in lazy mode.</p>
+   * @param pCls Entity class
+   * @return fields list, not null
+   * @throws Exception - an exception
+   **/
+  public final String[] lazFrmFds(
+    final Class<?> pCls) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (!this.frmFdsMp.keySet().contains(pCls)) {
+      synchronized (this) {
+        if (!this.frmFdsMp.keySet().contains(pCls)) {
+          String lFdSt = null;
+          synchronized (this.setng) {
+            lFdSt = this.setng.lazClsStg(pCls, "frmFds");
+            this.setng.getClsStgs().get(pCls).remove("frmFds");
+          }
+          if (lFdSt != null) {
+            List<String> lFdLst = new ArrayList<String>();
+            for (String fn : lFdSt.split(",")) {
+              lFdLst.add(fn);
+            }
+            String[] rzt = new String[lFdLst.size()];
+            this.frmFdsMp.put(pCls, lFdLst.toArray(rzt));
+          } else {
+            throw new ExcCode(ExcCode.WRCN, "There is no frmFds for cls: "
+              + pCls);
+          }
+        }
+      }
+    }
+    String[] rz = this.frmFdsMp.get(pCls);
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 6103 && this.log.getDbgCl() > 6101;
+    if (isDbgSh) {
+      this.log.debug(null, getClass(), "frmFds for cls/frmFds: "
+        + pCls.getSimpleName() + "/" + Arrays.toString(rz));
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Gets class fields for list in lazy mode.</p>
    * @param pCls Entity class
    * @return fields list, not null
    * @throws Exception - an exception
    **/
   public final String[] lazLstFds(
     final Class<?> pCls) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
     if (!this.lstFdsMp.keySet().contains(pCls)) {
       synchronized (this) {
         if (!this.lstFdsMp.keySet().contains(pCls)) {
@@ -293,18 +435,67 @@ public class HldUvd {
             String[] rzt = new String[lFdLst.size()];
             this.lstFdsMp.put(pCls, lFdLst.toArray(rzt));
           } else {
-            throw new ExcCode(ExcCode.WRCN, "There is no lstFds for cls: "
-              + pCls);
+            this.lstFdsMp.put(pCls, null);
           }
         }
       }
     }
     String[] rz = this.lstFdsMp.get(pCls);
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6103 && this.log.getDbgCl() > 6101;
-    if (isDbgSh) {
-      this.log.debug(null, getClass(), "lstFds for cls/lstFds: "
-        + pCls.getSimpleName() + "/" + Arrays.toString(rz));
+    if (rz != null) {
+      boolean isDbgSh = this.log.getDbgSh(this.getClass())
+        && this.log.getDbgFl() < 6104 && this.log.getDbgCl() > 6102;
+      if (isDbgSh) {
+        this.log.debug(null, getClass(), "lstFds for cls/lstFds: "
+          + pCls.getSimpleName() + "/" + Arrays.toString(rz));
+      }
+    } else {
+      rz = lazFrmFds(pCls);
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Gets class fields for picker list in lazy mode.</p>
+   * @param pCls Entity class
+   * @return fields list, not null
+   * @throws Exception - an exception
+   **/
+  public final String[] lazPickFds(
+    final Class<?> pCls) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (!this.pickFdsMp.keySet().contains(pCls)) {
+      synchronized (this) {
+        if (!this.pickFdsMp.keySet().contains(pCls)) {
+          String lFdSt = null;
+          synchronized (this.setng) {
+            lFdSt = this.setng.lazClsStg(pCls, "pickFds");
+            this.setng.getClsStgs().get(pCls).remove("pickFds");
+          }
+          if (lFdSt != null) {
+            List<String> lFdLst = new ArrayList<String>();
+            for (String fn : lFdSt.split(",")) {
+              lFdLst.add(fn);
+            }
+            String[] rzt = new String[lFdLst.size()];
+            this.pickFdsMp.put(pCls, lFdLst.toArray(rzt));
+          } else {
+            this.pickFdsMp.put(pCls, null);
+          }
+        }
+      }
+    }
+    String[] rz = this.pickFdsMp.get(pCls);
+    if (rz != null) {
+      boolean isDbgSh = this.log.getDbgSh(this.getClass())
+        && this.log.getDbgFl() < 6105 && this.log.getDbgCl() > 6103;
+      if (isDbgSh) {
+        this.log.debug(null, getClass(), "pickFds for cls/pickFds: "
+          + pCls.getSimpleName() + "/" + Arrays.toString(rz));
+      }
+    } else {
+      rz = lazFrmFds(pCls);
     }
     return rz;
   }
@@ -318,6 +509,12 @@ public class HldUvd {
    **/
   public final Boolean lazNulb(final Class<?> pCls,
     final String pFdNm) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (pFdNm == null) {
+      throw new Exception("NULL pFdNm!!!");
+    }
     String key = pCls.getSimpleName() + pFdNm;
     if (!this.fldNulMp.keySet().contains(key)) {
       synchronized (this) {
@@ -354,6 +551,9 @@ public class HldUvd {
    **/
   public final List<Class<IOwned<?, ?>>> lazOwnd(
     final Class<?> pCls) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
     if (!this.owdEnts.keySet().contains(pCls)) {
       synchronized (this) {
         if (!this.owdEnts.keySet().contains(pCls)) {

@@ -26,28 +26,25 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.fct;
-
-import java.util.Map;
-
-import org.beigesoft.hld.ICtx;
+package org.beigesoft.hld;
 
 /**
- * <p>Abstraction of business-logic dependent sub-initializer main
- * factory during startup.</p>
+ * <p>Abstraction of context init parameters and APP-path holder.</p>
  *
- * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public interface IIniBdFct<RS> {
+public interface ICtx {
 
   /**
-   * <p>Initializes business-dependent things in factory.</p>
-   * @param pRvs request scoped vars
-   * @param pFct factory
-   * @param pCtx context params holder
-   * @throws Exception - an exception
+   * <p>Gets init parameter.</p>
+   * @param pName parameter name
+   * @return parameter
    **/
-  void iniBd(Map<String, Object> pRvs, IFctAsm<RS> pFct,
-    ICtx pCtx) throws Exception;
+  String getParam(String pName);
+
+  /**
+   * <p>Gets APP path.</p>
+   * @return app path
+   **/
+  String getAppPth();
 }

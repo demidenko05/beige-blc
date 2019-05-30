@@ -9,5 +9,5 @@ See LICENSE in base folder
 <comment>Explicit final definition.</comment>
 <entry key="exlFlds">iid</entry>
 <entry key="idFlds">cntr,lng</entry>
-<entry key="lstFds">cntr,lng,def,dcSp,dcGrSp,dgInGr</entry>
+<entry key="frmFds">cntr,lng,def,dcSp,dcGrSp,dgInGr</entry>
 </properties>
