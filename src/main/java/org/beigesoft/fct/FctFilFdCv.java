@@ -30,13 +30,13 @@ package org.beigesoft.fct;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.lang.reflect.Method;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.ColVals;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClMt;
+import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.cnv.IConvNmInto;
 import org.beigesoft.cnv.IFilNm;
@@ -66,12 +66,12 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
   /**
    * <p>Fields getters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldGets;
+  private IHlNmClMt hldGets;
 
   /**
    * <p>Holder of an entity's field's class.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   /**
    * <p>Fields converters names.</p>
@@ -191,9 +191,9 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
 
   /**
    * <p>Getter for hldGets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldGets() {
+  public final IHlNmClMt getHldGets() {
     return this.hldGets;
   }
 
@@ -201,14 +201,14 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
    * <p>Setter for hldGets.</p>
    * @param pHldGets reference
    **/
-  public final void setHldGets(final IHldNm<Class<?>, Method> pHldGets) {
+  public final void setHldGets(final IHlNmClMt pHldGets) {
     this.hldGets = pHldGets;
   }
 
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctCls<IConv<String, Object>
+   * @return IFctNm<IConvNmInto<?, ColVals>>
    **/
   public final IFctNm<IConvNmInto<?, ColVals>> getFctCnvFld() {
     return this.fctCnvFld;
@@ -241,9 +241,9 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
 
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -251,7 +251,7 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 

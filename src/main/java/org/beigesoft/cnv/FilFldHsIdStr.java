@@ -35,7 +35,8 @@ import java.lang.reflect.Method;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClMt;
+import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 
@@ -53,12 +54,12 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
   /**
    * <p>Fields classes holder.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   /**
    * <p>Fields setters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldSets;
+  private IHlNmClMt hldSets;
 
   /**
    * <p>Holder of fillers fields names.</p>
@@ -110,9 +111,9 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
   //Simple getters and setters:
   /**
    * <p>Getter for hldSets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldSets() {
+  public final IHlNmClMt getHldSets() {
     return this.hldSets;
   }
 
@@ -120,7 +121,7 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
    * <p>Setter for hldSets.</p>
    * @param pHldSets reference
    **/
-  public final void setHldSets(final IHldNm<Class<?>, Method> pHldSets) {
+  public final void setHldSets(final IHlNmClMt pHldSets) {
     this.hldSets = pHldSets;
   }
 
@@ -152,16 +153,15 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
    * <p>Setter for hldFilFdNms.</p>
    * @param pHldFilFdNms reference
    **/
-  public final void setHldFilFdNms(
-    final IHlNmClSt pHldFilFdNms) {
+  public final void setHldFilFdNms(final IHlNmClSt pHldFilFdNms) {
     this.hldFilFdNms = pHldFilFdNms;
   }
 
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -169,7 +169,7 @@ public class FilFldHsIdStr<E extends IHasId<ID>, ID>
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 

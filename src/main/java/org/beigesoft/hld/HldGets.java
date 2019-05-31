@@ -40,7 +40,7 @@ import org.beigesoft.srv.IReflect;
  *
  * @author Yury Demidenko
  */
-public class HldGets implements IHldNm<Class<?>, Method> {
+public class HldGets implements IHlNmClMt {
 
   /**
    * <p>Reflection service.</p>
@@ -58,11 +58,13 @@ public class HldGets implements IHldNm<Class<?>, Method> {
    * @param pCls a Class
    * @param pFlNm Thing Name
    * @return getter or exception if not found
+   * @throws Exception an Exception
    **/
   @Override
-  public final Method get(final Class<?> pCls, final String pFlNm) {
+  public final Method get(final Class<?> pCls,
+    final String pFlNm) throws Exception {
     if (pCls == null || pFlNm == null) {
-      throw new RuntimeException("NULL parameter cls/fld: " + pCls
+      throw new Exception("NULL parameter cls/fld: " + pCls
         + "/" + pFlNm);
     }
     Map<String, Method> gtsMp = this.getsMap.get(pCls);

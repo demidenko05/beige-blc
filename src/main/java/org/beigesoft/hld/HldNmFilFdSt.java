@@ -65,7 +65,7 @@ public class HldNmFilFdSt implements IHlNmClSt {
   /**
    * <p>Holder of an entity's field's class.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   /**
    * <p>Holder of custom field's fillers. It's a settings service.</p>
@@ -84,9 +84,11 @@ public class HldNmFilFdSt implements IHlNmClSt {
    * @param pCls a Class
    * @param pFlNm Field Name
    * @return filler from string name
+   * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls, final String pFlNm) {
+  public final String get(final Class<?> pCls,
+    final String pFlNm) throws Exception {
     if (this.stdFilNms == null) {
       synchronized (this) {
         if (this.stdFilNms == null) {
@@ -104,16 +106,16 @@ public class HldNmFilFdSt implements IHlNmClSt {
     String rez = this.stdFilNms.get(fdCls);
     if (rez == null) {
       if (this.setng == null) {
-    throw new RuntimeException("Not set holder FIL FLD FR STR! enCl/flNm/fdCl: "
+    throw new Exception("Not set holder FIL FLD FR STR! enCl/flNm/fdCl: "
   + pCls.getSimpleName() + "/" + pFlNm + "/" + fdCls.getSimpleName());
       }
       try {
         rez = this.setng.lazFldStg(pCls, pFlNm, FILFDSTRNM);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new Exception(e);
       }
       if (rez == null) {
-        throw new RuntimeException(
+        throw new Exception(
           "Custom holder has no FIL FLD FR STR enCl/fdNm/fdCl: "
             + pCls.getSimpleName() + "/" + pFlNm + "/" + fdCls.getSimpleName());
       }
@@ -123,10 +125,11 @@ public class HldNmFilFdSt implements IHlNmClSt {
 
   /**
    * <p>Initializes standard fillers map, unsynchronized.</p>
+   * @throws Exception an Exception
    **/
-  private void init() {
+  private void init() throws Exception {
     if (this.filSmpNm == null || this.filHasIdNm == null) {
-      throw new RuntimeException("Non-configured fillers names: FILHSID/FILSMP"
+      throw new Exception("Non-configured fillers names: FILHSID/FILSMP"
         + this.filHasIdNm + "/" + this.filSmpNm);
     }
     Map<Class<?>, String> sfm = new HashMap<Class<?>, String>();
@@ -145,9 +148,9 @@ public class HldNmFilFdSt implements IHlNmClSt {
   //Simple getters and setters:
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -155,7 +158,7 @@ public class HldNmFilFdSt implements IHlNmClSt {
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 

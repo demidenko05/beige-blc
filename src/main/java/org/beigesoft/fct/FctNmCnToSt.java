@@ -30,12 +30,11 @@ package org.beigesoft.fct;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.lang.reflect.Method;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.IConv;
@@ -104,7 +103,7 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
   /**
    * <p>Fields getters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldGets;
+  private IHlNmClMt hldGets;
 
   /**
    * <p>Settings service UVD.</p>
@@ -215,6 +214,7 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    */
   private CnvDtStr crPuCnvDtStr() {
     CnvDtStr rz = new CnvDtStr();
+    rz.setSrvDt(getSrvDt());
     this.convrts.put(CnvDtStr.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvDtStr.class.getSimpleName()
       + " has been created.");
@@ -227,6 +227,7 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    */
   private CnvDtScStr crPuCnvDtScStr() {
     CnvDtScStr rz = new CnvDtScStr();
+    rz.setSrvDt(getSrvDt());
     this.convrts.put(CnvDtScStr.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvDtScStr.class.getSimpleName()
       + " has been created.");
@@ -239,6 +240,7 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    */
   private CnvDtMsStr crPuCnvDtMsStr() {
     CnvDtMsStr rz = new CnvDtMsStr();
+    rz.setSrvDt(getSrvDt());
     this.convrts.put(CnvDtMsStr.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvDtMsStr.class.getSimpleName()
       + " has been created.");
@@ -251,6 +253,7 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    */
   private CnvDtTmStr crPuCnvDtTmStr() {
     CnvDtTmStr rz = new CnvDtTmStr();
+    rz.setSrvDt(getSrvDt());
     this.convrts.put(CnvDtTmStr.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvDtTmStr.class.getSimpleName()
       + " has been created.");
@@ -517,9 +520,9 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
 
   /**
    * <p>Getter for hldGets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldGets() {
+  public final IHlNmClMt getHldGets() {
     return this.hldGets;
   }
 
@@ -527,7 +530,7 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    * <p>Setter for hldGets.</p>
    * @param pHldGets reference
    **/
-  public final void setHldGets(final IHldNm<Class<?>, Method> pHldGets) {
+  public final void setHldGets(final IHlNmClMt pHldGets) {
     this.hldGets = pHldGets;
   }
 

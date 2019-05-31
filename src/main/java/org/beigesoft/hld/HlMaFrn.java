@@ -40,7 +40,7 @@ import org.beigesoft.rdb.IOrm;
  * @param <RS> platform dependent RDBMS recordset
  * @author Yury Demidenko
  */
-public class HlMaFrn<RS> implements IHldEx<Long, MaFrn>  {
+public class HlMaFrn<RS> implements IHlMaFrn {
 
   /**
    * <p>ORM service.</p>

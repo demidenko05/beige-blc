@@ -59,7 +59,7 @@ public class HldFldStg implements IHlNmClSt {
   /**
    * <p>Holder of an entity's field's class.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   /**
    * <p>Holder of custom field's converters. It's a settings service.</p>
@@ -112,9 +112,11 @@ public class HldFldStg implements IHlNmClSt {
    * @param pCls a Class
    * @param pFlNm Field Name
    * @return converter to string name
+   * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls, final String pFlNm) {
+  public final String get(final Class<?> pCls,
+    final String pFlNm) throws Exception {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
     if (fdCls.isEnum() && this.enumVal != null) {
       return this.enumVal;
@@ -123,7 +125,7 @@ public class HldFldStg implements IHlNmClSt {
       try {
         return this.setng.lazFldStg(pCls, pFlNm, this.stgNm);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new Exception(e);
       }
     }
     if (this.setng != null && this.custSclss != null) {
@@ -132,7 +134,7 @@ public class HldFldStg implements IHlNmClSt {
           try {
             return this.setng.lazFldStg(pCls, pFlNm, this.stgNm);
           } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new Exception(e);
           }
         }
       }
@@ -155,7 +157,7 @@ public class HldFldStg implements IHlNmClSt {
       }
     }
     if (NOSTD.equals(this.stdVal)) {
-      throw new RuntimeException("There is no setting for cls/fld/stg: "
+      throw new Exception("There is no setting for cls/fld/stg: "
         + pCls + "/" + pFlNm + "/" + this.stgNm);
     }
     return this.stdVal;
@@ -180,9 +182,9 @@ public class HldFldStg implements IHlNmClSt {
 
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -190,7 +192,7 @@ public class HldFldStg implements IHlNmClSt {
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 

@@ -38,7 +38,7 @@ import java.util.Map;
  * @author Yury Demidenko
  */
 public interface IFctNm<T> {
-
+//TODO subs less generic
   /**
    * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
    * @param pRqVs request scoped vars

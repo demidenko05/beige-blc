@@ -172,20 +172,6 @@ public class UtlJsp {
   }
 
   /**
-   * <p>Escape HTML character to UTF-8 for given string.</p>
-   * @param pSource string
-   * @return String escaped
-   **/
-  public final String escapeHtml(final String pSource) {
-    StringBuffer sb = new StringBuffer();
-    for (int i = 0; i < pSource.length(); i++) {
-      char ch = pSource.charAt(i);
-      sb.append(htmlEscape(ch));
-    }
-    return sb.toString();
-  }
-
-  /**
    * <p>Clip file name from full path.</p>
    * @param pPath string
    * @return String file name
@@ -205,61 +191,5 @@ public class UtlJsp {
       idxEnd = idxDot;
     }
     return pPath.substring(idxStart, idxEnd);
-  }
-
-  /**
-   * <p>Escape HTML character to UTF-8 for given character.</p>
-   * @param pChar character e.g. '''
-   * @return String escaped
-   **/
-  public final String htmlEscape(final char pChar) {
-    if (pChar == ' ') {
-      return "%20";
-    } else if (pChar == '!') {
-      return "%21";
-    } else if (pChar == '"') {
-      return "%22";
-    } else if (pChar == '#') {
-      return "%23";
-    } else if (pChar == '$') {
-      return "%24";
-    } else if (pChar == '%') {
-      return "%25";
-    } else if (pChar == '&') {
-      return "%26";
-    } else if (pChar == '\'') {
-      return "%27";
-    } else if (pChar == '(') {
-      return "%28";
-    } else if (pChar == ')') {
-      return "%29";
-    } else if (pChar == '*') {
-      return "%2A";
-    } else if (pChar == '+') {
-      return "%2B";
-    } else if (pChar == ',') {
-      return "%2C";
-    } else if (pChar == '-') {
-      return "%2D";
-    } else if (pChar == '.') {
-      return "%2E";
-    } else if (pChar == '/') {
-      return "%2F";
-    } else if (pChar == ':') {
-      return "%3A";
-    } else if (pChar == ';') {
-      return "%3B";
-    } else if (pChar == '<') {
-      return "%3C";
-    } else if (pChar == '=') {
-      return "%3D";
-    } else if (pChar == '>') {
-      return "%3E";
-    } else if (pChar == '?') {
-      return "%3F";
-    } else if (pChar == '@') {
-      return "%40";
-    } //TODO all chars
-    return String.valueOf(pChar);
   }
 }

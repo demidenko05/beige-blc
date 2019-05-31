@@ -30,6 +30,7 @@ package org.beigesoft.hld;
 
 import java.util.Set;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IIdLn;
 import org.beigesoft.mdl.IIdStr;
 import org.beigesoft.cnv.CnvIdCst;
@@ -41,22 +42,23 @@ import org.beigesoft.cnv.CnvIdStr;
  *
  * @author Yury Demidenko
  */
-public class HldCnvId implements IHld<Class<?>, String> {
+public class HldCnvId implements IHlClSt {
 
   /**
    * <p>Set of classes with custom ID (composite, ID is foreign entity or custom
    * ID name).</p>
    **/
-  private Set<Class<?>> custIdClss;
+  private Set<Class<? extends IHasId<?>>> custIdClss;
 
   /**
    * <p>Get converter name for given class and field name.</p>
    * @param pCls a Class
    * @param pFlNm Field Name
    * @return converter from string name
+   * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls) {
+  public final String get(final Class<?> pCls) throws Exception {
     if (this.custIdClss != null && this.custIdClss.contains(pCls)) {
       return CnvIdCst.class.getSimpleName();
     }
@@ -66,16 +68,16 @@ public class HldCnvId implements IHld<Class<?>, String> {
     if (IIdStr.class.isAssignableFrom(pCls)) {
       return CnvIdStr.class.getSimpleName();
     }
-    throw new RuntimeException("There is no ICnvId for class: "
+    throw new Exception("There is no ICnvId for class: "
       + pCls.getSimpleName());
   }
 
   //Simple getters and setters:
   /**
    * <p>Getter for custIdClss.</p>
-   * @return Set<Class<?>>
+   * @return Set<Class<IHasId<?>>>
    **/
-  public final Set<Class<?>> getCustIdClss() {
+  public final Set<Class<? extends IHasId<?>>> getCustIdClss() {
     return this.custIdClss;
   }
 
@@ -83,7 +85,8 @@ public class HldCnvId implements IHld<Class<?>, String> {
    * <p>Setter for custIdClss.</p>
    * @param pCustIdClss reference
    **/
-  public final void setCustIdClss(final Set<Class<?>> pCustIdClss) {
+  public final void setCustIdClss(
+    final Set<Class<? extends IHasId<?>>> pCustIdClss) {
     this.custIdClss = pCustIdClss;
   }
 }

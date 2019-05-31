@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.List;
 import java.util.Map;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.hld.HldFldStg;
 import org.beigesoft.hld.HldClsStg;
@@ -232,18 +233,18 @@ public class FctDt {
   /**
    * <p>Admin/webstore non-shared entities.</p>
    **/
-  private List<Class<?>> admEnts;
+  private List<Class<? extends IHasId<?>>> admEnts;
 
   /**
    * <p>Forbidden entities for base entity request handler, e.g. UsTmc.</p>
    **/
-  private List<Class<?>> fbdEnts;
+  private List<Class<? extends IHasId<?>>> fbdEnts;
 
   /**
    * <p>Shared non-editable entities for base entity request handler,
    * e.g. email connection EmCon.</p>
    **/
-  private List<Class<?>> shrEnts;
+  private List<Class<? extends IHasId<?>>> shrEnts;
 
   /**
    * <p>Holders class string settings.</p>
@@ -259,7 +260,7 @@ public class FctDt {
    * <p>Set of classes with custom ID (composite, ID is foreign entity or custom
    * ID name).</p>
    **/
-  private Set<Class<?>> custIdClss;
+  private Set<Class<? extends IHasId<?>>> custIdClss;
 
   /**
    * <p>Outside base processors factories.</p>
@@ -277,10 +278,10 @@ public class FctDt {
   private Set<IFctNm<IPrcEnt<?, ?>>> fctsPrcEnt;
 
   /**
-   * <p>Additional accounting entity processors names holders
+   * <p>Additional base entity processors names holders
    *  with high priority.</p>
    **/
-  private Set<IHlNmClSt> hldsAcEnPr;
+  private Set<IHlNmClSt> hldsBsEnPr;
 
   /**
    * <p>Additional admin entity processors names holders
@@ -627,9 +628,9 @@ public class FctDt {
 
   /**
    * <p>Getter for shrEnts.</p>
-   * @return List<Class<?>>
+   * @return List<Class<? extends IHasId<?>>>
    **/
-  public final synchronized List<Class<?>> getShrEnts() {
+  public final synchronized List<Class<? extends IHasId<?>>> getShrEnts() {
     return this.shrEnts;
   }
 
@@ -637,15 +638,16 @@ public class FctDt {
    * <p>Setter for shrEnts.</p>
    * @param pShrEnts reference
    **/
-  public final synchronized void setShrEnts(final List<Class<?>> pShrEnts) {
+  public final synchronized void setShrEnts(
+    final List<Class<? extends IHasId<?>>> pShrEnts) {
     this.shrEnts = pShrEnts;
   }
 
   /**
    * <p>Getter for admEnts.</p>
-   * @return List<Class<?>>
+   * @return List<Class<? extends IHasId<?>>>
    **/
-  public final synchronized List<Class<?>> getAdmEnts() {
+  public final synchronized List<Class<? extends IHasId<?>>> getAdmEnts() {
     return this.admEnts;
   }
 
@@ -653,15 +655,16 @@ public class FctDt {
    * <p>Setter for admEnts.</p>
    * @param pAdmEnts reference
    **/
-  public final synchronized void setAdmEnts(final List<Class<?>> pAdmEnts) {
+  public final synchronized void setAdmEnts(
+    final List<Class<? extends IHasId<?>>> pAdmEnts) {
     this.admEnts = pAdmEnts;
   }
 
   /**
    * <p>Getter for fbdEnts.</p>
-   * @return List<Class<?>>
+   * @return List<? extends Class<IHasId<?>>>
    **/
-  public final synchronized List<Class<?>> getFbdEnts() {
+  public final synchronized List<Class<? extends IHasId<?>>> getFbdEnts() {
     return this.fbdEnts;
   }
 
@@ -669,7 +672,8 @@ public class FctDt {
    * <p>Setter for fbdEnts.</p>
    * @param pFbdEnts reference
    **/
-  public final synchronized void setFbdEnts(final List<Class<?>> pFbdEnts) {
+  public final synchronized void setFbdEnts(
+    final List<Class<? extends IHasId<?>>> pFbdEnts) {
     this.fbdEnts = pFbdEnts;
   }
 
@@ -709,9 +713,9 @@ public class FctDt {
 
   /**
    * <p>Getter for custIdClss.</p>
-   * @return Set<Class<?>>
+   * @return Set<Class<IHasId<?>>>
    **/
-  public final synchronized Set<Class<?>> getCustIdClss() {
+  public final synchronized Set<Class<? extends IHasId<?>>> getCustIdClss() {
     return this.custIdClss;
   }
 
@@ -720,7 +724,7 @@ public class FctDt {
    * @param pCustIdClss reference
    **/
   public final synchronized void setCustIdClss(
-    final Set<Class<?>> pCustIdClss) {
+    final Set<Class<? extends IHasId<?>>> pCustIdClss) {
     this.custIdClss = pCustIdClss;
   }
 
@@ -791,20 +795,20 @@ public class FctDt {
   }
 
   /**
-   * <p>Getter for hldsAcEnPr.</p>
+   * <p>Getter for hldsBsEnPr.</p>
    * @return Set<IHlNmClSt>
    **/
-  public final synchronized Set<IHlNmClSt> getHldsAcEnPr() {
-    return this.hldsAcEnPr;
+  public final synchronized Set<IHlNmClSt> getHldsBsEnPr() {
+    return this.hldsBsEnPr;
   }
 
   /**
-   * <p>Setter for hldsAcEnPr.</p>
-   * @param pHldsAcEnPr reference
+   * <p>Setter for hldsBsEnPr.</p>
+   * @param pHldsBsEnPr reference
    **/
-  public final synchronized void setHldsAcEnPr(
-    final Set<IHlNmClSt> pHldsAcEnPr) {
-    this.hldsAcEnPr = pHldsAcEnPr;
+  public final synchronized void setHldsBsEnPr(
+    final Set<IHlNmClSt> pHldsBsEnPr) {
+    this.hldsBsEnPr = pHldsBsEnPr;
   }
 
   /**

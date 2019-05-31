@@ -31,6 +31,7 @@ package org.beigesoft.hld;
 import java.util.Set;
 import java.util.List;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.prc.PrcEntRt;
 import org.beigesoft.prc.PrcEntCr;
 import org.beigesoft.prc.PrcEntSv;
@@ -39,37 +40,39 @@ import org.beigesoft.prc.PrcEnoDl;
 import org.beigesoft.prc.PrcEnoSv;
 
 /**
- * <p>Holder of names of ACC entities processors.</p>
+ * <p>Holder of names of base entities processors.</p>
  *
  * @author Yury Demidenko
  */
-public class HlNmAcEnPr implements IHlNmClSt {
+public class HlNmBsEnPr implements IHlNmClSt {
 
   /**
    * <p>Shared non-editable entities for base entity request handler,
    * e.g. email connection EmCon.</p>
    **/
-  private List<Class<?>> shrEnts;
+  private List<Class<? extends IHasId<?>>> shrEnts;
 
   /**
-   * <p>Additional accounting entity processors names holders
+   * <p>Additional base entity processors names holders
    *  with high priority.</p>
    **/
-  private Set<IHlNmClSt> hldsAcEnPr;
+  private Set<IHlNmClSt> hldsBsEnPr;
 
   /**
    * <p>Get processor name for given class and action name.</p>
    * @param pCls a Class
    * @param pAct action name
    * @return processor FE name
+   * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls, final String pAct) {
+  public final String get(final Class<?> pCls,
+    final String pAct) throws Exception {
     if (this.shrEnts != null && this.shrEnts.contains(pCls)) {
       return null;
     }
-    if (this.hldsAcEnPr != null) {
-      for (IHlNmClSt hep : this.hldsAcEnPr) {
+    if (this.hldsBsEnPr != null) {
+      for (IHlNmClSt hep : this.hldsBsEnPr) {
         String rz = hep.get(pCls, pAct);
         if (rz != null) {
           if (NULL.equals(rz)) {
@@ -104,9 +107,9 @@ public class HlNmAcEnPr implements IHlNmClSt {
   //SGS:
   /**
    * <p>Getter for shrEnts.</p>
-   * @return List<Class<?>>
+   * @return List<Class<? extends IHasId<?>>>
    **/
-  public final List<Class<?>> getShrEnts() {
+  public final List<Class<? extends IHasId<?>>> getShrEnts() {
     return this.shrEnts;
   }
 
@@ -114,23 +117,24 @@ public class HlNmAcEnPr implements IHlNmClSt {
    * <p>Setter for shrEnts.</p>
    * @param pShrEnts reference
    **/
-  public final void setShrEnts(final List<Class<?>> pShrEnts) {
+  public final void setShrEnts(
+    final List<Class<? extends IHasId<?>>> pShrEnts) {
     this.shrEnts = pShrEnts;
   }
 
   /**
-   * <p>Getter for hldsAcEnPr.</p>
+   * <p>Getter for hldsBsEnPr.</p>
    * @return Set<IHlNmClSt>
    **/
-  public final Set<IHlNmClSt> getHldsAcEnPr() {
-    return this.hldsAcEnPr;
+  public final Set<IHlNmClSt> getHldsBsEnPr() {
+    return this.hldsBsEnPr;
   }
 
   /**
-   * <p>Setter for hldsAcEnPr.</p>
-   * @param pHldsAcEnPr reference
+   * <p>Setter for hldsBsEnPr.</p>
+   * @param pHldsBsEnPr reference
    **/
-  public final void setHldsAcEnPr(final Set<IHlNmClSt> pHldsAcEnPr) {
-    this.hldsAcEnPr = pHldsAcEnPr;
+  public final void setHldsBsEnPr(final Set<IHlNmClSt> pHldsBsEnPr) {
+    this.hldsBsEnPr = pHldsBsEnPr;
   }
 }

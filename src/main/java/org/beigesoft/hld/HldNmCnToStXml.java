@@ -66,7 +66,7 @@ public class HldNmCnToStXml implements IHlNmClSt {
   /**
    * <p>Holder of an entity's field's class.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   //Data:
   /**
@@ -97,22 +97,24 @@ public class HldNmCnToStXml implements IHlNmClSt {
    * @param pCls a Class
    * @param pFlNm Field Name
    * @return converter to string name
+   * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls, final String pFlNm) {
+  public final String get(final Class<?> pCls,
+    final String pFlNm) throws Exception {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
     if (fdCls.isEnum()) {
       return CnvEnmStr.class.getSimpleName();
     }
     if (IHasId.class.isAssignableFrom(fdCls)) {
       if (this.cnHsIdToStNm == null) {
-        throw new RuntimeException("Non-configured cnHsIdToStNm!");
+        throw new Exception("Non-configured cnHsIdToStNm!");
       }
       return this.cnHsIdToStNm;
     }
     String rez = this.stdCnvNms.get(fdCls);
     if (rez == null) {
-      throw new RuntimeException(
+      throw new Exception(
         "There is no CNV FLD TO STR XML enCl/fdNm/fdCl: "
           + pCls.getSimpleName() + "/" + pFlNm + "/" + fdCls.getSimpleName());
     }
@@ -122,9 +124,9 @@ public class HldNmCnToStXml implements IHlNmClSt {
   //Simple getters and setters:
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -132,7 +134,7 @@ public class HldNmCnToStXml implements IHlNmClSt {
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 

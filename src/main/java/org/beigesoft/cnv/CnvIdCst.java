@@ -33,7 +33,8 @@ import java.lang.reflect.Method;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClMt;
+import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.prp.ISetng;
 
 /**
@@ -52,12 +53,12 @@ public class CnvIdCst implements ICnvId<IHasId<Object>, Object> {
   /**
    * <p>Fields classes holder.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   /**
    * <p>Fields getters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldGets;
+  private IHlNmClMt hldGets;
 
   /**
    * <p>Converts to HTML ready ID, e.g. "IID=PAYB" for Account with String ID,
@@ -172,9 +173,9 @@ public class CnvIdCst implements ICnvId<IHasId<Object>, Object> {
 
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -182,15 +183,15 @@ public class CnvIdCst implements ICnvId<IHasId<Object>, Object> {
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 
   /**
    * <p>Getter for hldGets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldGets() {
+  public final IHlNmClMt getHldGets() {
     return this.hldGets;
   }
 
@@ -198,7 +199,7 @@ public class CnvIdCst implements ICnvId<IHasId<Object>, Object> {
    * <p>Setter for hldGets.</p>
    * @param pHldGets reference
    **/
-  public final void setHldGets(final IHldNm<Class<?>, Method> pHldGets) {
+  public final void setHldGets(final IHlNmClMt pHldGets) {
     this.hldGets = pHldGets;
   }
 }

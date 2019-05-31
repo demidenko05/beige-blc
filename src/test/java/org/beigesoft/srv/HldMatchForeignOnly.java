@@ -30,7 +30,7 @@ package org.beigesoft.srv;
 
 import java.util.Map;
 
-import org.beigesoft.hld.IHldEx;
+import org.beigesoft.hld.IHlMaFrn;
 import org.beigesoft.mdlp.MaFrn;
 
 /**
@@ -38,7 +38,7 @@ import org.beigesoft.mdlp.MaFrn;
  *
  * @author Yury Demidenko
  */
-public class HldMatchForeignOnly implements IHldEx<Long, MaFrn> {
+public class HldMatchForeignOnly implements IHlMaFrn {
 
   /**
    * <p>Only match foreign.</p>

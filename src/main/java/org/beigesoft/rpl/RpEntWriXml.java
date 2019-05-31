@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.IConv;
@@ -69,7 +69,7 @@ public class RpEntWriXml implements IRpEntWri {
   /**
    * <p>Fields getters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldGets;
+  private IHlNmClMt hldGets;
 
   /**
    * <p>Fields converters names holder.</p>
@@ -179,9 +179,9 @@ public class RpEntWriXml implements IRpEntWri {
 
   /**
    * <p>Getter for hldGets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldGets() {
+  public final IHlNmClMt getHldGets() {
     return this.hldGets;
   }
 
@@ -189,7 +189,7 @@ public class RpEntWriXml implements IRpEntWri {
    * <p>Setter for hldGets.</p>
    * @param pHldGets reference
    **/
-  public final void setHldGets(final IHldNm<Class<?>, Method> pHldGets) {
+  public final void setHldGets(final IHlNmClMt pHldGets) {
     this.hldGets = pHldGets;
   }
 

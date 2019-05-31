@@ -30,22 +30,20 @@ package org.beigesoft.cnv;
 
 import java.util.Map;
 import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+
+import org.beigesoft.srv.ISrvDt;
 
 /**
- * <p>Converter date from string  ISO8601 no time, e.g. "2001-07-04".</p>
+ * <p>Converter date from string ISO8601 no time, e.g. "2001-07-04".</p>
  *
  * @author Yury Demidenko
  */
 public class CnvStrDt implements IConv<String, Date> {
 
   /**
-   * <p>Format date ISO8601 no time zone,
-   * e.g. 2001-07-04.</p>
+   * <p>Date service.</p>
    **/
-  private final DateFormat dateNoTzFormatIso8601 =
-    new SimpleDateFormat("yyyy-MM-dd"); //TODO ISrvDt
+  private ISrvDt srvDt;
 
   /**
    * <p>Convert Date from string.</p>
@@ -60,6 +58,22 @@ public class CnvStrDt implements IConv<String, Date> {
     if (pStrVal == null || "".equals(pStrVal)) {
       return null;
     }
-    return this.dateNoTzFormatIso8601.parse(pStrVal);
+    return this.srvDt.from8601Date(pStrVal);
+  }
+
+  /**
+   * <p>Getter for srvDt.</p>
+   * @return ISrvDt
+   **/
+  public final ISrvDt getSrvDt() {
+    return this.srvDt;
+  }
+
+  /**
+   * <p>Setter for srvDt.</p>
+   * @param pSrvDt reference
+   **/
+  public final void setSrvDt(final ISrvDt pSrvDt) {
+    this.srvDt = pSrvDt;
   }
 }

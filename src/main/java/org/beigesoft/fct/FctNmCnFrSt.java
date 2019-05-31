@@ -165,6 +165,7 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
    */
   private CnvStrDt crPuCnvStrDt() {
     CnvStrDt rz = new CnvStrDt();
+    rz.setSrvDt(getSrvDt());
     this.convrts.put(CnvStrDt.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvStrDt.class.getSimpleName()
       + " has been created.");
@@ -177,6 +178,7 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
    */
   private CnvStrDtSc crPuCnvStrDtSc() {
     CnvStrDtSc rz = new CnvStrDtSc();
+    rz.setSrvDt(getSrvDt());
     this.convrts.put(CnvStrDtSc.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvStrDtSc.class.getSimpleName()
       + " has been created.");
@@ -189,6 +191,7 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
    */
   private CnvStrDtMsFm crPuCnvStrDtMsFm() {
     CnvStrDtMsFm rz = new CnvStrDtMsFm();
+    rz.setSrvDt(getSrvDt());
     this.convrts.put(CnvStrDtMsFm.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvStrDtMsFm.class.getSimpleName()
       + " has been created.");
@@ -214,6 +217,7 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
    */
   private CnvStrDtTm crPuCnvStrDtTm() {
     CnvStrDtTm rz = new CnvStrDtTm();
+    rz.setSrvDt(getSrvDt());
     this.convrts.put(CnvStrDtTm.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvStrDtTm.class.getSimpleName()
       + " has been created.");

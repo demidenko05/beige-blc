@@ -32,7 +32,7 @@ import java.util.Map;
 import java.lang.reflect.Method;
 
 import org.beigesoft.fct.IFctNm;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClSt;
 
 /**
@@ -47,7 +47,7 @@ public class FilFldSmpStr implements IFilFld<String> {
   /**
    * <p>Fields setters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldSets;
+  private IHlNmClMt hldSets;
 
   /**
    * <p>Fields converters names holder.</p>
@@ -89,9 +89,9 @@ public class FilFldSmpStr implements IFilFld<String> {
   //Simple getters and setters:
   /**
    * <p>Getter for hldSets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldSets() {
+  public final IHlNmClMt getHldSets() {
     return this.hldSets;
   }
 
@@ -99,14 +99,14 @@ public class FilFldSmpStr implements IFilFld<String> {
    * <p>Setter for hldSets.</p>
    * @param pHldSets reference
    **/
-  public final void setHldSets(final IHldNm<Class<?>, Method> pHldSets) {
+  public final void setHldSets(final IHlNmClMt pHldSets) {
     this.hldSets = pHldSets;
   }
 
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctCls<IConv<String, Object>
+   * @return IFctNm<IConv<String, ?>>
    **/
   public final IFctNm<IConv<String, ?>> getFctCnvFld() {
     return this.fctCnvFld;

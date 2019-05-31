@@ -38,7 +38,8 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.LvDep;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClMt;
+import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.prp.ISetng;
 
 /**
@@ -61,12 +62,12 @@ public class SqlQu implements ISqlQu {
   /**
    * <p>Fields classes holder.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   /**
    * <p>Fields getters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldGets;
+  private IHlNmClMt hldGets;
 
   /**
    * <p>Generates DDL Create statement for given entity.</p>
@@ -479,9 +480,9 @@ public class SqlQu implements ISqlQu {
 
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -489,15 +490,15 @@ public class SqlQu implements ISqlQu {
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 
   /**
    * <p>Getter for hldGets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldGets() {
+  public final IHlNmClMt getHldGets() {
     return this.hldGets;
   }
 
@@ -505,7 +506,7 @@ public class SqlQu implements ISqlQu {
    * <p>Setter for hldGets.</p>
    * @param pHldGets reference
    **/
-  public final void setHldGets(final IHldNm<Class<?>, Method> pHldGets) {
+  public final void setHldGets(final IHlNmClMt pHldGets) {
     this.hldGets = pHldGets;
   }
 }

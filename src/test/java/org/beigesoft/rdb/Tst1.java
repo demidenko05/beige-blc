@@ -97,17 +97,17 @@ public class Tst1<RS> {
       //insert autoID/select:
       Department dp = new Department();
       dp.setIid(1L);
-      orm.refrEnt(rvs, vs, dp);
+      orm.refrEnt(rvs, vs, dp); assertEquals(0, vs.size());
       if (dp.getIid() == null) {
         dp.setIid(null);
         dp.setNme("Dep1");
         dp.setDbOr(orm.getDbId());
-        orm.insIdLn(rvs, vs, dp);
+        orm.insIdLn(rvs, vs, dp); assertEquals(0, vs.size());
       }
       assertEquals("1", stgOrm.lazClsStg(Department.class, "vrAlg"));
       Department dpf = new Department();
       dpf.setIid(dp.getIid());
-      orm.refrEnt(rvs, vs, dpf);
+      orm.refrEnt(rvs, vs, dpf); assertEquals(0, vs.size());
       assertEquals(dp.getIid(), dpf.getIid());
       assertNotNull(dp.getVer());
       assertNotNull(dpf.getVer());
@@ -117,29 +117,29 @@ public class Tst1<RS> {
       //custom retrieving:
       GdCat gdc = new GdCat();
       gdc.setIid(1L);
-      orm.refrEnt(rvs, vs, gdc);
+      orm.refrEnt(rvs, vs, gdc); assertEquals(0, vs.size());
       if (gdc.getIid() == null) {
         gdc.setIid(null);
         gdc.setDbOr(orm.getDbId());
         gdc.setNme("Cat 1");
         gdc.setDep(dp);
-        orm.insIdLn(rvs, vs, gdc);
+        orm.insIdLn(rvs, vs, gdc); assertEquals(0, vs.size());
       }
       GoodVersionTime gd = new GoodVersionTime();
       assertEquals("1", stgOrm.lazClsStg(GoodVersionTime.class, "vrAlg"));
       gd.setIid(1L);
-      orm.refrEnt(rvs, vs, gd);
+      orm.refrEnt(rvs, vs, gd); assertEquals(0, vs.size());
       if (gd.getIid() == null) {
         gd.setIid(null);
         gd.setDbOr(orm.getDbId());
         gd.setNme("Good 1");
         gd.setGdCat(gdc);
-        orm.insIdLn(rvs, vs, gd);
+        orm.insIdLn(rvs, vs, gd); assertEquals(0, vs.size());
       }
       PersistableHead ph = new PersistableHead();
       assertEquals("1", stgOrm.lazClsStg(PersistableHead.class, "vrAlg"));
       ph.setIid(1L);
-      orm.refrEnt(rvs, vs, ph);
+      orm.refrEnt(rvs, vs, ph); assertEquals(0, vs.size());
       if (ph.getIid() == null) {
         ph.setDbOr(orm.getDbId());
         ph.setItsDepartment(dp);
@@ -151,12 +151,12 @@ public class Tst1<RS> {
         ph.setItsFloat(123.6934F);
         ph.setItsDouble(56325.5687);
         ph.setItsTotal(new BigDecimal("12345.60"));
-        orm.insIdLn(rvs, vs, ph);
+        orm.insIdLn(rvs, vs, ph); assertEquals(0, vs.size());
       }
       assertTrue(ph.getItsTotal().compareTo(BigDecimal.ZERO) == 1);
       PersistableLine pl = new PersistableLine();
       pl.setIid(1L);
-      orm.refrEnt(rvs, vs, pl);
+      orm.refrEnt(rvs, vs, pl); assertEquals(0, vs.size());
       if (pl.getIid() == null) {
         pl.setIid(null);
         pl.setDbOr(orm.getDbId());
@@ -165,13 +165,13 @@ public class Tst1<RS> {
         pl.setItsPrice(new BigDecimal("13.12"));
         pl.setItsTotal(new BigDecimal("13.12"));
         pl.setItsQuantity(new BigDecimal("1.0"));
-        orm.insIdLn(rvs, vs, pl);
+        orm.insIdLn(rvs, vs, pl); assertEquals(0, vs.size());
       }
       vs.put("PersistableHeaddpLv", 0);
       vs.put("GoodVersionTimedpLv", 2);
       PersistableLine plf = new PersistableLine();
       plf.setIid(pl.getIid());
-      orm.refrEnt(rvs, vs, plf);
+      orm.refrEnt(rvs, vs, plf); assertEquals(2, vs.size()); vs.clear();
       assertEquals(pl.getIid(), plf.getIid());
       assertEquals(pl.getVer(), plf.getVer());
       assertEquals(pl.getDbOr(), plf.getDbOr());
@@ -193,13 +193,12 @@ public class Tst1<RS> {
       assertEquals(gdc.getNme(), plf.getItsProduct().getGdCat().getNme());
       assertEquals(gdc.getDep().getIid(), plf.getItsProduct().getGdCat().getDep().getIid());
       assertNull(plf.getItsProduct().getGdCat().getDep().getVer());
-      vs.clear();
       String[] ndFds = new String[] {"iid", "isClosed", "itsDate", "itsStatus"};
       vs.put("PersistableHeadndFds", ndFds);
       plf = new PersistableLine();
       assertEquals("0", stgOrm.lazClsStg(PersistableLine.class, "vrAlg"));
       plf.setIid(pl.getIid());
-      orm.refrEnt(rvs, vs, plf);
+      orm.refrEnt(rvs, vs, plf); assertEquals(1, vs.size()); vs.clear();
       assertEquals(pl.getIid(), plf.getIid());
       assertEquals(pl.getVer(), plf.getVer());
       assertEquals(pl.getDbOr(), plf.getDbOr());
@@ -215,24 +214,21 @@ public class Tst1<RS> {
       ndFds = new String[] {"iid", "itsStatus", "ver"}; //only change status with optimistic locking
       PersistableHead phf = new PersistableHead();
       phf.setIid(ph.getIid());
-      vs.clear();
       vs.put("PersistableHeadndFds", ndFds);
-      orm.refrEnt(rvs, vs, phf);
+      orm.refrEnt(rvs, vs, phf); assertEquals(1, vs.size()); vs.clear();
       assertNull(phf.getItsDate());
       if (phf.getItsStatus().equals(EStatus.STATUS_B)) {
         phf.setItsStatus(EStatus.STATUS_A);
       } else {
         phf.setItsStatus(EStatus.STATUS_B);
       }
-      vs.clear();
       vs.put("ndFds", ndFds);
-      orm.update(rvs, vs, phf);
+      orm.update(rvs, vs, phf); assertEquals(1, vs.size());
       assertTrue(!phf.getItsStatus().equals(ph.getItsStatus()));
       assertTrue(!phf.getVer().equals(ph.getVer()));
-      orm.refrEnt(rvs, vs, phf);
+      orm.refrEnt(rvs, vs, phf); assertEquals(1, vs.size()); vs.clear();
       assertTrue(!phf.getItsStatus().equals(ph.getItsStatus()));
       assertTrue(!phf.getVer().equals(ph.getVer()));
-      vs.clear();
       if (!this.fctApp.getFctBlc().getFctDt().getIsAndr()) {
         //fast update:
         SrvClVl srvClVl = (SrvClVl) this.fctApp.laz(rvs, SrvClVl.class.getSimpleName());
@@ -250,36 +246,36 @@ public class Tst1<RS> {
         rdb.rollBack(fastloc);
         srvClVl.put(cv, "itsTotal", "ITSTOTAL-" + ph.getItsTotal());
         rdb.update(phf.getClass(), cv, srvClVl.evWheUpd(phf.getClass(), cv));
-        orm.refrEnt(rvs, vs, phf);
+        orm.refrEnt(rvs, vs, phf); assertEquals(0, vs.size());
         assertTrue(phf.getItsTotal().compareTo(BigDecimal.ZERO) == 0);
         assertTrue(!phf.getVer().equals(ph.getVer()));
         assertEquals(newVer, phf.getVer());
         srvClVl.put(cv, "itsTotal", "ITSTOTAL+" + ph.getItsTotal());
         rdb.update(phf.getClass(), cv, srvClVl.evWheUpd(phf.getClass(), cv));
-        orm.refrEnt(rvs, vs, phf);
+        orm.refrEnt(rvs, vs, phf); assertEquals(0, vs.size());
         assertTrue(phf.getItsTotal().compareTo(ph.getItsTotal()) == 0);
       }
       //composite ID:
       UsTmc ut = new UsTmc();
       assertEquals("0", stgOrm.lazClsStg(UsTmc.class, "vrAlg"));
       ut.setUsr("usr1");
-      orm.refrEnt(rvs, vs, ut);
+      orm.refrEnt(rvs, vs, ut); assertEquals(0, vs.size());
       if (ut.getIid() == null) {
         ut.setUsr("usr1");
         ut.setPwd("pwd1");
-        orm.insIdNln(rvs, vs, ut);
-        orm.refrEnt(rvs, vs, ut);
+        orm.insIdNln(rvs, vs, ut); assertEquals(0, vs.size());
+        orm.refrEnt(rvs, vs, ut); assertEquals(0, vs.size());
       }
       assertEquals("usr1", ut.getUsr());
       assertEquals("pwd1", ut.getPwd());
       UsRlTmc urt = new UsRlTmc();
       urt.setUsr(ut);
       urt.setRol("rol1");
-      orm.refrEnt(rvs, vs, urt);
+      orm.refrEnt(rvs, vs, urt); assertEquals(0, vs.size());
       if (urt.getIid() == null) {
         urt.setUsr(ut);
         urt.setRol("rol1");
-        orm.insIdNln(rvs, vs, urt);
+        orm.insIdNln(rvs, vs, urt); assertEquals(0, vs.size());
         orm.refrEnt(rvs, vs, urt);
         assertEquals("0", stgOrm.getClsStgs().get(UsRlTmc.class).get("vrAlg"));
         
@@ -291,20 +287,20 @@ public class Tst1<RS> {
       rdb.creSavPnt(cakeins);
       GoodVersionTime ca = new GoodVersionTime();
       ca.setIid(2L);
-      orm.refrEnt(rvs, vs, ca);
+      orm.refrEnt(rvs, vs, ca); assertEquals(0, vs.size());
       if (ca.getIid() == null) {
         ca.setIid(null);
         ca.setDbOr(orm.getDbId());
         ca.setNme("Cake 1");
         ca.setGdCat(gdc);
-        orm.insIdLn(rvs, vs, ca);
-        orm.refrEnt(rvs, vs, ca);
+        orm.insIdLn(rvs, vs, ca); assertEquals(0, vs.size());
+        orm.refrEnt(rvs, vs, ca); assertEquals(0, vs.size());
       }
       assertNotNull(ca.getIid());
       ca.setVer(ca.getVer() + 1L);
-      muExOptLoc(orm, rvs, vs, ca);
+      muExOptLoc(orm, rvs, vs, ca); assertEquals(0, vs.size());
       rdb.rollBack(cakeins);
-      orm.refrEnt(rvs, vs, ca);
+      orm.refrEnt(rvs, vs, ca); assertEquals(0, vs.size());
       assertNull(ca.getIid());
       rdb.commit();
     } catch (Exception e) {

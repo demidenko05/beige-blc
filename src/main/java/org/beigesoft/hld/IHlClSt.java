@@ -28,26 +28,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.hld;
 
-import java.util.Map;
-
 /**
- * <p>Abstraction of generic holder of a thing that reflects to an another one,
- * e.g. ID of native entity associated with ID of foreign entity.
- * It implements complex business logic, e.g. get data from database.</p>
+ * <p>Abstraction of holder of a String thing that reflects to a Class.</p>
  *
- * @param <K> key thing.
- * @param <A> associated thing.
  * @author Yury Demidenko
  */
-public interface IHldEx<K, A> {
+public interface IHlClSt {
 
   /**
    * <p>Get associated thing for given one,
-   * e.g. ID of native entity associated with ID of foreign entity.</p>
-   * @param pRqVs request scoped vars
+   * e.g. name of converter ID for given class.</p>
    * @param pKey key thing
    * @return associated thing
-   * @throws Exception - an exception
+   * @throws Exception an Exception
    **/
-  A get(Map<String, Object> pRqVs, K pKey) throws Exception;
+  String get(Class<?> pKey) throws Exception;
 }

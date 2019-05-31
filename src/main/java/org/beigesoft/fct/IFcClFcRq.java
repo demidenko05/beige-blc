@@ -26,23 +26,27 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.hld;
+package org.beigesoft.fct;
+
+import java.util.Map;
+
+import org.beigesoft.mdl.IHasId;
 
 /**
- * <p>Abstraction of generic holder of a thing that reflects to an another one,
- * e.g. ID of native entity associated with ID of foreign entity.</p>
+ * <p>Abstraction of application scope IFctRq<?> factory.</p>
  *
- * @param <K> key thing.
- * @param <A> associated thing.
  * @author Yury Demidenko
  */
-public interface IHld<K, A> {
-//TODO substitute to less generic abstractions
+public interface IFcClFcRq {
+
   /**
-   * <p>Get associated thing for given one,
-   * e.g. ID of native entity associated with ID of foreign entity.</p>
-   * @param pKey key thing
-   * @return associated thing
-   **/
-  A get(K pKey);
+   * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
+   * @param <T> entity type
+   * @param pRqVs request scoped vars
+   * @param pCls - bean class
+   * @return requested bean
+   * @throws Exception - an exception
+   */
+  <T extends IHasId<?>> IFctRq<T> laz(Map<String, Object> pRqVs,
+    Class<T> pCls) throws Exception;
 }

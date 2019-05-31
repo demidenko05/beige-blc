@@ -139,7 +139,7 @@ public interface IOrm {
    * <p>Retrieves entity from DB.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pEnt entity
    * @return entity or null
    * @throws Exception - an exception
@@ -151,7 +151,7 @@ public interface IOrm {
    * <p>Refreshes entity from DB. If not found then ID will be nulled.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pEnt entity
    * @throws Exception - an exception
    **/
@@ -163,7 +163,7 @@ public interface IOrm {
    * then trows exception.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pCond Not NULL e.g. "ORID=1 and DBID=2"
    * @return entity or null
@@ -177,7 +177,7 @@ public interface IOrm {
    * then trows exception.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pQu SELECT statement
    * @return entity or null
@@ -191,7 +191,7 @@ public interface IOrm {
    * is not dedicated to concrete entity type, e.g. HTML request handler.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pEnt entity
    * @throws Exception - an exception
    **/
@@ -204,7 +204,7 @@ public interface IOrm {
    * type with no Long ID, e.g. account saver and account has string ID.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pEnt entity
    * @throws Exception - an exception
    **/
@@ -217,7 +217,7 @@ public interface IOrm {
    * type with Long ID, e.g. invoice saver.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pEnt entity
    * @throws Exception - an exception
    **/
@@ -228,7 +228,7 @@ public interface IOrm {
    * <p>Updates entity with ID in DB.</p>
    * @param <T> entity type
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pEnt entity
    * @throws Exception - an exception
    **/
@@ -250,7 +250,7 @@ public interface IOrm {
    * <p>Retrieves a list of all entities.</p>
    * @param <T> - type of business object,
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @return list of all business objects or empty list, not null
    * @throws Exception - an exception
@@ -262,7 +262,7 @@ public interface IOrm {
    * <p>Retrieves a list of entities.</p>
    * @param <T> - type of business object
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pCond Not NULL e.g. "where name='U1' ORDER BY id"
    * @return list of business objects or empty list, not null
@@ -276,7 +276,7 @@ public interface IOrm {
    * additional joins and filters, see Beige-Webstore for example.</p>
    * @param <T> - type of business object
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pQu Not NULL complex query
    * @return list of business objects or empty list, not null
@@ -289,7 +289,7 @@ public interface IOrm {
    * <p>Retrieves a page of entities.</p>
    * @param <T> - type of business object,
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pFst number of the first record (from 0)
    * @param pPgSz page size (max records)
@@ -304,7 +304,7 @@ public interface IOrm {
    * <p>Retrieves a page of entities.</p>
    * @param <T> - type of business object,
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pCond not null e.g. "name='U1' ORDER BY id"
    * @param pFst number of the first record (from 0)
@@ -324,7 +324,7 @@ public interface IOrm {
    * performance advantage.</p>
    * @param <T> - type of business object,
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pQu not null complex query without page conditions
    * @param pFst number of the first record (from 0)
@@ -352,7 +352,7 @@ public interface IOrm {
    * <p>Calculates total rows for given entity class and conditions.</p>
    * @param <T> - type of business object,
    * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pWhe not null e.g. "ITSID > 33"
    * @return Integer row count

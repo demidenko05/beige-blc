@@ -26,28 +26,22 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.fct;
-
-import java.util.Map;
+package org.beigesoft.hld;
 
 /**
- * <p>Abstraction of type checked application scope beans factory.
- * Beans are same super-type and same sphere, e.g. fields fillers.
- * This factory designed to produce beans for objects that can has
- * only bean, e.g. object filler. Otherwise e.g. object Date has several
- * ISrvToString and should use IFactoryAppBeansByName.</p>
+ * <p>Abstraction of holder of a Class that associated with
+ * another one, e.g. holder of field's class for given class.</p>
  *
- * @param <T> bean super-type
  * @author Yury Demidenko
  */
-public interface IFctCls<T> {
+public interface IHlNmClCl {
 
   /**
-   * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
-   * @param pCls - bean class
-   * @return requested bean
-   * @throws Exception - an exception
-   */
-  T laz(Map<String, Object> pRqVs, Class<?> pCls) throws Exception;
+   * <p>Get thing for given one and name.</p>
+   * @param pCls class
+   * @param pNm name
+   * @return associated class
+   * @throws Exception an Exception
+   **/
+  Class<?> get(Class<?> pCls, String pNm) throws Exception;
 }

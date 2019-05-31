@@ -47,6 +47,7 @@ public interface IHlNmClSt {
    * @param pKey key Class
    * @param pNm fing name
    * @return associated thing
+   * @throws Exception an Exception
    **/
-  String get(Class<?> pKey, String pNm);
+  String get(Class<?> pKey, String pNm) throws Exception;
 }

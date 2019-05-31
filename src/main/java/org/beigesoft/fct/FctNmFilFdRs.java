@@ -30,12 +30,12 @@ package org.beigesoft.fct;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.lang.reflect.Method;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClMt;
+import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.cnv.IConvNm;
 import org.beigesoft.cnv.IFilObj;
@@ -62,12 +62,12 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFld<IRecSet<RS>>> {
   /**
    * <p>Fields setters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldSets;
+  private IHlNmClMt hldSets;
 
   /**
    * <p>Holder of an entity's field's class.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   /**
    * <p>Fields converters names.</p>
@@ -186,9 +186,9 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFld<IRecSet<RS>>> {
 
   /**
    * <p>Getter for hldSets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldSets() {
+  public final IHlNmClMt getHldSets() {
     return this.hldSets;
   }
 
@@ -196,14 +196,14 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFld<IRecSet<RS>>> {
    * <p>Setter for hldSets.</p>
    * @param pHldSets reference
    **/
-  public final void setHldSets(final IHldNm<Class<?>, Method> pHldSets) {
+  public final void setHldSets(final IHlNmClMt pHldSets) {
     this.hldSets = pHldSets;
   }
 
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctCls<IConv<String, Object>
+   * @return IFctNm<IConvNm<IRecSet<RS>, ?>>
    **/
   public final IFctNm<IConvNm<IRecSet<RS>, ?>> getFctCnvFld() {
     return this.fctCnvFld;
@@ -236,9 +236,9 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFld<IRecSet<RS>>> {
 
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -246,7 +246,7 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFld<IRecSet<RS>>> {
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 

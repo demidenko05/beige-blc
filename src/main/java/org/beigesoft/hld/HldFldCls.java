@@ -39,7 +39,7 @@ import org.beigesoft.srv.IReflect;
  *
  * @author Yury Demidenko
  */
-public class HldFldCls implements IHldNm<Class<?>, Class<?>> {
+public class HldFldCls implements IHlNmClCl {
 
   /**
    * <p>Reflection service.</p>
@@ -56,12 +56,14 @@ public class HldFldCls implements IHldNm<Class<?>, Class<?>> {
    * <p>Get thing for given class and thing name.</p>
    * @param pCls a Class
    * @param pFlNm Thing Name
+   * @throws Exception an Exception
    * @return class or exception if not found
    **/
   @Override
-  public final Class<?> get(final Class<?> pCls, final String pFlNm) {
+  public final Class<?> get(final Class<?> pCls,
+    final String pFlNm) throws Exception {
     if (pCls == null || pFlNm == null) {
-      throw new RuntimeException("NULL parameter cls/fld: " + pCls
+      throw new Exception("NULL parameter cls/fld: " + pCls
         + "/" + pFlNm);
     }
     Map<String, Class<?>> clMp = this.clsMap.get(pCls);
@@ -94,7 +96,7 @@ public class HldFldCls implements IHldNm<Class<?>, Class<?>> {
         }
         sb.append(fn);
       }
-      throw new RuntimeException("Can't get class for cls/fld/flds: " + pCls
+      throw new Exception("Can't get class for cls/fld/flds: " + pCls
         + "/" + pFlNm + "/" + sb);
     }
     return rz;

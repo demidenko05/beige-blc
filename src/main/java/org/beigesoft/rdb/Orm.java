@@ -39,7 +39,7 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.mdl.ColVals;
 import org.beigesoft.mdl.IHasId;
-import org.beigesoft.fct.IFctCls;
+import org.beigesoft.fct.IFcClFcRq;
 import org.beigesoft.fct.IFctRq;
 import org.beigesoft.log.ILog;
 import org.beigesoft.cnv.IFilObj;
@@ -99,7 +99,7 @@ public class Orm<RS> implements IOrm {
   /**
    * <p>Factory of entity's factory.</p>
    **/
-  private IFctCls<IFctRq<?>> fctFctEnt;
+  private IFcClFcRq fctFctEnt;
 
   /**
    * <p>Generating insert/update and CV service.</p>
@@ -250,7 +250,7 @@ public class Orm<RS> implements IOrm {
    * <p>Retrieves entity from DB.</p>
    * @param <T> entity type
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pEnt entity
    * @return entity or null
    * @throws Exception - an exception
@@ -272,7 +272,7 @@ public class Orm<RS> implements IOrm {
    * then trows exception.</p>
    * @param <T> entity type
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pCond Not NULL e.g. "ORID=1 and DBID=2"
    * @return entity or null
@@ -291,7 +291,7 @@ public class Orm<RS> implements IOrm {
    * <p>Refreshes entity from DB. If not found then ID will be nulled.</p>
    * @param <T> entity type
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pEnt entity
    * @throws Exception - an exception
    **/
@@ -327,7 +327,7 @@ public class Orm<RS> implements IOrm {
    * then trows exception.</p>
    * @param <T> entity type
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pQu SELECT statement
    * @return entity or null
@@ -342,8 +342,7 @@ public class Orm<RS> implements IOrm {
     try {
       rs = this.rdb.retRs(pQu);
       if (rs.first()) {
-        @SuppressWarnings("unchecked")
-        IFctRq<T> fctEnt = (IFctRq<T>) this.fctFctEnt.laz(pRvs, pCls);
+        IFctRq<T> fctEnt = this.fctFctEnt.laz(pRvs, pCls);
         ent = fctEnt.create(pRvs);
         this.filEntRs.fill(pRvs, pVs, ent, rs);
         if (rs.next()) {
@@ -364,7 +363,7 @@ public class Orm<RS> implements IOrm {
    * is not dedicated to concrete entity type, e.g. HTML request handler.</p>
    * @param <T> entity type
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pEnt entity
    * @throws Exception - an exception
    **/
@@ -384,7 +383,7 @@ public class Orm<RS> implements IOrm {
    * type with no Long ID, e.g. account saver and account has string ID.</p>
    * @param <T> entity type
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pEnt entity
    * @throws Exception - an exception
    **/
@@ -409,7 +408,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row inserted but it is " + r
    * type with Long ID, e.g. invoice saver.</p>
    * @param <T> entity type
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pEnt entity
    * @throws Exception - an exception
    **/
@@ -466,7 +465,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row inserted but it is " + r
    * <p>Updates entity with ID in DB.</p>
    * @param <T> entity type
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pEnt entity
    * @throws Exception - an exception
    **/
@@ -517,7 +516,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
    * <p>Retrieves a list of all entities.</p>
    * @param <T> - type of business object,
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @return list of all business objects or empty list, not null
    * @throws Exception - an exception
@@ -535,7 +534,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
    * <p>Retrieves a list of entities.</p>
    * @param <T> - type of business object
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pCond Not NULL e.g. "where name='U1' ORDER BY id"
    * @return list of business objects or empty list, not null
@@ -555,7 +554,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
    * additional joins and filters, see Beige-Webstore for example.</p>
    * @param <T> - type of business object
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pQu Not NULL complex query
    * @return list of business objects or empty list, not null
@@ -570,8 +569,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
     try {
       rs = this.rdb.retRs(pQu);
       if (rs.first()) {
-        @SuppressWarnings("unchecked")
-        IFctRq<T> fctEnt = (IFctRq<T>) this.fctFctEnt.laz(pRvs, pCls);
+        IFctRq<T> fctEnt = this.fctFctEnt.laz(pRvs, pCls);
         do {
           T ent = fctEnt.create(pRvs);
           this.filEntRs.fill(pRvs, pVs, ent, rs);
@@ -590,7 +588,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
    * <p>Retrieves a page of entities.</p>
    * @param <T> - type of business object,
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pFst number of the first record (from 0)
    * @param pPgSz page size (max records)
@@ -610,7 +608,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
    * <p>Retrieves a page of entities.</p>
    * @param <T> - type of business object,
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pCond not null e.g. "where name='U1' ORDER BY id"
    * @param pFst number of the first record (from 0)
@@ -636,7 +634,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
    * performance advantage.</p>
    * @param <T> - type of business object,
    * @param pRvs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. "needed fields", nullable
+   * @param pVs invoker scoped vars, e.g. "needed fields", not null
    * @param pCls entity class
    * @param pQu not null complex query without page conditions
    * @param pFst number of the first record (from 0)
@@ -654,8 +652,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
     try {
       rs = this.rdb.retRs(pQu + " limit " + pPgSz + " offset " + pFst + ";");
       if (rs.first()) {
-        @SuppressWarnings("unchecked")
-        IFctRq<T> fctEnt = (IFctRq<T>) this.fctFctEnt.laz(pRvs, pCls);
+        IFctRq<T> fctEnt = this.fctFctEnt.laz(pRvs, pCls);
         do {
           T ent = fctEnt.create(pRvs);
           this.filEntRs.fill(pRvs, pVs, ent, rs);
@@ -859,9 +856,9 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
 
   /**
    * <p>Getter for fctFctEnt.</p>
-   * @return IFctCls<IFctRq<?>>
+   * @return IFcClFcRq
    **/
-  public final IFctCls<IFctRq<?>> getFctFctEnt() {
+  public final IFcClFcRq getFctFctEnt() {
     return this.fctFctEnt;
   }
 
@@ -869,7 +866,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
    * <p>Setter for fctFctEnt.</p>
    * @param pFctFctEnt reference
    **/
-  public final void setFctFctEnt(final IFctCls<IFctRq<?>> pFctFctEnt) {
+  public final void setFctFctEnt(final IFcClFcRq pFctFctEnt) {
     this.fctFctEnt = pFctFctEnt;
   }
 

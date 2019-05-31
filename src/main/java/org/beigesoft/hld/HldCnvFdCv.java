@@ -54,7 +54,7 @@ public class HldCnvFdCv implements IHlNmClSt {
   /**
    * <p>Holder of an entity's field's class.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   /**
    * <p>Map of names of standard fillers of fields values from string.
@@ -83,16 +83,18 @@ public class HldCnvFdCv implements IHlNmClSt {
    * @param pCls a Class
    * @param pFlNm Field Name
    * @return filler from string name
+   * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls, final String pFlNm) {
+  public final String get(final Class<?> pCls,
+    final String pFlNm) throws Exception {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
     if (fdCls.isEnum()) {
       return CnvIbnEnmCv.class.getSimpleName();
     }
     String rez = this.stdFilNms.get(fdCls);
     if (rez == null) {
-      throw new RuntimeException("There is no CON CV FR FLD! enCl/flNm/fdCl: "
+      throw new Exception("There is no CON CV FR FLD! enCl/flNm/fdCl: "
         + pCls.getSimpleName() + "/" + pFlNm + "/" + fdCls.getSimpleName());
     }
     return rez;
@@ -101,9 +103,9 @@ public class HldCnvFdCv implements IHlNmClSt {
   //Simple getters and setters:
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -111,7 +113,7 @@ public class HldCnvFdCv implements IHlNmClSt {
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 }

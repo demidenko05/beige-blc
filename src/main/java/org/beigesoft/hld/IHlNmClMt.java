@@ -26,24 +26,24 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.fct;
+package org.beigesoft.hld;
 
-import java.util.Map;
+import java.lang.reflect.Method;
 
 /**
- * <p>Interface of Factory that make a bean copy (clone).</p>
+ * <p>Abstraction of holder of a RAPI method for a class  by field's name.</p>
  *
  * @author Yury Demidenko
- * @param <M> type of created bean
- **/
-public interface IFctRqCl<M> extends IFctRq<M> {
+ */
+public interface IHlNmClMt {
 
   /**
-   * <p>Create bean based on pOrg.</p>
-   * @param pRqVs request scoped vars
-   * @param pOrg bean
-   * @return M copy of pOrg bean (request(or) scoped)
-   * @throws Exception - an exception
-   */
-  M clone(Map<String, Object> pRqVs, M pOrg) throws Exception;
+   * <p>Get thing for given one and name,
+   * e.g. holder of getters (reflect.Method) for a class fields.</p>
+   * @param pCls class
+   * @param pFdNm field name
+   * @return method
+   * @throws Exception an Exception
+   **/
+  Method get(Class<?> pCls, String pFdNm) throws Exception;
 }

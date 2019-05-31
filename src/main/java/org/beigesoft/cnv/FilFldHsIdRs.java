@@ -36,7 +36,8 @@ import org.beigesoft.mdl.LvDep;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClMt;
+import org.beigesoft.hld.IHlNmClCl;
 
 /**
  * <p>Standard service that fills/converts object's field of type IHasId from
@@ -58,12 +59,12 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
   /**
    * <p>Fields classes holder.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   /**
    * <p>Fields setters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldSets;
+  private IHlNmClMt hldSets;
 
   /**
    * <p>Filler entity factory.</p>
@@ -180,9 +181,9 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
 
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -190,15 +191,15 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 
   /**
    * <p>Getter for hldSets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldSets() {
+  public final IHlNmClMt getHldSets() {
     return this.hldSets;
   }
 
@@ -206,7 +207,7 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
    * <p>Setter for hldSets.</p>
    * @param pHldSets reference
    **/
-  public final void setHldSets(final IHldNm<Class<?>, Method> pHldSets) {
+  public final void setHldSets(final IHlNmClMt pHldSets) {
     this.hldSets = pHldSets;
   }
 

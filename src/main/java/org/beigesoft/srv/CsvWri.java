@@ -43,7 +43,7 @@ import java.text.SimpleDateFormat;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.cmp.CmpCsvCol;
-import org.beigesoft.hld.IHldEx;
+import org.beigesoft.hld.IHlMaFrn;
 import org.beigesoft.mdl.ECsvClTy;
 import org.beigesoft.mdlp.DcSp;
 import org.beigesoft.mdlp.CsvMth;
@@ -73,7 +73,7 @@ public class CsvWri implements ICsvWri {
   /**
    * <p>Match Foreign holder.</p>
    **/
-  private IHldEx<Long, MaFrn> hlMaFrn;
+  private IHlMaFrn hlMaFrn;
 
   /**
    * <p>Writes CSV file according given data table and CSV method.
@@ -274,9 +274,9 @@ public class CsvWri implements ICsvWri {
 
   /**
    * <p>Getter for hlMaFrn.</p>
-   * @return IHld<Long, MaFrn>
+   * @return IHlMaFrn
    **/
-  public final IHldEx<Long, MaFrn> getHlMaFrn() {
+  public final IHlMaFrn getHlMaFrn() {
     return this.hlMaFrn;
   }
 
@@ -284,7 +284,7 @@ public class CsvWri implements ICsvWri {
    * <p>Setter for hlMaFrn.</p>
    * @param pHlMaFrn reference
    **/
-  public final void setHlMaFrn(final IHldEx<Long, MaFrn> pHlMaFrn) {
+  public final void setHlMaFrn(final IHlMaFrn pHlMaFrn) {
     this.hlMaFrn = pHlMaFrn;
   }
 }

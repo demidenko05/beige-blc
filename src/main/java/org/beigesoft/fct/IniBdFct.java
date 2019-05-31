@@ -138,10 +138,11 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
 
   /**
    * <p>Getter for Admin non-shared Ents.</p>
-   * @return List<Class<?>>
+   * @return List<Class<IHasId<?>>>
    **/
-  public final List<Class<?>> getAdmEnts() {
-    List<Class<?>> admEnts = new ArrayList<Class<?>>();
+  public final List<Class<? extends IHasId<?>>> getAdmEnts() {
+    List<Class<? extends IHasId<?>>> admEnts =
+      new ArrayList<Class<? extends IHasId<?>>>();
     admEnts.add(UsTmc.class);
     admEnts.add(UsRlTmc.class);
     admEnts.add(EmCon.class);
@@ -163,13 +164,16 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
   public final void makeUvdCls(final Map<String, Object> pRvs,
     final IFctAsm<RS> pFct) throws Exception {
     //UVD base entities restrictions:
-    List<Class<?>> admEnts = getAdmEnts();
-    pFct.getFctBlc().getFctDt().setAdmEnts(new ArrayList<Class<?>>());
+    List<Class<? extends IHasId<?>>> admEnts = getAdmEnts();
+    pFct.getFctBlc().getFctDt()
+      .setAdmEnts(new ArrayList<Class<? extends IHasId<?>>>());
     pFct.getFctBlc().getFctDt().getAdmEnts().addAll(admEnts);
-    pFct.getFctBlc().getFctDt().setFbdEnts(new ArrayList<Class<?>>());
+    pFct.getFctBlc().getFctDt()
+      .setFbdEnts(new ArrayList<Class<? extends IHasId<?>>>());
     pFct.getFctBlc().getFctDt().getFbdEnts().addAll(admEnts);
     //Entities with custom ID:
-    pFct.getFctBlc().getFctDt().setCustIdClss(new HashSet<Class<?>>());
+    pFct.getFctBlc().getFctDt()
+      .setCustIdClss(new HashSet<Class<? extends IHasId<?>>>());
     pFct.getFctBlc().getFctDt().getCustIdClss().add(UsTmc.class);
     pFct.getFctBlc().getFctDt().getCustIdClss().add(UsRlTmc.class);
     pFct.getFctBlc().getFctDt().getCustIdClss().add(UsPrf.class);

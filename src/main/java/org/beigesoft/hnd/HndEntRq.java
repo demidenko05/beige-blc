@@ -36,7 +36,7 @@ import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctRq;
 import org.beigesoft.fct.IFctNm;
-import org.beigesoft.fct.IFctCls;
+import org.beigesoft.fct.IFcClFcRq;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.hld.HldUvd;
@@ -79,7 +79,7 @@ public class HndEntRq<RS> implements IHndRq {
   /**
    * <p>Entities factories factory.</p>
    **/
-  private IFctCls<IFctRq<?>> fctFctEnt;
+  private IFcClFcRq fctFctEnt;
 
   /**
    * <p>Entities processors names holder.</p>
@@ -104,7 +104,7 @@ public class HndEntRq<RS> implements IHndRq {
   /**
    * <p>Entities map "EntitySimpleName"-"Class".</p>
    **/
-  private Map<String, Class<?>> entMap;
+  private Map<String, Class<IHasId<?>>> entMap;
 
   /**
    * <p>Transaction isolation for changing DB phase.</p>
@@ -150,7 +150,7 @@ public class HndEntRq<RS> implements IHndRq {
     if (entNm == null) { //dsk/mbl.jsp
       return;
     }
-    Class<?> cls = this.entMap.get(entNm);
+    Class<IHasId<?>> cls = this.entMap.get(entNm);
     if (cls == null) {
       this.logSec.error(pRqVs, HndEntRq.class,
     "Trying to work with forbidden ent/host/addr/port/user: " + entNm + "/"
@@ -179,9 +179,7 @@ public class HndEntRq<RS> implements IHndRq {
         this.rdb.setAcmt(false);
         this.rdb.setTrIsl(this.writeTi);
         this.rdb.begin();
-        @SuppressWarnings("unchecked")
-        IFctRq<IHasId<?>> entFac = (IFctRq<IHasId<?>>)
-          this.fctFctEnt.laz(pRqVs, cls);
+        IFctRq<IHasId<?>> entFac = this.fctFctEnt.laz(pRqVs, cls);
         ent = entFac.create(pRqVs);
         this.filEntRq.fill(pRqVs, vs, ent, pRqDt);
         String entProcNm = this.hldEntPrcNm.get(cls, actArr[0]);
@@ -224,7 +222,7 @@ public class HndEntRq<RS> implements IHndRq {
                   throw new ExcCode(ExcCode.WRPR,
                     "wrong_request_entity_not_filled");
                 }
-               cls = ent.getClass();
+               cls = (Class<IHasId<?>>) ent.getClass();
               }
               String entProcNm = this.hldEntPrcNm.get(cls, actNm);
               if (entProcNm == null) {
@@ -287,12 +285,12 @@ public class HndEntRq<RS> implements IHndRq {
    * @throws Exception - an exception
    */
   public final void hndNoChngIsl(final Map<String, Object> pRqVs,
-    final IReqDt pRqDt, final Class<?> pCls,
+    final IReqDt pRqDt, final Class<IHasId<?>> pCls,
       final String[] pActArr, final boolean pIsDbgSh,
         final String pNmEnt) throws Exception {
     Map<String, Object> vs = new HashMap<String, Object>();
     UvdVar uvs = (UvdVar) pRqVs.get("uvs");
-    Class<?> cls = pCls;
+    Class<IHasId<?>> cls = pCls;
     try {
       this.rdb.setAcmt(false);
       this.rdb.setTrIsl(this.writeReTi);
@@ -300,9 +298,7 @@ public class HndEntRq<RS> implements IHndRq {
       IHasId<?> ent = null;
       if (pActArr[0].startsWith("ent")) {
         // actions like "save", "delete"
-        @SuppressWarnings("unchecked")
-        IFctRq<IHasId<?>> entFac = (IFctRq<IHasId<?>>)
-          this.fctFctEnt.laz(pRqVs, cls);
+        IFctRq<IHasId<?>> entFac = this.fctFctEnt.laz(pRqVs, cls);
         ent = entFac.create(pRqVs);
         this.filEntRq.fill(pRqVs, vs, ent, pRqDt);
       }
@@ -314,7 +310,7 @@ public class HndEntRq<RS> implements IHndRq {
               throw new ExcCode(ExcCode.WRPR,
                 "wrong_request_entity_not_filled");
             }
-           cls = ent.getClass();
+           cls = (Class<IHasId<?>>) ent.getClass();
           }
           String entProcNm = this.hldEntPrcNm.get(cls, actNm);
           if (entProcNm == null) {
@@ -409,9 +405,9 @@ public class HndEntRq<RS> implements IHndRq {
 
   /**
    * <p>Getter for fctFctEnt.</p>
-   * @return IFctCls<IFctRq<?>>
+   * @return IFcClFcRq
    **/
-  public final IFctCls<IFctRq<?>> getFctFctEnt() {
+  public final IFcClFcRq getFctFctEnt() {
     return this.fctFctEnt;
   }
 
@@ -419,7 +415,7 @@ public class HndEntRq<RS> implements IHndRq {
    * <p>Setter for fctFctEnt.</p>
    * @param pFctFctEnt reference
    **/
-  public final void setFctFctEnt(final IFctCls<IFctRq<?>> pFctFctEnt) {
+  public final void setFctFctEnt(final IFcClFcRq pFctFctEnt) {
     this.fctFctEnt = pFctFctEnt;
   }
 
@@ -493,7 +489,7 @@ public class HndEntRq<RS> implements IHndRq {
    * <p>Getter for entMap.</p>
    * @return Map<String, Class<?>>
    **/
-  public final Map<String, Class<?>> getEntMap() {
+  public final Map<String, Class<IHasId<?>>> getEntMap() {
     return this.entMap;
   }
 
@@ -501,7 +497,7 @@ public class HndEntRq<RS> implements IHndRq {
    * <p>Setter for entMap.</p>
    * @param pEntMap reference
    **/
-  public final void setEntMap(final Map<String, Class<?>> pEntMap) {
+  public final void setEntMap(final Map<String, Class<IHasId<?>>> pEntMap) {
     this.entMap = pEntMap;
   }
 

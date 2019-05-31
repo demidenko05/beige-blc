@@ -66,7 +66,7 @@ public class HldNmCnToSt implements IHlNmClSt {
   /**
    * <p>Holder of an entity's field's class.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   /**
    * <p>Holder of custom field's converters. It's a settings service.</p>
@@ -99,32 +99,34 @@ public class HldNmCnToSt implements IHlNmClSt {
    * @param pCls a Class
    * @param pFlNm Field Name
    * @return converter to string name
+   * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls, final String pFlNm) {
+  public final String get(final Class<?> pCls,
+    final String pFlNm) throws Exception {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
     if (fdCls.isEnum()) {
       return CnvEnmStr.class.getSimpleName();
     }
     if (IHasId.class.isAssignableFrom(fdCls)) {
       if (this.cnHsIdToStNm == null) {
-        throw new RuntimeException("Non-configured cnHsIdToStNm!");
+        throw new Exception("Non-configured cnHsIdToStNm!");
       }
       return this.cnHsIdToStNm;
     }
     String rez = this.stdCnvNms.get(fdCls);
     if (rez == null) {
       if (this.setng == null) {
-    throw new RuntimeException("Not set holder CNV FLD TO STR! enCl/flNm/fdCl: "
+    throw new Exception("Not set holder CNV FLD TO STR! enCl/flNm/fdCl: "
   + pCls.getSimpleName() + "/" + pFlNm + "/" + fdCls.getSimpleName());
       }
       try {
         rez = this.setng.lazFldStg(pCls, pFlNm, CNVTOSTRNM);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new Exception(e);
       }
       if (rez == null) {
-        throw new RuntimeException(
+        throw new Exception(
           "Custom holder has no CNV FLD TO STR enCl/fdNm/fdCl: "
             + pCls.getSimpleName() + "/" + pFlNm + "/" + fdCls.getSimpleName());
       }
@@ -135,9 +137,9 @@ public class HldNmCnToSt implements IHlNmClSt {
   //Simple getters and setters:
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -145,7 +147,7 @@ public class HldNmCnToSt implements IHlNmClSt {
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 

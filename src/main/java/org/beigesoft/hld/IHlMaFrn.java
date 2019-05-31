@@ -28,23 +28,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.hld;
 
+import java.util.Map;
+
+import org.beigesoft.mdlp.MaFrn;
+
 /**
- * <p>Abstraction of generic holder of a thing that associated with
- * another named one, e.g. holder of getters (reflect.Method)
- * for a class fields.</p>
+ * <p>Abstraction of MaFrn holder by ID.</p>
  *
- * @param <K> key thing type.
- * @param <A> associated thing type.
  * @author Yury Demidenko
  */
-public interface IHldNm<K, A> {
+public interface IHlMaFrn {
 
   /**
-   * <p>Get thing for given one and name,
-   * e.g. holder of getters (reflect.Method) for a class fields.</p>
-   * @param pKey key thing
-   * @param pNm name
-   * @return associated thing
+   * <p>Get associated thing for given one.</p>
+   * @param pRqVs request scoped vars
+   * @param pId ID
+   * @return MaFrn
+   * @throws Exception - an exception
    **/
-  A get(K pKey, String pNm);
+  MaFrn get(Map<String, Object> pRqVs, Long pId) throws Exception;
 }

@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
 import org.beigesoft.mdl.ColVals;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClSt;
 
 /**
@@ -54,7 +54,7 @@ public class FilNmCvSmp<S> implements IFilNm<S, ColVals> {
   /**
    * <p>Fields getters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldGets;
+  private IHlNmClMt hldGets;
 
   /**
    * <p>Holder of converters fields names.</p>
@@ -115,9 +115,9 @@ public class FilNmCvSmp<S> implements IFilNm<S, ColVals> {
 
   /**
    * <p>Getter for hldGets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldGets() {
+  public final IHlNmClMt getHldGets() {
     return this.hldGets;
   }
 
@@ -125,7 +125,7 @@ public class FilNmCvSmp<S> implements IFilNm<S, ColVals> {
    * <p>Setter for hldGets.</p>
    * @param pHldGets reference
    **/
-  public final void setHldGets(final IHldNm<Class<?>, Method> pHldGets) {
+  public final void setHldGets(final IHlNmClMt pHldGets) {
     this.hldGets = pHldGets;
   }
 

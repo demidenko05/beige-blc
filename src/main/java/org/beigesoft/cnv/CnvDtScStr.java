@@ -30,11 +30,11 @@ package org.beigesoft.cnv;
 
 import java.util.Map;
 import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+
+import org.beigesoft.srv.ISrvDt;
 
 /**
- * <p>Converter date to string  ISO8601 with time and seconds,
+ * <p>Converter date to string ISO8601 with time and seconds,
  * e.g. "2001-07-04T21:55:47".</p>
  *
  * @author Yury Demidenko
@@ -42,11 +42,9 @@ import java.text.SimpleDateFormat;
 public class CnvDtScStr implements IConv<Date, String> {
 
   /**
-   * <p>Format date-time with seconds ISO8601 no time zone,
-   * e.g. 2001-07-04T21:55:47.</p>
+   * <p>Date service.</p>
    **/
-  private final DateFormat dateTimeSecNoTzFormatIso8601 =
-    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+  private ISrvDt srvDt;
 
   /**
    * <p>Converts Date to string.</p>
@@ -61,6 +59,22 @@ public class CnvDtScStr implements IConv<Date, String> {
     if (pObj == null) {
       return "";
     }
-    return this.dateTimeSecNoTzFormatIso8601.format(pObj);
+    return this.srvDt.to8601DateTimeSec(pObj);
+  }
+
+  /**
+   * <p>Getter for srvDt.</p>
+   * @return ISrvDt
+   **/
+  public final ISrvDt getSrvDt() {
+    return this.srvDt;
+  }
+
+  /**
+   * <p>Setter for srvDt.</p>
+   * @param pSrvDt reference
+   **/
+  public final void setSrvDt(final ISrvDt pSrvDt) {
+    this.srvDt = pSrvDt;
   }
 }

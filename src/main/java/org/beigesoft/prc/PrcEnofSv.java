@@ -42,7 +42,7 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IOwned;
 import org.beigesoft.mdlp.IOrId;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.UvdVar;
 import org.beigesoft.rdb.IOrm;
 
@@ -79,12 +79,12 @@ public class PrcEnofSv<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
   /**
    * <p>Fields setters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldSets;
+  private IHlNmClMt hldSets;
 
   /**
    * <p>Fields getters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldGets;
+  private IHlNmClMt hldGets;
 
   /**
    * <p>Upload directory relative to WEB-APP path
@@ -208,9 +208,9 @@ public class PrcEnofSv<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
 
   /**
    * <p>Getter for hldSets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldSets() {
+  public final IHlNmClMt getHldSets() {
     return this.hldSets;
   }
 
@@ -218,15 +218,15 @@ public class PrcEnofSv<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
    * <p>Setter for hldSets.</p>
    * @param pHldSets reference
    **/
-  public final void setHldSets(final IHldNm<Class<?>, Method> pHldSets) {
+  public final void setHldSets(final IHlNmClMt pHldSets) {
     this.hldSets = pHldSets;
   }
 
   /**
    * <p>Getter for hldGets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldGets() {
+  public final IHlNmClMt getHldGets() {
     return this.hldGets;
   }
 
@@ -234,7 +234,7 @@ public class PrcEnofSv<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
    * <p>Setter for hldGets.</p>
    * @param pHldGets reference
    **/
-  public final void setHldGets(final IHldNm<Class<?>, Method> pHldGets) {
+  public final void setHldGets(final IHlNmClMt pHldGets) {
     this.hldGets = pHldGets;
   }
 

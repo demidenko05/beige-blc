@@ -659,7 +659,7 @@ public class SrvClVl {
   //Simple getters and setters:
   /**
    * <p>Getter for setng.</p>
-   * @return IHld<Class<?, Set<String>>
+   * @return ORM settings
    **/
   public final ISetng getSetng() {
     return this.setng;

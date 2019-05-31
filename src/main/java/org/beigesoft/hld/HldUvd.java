@@ -73,7 +73,7 @@ public class HldUvd {
   /**
    * <p>Holder of converters ID-SQL/HTML names.</p>
    **/
-  private IHld<Class<?>, String> hldCnvId;
+  private IHlClSt hldCnvId;
 
   /**
    * <p>Factory of converters ID-SQL/HTML.</p>
@@ -103,7 +103,7 @@ public class HldUvd {
   /**
    * <p>Holder of an entity's field's class.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   //derived/transformed settings:
   /**
@@ -649,9 +649,9 @@ public class HldUvd {
 
   /**
    * <p>Getter for hldCnvId.</p>
-   * @return IHld<Class<?>, String>
+   * @return IHlClSt
    **/
-  public final IHld<Class<?>, String> getHldCnvId() {
+  public final IHlClSt getHldCnvId() {
     return this.hldCnvId;
   }
 
@@ -659,7 +659,7 @@ public class HldUvd {
    * <p>Setter for hldCnvId.</p>
    * @param pHldCnvId reference
    **/
-  public final void setHldCnvId(final IHld<Class<?>, String> pHldCnvId) {
+  public final void setHldCnvId(final IHlClSt pHldCnvId) {
     this.hldCnvId = pHldCnvId;
   }
 
@@ -729,9 +729,9 @@ public class HldUvd {
 
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -739,7 +739,7 @@ public class HldUvd {
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 }

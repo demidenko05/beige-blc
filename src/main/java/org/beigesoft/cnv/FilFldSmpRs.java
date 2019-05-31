@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClSt;
 
 /**
@@ -56,7 +56,7 @@ public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
   /**
    * <p>Fields setters RAPI holder.</p>
    **/
-  private IHldNm<Class<?>, Method> hldSets;
+  private IHlNmClMt hldSets;
 
   /**
    * <p>Fields converters names holder.</p>
@@ -126,9 +126,9 @@ public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
 
   /**
    * <p>Getter for hldSets.</p>
-   * @return IHldNm<Class<?>, Method>
+   * @return IHlNmClMt
    **/
-  public final IHldNm<Class<?>, Method> getHldSets() {
+  public final IHlNmClMt getHldSets() {
     return this.hldSets;
   }
 
@@ -136,14 +136,14 @@ public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
    * <p>Setter for hldSets.</p>
    * @param pHldSets reference
    **/
-  public final void setHldSets(final IHldNm<Class<?>, Method> pHldSets) {
+  public final void setHldSets(final IHlNmClMt pHldSets) {
     this.hldSets = pHldSets;
   }
 
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctCls<IConvNm<IRecSet<RS>, Object>
+   * @return IFctNm<IConvNm<IRecSet<RS>, ?>>
    **/
   public final IFctNm<IConvNm<IRecSet<RS>, ?>> getFctCnvFld() {
     return this.fctCnvFld;

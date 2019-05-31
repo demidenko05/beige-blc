@@ -36,7 +36,7 @@ import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctRq;
 import org.beigesoft.fct.IFctNm;
-import org.beigesoft.fct.IFctCls;
+import org.beigesoft.fct.IFcClFcRq;
 import org.beigesoft.cnv.IFilObj;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.srv.IEntFlRp;
@@ -62,12 +62,12 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
   /**
    * <p>Entities factories factory.</p>
    **/
-  private IFctCls<IFctRq<?>> fctFctEnt;
+  private IFcClFcRq fctFctEnt;
 
   /**
    * <p>Entities map "EntitySimpleName"-"Class".</p>
    **/
-  private Map<String, Class<?>> entMap;
+  private Map<String, Class<IHasId<?>>> entMap;
 
   /**
    * <p>Entities file-reporter factory.</p>
@@ -88,19 +88,16 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
    */
   @Override
   public final void handle(final Map<String, Object> pRqVs,
-    final IReqDt pRqDt,
-      final OutputStream pSous) throws Exception {
+    final IReqDt pRqDt, final OutputStream pSous) throws Exception {
     Map<String, Object> vs = new HashMap<String, Object>();
     try {
       String ent = pRqDt.getParam("ent");
-      Class entityClass = this.entMap.get(ent);
+      Class<IHasId<?>> cls = this.entMap.get(ent);
       this.rdb.setAcmt(false);
       this.rdb.setTrIsl(this.trIsl);
       this.rdb.begin();
       IHasId<?> entity = null;
-      @SuppressWarnings("unchecked")
-      IFctRq<IHasId<?>> entFac = (IFctRq<IHasId<?>>)
-        this.fctFctEnt.laz(pRqVs, entityClass);
+      IFctRq<IHasId<?>> entFac = this.fctFctEnt.laz(pRqVs, cls);
       entity = entFac.create(pRqVs);
       this.filEntRq.fill(pRqVs, vs, entity, pRqDt);
       String nmRep = pRqDt.getParam("nmRep");
@@ -154,9 +151,9 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
 
   /**
    * <p>Getter for fctFctEnt.</p>
-   * @return IFctCls<IFctRq<?>>
+   * @return IFcClFcRq
    **/
-  public final IFctCls<IFctRq<?>> getFctFctEnt() {
+  public final IFcClFcRq getFctFctEnt() {
     return this.fctFctEnt;
   }
 
@@ -164,7 +161,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
    * <p>Setter for fctFctEnt.</p>
    * @param pFctFctEnt reference
    **/
-  public final void setFctFctEnt(final IFctCls<IFctRq<?>> pFctFctEnt) {
+  public final void setFctFctEnt(final IFcClFcRq pFctFctEnt) {
     this.fctFctEnt = pFctFctEnt;
   }
 
@@ -172,7 +169,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
    * <p>Getter for entMap.</p>
    * @return Map<String, Class<?>>
    **/
-  public final Map<String, Class<?>> getEntMap() {
+  public final Map<String, Class<IHasId<?>>> getEntMap() {
     return this.entMap;
   }
 
@@ -180,7 +177,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
    * <p>Setter for entMap.</p>
    * @param pEntMap reference
    **/
-  public final void setEntMap(final Map<String, Class<?>> pEntMap) {
+  public final void setEntMap(final Map<String, Class<IHasId<?>>> pEntMap) {
     this.entMap = pEntMap;
   }
 

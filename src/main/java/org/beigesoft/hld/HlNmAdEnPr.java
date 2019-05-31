@@ -31,6 +31,7 @@ package org.beigesoft.hld;
 import java.util.Set;
 import java.util.List;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdlp.EmAtch;
 import org.beigesoft.mdlp.EmMsg;
 import org.beigesoft.prc.PrcEntRt;
@@ -54,7 +55,7 @@ public class HlNmAdEnPr implements IHlNmClSt {
    * <p>Shared non-editable entities for admin/web-store entity request handler,
    * e.g. email connection EmCon.</p>
    **/
-  private List<Class<?>> shrEnts;
+  private List<Class<? extends IHasId<?>>> shrEnts;
 
   /**
    * <p>Additional admin entity processors names holders
@@ -67,9 +68,11 @@ public class HlNmAdEnPr implements IHlNmClSt {
    * @param pCls a Class
    * @param pAct action name
    * @return processor FE name
+   * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls, final String pAct) {
+  public final String get(final Class<?> pCls,
+    final String pAct) throws Exception {
     if (this.shrEnts != null && this.shrEnts.contains(pCls)) {
       return null;
     }
@@ -118,9 +121,9 @@ public class HlNmAdEnPr implements IHlNmClSt {
   //SGS:
   /**
    * <p>Getter for shrEnts.</p>
-   * @return List<Class<?>>
+   * @return List<Class<IHasId<?>>>
    **/
-  public final List<Class<?>> getShrEnts() {
+  public final List<Class<? extends IHasId<?>>> getShrEnts() {
     return this.shrEnts;
   }
 
@@ -128,7 +131,8 @@ public class HlNmAdEnPr implements IHlNmClSt {
    * <p>Setter for shrEnts.</p>
    * @param pShrEnts reference
    **/
-  public final void setShrEnts(final List<Class<?>> pShrEnts) {
+  public final void setShrEnts(
+    final List<Class<? extends IHasId<?>>> pShrEnts) {
     this.shrEnts = pShrEnts;
   }
 

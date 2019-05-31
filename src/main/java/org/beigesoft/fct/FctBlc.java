@@ -50,7 +50,7 @@ import org.beigesoft.hld.HldNmCnToSt;
 import org.beigesoft.hld.HldNmCnFrStXml;
 import org.beigesoft.hld.HlNmPrFe;
 import org.beigesoft.hld.HlNmPrFeAd;
-import org.beigesoft.hld.HlNmAcEnPr;
+import org.beigesoft.hld.HlNmBsEnPr;
 import org.beigesoft.hld.HlNmAdEnPr;
 import org.beigesoft.hld.HldUvd;
 import org.beigesoft.hld.HldCnvId;
@@ -320,12 +320,14 @@ public class FctBlc<RS> implements IFctApp {
       hlNmAdEnPr.setHldsAdEnPr(this.fctDt.getHldsAdEnPr());
       rz.setHldEntPrcNm(hlNmAdEnPr);
       rz.setFctEntPrc(lazFctEnPrc(pRvs));
-      rz.setEntMap(new HashMap<String, Class<?>>());
+      rz.setEntMap(new HashMap<String, Class<IHasId<?>>>());
       Setng setng = lazStgUvd(pRvs);
       for (Class<?> cls  : setng.lazClss()) {
+        @SuppressWarnings("unchecked")
+        Class<IHasId<?>> ecls = (Class<IHasId<?>>) cls;
         if (this.fctDt.getAdmEnts() == null
-          || this.fctDt.getAdmEnts().contains(cls)) {
-          rz.getEntMap().put(cls.getSimpleName(), cls);
+          || this.fctDt.getAdmEnts().contains(ecls)) {
+          rz.getEntMap().put(cls.getSimpleName(), ecls);
         }
       }
       this.beans.put(FctDt.HNADENRQ, rz);
@@ -360,18 +362,20 @@ public class FctBlc<RS> implements IFctApp {
       rz.setFilEntRq(lazFilEntRq(pRvs));
       rz.setFctFctEnt(lazFctFctEnt(pRvs));
       rz.setFctPrcFen(lazFctPrcFen(pRvs));
-      HlNmAcEnPr hlep = new HlNmAcEnPr();
+      HlNmBsEnPr hlep = new HlNmBsEnPr();
       hlep.setShrEnts(this.fctDt.getShrEnts());
-      hlep.setHldsAcEnPr(this.fctDt.getHldsAcEnPr());
+      hlep.setHldsBsEnPr(this.fctDt.getHldsBsEnPr());
       rz.setHldEntPrcNm(hlep);
       rz.setFctEntPrc(lazFctEnPrc(pRvs));
       rz.setHldPrcFenNm(new HlNmPrFe());
-      rz.setEntMap(new HashMap<String, Class<?>>());
+      rz.setEntMap(new HashMap<String, Class<IHasId<?>>>());
       Setng setng = lazStgUvd(pRvs);
       for (Class<?> cls  : setng.lazClss()) {
+        @SuppressWarnings("unchecked")
+        Class<IHasId<?>> ecls = (Class<IHasId<?>>) cls;
         if (this.fctDt.getFbdEnts() == null
-          || !this.fctDt.getFbdEnts().contains(cls)) {
-          rz.getEntMap().put(cls.getSimpleName(), cls);
+          || !this.fctDt.getFbdEnts().contains(ecls)) {
+          rz.getEntMap().put(cls.getSimpleName(), ecls);
         }
       }
       this.beans.put(FctDt.HNACENRQ, rz);

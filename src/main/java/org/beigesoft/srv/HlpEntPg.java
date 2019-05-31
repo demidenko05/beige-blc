@@ -45,7 +45,7 @@ import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.dlg.IEvalFr;
 import org.beigesoft.cnv.IConv;
-import org.beigesoft.hld.IHldNm;
+import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.hld.HldUvd;
 import org.beigesoft.hld.UvdVar;
@@ -117,7 +117,7 @@ public class HlpEntPg<RS> {
   /**
    * <p>Fields classes holder.</p>
    **/
-  private IHldNm<Class<?>, Class<?>> hldFdCls;
+  private IHlNmClCl hldFdCls;
 
   /**
    * <p>Retrieve ents pg - ents list, pgs, filter map etc.</p>
@@ -917,9 +917,9 @@ public class HlpEntPg<RS> {
 
   /**
    * <p>Getter for hldFdCls.</p>
-   * @return IHldNm<Class<?>, Class<?>>
+   * @return IHlNmClCl
    **/
-  public final IHldNm<Class<?>, Class<?>> getHldFdCls() {
+  public final IHlNmClCl getHldFdCls() {
     return this.hldFdCls;
   }
 
@@ -927,7 +927,7 @@ public class HlpEntPg<RS> {
    * <p>Setter for hldFdCls.</p>
    * @param pHldFdCls reference
    **/
-  public final void setHldFdCls(final IHldNm<Class<?>, Class<?>> pHldFdCls) {
+  public final void setHldFdCls(final IHlNmClCl pHldFdCls) {
     this.hldFdCls = pHldFdCls;
   }
 

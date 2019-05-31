@@ -31,6 +31,7 @@ package org.beigesoft.fct;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdlp.IOrId;
 import org.beigesoft.rdb.IOrm;
 
@@ -39,7 +40,7 @@ import org.beigesoft.rdb.IOrm;
  *
  * @author Yury Demidenko
  */
-public class FctFctEnt implements IFctCls<IFctRq<?>> {
+public class FctFctEnt implements IFcClFcRq {
 
   /**
    * <p>Factories map "object's class"-"object's factory".</p>
@@ -54,22 +55,23 @@ public class FctFctEnt implements IFctCls<IFctRq<?>> {
 
   /**
    * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
+   * @param <T> entity type
    * @param pRqVs request scoped vars
    * @param pCls - bean name
    * @return requested bean
    * @throws Exception - an exception
    */
   @Override
-  public final IFctRq<?> laz(//NOPMD
+  public final <T extends IHasId<?>> IFctRq<T> laz(//NOPMD
     // Rule:DoubleCheckedLocking isn't true see in beigesoft-bcommon test:
     // org.beigesoft.test.DoubleCkeckLockingWrApTest
-    final Map<String, Object> pRqVs, final Class<?> pCls) throws Exception {
-    IFctRq<?> fct = this.fcts.get(pCls);
+    final Map<String, Object> pRqVs, final Class<T> pCls) throws Exception {
+    IFctRq<T> fct = (IFctRq<T>) this.fcts.get(pCls);
     if (fct == null) {
       // locking:
       synchronized (this.fcts) {
         // make sure again whether it's null after locking:
-        fct = this.fcts.get(pCls);
+        fct = (IFctRq<T>) this.fcts.get(pCls);
         if (IOrId.class.isAssignableFrom(pCls)) {
           fct = crPuFctOrId(pCls);
         } else {
@@ -82,11 +84,13 @@ public class FctFctEnt implements IFctCls<IFctRq<?>> {
 
   /**
    * <p>Create FctOrId and put into beans map.</p>
+   * @param <T> entity type
    * @param pCls - bean class
    * @return requested FctOrId
    * @throws Exception - an exception
    */
-  protected final FctOrId crPuFctOrId(final Class<?> pCls) throws Exception {
+  protected final <T extends IHasId<?>> FctOrId crPuFctOrId(
+    final Class<T> pCls) throws Exception {
     FctOrId fct = new FctOrId();
     fct.setCls(pCls);
     fct.setDbOr(this.orm.getDbId());
@@ -97,11 +101,13 @@ public class FctFctEnt implements IFctCls<IFctRq<?>> {
 
   /**
    * <p>Get FctSmp and put into beans map.</p>
+   * @param <T> entity type
    * @param pCls - bean class
    * @return requested FctSmp
    * @throws Exception - an exception
    */
-  protected final FctSmp crPuFctSmp(final Class<?> pCls) throws Exception {
+  protected final <T extends IHasId<?>> FctSmp crPuFctSmp(
+    final Class<T> pCls) throws Exception {
     FctSmp fct = new FctSmp();
     fct.setCls(pCls);
     //assigning fully initialized object:

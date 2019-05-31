@@ -46,13 +46,13 @@ public class UvdVar {
   /**
    * <p>Requested entity class.</p>
    **/
-  private Class<?> cls;
+  private Class<IHasId<?>> cls;
 
     //list:
   /**
-   * <p>Requested entity fields.</p>
+   * <p>Requested entities.</p>
    **/
-  private List<?> ents;
+  private List<IHasId<?>> ents;
 
   /**
    * <p>Pages.</p>
@@ -96,9 +96,9 @@ public class UvdVar {
 
   /**
    * <p>Getter for cls.</p>
-   * @return Class<?>
+   * @return Class<IHasId<?>>
    **/
-  public final Class<?> getCls() {
+  public final Class<IHasId<?>> getCls() {
     return this.cls;
   }
 
@@ -106,7 +106,7 @@ public class UvdVar {
    * <p>Setter for cls.</p>
    * @param pCls reference
    **/
-  public final void setCls(final Class<?> pCls) {
+  public final void setCls(final Class<IHasId<?>> pCls) {
     this.cls = pCls;
   }
 
@@ -114,7 +114,7 @@ public class UvdVar {
    * <p>Getter for ents.</p>
    * @return List<?>
    **/
-  public final List<?> getEnts() {
+  public final List<IHasId<?>> getEnts() {
     return this.ents;
   }
 
@@ -122,7 +122,7 @@ public class UvdVar {
    * <p>Setter for ents.</p>
    * @param pEnts reference
    **/
-  public final void setEnts(final List<?> pEnts) {
+  public final void setEnts(final List<IHasId<?>> pEnts) {
     this.ents = pEnts;
   }
 
@@ -175,7 +175,7 @@ public class UvdVar {
     if (this.ent == null) {
       this.cls = null;
     } else {
-      this.cls = this.ent.getClass();
+      this.cls = (Class<IHasId<?>>) this.ent.getClass();
     }
   }
 
