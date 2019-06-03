@@ -30,27 +30,27 @@ package org.beigesoft.cnv;
 
 import java.util.Map;
 
+import org.beigesoft.mdl.IHasId;
+import org.beigesoft.mdl.IRecSet;
+
 /**
- * <p>Abstraction of service that fills/converts given
- * destination container with given source data and name, e.g. fill entity's
- * field from DB result-set or request data,  or fill column
- * values with entity's field.</p>
+ * <p>Abstraction of service that fills given entity's fields with given
+ * record-set.</p>
  *
- * @param <S> source type
- * @param <D> destination type
+ * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public interface IFilNm<S, D> {
+public interface IFilEntRs<RS> {
 
   /**
-   * <p>Fills given destination container with given source data and name.</p>
-   * @param pRqVs request scoped vars
-   * @param pVs invoker scoped vars, e.g. needed fields {id, ver, nme}.
-   * @param pSrc source, e.g. request data or entity
-   * @param pDst destination container, e.g. entity or column values
-   * @param pNm name, e.g. field name
+   * <p>Fills entity's fields with given record-set.</p>
+   * @param <T> entity type
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars, e.g. needed fields {id, ver, nme} not null.
+   * @param pEnt entity to fill, not null
+   * @param pRqDt record-set, not null
    * @throws Exception - an exception
    **/
-  void fill(Map<String, Object> pRqVs,
-    Map<String, Object> pVs, S pSrc, D pDst, String pNm) throws Exception;
+  <T extends IHasId<?>>  void fill(Map<String, Object> pRvs,
+    Map<String, Object> pVs, T pEnt, IRecSet<RS> pRs) throws Exception;
 }

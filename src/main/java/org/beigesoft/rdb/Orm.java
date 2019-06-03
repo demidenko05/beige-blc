@@ -42,8 +42,8 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFcClFcRq;
 import org.beigesoft.fct.IFctRq;
 import org.beigesoft.log.ILog;
-import org.beigesoft.cnv.IFilObj;
-import org.beigesoft.cnv.IFiller;
+import org.beigesoft.cnv.IFilEntRs;
+import org.beigesoft.cnv.IFilCvEnt;
 import org.beigesoft.prp.ISetng;
 
 /**
@@ -94,7 +94,7 @@ public class Orm<RS> implements IOrm {
   /**
    * <p>Filler entity from RS.</p>
    **/
-  private IFilObj<IRecSet<RS>> filEntRs;
+  private IFilEntRs<RS> filEntRs;
 
   /**
    * <p>Factory of entity's factory.</p>
@@ -109,7 +109,7 @@ public class Orm<RS> implements IOrm {
   /**
    * <p>Fills CV from entity service.</p>
    **/
-  private IFiller<IHasId<?>, ColVals> filCvEn;
+  private IFilCvEnt filCvEn;
 
   /**
    * <p>Initializes database, e.g. create/updates tables if need.
@@ -124,7 +124,7 @@ public class Orm<RS> implements IOrm {
     String checkTbl = this.setng.lazCmnst().get(CHECKTBL);
     boolean allCr = true;
     boolean anyCr = false;
-    for (Class<?> cls : this.setng.lazClss()) {
+    for (Class<? extends IHasId<?>> cls : this.setng.lazClss()) {
       String sel = checkTbl.replace(TBLNM, cls.getSimpleName().toUpperCase());
       boolean tbExs = false;
       IRecSet<RS> rs = null;
@@ -840,9 +840,9 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
 
   /**
    * <p>Getter for filEntRs.</p>
-   * @return IFilObj<IRecSet<RS>>
+   * @return IFilEntRs<RS>
    **/
-  public final IFilObj<IRecSet<RS>> getFilEntRs() {
+  public final IFilEntRs<RS> getFilEntRs() {
     return this.filEntRs;
   }
 
@@ -850,7 +850,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
    * <p>Setter for filEntRs.</p>
    * @param pFilEntRs reference
    **/
-  public final void setFilEntRs(final IFilObj<IRecSet<RS>> pFilEntRs) {
+  public final void setFilEntRs(final IFilEntRs<RS> pFilEntRs) {
     this.filEntRs = pFilEntRs;
   }
 
@@ -888,9 +888,9 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
 
   /**
    * <p>Getter for filCvEn.</p>
-   * @return IFiller<IHasId<?>, ColVals>
+   * @return IFilCvEnt
    **/
-  public final IFiller<IHasId<?>, ColVals> getFilCvEn() {
+  public final IFilCvEnt getFilCvEn() {
     return this.filCvEn;
   }
 
@@ -898,7 +898,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
    * <p>Setter for filCvEn.</p>
    * @param pFilCvEn reference
    **/
-  public final void setFilCvEn(final IFiller<IHasId<?>, ColVals> pFilCvEn) {
+  public final void setFilCvEn(final IFilCvEnt pFilCvEn) {
     this.filCvEn = pFilCvEn;
   }
 }

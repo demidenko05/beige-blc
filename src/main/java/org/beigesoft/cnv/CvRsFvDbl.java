@@ -29,36 +29,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
-import java.util.Date;
 
 import org.beigesoft.mdl.IRecSet;
 
 /**
- * <p>Converts named field from result-set to Date.</p>
+ * <p>Converts named field from result-set to Double.</p>
  *
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class CnvBnRsDt<RS> implements IConvNm<IRecSet<RS>, Date> {
+public class CvRsFvDbl<RS> implements ICnvRsFdv<Double, RS> {
 
   /**
    * <p>Converts named field from resultset.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pRs result set
-   * @param pNm field name
-   * @return pTo to value
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars.
+   * @param pRs result-set, not null
+   * @param pFdNm Field name, not null
+   * @return field's value from RS
    * @throws Exception - an exception
    **/
   @Override
-  public final Date conv(final Map<String, Object> pRqVs,
+  public final Double conv(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final IRecSet<RS> pRs,
-      final String pNm) throws Exception {
-    Long longVal = pRs.getLong(pNm);
-    if (longVal != null) {
-      return new Date(longVal);
-    }
-    return null;
+      final String pFdNm) throws Exception {
+    return pRs.getDouble(pFdNm);
   }
 }

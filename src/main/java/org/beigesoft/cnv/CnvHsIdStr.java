@@ -33,7 +33,7 @@ import java.util.Map;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.fct.IFctCnToSt;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 
@@ -45,12 +45,12 @@ import org.beigesoft.prp.ISetng;
  * @param <T> entity type
  * @author Yury Demidenko
  */
-public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
+public class CnvHsIdStr<T extends IHasId<?>> implements ICnToSt<T> {
 
   /**
    * <p>Converters fields factory.</p>
    */
-  private IFctNm<IConv<?, String>> fctCnvFld;
+  private IFctCnToSt fctCnvFld;
 
   /**
    * <p>Fields converters names holder.</p>
@@ -81,7 +81,7 @@ public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
     }
     String cnNm = this.hldNmFdCn.get(pHsId.getClass(), fdIdNms.get(0));
     @SuppressWarnings("unchecked")
-    IConv<Object, String> flCn = (IConv<Object, String>) this.fctCnvFld
+    ICnToSt<Object> flCn = (ICnToSt<Object>) this.fctCnvFld
       .laz(pRqVs, cnNm);
     return flCn.conv(pRqVs, pHsId.getIid());
   }
@@ -89,9 +89,9 @@ public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
   //Simple getters and setters:
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<IConv<?, String>>
+   * @return IFctCnToSt
    **/
-  public final IFctNm<IConv<?, String>> getFctCnvFld() {
+  public final IFctCnToSt getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -100,7 +100,7 @@ public class CnvHsIdStr<T extends IHasId<?>> implements IConv<T, String> {
    * @param pFctCnvFld reference
    **/
   public final void setFctCnvFld(
-    final IFctNm<IConv<?, String>> pFctCnvFld) {
+    final IFctCnToSt pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 

@@ -80,18 +80,20 @@ public class CnvIdCst implements ICnvId<IHasId<Object>, Object> {
         throw new ExcCode(ExcCode.WRPR, "Entity with NULL ID!");
       }
       if (IHasId.class.isAssignableFrom(fdCls)) {
-        List<String> fdIdNms = this.setng.lazIdFldNms(fdCls);
+        @SuppressWarnings("unchecked")
+        Class<? extends IHasId<?>> fdeCls = (Class<? extends IHasId<?>>) fdCls;
+        List<String> fdIdNms = this.setng.lazIdFldNms(fdeCls);
         if (fdIdNms.size() > 1) {
           throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID!"
             + " cls/fd" + pEnt.getClass() + "/" + fdNm);
         }
-        Class<?> fcs = this.hldFdCls.get(fdCls, fdIdNms.get(0));
+        Class<?> fcs = this.hldFdCls.get(fdeCls, fdIdNms.get(0));
         if (IHasId.class.isAssignableFrom(fcs)) {
           throw new ExcCode(ExcCode.WRCN, "Subentity with double foreign ID!"
             + " cls/fd/fcl/f" + pEnt.getClass() + "/" + fdNm + "/"
               + fdCls + "/" + fdIdNms.get(0));
         }
-        getter = this.hldGets.get(fdCls, fdIdNms.get(0));
+        getter = this.hldGets.get(fdeCls, fdIdNms.get(0));
         fdVl = getter.invoke(fdVl);
       }
       if (isFst) {
@@ -124,18 +126,20 @@ public class CnvIdCst implements ICnvId<IHasId<Object>, Object> {
         throw new ExcCode(ExcCode.WRPR, "Entity with NULL ID!");
       }
       if (IHasId.class.isAssignableFrom(fdCls)) {
-        List<String> fdIdNms = this.setng.lazIdFldNms(fdCls);
+        @SuppressWarnings("unchecked")
+        Class<? extends IHasId<?>> fdeCls = (Class<? extends IHasId<?>>) fdCls;
+        List<String> fdIdNms = this.setng.lazIdFldNms(fdeCls);
         if (fdIdNms.size() > 1) {
           throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID!"
             + " cls/fd" + pEnt.getClass() + "/" + fdNm);
         }
-        Class<?> fcs = this.hldFdCls.get(fdCls, fdIdNms.get(0));
+        Class<?> fcs = this.hldFdCls.get(fdeCls, fdIdNms.get(0));
         if (IHasId.class.isAssignableFrom(fcs)) {
           throw new ExcCode(ExcCode.WRCN, "Subentity with double foreign ID!"
             + " cls/fd/fcl/f" + pEnt.getClass() + "/" + fdNm + "/"
               + fdCls + "/" + fdIdNms.get(0));
         }
-        getter = this.hldGets.get(fdCls, fdIdNms.get(0));
+        getter = this.hldGets.get(fdeCls, fdIdNms.get(0));
         fdVl = getter.invoke(fdVl);
       }
       if (isFst) {

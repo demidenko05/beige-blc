@@ -40,6 +40,7 @@ import java.util.HashMap;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.mdl.ColVals;
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.rdb.SrvClVl;
 import org.beigesoft.rdb.ARdb;
 
@@ -276,8 +277,8 @@ public class Rdb extends ARdb<ResultSet> {
    * @throws Exception - an exception
    **/
   @Override
-  public final int update(final Class<?> pCls, final ColVals pCv,
-    final String pWhe) throws Exception {
+  public final <T extends IHasId<?>> int update(final Class<T> pCls,
+    final ColVals pCv, final String pWhe) throws Exception {
     Statement stmt = null;
     String qu = getSrvClVl().evUpdateCnd(pCls, pCv, pWhe);
     try {
@@ -309,7 +310,7 @@ public class Rdb extends ARdb<ResultSet> {
    * @throws Exception - an exception
    **/
   @Override
-  public final long insert(final Class<?> pCls,
+  public final <T extends IHasId<?>> long insert(final Class<T> pCls,
     final ColVals pCv) throws Exception {
     Statement stmt = null;
     String qu = getSrvClVl().evInsert(pCls, pCv);

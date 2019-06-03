@@ -66,7 +66,7 @@ public class HlNmBsEnPr implements IHlNmClSt {
    * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls,
+  public final <T extends IHasId<?>> String get(final Class<T> pCls,
     final String pAct) throws Exception {
     if (this.shrEnts != null && this.shrEnts.contains(pCls)) {
       return null;

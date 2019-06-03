@@ -31,6 +31,7 @@ package org.beigesoft.hld;
 import java.util.Set;
 import java.util.Map;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.prp.ISetng;
 
 /**
@@ -115,7 +116,7 @@ public class HldFldStg implements IHlNmClSt {
    * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls,
+  public final <T extends IHasId<?>> String get(final Class<T> pCls,
     final String pFlNm) throws Exception {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
     if (fdCls.isEnum() && this.enumVal != null) {

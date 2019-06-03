@@ -45,11 +45,9 @@ import org.beigesoft.prp.ISetng;
  * <p>Service that fills/converts given
  * column values with given entity.</p>
  *
- * @param <S> source type
- * @param <ID> ID type
  * @author Yury Demidenko
  */
-public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
+public class FilCvEnt implements IFilCvEnt {
 
   /**
    * <p>Log.</p>
@@ -69,28 +67,27 @@ public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
   /**
    * <p>Fillers fields factory.</p>
    */
-  private IFctNm<IFilNm<S, ColVals>> fctFilFld;
+  private IFctNm<IFilCvFld> fctFilFld;
 
   /**
    * <p>Fills/converts given column values with given entity.</p>
-   * @param pRqVs request scoped vars
-   * @param pVs invoker scoped vars, e.g. needed fields ndFds {id, ver, nme}.
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
    * @param pEnt entity
-   * @param pClVl column values
+   * @param pCv column values
    * @throws Exception - an exception
    **/
   @Override
-  public final void fill(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final S pEnt,
-      final ColVals pClVl) throws Exception {
+  public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final T pEnt,
+      final ColVals pCv) throws Exception {
     String[] ndFds = (String[]) pVs.get("ndFds");
     boolean ndVr = true;
     if (ndFds != null) {
       ndVr = Arrays.binarySearch(ndFds, IHasId.VERNM) >= 0;
     }
     if (ndVr) {
-      String verAlg = this.setng
-        .lazClsStg(pEnt.getClass(), IHasId.VERALGNM);
+      String verAlg = this.setng.lazClsStg(pEnt.getClass(), IHasId.VERALGNM);
       if (verAlg == null) {
         throw new ExcCode(ExcCode.WRCN, "There is no vrAlg for class: "
           + pEnt.getClass());
@@ -105,17 +102,17 @@ public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
           vlNew = pEnt.getVer() + 1L;
         }
       }
-      if (pClVl.getLongs() == null) {
-        pClVl.setLongs(new HashMap<String, Long>());
+      if (pCv.getLongs() == null) {
+        pCv.setLongs(new HashMap<String, Long>());
       }
-      pClVl.getLongs().put(IHasId.VERNM, vlNew);
-      pClVl.setOldVer(pEnt.getVer());
+      pCv.getLongs().put(IHasId.VERNM, vlNew);
+      pCv.setOldVer(pEnt.getVer());
       pEnt.setVer(vlNew);
     }
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7021 && this.log.getDbgCl() > 7019;
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
-      fillFd(pRqVs, pVs, pEnt, pClVl, fdNm, isDbgSh);
+      fillFd(pRvs, pVs, pEnt, pCv, fdNm, isDbgSh);
     }
     for (String fdNm : this.setng.lazFldNms(pEnt.getClass())) {
       if (!IHasId.VERNM.equals(fdNm)) {
@@ -124,7 +121,7 @@ public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
           ndFl = Arrays.binarySearch(ndFds, fdNm) >= 0;
         }
         if (ndFl) {
-          fillFd(pRqVs, pVs, pEnt, pClVl, fdNm, isDbgSh);
+          fillFd(pRvs, pVs, pEnt, pCv, fdNm, isDbgSh);
         }
       }
     }
@@ -132,25 +129,25 @@ public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
 
   /**
    * <p>Fills/converts given column values with given entity.</p>
-   * @param pRqVs request scoped vars
-   * @param pVs invoker scoped vars, e.g. needed fields ndFds {id, ver, nme}.
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, ver, nme} not null.
    * @param pEnt entity
-   * @param pClVl column values
+   * @param pCv column values
    * @param pFdNm field name
    * @param pIsDbgSh if show debug messages
    * @throws Exception - an exception
    **/
-  public final void fillFd(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final S pEnt, final ColVals pClVl,
+  public final <T extends IHasId<?>> void fillFd(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final T pEnt, final ColVals pCv,
       final String pFdNm, final boolean pIsDbgSh) throws Exception {
     String filFdNm = this.hldFilFdNms.get(pEnt.getClass(), pFdNm);
-    IFilNm<S, ColVals> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
+    IFilCvFld filFl = this.fctFilFld.laz(pRvs, filFdNm);
     if (pIsDbgSh) {
-      this.log.debug(pRqVs, FilCvEnt.class,
+      this.log.debug(pRvs, FilCvEnt.class,
         "Filling CV fdNm/cls/filler: " + pFdNm + "/" + pEnt.getClass()
           .getSimpleName() + "/" + filFl.getClass().getSimpleName());
     }
-    filFl.fill(pRqVs, pVs, pEnt, pClVl, pFdNm);
+    filFl.fill(pRvs, pVs, pEnt, pFdNm, pCv);
   }
 
   //Simple getters and setters:
@@ -204,9 +201,9 @@ public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
 
   /**
    * <p>Getter for fctFilFld.</p>
-   * @return IFctNm<IFilNm<S, ColVals>>
+   * @return IFctNm<IFilCvFld>
    **/
-  public final IFctNm<IFilNm<S, ColVals>> getFctFilFld() {
+  public final IFctNm<IFilCvFld> getFctFilFld() {
     return this.fctFilFld;
   }
 
@@ -214,7 +211,7 @@ public class FilCvEnt<S extends IHasId<ID>, ID> implements IFiller<S, ColVals> {
    * <p>Setter for fctFilFld.</p>
    * @param pFctFilFld reference
    **/
-  public final void setFctFilFld(final IFctNm<IFilNm<S, ColVals>> pFctFilFld) {
+  public final void setFctFilFld(final IFctNm<IFilCvFld> pFctFilFld) {
     this.fctFilFld = pFctFilFld;
   }
 }

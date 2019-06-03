@@ -41,7 +41,7 @@ import org.beigesoft.srv.INumStr;
  *
  * @author Yury Demidenko
  */
-public class CnvFltStrFm implements IConv<Float, String> {
+public class CnvFltStrFm implements ICnToSt<Float> {
 
   /**
    * <p>Number to string service.</p>

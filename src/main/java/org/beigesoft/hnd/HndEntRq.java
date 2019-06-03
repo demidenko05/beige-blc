@@ -35,13 +35,14 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctRq;
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.fct.IFctPrcEnt;
+import org.beigesoft.fct.IFctPrc;
 import org.beigesoft.fct.IFcClFcRq;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.hld.HldUvd;
 import org.beigesoft.hld.UvdVar;
-import org.beigesoft.cnv.IFilObj;
+import org.beigesoft.cnv.IFilEntRq;
 import org.beigesoft.prc.IPrc;
 import org.beigesoft.prc.IPrcEnt;
 import org.beigesoft.rdb.IRdb;
@@ -74,7 +75,7 @@ public class HndEntRq<RS> implements IHndRq {
   /**
    * <p>Service that fill entity from request.</p>
    **/
-  private IFilObj<IReqDt> filEntRq;
+  private IFilEntRq filEntRq;
 
   /**
    * <p>Entities factories factory.</p>
@@ -89,7 +90,7 @@ public class HndEntRq<RS> implements IHndRq {
   /**
    * <p>Entities processors factory.</p>
    **/
-  private IFctNm<IPrcEnt<?, ?>> fctEntPrc;
+  private IFctPrcEnt fctEntPrc;
 
   /**
    * <p>Processors for entities names holder.</p>
@@ -99,12 +100,12 @@ public class HndEntRq<RS> implements IHndRq {
   /**
    * <p>Processors for entities factory.</p>
    **/
-  private IFctNm<IPrc> fctPrcFen;
+  private IFctPrc fctPrcFen;
 
   /**
    * <p>Entities map "EntitySimpleName"-"Class".</p>
    **/
-  private Map<String, Class<IHasId<?>>> entMap;
+  private Map<String, Class<? extends IHasId<?>>> entMap;
 
   /**
    * <p>Transaction isolation for changing DB phase.</p>
@@ -139,20 +140,20 @@ public class HndEntRq<RS> implements IHndRq {
    * WHandlerAndJsp requires handle NULL request, so if parameter
    * "ent" is null then do nothing.
    * </p>
-   * @param pRqVs Request scoped variables
+   * @param pRvs Request scoped variables
    * @param pRqDt Request Data
    * @throws Exception - an exception
    */
   @Override
-  public final void handle(final Map<String, Object> pRqVs,
+  public final void handle(final Map<String, Object> pRvs,
     final IReqDt pRqDt) throws Exception {
     String entNm = pRqDt.getParam("ent");
     if (entNm == null) { //dsk/mbl.jsp
       return;
     }
-    Class<IHasId<?>> cls = this.entMap.get(entNm);
+    Class<? extends IHasId<?>> cls = this.entMap.get(entNm);
     if (cls == null) {
-      this.logSec.error(pRqVs, HndEntRq.class,
+      this.logSec.error(pRvs, HndEntRq.class,
     "Trying to work with forbidden ent/host/addr/port/user: " + entNm + "/"
   + pRqDt.getRemHost() + "/" + pRqDt.getRemAddr() + "/"
 + pRqDt.getRemPort() + "/" + pRqDt.getUsrNm());
@@ -160,45 +161,128 @@ public class HndEntRq<RS> implements IHndRq {
     }
     pRqDt.setAttr("hldUvd", this.hldUvd);
     UvdVar uvs = new UvdVar();
-    pRqVs.put("uvs", uvs);
+    pRvs.put("uvs", uvs);
     boolean isDbgSh = this.logStd.getDbgSh(this.getClass())
       && this.logStd.getDbgFl() < 5001 && this.logStd.getDbgCl() > 4999;
     String[] actArr = pRqDt.getParam("act").split(",");
     for (String actNm : actArr) {
       if (isDbgSh) {
-        this.logStd.debug(pRqVs, HndEntRq.class,
+        this.logStd.debug(pRvs, HndEntRq.class,
           "Action: " + actNm);
       }
     }
     if (this.wrReSpTr && ("entSv".equals(actArr[0])
   || "entOwSv".equals(actArr[0]) || "entDl".equals(actArr[0])
 || "entOwDl".equals(actArr[0]))) {
-      Map<String, Object> vs = new HashMap<String, Object>();
-      IHasId<?> ent = null;
+      hndChngIsl(pRvs, pRqDt, cls, actArr, isDbgSh, entNm);
+    } else {
+      hndNoChngIsl(pRvs, pRqDt, cls, actArr, isDbgSh, entNm);
+    }
+  }
+
+  /**
+   * <p>Handle request without changing transaction isolation.</p>
+   * @param <T> entity type
+   * @param pRvs Request scoped variables
+   * @param pRqDt Request Data
+   * @param pCls Entity Class
+   * @param pActArr Actions Array
+   * @param pIsDbgSh Is Show Debug Messages
+   * @param pNmEnt entity name
+   * @throws Exception - an exception
+   */
+  public final <T extends IHasId<?>> void hndChngIsl(
+    final Map<String, Object> pRvs, final IReqDt pRqDt, final Class<T> pCls,
+      final String[] pActArr, final boolean pIsDbgSh,
+        final String pNmEnt) throws Exception {
+    Map<String, Object> vs = new HashMap<String, Object>();
+    UvdVar uvs = (UvdVar) pRvs.get("uvs");
+    Class<T> cls = pCls;
+    IHasId<?> ent = null;
+    try {
+      this.rdb.setAcmt(false);
+      this.rdb.setTrIsl(this.writeTi);
+      this.rdb.begin();
+      IFctRq<T> entFac = this.fctFctEnt.laz(pRvs, cls);
+      ent = entFac.create(pRvs);
+      this.filEntRq.fill(pRvs, vs, ent, pRqDt);
+      String entProcNm = this.hldEntPrcNm.get(cls, pActArr[0]);
+      if (entProcNm == null) {
+        this.logSec.error(null, HndEntRq.class,
+          "Trying to work with forbidden ent/action/user: " + ent + "/"
+            + pActArr[0] + "/" + pRqDt.getUsrNm());
+        throw new ExcCode(ExcCode.FORB,
+          "Forbidden!");
+      }
+      @SuppressWarnings("unchecked")
+      IPrcEnt<IHasId<?>, ?> ep = (IPrcEnt<IHasId<?>, ?>)
+        this.fctEntPrc.laz(pRvs, entProcNm);
+      if (pIsDbgSh) {
+        this.logStd.debug(pRvs, HndEntRq.class,
+          "CHANGING transaction use entProcNm/IPrcEnt: " + entProcNm
+            + "/" + ep.getClass());
+      }
+      ent = ep.process(pRvs, ent, pRqDt);
+      this.rdb.commit();
+    } catch (Exception ex) {
+      if (!this.rdb.getAcmt()) {
+        this.rdb.rollBack();
+      }
+      throw ex;
+    } finally {
+      this.rdb.release();
+    }
+    if (pActArr.length > 1) { //reading phase:
       try {
         this.rdb.setAcmt(false);
-        this.rdb.setTrIsl(this.writeTi);
+        this.rdb.setTrIsl(this.readTi);
         this.rdb.begin();
-        IFctRq<IHasId<?>> entFac = this.fctFctEnt.laz(pRqVs, cls);
-        ent = entFac.create(pRqVs);
-        this.filEntRq.fill(pRqVs, vs, ent, pRqDt);
-        String entProcNm = this.hldEntPrcNm.get(cls, actArr[0]);
-        if (entProcNm == null) {
-          this.logSec.error(null, HndEntRq.class,
-            "Trying to work with forbidden ent/action/user: " + ent + "/"
-              + actArr[0] + "/" + pRqDt.getUsrNm());
-          throw new ExcCode(ExcCode.FORB,
-            "Forbidden!");
+        for (int i = 1; i < pActArr.length; i++) {
+          String actNm = pActArr[i];
+          if (actNm.startsWith("ent")) {
+            if (ent == null) { // it's may be change ent to owner:
+              ent = uvs.getOwnr();
+              if (ent == null) {
+                throw new ExcCode(ExcCode.WRPR,
+                  "wrong_request_entity_not_filled");
+              }
+             cls = (Class<T>) ent.getClass();
+            }
+            String entProcNm = this.hldEntPrcNm.get(cls, actNm);
+            if (entProcNm == null) {
+              this.logSec.error(null, HndEntRq.class,
+                "Trying to work with forbidden ent/action/user: " + ent
+                  + "/" + actNm + "/" + pRqDt.getUsrNm());
+              throw new ExcCode(ExcCode.FORB,
+                "Forbidden!");
+            }
+            @SuppressWarnings("unchecked")
+            IPrcEnt<IHasId<?>, ?> ep = (IPrcEnt<IHasId<?>, ?>)
+                this.fctEntPrc.laz(pRvs, entProcNm);
+            if (pIsDbgSh) {
+              this.logStd.debug(pRvs, HndEntRq.class,
+                "It's used entProcNm/IPrcEnt: " + entProcNm
+                  + "/" + ep.getClass());
+            }
+            ent = ep.process(pRvs, ent, pRqDt);
+          } else { // else actions like "list" (page)
+            String procNm = this.hldPrcFenNm.get(cls, actNm);
+            if (procNm == null) {
+              this.logSec.error(pRvs, HndEntRq.class,
+              "Trying to work with forbidden ent/action/user: " + ent
+                + "/" + actNm + "/" + pRqDt.getUsrNm());
+              throw new ExcCode(ExcCode.FORB,
+                "Forbidden!");
+            }
+            IPrc proc = this.fctPrcFen.laz(pRvs, procNm);
+            if (pIsDbgSh) {
+              this.logStd.debug(pRvs, HndEntRq.class,
+                "It's used procNm/IPrc: " + procNm + "/"
+                  + proc.getClass());
+            }
+            proc.process(pRvs, pRqDt);
+          }
         }
-        @SuppressWarnings("unchecked")
-        IPrcEnt<IHasId<?>, ?> ep = (IPrcEnt<IHasId<?>, ?>)
-          this.fctEntPrc.laz(pRqVs, entProcNm);
-        if (isDbgSh) {
-          this.logStd.debug(pRqVs, HndEntRq.class,
-            "CHANGING transaction use entProcNm/IPrcEnt: " + entProcNm
-              + "/" + ep.getClass());
-        }
-        ent = ep.process(pRqVs, ent, pRqDt);
         this.rdb.commit();
       } catch (Exception ex) {
         if (!this.rdb.getAcmt()) {
@@ -208,75 +292,13 @@ public class HndEntRq<RS> implements IHndRq {
       } finally {
         this.rdb.release();
       }
-      if (actArr.length > 1) { //reading phase:
-        try {
-          this.rdb.setAcmt(false);
-          this.rdb.setTrIsl(this.readTi);
-          this.rdb.begin();
-          for (int i = 1; i < actArr.length; i++) {
-            String actNm = actArr[i];
-            if (actNm.startsWith("ent")) {
-              if (ent == null) { // it's may be change ent to owner:
-                ent = uvs.getOwnr();
-                if (ent == null) {
-                  throw new ExcCode(ExcCode.WRPR,
-                    "wrong_request_entity_not_filled");
-                }
-               cls = (Class<IHasId<?>>) ent.getClass();
-              }
-              String entProcNm = this.hldEntPrcNm.get(cls, actNm);
-              if (entProcNm == null) {
-                this.logSec.error(null, HndEntRq.class,
-                  "Trying to work with forbidden ent/action/user: " + ent
-                    + "/" + actNm + "/" + pRqDt.getUsrNm());
-                throw new ExcCode(ExcCode.FORB,
-                  "Forbidden!");
-              }
-              @SuppressWarnings("unchecked")
-              IPrcEnt<IHasId<?>, ?> ep = (IPrcEnt<IHasId<?>, ?>)
-                  this.fctEntPrc.laz(pRqVs, entProcNm);
-              if (isDbgSh) {
-                this.logStd.debug(pRqVs, HndEntRq.class,
-                  "It's used entProcNm/IPrcEnt: " + entProcNm
-                    + "/" + ep.getClass());
-              }
-              ent = ep.process(pRqVs, ent, pRqDt);
-            } else { // else actions like "list" (page)
-              String procNm = this.hldPrcFenNm.get(cls, actNm);
-              if (procNm == null) {
-                this.logSec.error(pRqVs, HndEntRq.class,
-                "Trying to work with forbidden ent/action/user: " + ent
-                  + "/" + actNm + "/" + pRqDt.getUsrNm());
-                throw new ExcCode(ExcCode.FORB,
-                  "Forbidden!");
-              }
-              IPrc proc = this.fctPrcFen.laz(pRqVs, procNm);
-              if (isDbgSh) {
-                this.logStd.debug(pRqVs, HndEntRq.class,
-                  "It's used procNm/IPrc: " + procNm + "/"
-                    + proc.getClass());
-              }
-              proc.process(pRqVs, pRqDt);
-            }
-          }
-          this.rdb.commit();
-        } catch (Exception ex) {
-          if (!this.rdb.getAcmt()) {
-            this.rdb.rollBack();
-          }
-          throw ex;
-        } finally {
-          this.rdb.release();
-        }
-      }
-    } else {
-      hndNoChngIsl(pRqVs, pRqDt, cls, actArr, isDbgSh, entNm);
     }
   }
 
   /**
    * <p>Handle request without changing transaction isolation.</p>
-   * @param pRqVs Request scoped variables
+   * @param <T> entity type
+   * @param pRvs Request scoped variables
    * @param pRqDt Request Data
    * @param pCls Entity Class
    * @param pActArr Actions Array
@@ -284,23 +306,23 @@ public class HndEntRq<RS> implements IHndRq {
    * @param pNmEnt entity name
    * @throws Exception - an exception
    */
-  public final void hndNoChngIsl(final Map<String, Object> pRqVs,
-    final IReqDt pRqDt, final Class<IHasId<?>> pCls,
+  public final <T extends IHasId<?>> void hndNoChngIsl(
+    final Map<String, Object> pRvs, final IReqDt pRqDt, final Class<T> pCls,
       final String[] pActArr, final boolean pIsDbgSh,
         final String pNmEnt) throws Exception {
     Map<String, Object> vs = new HashMap<String, Object>();
-    UvdVar uvs = (UvdVar) pRqVs.get("uvs");
-    Class<IHasId<?>> cls = pCls;
+    UvdVar uvs = (UvdVar) pRvs.get("uvs");
+    Class<T> cls = pCls;
+    IHasId<?> ent = null;
     try {
       this.rdb.setAcmt(false);
       this.rdb.setTrIsl(this.writeReTi);
       this.rdb.begin();
-      IHasId<?> ent = null;
       if (pActArr[0].startsWith("ent")) {
         // actions like "save", "delete"
-        IFctRq<IHasId<?>> entFac = this.fctFctEnt.laz(pRqVs, cls);
-        ent = entFac.create(pRqVs);
-        this.filEntRq.fill(pRqVs, vs, ent, pRqDt);
+        IFctRq<T> entFac = this.fctFctEnt.laz(pRvs, cls);
+        ent = entFac.create(pRvs);
+        this.filEntRq.fill(pRvs, vs, ent, pRqDt);
       }
       for (String actNm : pActArr) {
         if (actNm.startsWith("ent")) {
@@ -310,37 +332,37 @@ public class HndEntRq<RS> implements IHndRq {
               throw new ExcCode(ExcCode.WRPR,
                 "wrong_request_entity_not_filled");
             }
-           cls = (Class<IHasId<?>>) ent.getClass();
+            cls = (Class<T>) ent.getClass();
           }
           String entProcNm = this.hldEntPrcNm.get(cls, actNm);
           if (entProcNm == null) {
-            this.logSec.error(pRqVs, HndEntRq.class,
+            this.logSec.error(pRvs, HndEntRq.class,
               "Trying to work with forbidden ent/action/user: " + pNmEnt
                 + "/" + actNm + "/" + pRqDt.getUsrNm());
             throw new ExcCode(ExcCode.FORB, "Forbidden!");
           }
           @SuppressWarnings("unchecked")
           IPrcEnt<IHasId<?>, ?> ep = (IPrcEnt<IHasId<?>, ?>)
-            this.fctEntPrc.laz(pRqVs, entProcNm);
+            this.fctEntPrc.laz(pRvs, entProcNm);
           if (pIsDbgSh) {
-            this.logStd.debug(pRqVs, HndEntRq.class,
+            this.logStd.debug(pRvs, HndEntRq.class,
              "It's used entProcNm/IPrcEnt: " + entProcNm + "/" + ep.getClass());
           }
-          ent = ep.process(pRqVs, ent, pRqDt);
+          ent = ep.process(pRvs, ent, pRqDt);
         } else { // else actions like "list" (page)
           String procNm = this.hldPrcFenNm.get(cls, actNm);
           if (procNm == null) {
-            this.logSec.error(pRqVs, HndEntRq.class,
+            this.logSec.error(pRvs, HndEntRq.class,
               "Trying to work with forbidden ent/action/user: " + pNmEnt
                 + "/" + actNm + "/" + pRqDt.getUsrNm());
             throw new ExcCode(ExcCode.FORB, "Forbidden!");
           }
-          IPrc proc = this.fctPrcFen.laz(pRqVs, procNm);
+          IPrc proc = this.fctPrcFen.laz(pRvs, procNm);
           if (pIsDbgSh) {
-            this.logStd.debug(pRqVs, HndEntRq.class,
+            this.logStd.debug(pRvs, HndEntRq.class,
             "It's used procNm/IPrc: " + procNm + "/" + proc.getClass());
           }
-          proc.process(pRqVs, pRqDt);
+          proc.process(pRvs, pRqDt);
         }
       }
       this.rdb.commit();
@@ -389,9 +411,9 @@ public class HndEntRq<RS> implements IHndRq {
 
   /**
    * <p>Getter for filEntRq.</p>
-   * @return IFilObj<IReqDt>
+   * @return IFilEntRq
    **/
-  public final IFilObj<IReqDt> getFilEntRq() {
+  public final IFilEntRq getFilEntRq() {
     return this.filEntRq;
   }
 
@@ -399,7 +421,7 @@ public class HndEntRq<RS> implements IHndRq {
    * <p>Setter for filEntRq.</p>
    * @param pFilEntRq reference
    **/
-  public final void setFilEntRq(final IFilObj<IReqDt> pFilEntRq) {
+  public final void setFilEntRq(final IFilEntRq pFilEntRq) {
     this.filEntRq = pFilEntRq;
   }
 
@@ -421,9 +443,9 @@ public class HndEntRq<RS> implements IHndRq {
 
   /**
    * <p>Getter for fctEntPrc.</p>
-   * @return IFctNm<IPrcEnt<?, ?>>
+   * @return IFctPrcEnt
    **/
-  public final IFctNm<IPrcEnt<?, ?>> getFctEntPrc() {
+  public final IFctPrcEnt getFctEntPrc() {
     return this.fctEntPrc;
   }
 
@@ -431,8 +453,7 @@ public class HndEntRq<RS> implements IHndRq {
    * <p>Setter for fctEntPrc.</p>
    * @param pFctEntPrc reference
    **/
-  public final void setFctEntPrc(
-    final IFctNm<IPrcEnt<?, ?>> pFctEntPrc) {
+  public final void setFctEntPrc(final IFctPrcEnt pFctEntPrc) {
     this.fctEntPrc = pFctEntPrc;
   }
 
@@ -455,9 +476,9 @@ public class HndEntRq<RS> implements IHndRq {
 
   /**
    * <p>Getter for fctPrcFen.</p>
-   * @return IFctNm<IPrc>
+   * @return IFctPrc
    **/
-  public final IFctNm<IPrc> getFctPrcFen() {
+  public final IFctPrc getFctPrcFen() {
     return this.fctPrcFen;
   }
 
@@ -465,7 +486,7 @@ public class HndEntRq<RS> implements IHndRq {
    * <p>Setter for fctPrcFen.</p>
    * @param pFctPrcFen reference
    **/
-  public final void setFctPrcFen(final IFctNm<IPrc> pFctPrcFen) {
+  public final void setFctPrcFen(final IFctPrc pFctPrcFen) {
     this.fctPrcFen = pFctPrcFen;
   }
 
@@ -487,9 +508,9 @@ public class HndEntRq<RS> implements IHndRq {
 
   /**
    * <p>Getter for entMap.</p>
-   * @return Map<String, Class<?>>
+   * @return Map<String, Class<? extends IHasId<?>>>
    **/
-  public final Map<String, Class<IHasId<?>>> getEntMap() {
+  public final Map<String, Class<? extends IHasId<?>>> getEntMap() {
     return this.entMap;
   }
 
@@ -497,7 +518,7 @@ public class HndEntRq<RS> implements IHndRq {
    * <p>Setter for entMap.</p>
    * @param pEntMap reference
    **/
-  public final void setEntMap(final Map<String, Class<IHasId<?>>> pEntMap) {
+  public final void setEntMap(final Map<String, Class<? extends IHasId<?>>> pEntMap) {
     this.entMap = pEntMap;
   }
 

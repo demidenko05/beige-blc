@@ -29,31 +29,41 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
+import java.util.HashMap;
 
-import org.beigesoft.mdl.IRecSet;
+import org.beigesoft.mdl.ColVals;
 
 /**
- * <p>Converts named field from result-set to Long.</p>
+ * <p>Fills column values with given value of Enum type
+ * with transformation into Integer.</p>
  *
- * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class CnvBnRsLng<RS> implements IConvNm<IRecSet<RS>, Long> {
+public class FilCvEnm implements IFilCvFdv<Enum<?>> {
 
   /**
-   * <p>Converts named field from resultset.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pRs result set
-   * @param pNm field name
-   * @return pTo to value
+   * <p>Puts Enum object to column values with transformation
+   * into Integer.</p>
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pFdNm field name
+   * @param pFdv field value
+   * @param pCv column values
    * @throws Exception - an exception
    **/
   @Override
-  public final Long conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final IRecSet<RS> pRs,
-      final String pNm) throws Exception {
-    return pRs.getLong(pNm);
+  public final void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final String pFdNm, final Enum<?> pFdv,
+      final ColVals pCv) throws Exception {
+    Integer value;
+    if (pFdv == null) {
+      value = null;
+    } else {
+      value = pFdv.ordinal();
+    }
+    if (pCv.getInts() == null) {
+      pCv.setInts(new HashMap<String, Integer>());
+    }
+    pCv.getInts().put(pFdNm, value);
   }
 }

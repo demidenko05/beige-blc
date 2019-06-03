@@ -31,7 +31,7 @@ package org.beigesoft.hnd;
 import java.util.Map;
 
 import org.beigesoft.mdl.IReqDt;
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.fct.IFctPrc;
 import org.beigesoft.prc.IPrc;
 
 /**
@@ -47,7 +47,7 @@ public class HndNtrRq implements IHndRq {
   /**
    * <p>Processors factory.</p>
    **/
-  private IFctNm<IPrc> fctPrc;
+  private IFctPrc fctPrc;
 
   /**
    * <p>Handles request.</p>
@@ -68,9 +68,9 @@ public class HndNtrRq implements IHndRq {
   //Simple getters and setters:
   /**
    * <p>Getter for fctPrc.</p>
-   * @return IFctNm<IPrc>
+   * @return IFctPrc
    **/
-  public final IFctNm<IPrc> getFctPrc() {
+  public final IFctPrc getFctPrc() {
     return this.fctPrc;
   }
 
@@ -79,7 +79,7 @@ public class HndNtrRq implements IHndRq {
    * @param pFctPrc reference
    **/
   public final void setFctPrc(
-    final IFctNm<IPrc> pFctPrc) {
+    final IFctPrc pFctPrc) {
     this.fctPrc = pFctPrc;
   }
 }

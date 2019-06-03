@@ -42,7 +42,7 @@ import org.beigesoft.srv.INumStr;
  *
  * @author Yury Demidenko
  */
-public class CnvPriStr implements IConv<BigDecimal, String> {
+public class CnvPriStr implements ICnToSt<BigDecimal> {
 
   /**
    * <p>Number to string service.</p>

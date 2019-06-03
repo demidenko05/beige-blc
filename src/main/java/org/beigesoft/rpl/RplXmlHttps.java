@@ -48,6 +48,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdlp.DbInf;
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.dlg.IMake;
@@ -193,7 +194,7 @@ public class RplXmlHttps<RS> implements IReplicator {
     Integer clsCnt = 0;
     boolean isDbBefore = false;
     DbInf dbInf = this.rdb.getDbInf();
-    for (Class<?> cls : this.setng.lazClss()) {
+    for (Class<? extends IHasId<?>> cls : this.setng.lazClss()) {
       int entRecd = 0;
       int fstRec = 0;
       do {

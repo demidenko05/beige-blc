@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.lang.reflect.Field;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.srv.IReflect;
 
 /**
@@ -49,18 +50,18 @@ public class HldFldCls implements IHlNmClCl {
   /**
    * <p>Map of classes and their fields names - field's class.</p>
    **/
-  private final Map<Class<?>, Map<String, Class<?>>> clsMap =
-    new HashMap<Class<?>, Map<String, Class<?>>>();
+  private final Map<Class<? extends IHasId<?>>, Map<String, Class<?>>> clsMap =
+    new HashMap<Class<? extends IHasId<?>>, Map<String, Class<?>>>();
 
   /**
    * <p>Get thing for given class and thing name.</p>
-   * @param pCls a Class
+   * @param pCls entity class
    * @param pFlNm Thing Name
    * @throws Exception an Exception
    * @return class or exception if not found
    **/
   @Override
-  public final Class<?> get(final Class<?> pCls,
+  public final <T extends IHasId<?>> Class<?> get(final Class<T> pCls,
     final String pFlNm) throws Exception {
     if (pCls == null || pFlNm == null) {
       throw new Exception("NULL parameter cls/fld: " + pCls

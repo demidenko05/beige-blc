@@ -26,30 +26,25 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.cnv;
+package org.beigesoft.fct;
 
 import java.util.Map;
 
+import org.beigesoft.cnv.ICnToSt;
+
 /**
- * <p>Abstraction of service that fills/converts object
- * from a source, e.g. filling entity from given SQL result-set or HTML request,
- * or filling column values from given entity.</p>
+ * <p>Abstraction of converters to string factory.</p>
  *
- * @param <S> source type
  * @author Yury Demidenko
  */
-public interface IFilObj<S> {
+public interface IFctCnToSt {
 
   /**
-   * <p>Fills object's fields from given source data.</p>
-   * @param <T> object (entity) type
+   * <p>Gets converter in lazy mode by given name.</p>
    * @param pRqVs request scoped vars
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pObj object to fill, not null
-   * @param pSrc Source, e.g. request data
+   * @param pNm - converter name
+   * @return requested converter
    * @throws Exception - an exception
-   **/
-  <T> void fill(Map<String, Object> pRqVs,
-    Map<String, Object> pVs, T pObj, S pSrc) throws Exception;
+   */
+  ICnToSt<?> laz(Map<String, Object> pRqVs, String pNm) throws Exception;
 }

@@ -29,42 +29,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
-import java.util.HashMap;
-
-import org.beigesoft.mdl.ColVals;
 
 /**
- * <p>Converter from a Enum type to column values
- * with transformation into Integer.</p>
+ * <p>Abstraction of simple generic converter from a value to string.</p>
  *
  * @author Yury Demidenko
+ * @param <T> type of source
  */
-public class CnvIbnEnmCv implements IConvNmInto<Enum<?>, ColVals> {
+public interface ICnToSt<T> {
 
   /**
-   * <p>Put Enum object to column values with transformation
-   * into Integer.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pFrom from a Enum object
-   * @param pClVl to column values
-   * @param pNm field name
+   * <p>Converts from a value to string.</p>
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
+   * @param pFrom value
+   * @return converted string value
    * @throws Exception - an exception
    **/
-  @Override
-  public final void conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Enum<?> pFrom,
-      final ColVals pClVl, final String pNm) throws Exception {
-    Integer value;
-    if (pFrom == null) {
-      value = null;
-    } else {
-      value = pFrom.ordinal();
-    }
-    if (pClVl.getInts() == null) {
-      pClVl.setInts(new HashMap<String, Integer>());
-    }
-    pClVl.getInts().put(pNm, value);
-  }
+  String conv(Map<String, Object> pRvs, T pFrom) throws Exception;
 }

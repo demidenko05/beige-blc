@@ -72,14 +72,15 @@ public class SqlQu implements ISqlQu {
   /**
    * <p>Generates DDL Create statement for given entity.</p>
    * @param <T> object (entity) type
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pCls entity class, not null
    * @return Select query in String Buffer
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> String evCreate(final Map<String, Object> pRqVs,
-    final Class<T> pCls) throws Exception {
+  public final <T extends IHasId<?>> String evCreate(
+    final Map<String, Object> pRvs,
+      final Class<T> pCls) throws Exception {
     StringBuffer sb = new StringBuffer("create table "
       + pCls.getSimpleName().toUpperCase() + "(\n");
     //fields definition:
@@ -127,10 +128,10 @@ public class SqlQu implements ISqlQu {
     }
     //foreign ID constraint
     for (String fdNm : idNms) {
-      evFrCnstr(pRqVs, pCls, fdNm, sb);
+      evFrCnstr(pRvs, pCls, fdNm, sb);
     }
     for (String fdNm : this.setng.lazFldNms(pCls)) {
-      evFrCnstr(pRqVs, pCls, fdNm, sb);
+      evFrCnstr(pRvs, pCls, fdNm, sb);
     }
     String cnstr = this.setng.lazClsStg(pCls, CNSTR);
     if (cnstr != null) {
@@ -142,23 +143,25 @@ public class SqlQu implements ISqlQu {
 
   /**
    * <p>Try to add constraint foreign key.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pCls entity class, not null
    * @param pFdNm field name
    * @param pSb String Buffer
    * @throws Exception - an exception
    **/
-  public final void evFrCnstr(final Map<String, Object> pRqVs,
-    final Class<?> pCls, final String pFdNm,
-      final StringBuffer pSb) throws Exception {
+  public final <T extends IHasId<?>> void evFrCnstr(
+    final Map<String, Object> pRvs, final Class<T> pCls,
+      final String pFdNm, final StringBuffer pSb) throws Exception {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFdNm);
     if (IHasId.class.isAssignableFrom(fdCls)) {
-      List<String> fdIdNms = this.setng.lazIdFldNms(fdCls);
+      @SuppressWarnings("unchecked")
+      Class<? extends IHasId<?>> fdeCls = (Class<? extends IHasId<?>>) fdCls;
+      List<String> fdIdNms = this.setng.lazIdFldNms(fdeCls);
       if (fdIdNms.size() > 1) {
         throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID!"
           + " cls/fd" + pCls + "/" + pFdNm);
       }
-      Class<?> fcs = this.hldFdCls.get(fdCls, fdIdNms.get(0));
+      Class<?> fcs = this.hldFdCls.get(fdeCls, fdIdNms.get(0));
       if (IHasId.class.isAssignableFrom(fcs)) {
         throw new ExcCode(ExcCode.WRCN, "Subentity with double foreign ID!"
           + " cls/fd/fcl/f" + pCls + "/" + pFdNm + "/"
@@ -174,15 +177,16 @@ public class SqlQu implements ISqlQu {
   /**
    * <p>Generates DML Select statement for given entity and vars.</p>
    * @param <T> object (entity) type
-   * @param pRqVs request scoped vars
-   * @param pVs invoker scoped vars, e.g. entity's needed fields, nullable.
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. entity's needed fields, not null.
    * @param pCls entity class, not null
    * @return Select query in String Buffer
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> StringBuffer evSel(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Class<T> pCls) throws Exception {
+  public final <T extends IHasId<?>> StringBuffer evSel(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final Class<T> pCls) throws Exception {
     StringBuffer sb = new StringBuffer("select ");
     StringBuffer sbe = new StringBuffer(" from "
       + pCls.getSimpleName().toUpperCase());
@@ -198,19 +202,19 @@ public class SqlQu implements ISqlQu {
     lvDeps.add(clvDep);
     pVs.put("lvDeps", lvDeps);
     if (isDbgSh) {
-      this.log.debug(pRqVs, getClass(), "Start select root entity/DL/CL: "
+      this.log.debug(pRvs, getClass(), "Start select root entity/DL/CL: "
         + pCls + "/" + clvDep.getDep() + "/" + clvDep.getCur());
     }
     List<String> tbAls = new ArrayList<String>();
     pVs.put("tbAls", tbAls);
     if (isDbgSh) {
-      this.log.debug(pRqVs, getClass(), "tbAls created");
+      this.log.debug(pRvs, getClass(), "tbAls created");
     }
-    makeCls(pRqVs, pVs, pCls, sb, sbe, isDbgSh);
+    makeCls(pRvs, pVs, pCls, sb, sbe, isDbgSh);
     pVs.remove("lvDeps");
     pVs.remove("tbAls");
     if (isDbgSh) {
-      this.log.debug(pRqVs, getClass(),
+      this.log.debug(pRvs, getClass(),
         "Finish selecting root entity: " + pCls);
     }
     sb.append(sbe);
@@ -221,14 +225,14 @@ public class SqlQu implements ISqlQu {
    * <p>Generates condition ID for given entity and appends into given
    * String Buffer.</p>
    * @param <T> object (entity) type
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pEnt entity, not null
    * @param pSb String Buffer to put ID condition e.g. "[TBL].IID=2"
    *    or "[TBL].WHOUS=1 and [TBL].ITM=2 and [TBL].UOM=5"
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void evCndId(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> void evCndId(final Map<String, Object> pRvs,
     final T pEnt, final StringBuffer pSb) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7102 && this.log.getDbgCl() > 7100;
@@ -240,29 +244,31 @@ public class SqlQu implements ISqlQu {
       Method getter = this.hldGets.get(pEnt.getClass(), fdNm);
       fdVl = getter.invoke(pEnt);
       if (isDbgSh) {
-        this.log.debug(pRqVs, getClass(), "EV CND ID ent/fd/fcls/vl: "
+        this.log.debug(pRvs, getClass(), "EV CND ID ent/fd/fcls/vl: "
           + pEnt.getClass() + "/" + fdNm + "/" + fdCls + "/" + fdVl);
       }
       if (fdVl == null) {
         throw new ExcCode(ExcCode.WRPR, "Entity with NULL ID!");
       }
       if (IHasId.class.isAssignableFrom(fdCls)) {
-        List<String> fdIdNms = this.setng.lazIdFldNms(fdCls);
+        @SuppressWarnings("unchecked")
+        Class<? extends IHasId<?>> fdeCls = (Class<? extends IHasId<?>>) fdCls;
+        List<String> fdIdNms = this.setng.lazIdFldNms(fdeCls);
         if (fdIdNms.size() > 1) {
           throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID!"
             + " cls/fd" + pEnt.getClass() + "/" + fdNm);
         }
-        Class<?> fcs = this.hldFdCls.get(fdCls, fdIdNms.get(0));
+        Class<?> fcs = this.hldFdCls.get(fdeCls, fdIdNms.get(0));
         if (IHasId.class.isAssignableFrom(fcs)) {
           throw new ExcCode(ExcCode.WRCN, "Subentity with double foreign ID!"
             + " cls/fd/fcl/f" + pEnt.getClass() + "/" + fdNm + "/"
               + fdCls + "/" + fdIdNms.get(0));
         }
         if (isDbgSh) {
-          this.log.debug(pRqVs, getClass(), "EV CND ID sent/sfd: "
+          this.log.debug(pRvs, getClass(), "EV CND ID sent/sfd: "
             + fcs + "/" + fdIdNms.get(0));
         }
-        getter = this.hldGets.get(fdCls, fdIdNms.get(0));
+        getter = this.hldGets.get(fdeCls, fdIdNms.get(0));
         fdVl = getter.invoke(fdVl);
       }
       if (isFst) {
@@ -283,15 +289,15 @@ public class SqlQu implements ISqlQu {
   /**
    * <p>Makes Select statement for given entity class and vars.</p>
    * @param <T> object (entity) type
-   * @param pRqVs request scoped vars
-   * @param pVs invoker scoped vars, e.g. entity's needed fields, nullable.
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. entity's needed fields, not null.
    * @param pCls entity class, not null
    * @param pSb string buffer
    * @param pSbe string buffer joints
    * @param pIsDbgSh is show debug messages
    * @throws Exception - an exception
    **/
-  public final <T> void makeCls(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> void makeCls(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final Class<T> pCls,
       final StringBuffer pSb, final StringBuffer pSbe,
         final boolean pIsDbgSh) throws Exception {
@@ -301,7 +307,7 @@ public class SqlQu implements ISqlQu {
     String[] ndFds = (String[]) pVs.
       get(pCls.getSimpleName() + "ndFds");
     if (ndFds != null && pIsDbgSh) {
-      this.log.debug(pRqVs, getClass(), "Needed fields entity: "
+      this.log.debug(pRvs, getClass(), "Needed fields entity: "
         + pCls + "/" + Arrays.toString(ndFds));
     }
     boolean isFst = true;
@@ -316,7 +322,7 @@ public class SqlQu implements ISqlQu {
         } else {
           pSb.append(", ");
         }
-        makeFld(pRqVs, pVs, pCls, fdNm, pSb, pSbe, pIsDbgSh);
+        makeFld(pRvs, pVs, pCls, fdNm, pSb, pSbe, pIsDbgSh);
       }
     }
     if (clvDep.getCur() < clvDep.getDep()) {
@@ -331,7 +337,7 @@ public class SqlQu implements ISqlQu {
           } else {
             pSb.append(", ");
           }
-          makeFld(pRqVs, pVs, pCls, fdNm, pSb, pSbe, pIsDbgSh);
+          makeFld(pRvs, pVs, pCls, fdNm, pSb, pSbe, pIsDbgSh);
         }
       }
     }
@@ -340,8 +346,8 @@ public class SqlQu implements ISqlQu {
   /**
    * <p>Makes Select statement for given entity class, field and vars.</p>
    * @param <T> object (entity) type
-   * @param pRqVs request scoped vars
-   * @param pVs invoker scoped vars, e.g. entity's needed fields, nullable.
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. entity's needed fields, not null.
    * @param pCls entity class, not null
    * @param pFdNm field name
    * @param pSb string buffer
@@ -349,13 +355,15 @@ public class SqlQu implements ISqlQu {
    * @param pIsDbgSh is show debug messages
    * @throws Exception - an exception
    **/
-  public final <T> void makeFld(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Class<T> pCls, final String pFdNm,
-      final StringBuffer pSb, final StringBuffer pSbe,
-        final boolean pIsDbgSh) throws Exception {
+  public final <T extends IHasId<?>> void makeFld(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final Class<T> pCls, final String pFdNm, final StringBuffer pSb,
+        final StringBuffer pSbe, final boolean pIsDbgSh) throws Exception {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFdNm);
     if (IHasId.class.isAssignableFrom(fdCls)) {
-      List<String> fdIdNms = this.setng.lazIdFldNms(fdCls);
+      @SuppressWarnings("unchecked")
+      Class<? extends IHasId<?>> fdeCls = (Class<? extends IHasId<?>>) fdCls;
+      List<String> fdIdNms = this.setng.lazIdFldNms(fdeCls);
       if (fdIdNms.size() > 1) {
         throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID!");
       }
@@ -368,20 +376,20 @@ public class SqlQu implements ISqlQu {
         clvDep.setDep(dpLv);
         lvDeps.add(clvDep);
         if (pIsDbgSh) {
-          this.log.debug(pRqVs, getClass(), "Start fill custDL subent/DL/CL: "
+          this.log.debug(pRvs, getClass(), "Start fill custDL subent/DL/CL: "
               + fdCls + "/" + clvDep.getDep() + "/" + clvDep.getCur());
         }
       } else { //entering into new sub/branch's sub-entity:
         clvDep = lvDeps.get(lvDeps.size() - 1);
         clvDep.setCur(clvDep.getCur() + 1);
         if (pIsDbgSh) {
-          this.log.debug(pRqVs, getClass(), "Start subent/DL/CL: "
+          this.log.debug(pRvs, getClass(), "Start subent/DL/CL: "
               + fdCls + "/" + clvDep.getDep() + "/" + clvDep.getCur());
         }
       }
       if (lvDeps.size() > 1) { //sub-branch, main branch level change:
         lvDeps.get(0).setCur(lvDeps.get(0).getCur() + 1);
-        this.log.debug(pRqVs, getClass(), "Main branch UP DL/CL: "
+        this.log.debug(pRvs, getClass(), "Main branch UP DL/CL: "
             + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
       }
       String tbAl = pFdNm.toUpperCase() + lvDeps.get(0).getCur();
@@ -398,36 +406,36 @@ public class SqlQu implements ISqlQu {
         + tbAl + " on " + owEnNm + "." + pFdNm.toUpperCase() + "=" + tbAl + "."
           + fdIdNms.get(0).toUpperCase());
       if (pIsDbgSh) {
-        this.log.debug(pRqVs, getClass(), "Added tbAl/cls: " + tbAl
+        this.log.debug(pRvs, getClass(), "Added tbAl/cls: " + tbAl
           + "/" + fdCls);
       }
-      makeCls(pRqVs, pVs, fdCls, pSb, pSbe, pIsDbgSh);
+      makeCls(pRvs, pVs, fdeCls, pSb, pSbe, pIsDbgSh);
       tbAls.remove(tbAl);
       if (lvDeps.size() > 1) { //move down through custom DL subentities branch:
         LvDep ld = lvDeps.get(lvDeps.size() - 1);
         if (ld.getCur() == 0) { //ending custom DL subentity:
           lvDeps.remove(lvDeps.size() - 1);
           if (pIsDbgSh) {
-            this.log.debug(pRqVs, getClass(),
+            this.log.debug(pRvs, getClass(),
               "Finish custom DL root subentity: " + fdCls);
           }
         } else { //finish subentity:
           ld.setCur(ld.getCur() - 1);
           if (pIsDbgSh) {
-            this.log.debug(pRqVs, getClass(),
+            this.log.debug(pRvs, getClass(),
               "Finish custom DL subentity: " + fdCls);
           }
         }
         //sub-branch, main branch level change:
         lvDeps.get(0).setCur(lvDeps.get(0).getCur() - 1);
-        this.log.debug(pRqVs, getClass(), "Main branch DOWN DL/CL: "
+        this.log.debug(pRvs, getClass(), "Main branch DOWN DL/CL: "
             + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
       } else {  //move down through root DL subentities branch:
         LvDep ld = lvDeps.get(0);
         if (ld.getCur() > 0) { //finish subentity:
           ld.setCur(ld.getCur() - 1);
           if (pIsDbgSh) {
-            this.log.debug(pRqVs, getClass(),
+            this.log.debug(pRvs, getClass(),
               "Finish custom subentity: " + fdCls);
           }
         }

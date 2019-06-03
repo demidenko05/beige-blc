@@ -30,26 +30,26 @@ package org.beigesoft.cnv;
 
 import java.util.Map;
 
+import org.beigesoft.mdl.IRecSet;
+
 /**
- * <p>Abstraction of service that fills/converts given
- * destination container with given source data, e.g. fill entity
- * from DB result-set or request data,  or fill column
- * values from entity.</p>
+ * <p>Abstraction of converter from result-set into field value.</p>
  *
- * @param <S> source type
- * @param <D> destination type
  * @author Yury Demidenko
+ * @param <T> type of converted value
+ * @param <RS> platform dependent record set type
  */
-public interface IFiller<S, D> {
+public interface ICnvRsFdv<T, RS> {
 
   /**
-   * <p>Fills given destination container with given source data.</p>
-   * @param pRqVs request scoped vars
-   * @param pVs invoker scoped vars, e.g. needed fields {id, ver, nme}.
-   * @param pSrc source, e.g. request data or entity
-   * @param pDst destination container, e.g. entity or column values
+   * <p>Converts result-set into field's value.</p>
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars.
+   * @param pRs result-set, not null
+   * @param pFdNm Field name, not null
+   * @return field's value from RS
    * @throws Exception - an exception
    **/
-  void fill(Map<String, Object> pRqVs,
-    Map<String, Object> pVs, S pSrc, D pDst) throws Exception;
+  T conv(Map<String, Object> pRvs, Map<String, Object> pVs, IRecSet<RS> pRs,
+    String pFdNm) throws Exception;
 }

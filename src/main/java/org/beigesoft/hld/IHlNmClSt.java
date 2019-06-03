@@ -28,9 +28,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.hld;
 
+import org.beigesoft.mdl.IHasId;
+
 /**
  * <p>Abstraction of holder of a thing of type String that is associated with
- * given Class by given name.</p>
+ * given entity's Class by given name.</p>
  *
  * @author Yury Demidenko
  */
@@ -44,10 +46,10 @@ public interface IHlNmClSt {
 
   /**
    * <p>Gets String thing for given Class and name.</p>
-   * @param pKey key Class
+   * @param pKey entity Class
    * @param pNm fing name
    * @return associated thing
    * @throws Exception an Exception
    **/
-  String get(Class<?> pKey, String pNm) throws Exception;
+  <T extends IHasId<?>> String get(Class<T> pKey, String pNm) throws Exception;
 }

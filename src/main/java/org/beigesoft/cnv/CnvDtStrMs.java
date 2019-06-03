@@ -36,7 +36,7 @@ import java.util.Date;
  *
  * @author Yury Demidenko
  */
-public class CnvDtStrMs implements IConv<Date, String> {
+public class CnvDtStrMs implements ICnToSt<Date> {
 
   /**
    * <p>Converts Date to string.</p>

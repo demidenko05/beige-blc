@@ -36,7 +36,7 @@ import java.util.Map;
  *
  * @author Yury Demidenko
  */
-public class CnvStrInt implements IConv<String, Integer> {
+public class CnvStrInt implements ICnFrSt<Integer> {
 
   /**
    * <p>Convert from string.</p>

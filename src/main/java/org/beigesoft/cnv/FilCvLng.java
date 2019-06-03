@@ -29,31 +29,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
+import java.util.HashMap;
 
-import org.beigesoft.mdl.IRecSet;
+import org.beigesoft.mdl.ColVals;
 
 /**
- * <p>Converts named field from result-set to Float.</p>
+ * <p>Fills column values with given value of Long type
+ * without transformation.</p>
  *
- * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class CnvBnRsFlt<RS> implements IConvNm<IRecSet<RS>, Float> {
+public class FilCvLng implements IFilCvFdv<Long> {
 
   /**
-   * <p>Converts named field from resultset.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pRs result set
-   * @param pNm field name
-   * @return pTo to value
+   * <p>Puts Long object to column values without transformation.</p>
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pFdNm field name
+   * @param pFdv field value
+   * @param pCv column values
    * @throws Exception - an exception
    **/
   @Override
-  public final Float conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final IRecSet<RS> pRs,
-      final String pNm) throws Exception {
-    return pRs.getFloat(pNm);
+  public final void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final String pFdNm, final Long pFdv,
+      final ColVals pCv) throws Exception {
+    if (pCv.getLongs() == null) {
+      pCv.setLongs(new HashMap<String, Long>());
+    }
+    pCv.getLongs().put(pFdNm, pFdv);
   }
 }

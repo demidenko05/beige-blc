@@ -35,7 +35,7 @@ import java.util.Map;
  *
  * @author Yury Demidenko
  */
-public class CnvBlnStr implements IConv<Boolean, String> {
+public class CnvBlnStr implements ICnToSt<Boolean> {
 
   /**
    * <p>Converts boolean to string. Can't be NULL. NULL is FALSE.</p>

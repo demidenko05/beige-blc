@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.fct;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.mdl.ColVals;
 import org.beigesoft.rdb.ARdb;
@@ -168,7 +169,7 @@ public class RdbStub<RS> extends ARdb<RS> {
    * @throws Exception - an exception
    **/
   @Override
-  public final int update(final Class<?> pCls, final ColVals pCv,
+  public final <T extends IHasId<?>> int update(final Class<T> pCls, final ColVals pCv,
     final String pWhe) throws Exception {
     throw new Exception("STUB!");
   }
@@ -182,7 +183,7 @@ public class RdbStub<RS> extends ARdb<RS> {
    * @throws Exception - an exception
    **/
   @Override
-  public final long insert(final Class<?> pCls,
+  public final <T extends IHasId<?>> long insert(final Class<T> pCls,
     final ColVals pCv) throws Exception {
     throw new Exception("STUB!");
   }

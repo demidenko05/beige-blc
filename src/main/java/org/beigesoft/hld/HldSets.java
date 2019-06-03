@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.lang.reflect.Method;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.srv.IReflect;
 
 /**
@@ -49,8 +50,8 @@ public class HldSets implements IHlNmClMt {
   /**
    * <p>Map of classes and their fields names - RAPI setters.</p>
    **/
-  private final Map<Class<?>, Map<String, Method>> setsMap =
-    new HashMap<Class<?>, Map<String, Method>>();
+  private final Map<Class<? extends IHasId<?>>, Map<String, Method>> setsMap =
+    new HashMap<Class<? extends IHasId<?>>, Map<String, Method>>();
 
   /**
    * <p>Get thing for given class and thing name.</p>
@@ -60,7 +61,7 @@ public class HldSets implements IHlNmClMt {
    * @throws Exception an Exception
    **/
   @Override
-  public final Method get(final Class<?> pCls,
+  public final <T extends IHasId<?>> Method get(final Class<T> pCls,
     final String pFlNm) throws Exception {
     if (pCls == null || pFlNm == null) {
       throw new Exception("NULL parameter cls/fld: " + pCls

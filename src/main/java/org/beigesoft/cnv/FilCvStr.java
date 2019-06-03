@@ -40,7 +40,7 @@ import org.beigesoft.srv.ISqlEsc;
  *
  * @author Yury Demidenko
  */
-public class CnvIbnStrCv implements IConvNmInto<String, ColVals> {
+public class FilCvStr implements IFilCvFdv<String> {
 
   /**
    * <p>If need to SQL escape for value string.
@@ -49,35 +49,34 @@ public class CnvIbnStrCv implements IConvNmInto<String, ColVals> {
   private boolean isSqlEsc = true;
 
   /**
-   * <p>SQL Escape srv.</p>
+   * <p>SQL Escape service.</p>
    **/
   private ISqlEsc sqlEsc;
 
   /**
-   * <p>Put String object to column values with SQL escaping
+   * <p>Puts String object to column values with SQL escaping
    * for JDBC.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pFrom from a String object
-   * @param pClVl to column values
-   * @param pNm field name
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pFdNm field name
+   * @param pFdv field value
+   * @param pCv column values
    * @throws Exception - an exception
    **/
   @Override
-  public final void conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final String pFrom,
-      final ColVals pClVl, final String pNm) throws Exception {
+  public final void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final String pFdNm, final String pFdv,
+      final ColVals pCv) throws Exception {
     String value;
-    if (this.isSqlEsc && pFrom != null) {
-      value = this.sqlEsc.esc(pFrom);
+    if (this.isSqlEsc && pFdv != null) {
+      value = this.sqlEsc.esc(pFdv);
     } else {
-      value = pFrom;
+      value = pFdv;
     }
-    if (pClVl.getStrs() == null) {
-      pClVl.setStrs(new HashMap<String, String>());
+    if (pCv.getStrs() == null) {
+      pCv.setStrs(new HashMap<String, String>());
     }
-    pClVl.getStrs().put(pNm, value);
+    pCv.getStrs().put(pFdNm, value);
   }
 
   //Simple getters and setters:

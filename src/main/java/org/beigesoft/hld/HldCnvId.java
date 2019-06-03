@@ -58,7 +58,7 @@ public class HldCnvId implements IHlClSt {
    * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls) throws Exception {
+  public final <T extends IHasId<?>> String get(final Class<T> pCls) throws Exception {
     if (this.custIdClss != null && this.custIdClss.contains(pCls)) {
       return CnvIdCst.class.getSimpleName();
     }
@@ -75,7 +75,7 @@ public class HldCnvId implements IHlClSt {
   //Simple getters and setters:
   /**
    * <p>Getter for custIdClss.</p>
-   * @return Set<Class<IHasId<?>>>
+   * @return Set<Class<? extends IHasId<?>>>
    **/
   public final Set<Class<? extends IHasId<?>>> getCustIdClss() {
     return this.custIdClss;

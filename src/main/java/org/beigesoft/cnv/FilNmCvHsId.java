@@ -45,7 +45,7 @@ import org.beigesoft.prp.ISetng;
  *
  * @author Yury Demidenko
  */
-public class FilNmCvHsId implements IFilNm<IHasId<?>, ColVals> {
+public class FilNmCvHsId implements IFilCvFld {
 
   /**
    * <p>Log.</p>
@@ -75,11 +75,11 @@ public class FilNmCvHsId implements IFilNm<IHasId<?>, ColVals> {
   /**
    * <p>Converters fields factory.</p>
    */
-  private IFctNm<IConvNmInto<?, ColVals>> fctCnvFld;
+  private IFctNm<IFilCvFdv<?>> fctCnvFld;
 
   /**
    * <p>Fills given column values with given entity's field of entity type.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pVs invoker scoped vars
    * @param pEnt source entity
    * @param pClVl column values
@@ -87,16 +87,16 @@ public class FilNmCvHsId implements IFilNm<IHasId<?>, ColVals> {
    * @throws Exception - an exception
    **/
   @Override
-  public final void fill(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final IHasId<?> pEnt, final ColVals pClVl,
-    final String pFdNm) throws Exception {
+  public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final T pEnt, final String pFdNm,
+      final ColVals pClVl) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7023 && this.log.getDbgCl() > 7021;
     Method getter = this.hldGets.get(pEnt.getClass(), pFdNm);
     @SuppressWarnings("unchecked")
     IHasId<?> subEnt = (IHasId<?>) getter.invoke(pEnt);
     @SuppressWarnings("unchecked")
-    Class<?> ifdCls = (Class<IHasId<?>>)
+    Class<IHasId<?>> ifdCls = (Class<IHasId<?>>)
       this.hldFdCls.get(pEnt.getClass(), pFdNm);
     for (String fdNm : this.setng.lazIdFldNms(ifdCls)) {
       Object val;
@@ -108,14 +108,14 @@ public class FilNmCvHsId implements IFilNm<IHasId<?>, ColVals> {
       }
       String cnvFdNm = this.hldCnvFdNms.get(ifdCls, fdNm);
       @SuppressWarnings("unchecked")
-      IConvNmInto<Object, ColVals> cnvFl = (IConvNmInto<Object, ColVals>)
-        this.fctCnvFld.laz(pRqVs, cnvFdNm);
+      IFilCvFdv<Object> flCvFdv = (IFilCvFdv<Object>)
+        this.fctCnvFld.laz(pRvs, cnvFdNm);
       if (isDbgSh) {
-        this.log.debug(pRqVs, FilNmCvSmp.class,
+        this.log.debug(pRvs, FilNmCvSmp.class,
       "Converts fdNm/cls/val/converter: " + pFdNm + "/" + ifdCls
-    .getSimpleName() + "/" + val + "/" + cnvFl.getClass().getSimpleName());
+    .getSimpleName() + "/" + val + "/" + flCvFdv.getClass().getSimpleName());
       }
-      cnvFl.conv(pRqVs, pVs, val, pClVl, pFdNm);
+      flCvFdv.fill(pRvs, pVs, pFdNm, val, pClVl);
     }
   }
 
@@ -202,9 +202,9 @@ public class FilNmCvHsId implements IFilNm<IHasId<?>, ColVals> {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<IConvNmInto<?, ColVals>>
+   * @return IFctNm<IFilCvFdv<?>>
    **/
-  public final IFctNm<IConvNmInto<?, ColVals>> getFctCnvFld() {
+  public final IFctNm<IFilCvFdv<?>> getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -213,7 +213,7 @@ public class FilNmCvHsId implements IFilNm<IHasId<?>, ColVals> {
    * @param pFctCnvFld reference
    **/
   public final void setFctCnvFld(
-    final IFctNm<IConvNmInto<?, ColVals>> pFctCnvFld) {
+    final IFctNm<IFilCvFdv<?>> pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 }

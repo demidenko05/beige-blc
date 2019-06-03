@@ -39,7 +39,7 @@ import org.beigesoft.srv.ISrvDt;
  *
  * @author Yury Demidenko
  */
-public class CnvStrDtTm implements IConv<String, Date> {
+public class CnvStrDtTm implements ICnFrSt<Date> {
 
   /**
    * <p>Date service.</p>

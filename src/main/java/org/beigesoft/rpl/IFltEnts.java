@@ -30,6 +30,8 @@ package org.beigesoft.rpl;
 
 import java.util.Map;
 
+import org.beigesoft.mdl.IHasId;
+
 /**
  * <p>Service that makes SQL WHERE filter for given entity.</p>
  *
@@ -50,5 +52,5 @@ public interface IFltEnts {
    * @throws Exception - an exception
    **/
   String makeWhe(Map<String, Object> pRqVs,
-    Class<?> pCls) throws Exception;
+    Class<? extends IHasId<?>> pCls) throws Exception;
 }

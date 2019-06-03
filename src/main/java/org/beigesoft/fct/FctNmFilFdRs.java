@@ -37,9 +37,9 @@ import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
-import org.beigesoft.cnv.IConvNm;
-import org.beigesoft.cnv.IFilObj;
-import org.beigesoft.cnv.IFilFld;
+import org.beigesoft.cnv.ICnvRsFdv;
+import org.beigesoft.cnv.IFilEntRs;
+import org.beigesoft.cnv.IFilFldRs;
 import org.beigesoft.cnv.FilFldEnmRs;
 import org.beigesoft.cnv.FilFldHsIdRs;
 import org.beigesoft.cnv.FilFldSmpRs;
@@ -50,7 +50,7 @@ import org.beigesoft.cnv.FilFldSmpRs;
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FctNmFilFdRs<RS> implements IFctNm<IFilFld<IRecSet<RS>>> {
+public class FctNmFilFdRs<RS> implements IFctNm<IFilFldRs<RS>> {
 
   //services:
   /**
@@ -77,19 +77,19 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFld<IRecSet<RS>>> {
   /**
    * <p>Factory simple converters.</p>
    **/
-  private IFctNm<IConvNm<IRecSet<RS>, ?>> fctCnvFld;
+  private IFctNm<ICnvRsFdv<?, RS>> fctCnvFld;
 
   /**
    * <p>Filler entity factory.</p>
    */
-  private IFilObj<IRecSet<RS>> filEnt;
+  private IFilEntRs<RS> filEnt;
 
   //requested data:
   /**
    * <p>Fillers map.</p>
    **/
-  private final Map<String, IFilFld<IRecSet<RS>>> fillers
-    = new HashMap<String, IFilFld<IRecSet<RS>>>();
+  private final Map<String, IFilFldRs<RS>> fillers
+    = new HashMap<String, IFilFldRs<RS>>();
 
   /**
    * <p>Get filler in lazy mode (if bean is null then initialize it).</p>
@@ -98,9 +98,9 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFld<IRecSet<RS>>> {
    * @return requested filler
    * @throws Exception - an exception
    */
-  public final IFilFld<IRecSet<RS>> laz(final Map<String, Object> pRqVs,
+  public final IFilFldRs<RS> laz(final Map<String, Object> pRqVs,
     final String pFiNm) throws Exception {
-    IFilFld<IRecSet<RS>> rz = this.fillers.get(pFiNm);
+    IFilFldRs<RS> rz = this.fillers.get(pFiNm);
     if (rz == null) {
       synchronized (this) {
         rz = this.fillers.get(pFiNm);
@@ -203,9 +203,9 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFld<IRecSet<RS>>> {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<IConvNm<IRecSet<RS>, ?>>
+   * @return IFctNm<ICnvRsFdv<?, RS>>
    **/
-  public final IFctNm<IConvNm<IRecSet<RS>, ?>> getFctCnvFld() {
+  public final IFctNm<ICnvRsFdv<?, RS>> getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -213,8 +213,7 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFld<IRecSet<RS>>> {
    * <p>Setter for fctCnvFld.</p>
    * @param pFctCnvFld reference
    **/
-  public final void setFctCnvFld(
-    final IFctNm<IConvNm<IRecSet<RS>, ?>> pFctCnvFld) {
+  public final void setFctCnvFld(final IFctNm<ICnvRsFdv<?, RS>> pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 
@@ -252,9 +251,9 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFld<IRecSet<RS>>> {
 
   /**
    * <p>Getter for filEnt.</p>
-   * @return IFilObj<IRecSet<RS>>
+   * @return IFilEntRs<RS>
    **/
-  public final IFilObj<IRecSet<RS>> getFilEnt() {
+  public final IFilEntRs<RS> getFilEnt() {
     return this.filEnt;
   }
 
@@ -262,7 +261,7 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFld<IRecSet<RS>>> {
    * <p>Setter for filEnt.</p>
    * @param pFilEnt reference
    **/
-  public final void setFilEnt(final IFilObj<IRecSet<RS>> pFilEnt) {
+  public final void setFilEnt(final IFilEntRs<RS> pFilEnt) {
     this.filEnt = pFilEnt;
   }
 }

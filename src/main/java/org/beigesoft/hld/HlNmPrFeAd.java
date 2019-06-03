@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.hld;
 
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.FctDt;
 
 /**
@@ -46,7 +47,8 @@ public class HlNmPrFeAd implements IHlNmClSt {
    * @return processor FE name
    **/
   @Override
-  public final String get(final Class<?> pCls, final String pAct) {
+  public final <T extends IHasId<?>> String get(final Class<T> pCls,
+    final String pAct) {
     if ("lst".equals(pAct)) {
       return FctDt.PRADENTPG;
     }

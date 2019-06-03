@@ -41,7 +41,7 @@ import org.beigesoft.srv.INumStr;
  *
  * @author Yury Demidenko
  */
-public class CnvLngStrFm implements IConv<Long, String> {
+public class CnvLngStrFm implements ICnToSt<Long> {
 
   /**
    * <p>Number to string service.</p>

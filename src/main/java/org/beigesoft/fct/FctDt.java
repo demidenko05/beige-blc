@@ -265,17 +265,17 @@ public class FctDt {
   /**
    * <p>Outside base processors factories.</p>
    **/
-  private Set<IFctNm<IPrc>> fctsPrc;
+  private Set<IFctPrc> fctsPrc;
 
   /**
    * <p>Outside admin processors factories.</p>
    **/
-  private Set<IFctNm<IPrc>> fctsPrcAd;
+  private Set<IFctPrc> fctsPrcAd;
 
   /**
    * <p>Additional entities processors factories.</p>
    **/
-  private Set<IFctNm<IPrcEnt<?, ?>>> fctsPrcEnt;
+  private Set<IFctPrcEnt> fctsPrcEnt;
 
   /**
    * <p>Additional base entity processors names holders
@@ -662,7 +662,7 @@ public class FctDt {
 
   /**
    * <p>Getter for fbdEnts.</p>
-   * @return List<? extends Class<IHasId<?>>>
+   * @return List<? extends Class<? extends IHasId<?>>>
    **/
   public final synchronized List<Class<? extends IHasId<?>>> getFbdEnts() {
     return this.fbdEnts;
@@ -713,7 +713,7 @@ public class FctDt {
 
   /**
    * <p>Getter for custIdClss.</p>
-   * @return Set<Class<IHasId<?>>>
+   * @return Set<Class<? extends IHasId<?>>>
    **/
   public final synchronized Set<Class<? extends IHasId<?>>> getCustIdClss() {
     return this.custIdClss;
@@ -746,9 +746,9 @@ public class FctDt {
 
   /**
    * <p>Getter for fctsPrcAd.</p>
-   * @return Set<IFctNm<IPrc>>
+   * @return Set<IFctPrc>
    **/
-  public final synchronized Set<IFctNm<IPrc>> getFctsPrcAd() {
+  public final synchronized Set<IFctPrc> getFctsPrcAd() {
     return this.fctsPrcAd;
   }
 
@@ -756,16 +756,15 @@ public class FctDt {
    * <p>Setter for fctsPrcAd.</p>
    * @param pFctsPrcAd reference
    **/
-  public final synchronized void setFctsPrcAd(
-    final Set<IFctNm<IPrc>> pFctsPrcAd) {
+  public final synchronized void setFctsPrcAd(final Set<IFctPrc> pFctsPrcAd) {
     this.fctsPrcAd = pFctsPrcAd;
   }
 
   /**
    * <p>Getter for fctsPrc.</p>
-   * @return Set<IFctNm<IPrc>>
+   * @return Set<IFctPrc>
    **/
-  public final synchronized Set<IFctNm<IPrc>> getFctsPrc() {
+  public final synchronized Set<IFctPrc> getFctsPrc() {
     return this.fctsPrc;
   }
 
@@ -773,15 +772,15 @@ public class FctDt {
    * <p>Setter for fctsPrc.</p>
    * @param pFctsPrc reference
    **/
-  public final synchronized void setFctsPrc(final Set<IFctNm<IPrc>> pFctsPrc) {
+  public final synchronized void setFctsPrc(final Set<IFctPrc> pFctsPrc) {
     this.fctsPrc = pFctsPrc;
   }
 
   /**
    * <p>Getter for fctsPrcEnt.</p>
-   * @return Set<IFctNm<IPrcEnt<?, ?>>>
+   * @return Set<IFctPrcEnt>
    **/
-  public final synchronized Set<IFctNm<IPrcEnt<?, ?>>> getFctsPrcEnt() {
+  public final synchronized Set<IFctPrcEnt> getFctsPrcEnt() {
     return this.fctsPrcEnt;
   }
 
@@ -790,7 +789,7 @@ public class FctDt {
    * @param pFctsPrcEnt reference
    **/
   public final synchronized void setFctsPrcEnt(
-    final Set<IFctNm<IPrcEnt<?, ?>>> pFctsPrcEnt) {
+    final Set<IFctPrcEnt> pFctsPrcEnt) {
     this.fctsPrcEnt = pFctsPrcEnt;
   }
 

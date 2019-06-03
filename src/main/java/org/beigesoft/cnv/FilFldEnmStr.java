@@ -31,6 +31,7 @@ package org.beigesoft.cnv;
 import java.util.Map;
 import java.lang.reflect.Method;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClCl;
 
@@ -41,7 +42,7 @@ import org.beigesoft.hld.IHlNmClCl;
  * @param <E> Enum type
  * @author Yury Demidenko
  */
-public class FilFldEnmStr<E extends Enum<E>> implements IFilFld<String> {
+public class FilFldEnmStr<E extends Enum<E>> implements IFilFldStr {
 
   /**
    * <p>Holder of an entity's field's class.</p>
@@ -55,27 +56,26 @@ public class FilFldEnmStr<E extends Enum<E>> implements IFilFld<String> {
 
   /**
    * <p>Fills object's field.</p>
-   * @param <T> object type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pObj Object to fill, not null
-   * @param pStVl Source field string value
-   * @param pFlNm Field name
+   * @param <T> object (entity) type
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pEnt Entity to fill, not null
+   * @param pFlNm Field name, not null
+   * @param pStVl string value
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void fill(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final T pObj,
-      final String pStVl, final String pFlNm) throws Exception {
+  public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final T pEnt, final String pFlNm,
+      final String pStVl) throws Exception {
     Enum<?> val = null;
     if (pStVl != null && !"".equals(pStVl)) {
       @SuppressWarnings("unchecked")
-      Class<E> flCls = (Class<E>) this.hldFdCls.get(pObj.getClass(), pFlNm);
+      Class<E> flCls = (Class<E>) this.hldFdCls.get(pEnt.getClass(), pFlNm);
       val = Enum.valueOf(flCls, pStVl);
     }
-    Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
-    setr.invoke(pObj, val);
+    Method setr = this.hldSets.get(pEnt.getClass(), pFlNm);
+    setr.invoke(pEnt, val);
   }
 
   //Simple getters and setters:

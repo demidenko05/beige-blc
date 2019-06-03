@@ -49,7 +49,7 @@ import org.beigesoft.hld.IHlNmClCl;
  * @author Yury Demidenko
  */
 public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
-  implements IFilFld<IRecSet<RS>> {
+  implements IFilFldRs<RS> {
 
   /**
    * <p>Log.</p>
@@ -69,27 +69,26 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
   /**
    * <p>Filler entity factory.</p>
    */
-  private IFilObj<IRecSet<RS>> filEnt;
+  private IFilEntRs<RS> filEnt;
 
   /**
    * <p>Fills object's field.</p>
-   * @param <T> object type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pObj Object to fill, not null
-   * @param pRs Source with field value
-   * @param pFlNm Field name
+   * @param <T> object (entity) type
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pEnt Entity to fill, not null
+   * @param pFlNm Field name, not null
+   * @param pRs record-set, not null
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void fill(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final T pObj,
-      final IRecSet<RS> pRs, final String pFlNm) throws Exception {
+  public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final T pEnt, final String pFlNm,
+      final IRecSet<RS> pRs) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7002 && this.log.getDbgCl() > 7000;
     @SuppressWarnings("unchecked")
-    Class<E> fdCls = (Class<E>) this.hldFdCls.get(pObj.getClass(), pFlNm);
+    Class<E> fdCls = (Class<E>) this.hldFdCls.get(pEnt.getClass(), pFlNm);
     E val = fdCls.newInstance();
     @SuppressWarnings("unchecked")
     List<LvDep> lvDeps = (List<LvDep>) pVs.get("lvDeps");
@@ -100,20 +99,20 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
       clvDep.setDep(dpLv);
       lvDeps.add(clvDep);
       if (isDbgSh) {
-        this.log.debug(pRqVs, FilEntRs.class, "Start fill custDL subent/DL/CL: "
+        this.log.debug(pRvs, getClass(), "Start fill custDL subent/DL/CL: "
             + fdCls + "/" + clvDep.getDep() + "/" + clvDep.getCur());
       }
     } else { //entering into new sub/branch's sub-entity:
       clvDep = lvDeps.get(lvDeps.size() - 1);
       clvDep.setCur(clvDep.getCur() + 1);
       if (isDbgSh) {
-        this.log.debug(pRqVs, FilEntRs.class, "Start subent/DL/CL: "
+        this.log.debug(pRvs, getClass(), "Start subent/DL/CL: "
             + fdCls + "/" + clvDep.getDep() + "/" + clvDep.getCur());
       }
     }
     if (lvDeps.size() > 1) { //sub-branch, main branch level change:
       lvDeps.get(0).setCur(lvDeps.get(0).getCur() + 1);
-      this.log.debug(pRqVs, FilEntRs.class, "Main branch UP DL/CL: "
+      this.log.debug(pRvs, getClass(), "Main branch UP DL/CL: "
           + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
     }
     String tbAl = pFlNm.toUpperCase() + lvDeps.get(0).getCur();
@@ -121,36 +120,36 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
     List<String> tbAls = (List<String>) pVs.get("tbAls");
     tbAls.add(tbAl);
     if (isDbgSh) {
-      this.log.debug(pRqVs, FilFldHsIdRs.class, "Added tbAl/cls: " + tbAl
+      this.log.debug(pRvs, getClass(), "Added tbAl/cls: " + tbAl
         + "/" + fdCls);
     }
-    this.filEnt.fill(pRqVs, pVs, val, pRs);
+    this.filEnt.fill(pRvs, pVs, val, pRs);
     tbAls.remove(tbAl);
     if (lvDeps.size() > 1) { //move down through custom DL subentities branch:
       LvDep ld = lvDeps.get(lvDeps.size() - 1);
       if (ld.getCur() == 0) { //ending custom DL subentity:
         lvDeps.remove(lvDeps.size() - 1);
         if (isDbgSh) {
-          this.log.debug(pRqVs, FilEntRs.class,
+          this.log.debug(pRvs, getClass(),
             "Finish custom DL root subentity: " + fdCls);
         }
       } else { //finish subentity:
         ld.setCur(ld.getCur() - 1);
         if (isDbgSh) {
-          this.log.debug(pRqVs, FilEntRs.class,
+          this.log.debug(pRvs, getClass(),
             "Finish custom DL subentity: " + fdCls);
         }
       }
       //sub-branch, main branch level change:
       lvDeps.get(0).setCur(lvDeps.get(0).getCur() - 1);
-      this.log.debug(pRqVs, FilEntRs.class, "Main branch DOWN DL/CL: "
+      this.log.debug(pRvs, getClass(), "Main branch DOWN DL/CL: "
           + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
     } else {  //move down through root DL subentities branch:
       LvDep ld = lvDeps.get(0);
       if (ld.getCur() > 0) { //finish subentity:
         ld.setCur(ld.getCur() - 1);
         if (isDbgSh) {
-          this.log.debug(pRqVs, FilEntRs.class,
+          this.log.debug(pRvs, getClass(),
             "Finish custom subentity: " + fdCls);
         }
       }
@@ -158,8 +157,8 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
     if (val.getIid() == null) {
       val = null;
     }
-    Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
-    setr.invoke(pObj, val);
+    Method setr = this.hldSets.get(pEnt.getClass(), pFlNm);
+    setr.invoke(pEnt, val);
   }
 
   //Simple getters and setters:
@@ -213,9 +212,9 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
 
   /**
    * <p>Getter for filEnt.</p>
-   * @return IFilObj<IRecSet<RS>>
+   * @return IFilEntRs<RS>
    **/
-  public final IFilObj<IRecSet<RS>> getFilEnt() {
+  public final IFilEntRs<RS> getFilEnt() {
     return this.filEnt;
   }
 
@@ -223,7 +222,7 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
    * <p>Setter for filEnt.</p>
    * @param pFilEnt reference
    **/
-  public final void setFilEnt(final IFilObj<IRecSet<RS>> pFilEnt) {
+  public final void setFilEnt(final IFilEntRs<RS> pFilEnt) {
     this.filEnt = pFilEnt;
   }
 }

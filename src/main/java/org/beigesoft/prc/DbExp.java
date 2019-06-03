@@ -64,7 +64,7 @@ public class DbExp implements IPrc {
     final IReqDt pRqDt) throws Exception {
     PrintWriter htmWri = (PrintWriter) pRvs.get("htmWri");
     @SuppressWarnings("unchecked")
-    Class<IHasId<?>> cls = (Class<IHasId<?>>) Class
+    Class<? extends IHasId<?>> cls = (Class<? extends IHasId<?>>) Class
       .forName(pRqDt.getParam("ent"));
     pRvs.put("dsDbVr", pRqDt.getParam("dsDbVr"));
     pRvs.put("cond", pRqDt.getParam("cond"));

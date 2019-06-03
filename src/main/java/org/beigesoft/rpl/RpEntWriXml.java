@@ -33,12 +33,12 @@ import java.io.Writer;
 import java.lang.reflect.Method;
 
 import org.beigesoft.mdl.IHasId;
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.fct.IFctCnToSt;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
-import org.beigesoft.cnv.IConv;
+import org.beigesoft.cnv.ICnToSt;
 
 /**
  * <p>Service that writes given entity into given stream (writer)
@@ -64,7 +64,7 @@ public class RpEntWriXml implements IRpEntWri {
   /**
    * <p>Converters fields factory.</p>
    */
-  private IFctNm<IConv<?, String>> fctCnvFld;
+  private IFctCnToSt fctCnvFld;
 
   /**
    * <p>Fields getters RAPI holder.</p>
@@ -111,8 +111,8 @@ public class RpEntWriXml implements IRpEntWri {
    * @param pFdNm field name
    * @throws Exception - an exception
    **/
-  private void writeFld(final Map<String, Object> pRqVs,
-    final Object pEnt, final Writer pWri, final String pFdNm) throws Exception {
+  private <T extends IHasId<?>> void writeFld(final Map<String, Object> pRqVs,
+    final T pEnt, final Writer pWri, final String pFdNm) throws Exception {
     Method getter = this.hldGets.get(pEnt.getClass(), pFdNm);
     Object fdVl = getter.invoke(pEnt);
     String fdVlSt;
@@ -121,7 +121,7 @@ public class RpEntWriXml implements IRpEntWri {
     } else {
       String cnNm = this.hldNmFdCn.get(pEnt.getClass(), pFdNm);
       @SuppressWarnings("unchecked")
-      IConv<Object, String> flCn = (IConv<Object, String>) this.fctCnvFld
+      ICnToSt<Object> flCn = (ICnToSt<Object>) this.fctCnvFld
         .laz(pRqVs, cnNm);
       fdVlSt = flCn.conv(pRqVs, fdVl);
     }
@@ -163,9 +163,9 @@ public class RpEntWriXml implements IRpEntWri {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<IConv<?, String>>
+   * @return IFctCnToSt
    **/
-  public final IFctNm<IConv<?, String>> getFctCnvFld() {
+  public final IFctCnToSt getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -173,7 +173,7 @@ public class RpEntWriXml implements IRpEntWri {
    * <p>Setter for fctCnvFld.</p>
    * @param pFctCnvFld reference
    **/
-  public final void setFctCnvFld(final IFctNm<IConv<?, String>> pFctCnvFld) {
+  public final void setFctCnvFld(final IFctCnToSt pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 

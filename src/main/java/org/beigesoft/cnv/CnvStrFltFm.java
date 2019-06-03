@@ -38,7 +38,7 @@ import org.beigesoft.mdl.CmnPrf;
  *
  * @author Yury Demidenko
  */
-public class CnvStrFltFm implements IConv<String, Float> {
+public class CnvStrFltFm implements ICnFrSt<Float> {
 
   /**
    * <p>Converts Float from string.</p>

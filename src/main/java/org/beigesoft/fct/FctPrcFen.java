@@ -43,7 +43,7 @@ import org.beigesoft.srv.EntPg;
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FctPrcFen<RS> implements IFctNm<IPrc> {
+public class FctPrcFen<RS> implements IFctPrc {
 
   /**
    * <p>Main factory.</p>
@@ -93,11 +93,11 @@ public class FctPrcFen<RS> implements IFctNm<IPrc> {
     EntPg<RS> entPg = new EntPg<RS>();
     entPg.setLog(this.fctBlc.lazLogStd(pRqVs));
     entPg.setHlpEntPg(this.fctBlc.lazHlpEntPg(pRqVs));
-    entPg.setEntMp(new HashMap<String, Class<IHasId<?>>>());
+    entPg.setEntMp(new HashMap<String, Class<? extends IHasId<?>>>());
     for (Class<?> cls : this.fctBlc.lazStgUvd(pRqVs).lazClss()) {
       if (this.fctBlc.getFctDt().getFbdEnts() == null
         || !this.fctBlc.getFctDt().getFbdEnts().contains(cls)) {
-        entPg.getEntMp().put(cls.getSimpleName(), (Class<IHasId<?>>) cls);
+        entPg.getEntMp().put(cls.getSimpleName(), (Class<? extends IHasId<?>>) cls);
       }
     }
     rz.setEntPg(entPg);

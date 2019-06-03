@@ -60,7 +60,7 @@ public class EntPg<RS> implements IEntPg {
   /**
    * <p>Entities map "EntitySimpleName"-"Class".</p>
    **/
-  private Map<String, Class<IHasId<?>>> entMp;
+  private Map<String, Class<? extends IHasId<?>>> entMp;
 
   //service with business-logic:
   /**
@@ -81,7 +81,7 @@ public class EntPg<RS> implements IEntPg {
   public final void retPg(final Map<String, Object> pRvs,
     final IReqDt pRqDt) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
-        && this.log.getDbgFl() < 5601 && this.log.getDbgCl() > 5599;
+      && this.log.getDbgFl() < 5601 && this.log.getDbgCl() > 5599;
     this.hlpEntPg.retPg(pRvs, pRqDt, this.entMp, isDbgSh, this.mkrFlt);
   }
 
@@ -96,9 +96,10 @@ public class EntPg<RS> implements IEntPg {
    **/
   @Override
   public final StringBuffer revPgFltDt(final Map<String, Object> pRvs,
-    final IReqDt pRqDt, final Class<?> pCls) throws Exception {
+    final IReqDt pRqDt,
+      final Class<? extends IHasId<?>> pCls) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
-        && this.log.getDbgFl() < 5601 && this.log.getDbgCl() > 5599;
+      && this.log.getDbgFl() < 5601 && this.log.getDbgCl() > 5599;
     return this.hlpEntPg.revPgFltDt(pRvs, pRqDt, pCls, isDbgSh);
   }
 
@@ -137,9 +138,9 @@ public class EntPg<RS> implements IEntPg {
 
   /**
    * <p>Getter for entMp.</p>
-   * @return Map<String, Class<IHasId<?>>>
+   * @return Map<String, Class<? extends IHasId<?>>>
    **/
-  public final Map<String, Class<IHasId<?>>> getEntMp() {
+  public final Map<String, Class<? extends IHasId<?>>> getEntMp() {
     return this.entMp;
   }
 
@@ -147,7 +148,8 @@ public class EntPg<RS> implements IEntPg {
    * <p>Setter for entMp.</p>
    * @param pEntMp reference
    **/
-  public final void setEntMp(final Map<String, Class<IHasId<?>>> pEntMp) {
+  public final void setEntMp(
+    final Map<String, Class<? extends IHasId<?>>> pEntMp) {
     this.entMp = pEntMp;
   }
 

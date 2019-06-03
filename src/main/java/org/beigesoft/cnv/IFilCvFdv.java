@@ -29,59 +29,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
-import java.math.BigDecimal;
 
-import org.beigesoft.mdl.CmnPrf;
-import org.beigesoft.mdlp.UsPrf;
-import org.beigesoft.srv.INumStr;
+import org.beigesoft.mdl.IHasId;
+import org.beigesoft.mdl.ColVals;
 
 /**
- * <p>Converter of a BigDecimal with maximum decimal places to string
- * representation with digital separators, null represents as "".
- * It requires request scoped digital preferences.</p>
+ * <p>Abstraction of service that fills column values with given
+ *   entity's field's value.</p>
  *
+ * @param <T> field type
  * @author Yury Demidenko
  */
-public class CnvMaxStr implements ICnToSt<BigDecimal> {
+public interface IFilCvFdv<T> {
 
   /**
-   * <p>Number to string service.</p>
-   **/
-  private INumStr numStr;
-
-  /**
-   * <p>Converts BigDecimal to string.</p>
-   * @param pRqVs request scoped vars, must has upf - UsPrf, and cpf - CmnPrf
-   * @param pObj BigDecimal with maximum decimal places
-   * @return string representation
+   * <p>Fills given column values with given entity's field's value.</p>
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pFdNm field name
+   * @param pFdv field value
+   * @param pCv column values
    * @throws Exception - an exception
    **/
-  @Override
-  public final String conv(final Map<String, Object> pRqVs,
-    final BigDecimal pObj) throws Exception {
-    if (pObj == null) {
-      return "";
-    }
-    CmnPrf cpf = (CmnPrf) pRqVs.get("cpf");
-    UsPrf upf = (UsPrf) pRqVs.get("upf");
-    return this.numStr.frmt(pObj.toString(), cpf.getDcSpv(),
-      cpf.getDcGrSpv(), cpf.getMaxDp(), upf.getDgInGr());
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for numStr.</p>
-   * @return INumStr
-   **/
-  public final INumStr getNumStr() {
-    return this.numStr;
-  }
-
-  /**
-   * <p>Setter for numStr.</p>
-   * @param pNumStr reference
-   **/
-  public final void setNumStr(final INumStr pNumStr) {
-    this.numStr = pNumStr;
-  }
+  void fill(Map<String, Object> pRvs,
+    Map<String, Object> pVs, String pFdNm, T pFdv,
+      ColVals pCv) throws Exception;
 }

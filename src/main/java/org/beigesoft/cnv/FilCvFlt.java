@@ -29,27 +29,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
+import java.util.HashMap;
+
+import org.beigesoft.mdl.ColVals;
 
 /**
- * <p>Abstraction of generic converter from a type to another one
- * with using a name, e.g. get field value from result-set.</p>
+ * <p>Fills column values with given value of Float type
+ * without transformation.</p>
  *
  * @author Yury Demidenko
- * @param <FR> type of original
- * @param <TO> type of converted
  */
-public interface IConvNm<FR, TO> {
+public class FilCvFlt implements IFilCvFdv<Float> {
 
   /**
-   * <p>Converts named thing from one type into another one.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pFrom value, e.g. JDBC Result-Set
-   * @param pNm field name
-   * @return TO to value
+   * <p>Puts Float object to column values without transformation.</p>
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pFdNm field name
+   * @param pFdv field value
+   * @param pCv column values
    * @throws Exception - an exception
    **/
-  TO conv(Map<String, Object> pRqVs, Map<String, Object> pVs, FR pFrom,
-    String pNm) throws Exception;
+  @Override
+  public final void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final String pFdNm, final Float pFdv,
+      final ColVals pCv) throws Exception {
+    if (pCv.getFloats() == null) {
+      pCv.setFloats(new HashMap<String, Float>());
+    }
+    pCv.getFloats().put(pFdNm, pFdv);
+  }
 }

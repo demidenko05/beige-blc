@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.math.BigDecimal;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.cnv.CnvStrBln;
 import org.beigesoft.cnv.CnvStrBgd;
 import org.beigesoft.cnv.CnvStrDblFm;
@@ -94,7 +95,7 @@ public class HldNmCnFrSt implements IHlNmClSt {
    * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls,
+  public final <T extends IHasId<?>> String get(final Class<T> pCls,
     final String pFlNm) throws Exception {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
     String rez = this.stdCnvNms.get(fdCls);

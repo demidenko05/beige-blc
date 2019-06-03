@@ -33,15 +33,16 @@ import java.util.HashMap;
 import java.util.Date;
 import java.math.BigDecimal;
 
-import org.beigesoft.cnv.CnvIbnBgdCv;
-import org.beigesoft.cnv.CnvIbnBlnCv;
-import org.beigesoft.cnv.CnvIbnDblCv;
-import org.beigesoft.cnv.CnvIbnDtCv;
-import org.beigesoft.cnv.CnvIbnEnmCv;
-import org.beigesoft.cnv.CnvIbnFltCv;
-import org.beigesoft.cnv.CnvIbnIntCv;
-import org.beigesoft.cnv.CnvIbnLngCv;
-import org.beigesoft.cnv.CnvIbnStrCv;
+import org.beigesoft.mdl.IHasId;
+import org.beigesoft.cnv.FilCvBgd;
+import org.beigesoft.cnv.FilCvBln;
+import org.beigesoft.cnv.FilCvDbl;
+import org.beigesoft.cnv.FilCvDt;
+import org.beigesoft.cnv.FilCvEnm;
+import org.beigesoft.cnv.FilCvFlt;
+import org.beigesoft.cnv.FilCvInt;
+import org.beigesoft.cnv.FilCvLng;
+import org.beigesoft.cnv.FilCvStr;
 
 /**
  * <p>Holder of names of converters of simple fields into column values.</p>
@@ -68,14 +69,14 @@ public class HldCnvFdCv implements IHlNmClSt {
    **/
   public HldCnvFdCv() {
     this.stdFilNms = new HashMap<Class<?>, String>();
-    this.stdFilNms.put(Integer.class, CnvIbnIntCv.class.getSimpleName());
-    this.stdFilNms.put(Long.class, CnvIbnLngCv.class.getSimpleName());
-    this.stdFilNms.put(String.class, CnvIbnStrCv.class.getSimpleName());
-    this.stdFilNms.put(Float.class, CnvIbnFltCv.class.getSimpleName());
-    this.stdFilNms.put(Double.class, CnvIbnDblCv.class.getSimpleName());
-    this.stdFilNms.put(Boolean.class, CnvIbnBlnCv.class.getSimpleName());
-    this.stdFilNms.put(BigDecimal.class, CnvIbnBgdCv.class.getSimpleName());
-    this.stdFilNms.put(Date.class, CnvIbnDtCv.class.getSimpleName());
+    this.stdFilNms.put(Integer.class, FilCvInt.class.getSimpleName());
+    this.stdFilNms.put(Long.class, FilCvLng.class.getSimpleName());
+    this.stdFilNms.put(String.class, FilCvStr.class.getSimpleName());
+    this.stdFilNms.put(Float.class, FilCvFlt.class.getSimpleName());
+    this.stdFilNms.put(Double.class, FilCvDbl.class.getSimpleName());
+    this.stdFilNms.put(Boolean.class, FilCvBln.class.getSimpleName());
+    this.stdFilNms.put(BigDecimal.class, FilCvBgd.class.getSimpleName());
+    this.stdFilNms.put(Date.class, FilCvDt.class.getSimpleName());
   }
 
   /**
@@ -86,11 +87,11 @@ public class HldCnvFdCv implements IHlNmClSt {
    * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls,
+  public final <T extends IHasId<?>> String get(final Class<T> pCls,
     final String pFlNm) throws Exception {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
     if (fdCls.isEnum()) {
-      return CnvIbnEnmCv.class.getSimpleName();
+      return FilCvEnm.class.getSimpleName();
     }
     String rez = this.stdFilNms.get(fdCls);
     if (rez == null) {

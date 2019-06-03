@@ -29,59 +29,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
-import java.math.BigDecimal;
 
-import org.beigesoft.mdl.CmnPrf;
-import org.beigesoft.mdlp.UsPrf;
-import org.beigesoft.srv.INumStr;
+import org.beigesoft.mdl.IRecSet;
 
 /**
- * <p>Converter of a BigDecimal with maximum decimal places to string
- * representation with digital separators, null represents as "".
- * It requires request scoped digital preferences.</p>
+ * <p>Converts named field from result-set to Float.</p>
  *
+ * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class CnvMaxStr implements ICnToSt<BigDecimal> {
+public class CvRsFvFlt<RS> implements ICnvRsFdv<Float, RS> {
 
   /**
-   * <p>Number to string service.</p>
-   **/
-  private INumStr numStr;
-
-  /**
-   * <p>Converts BigDecimal to string.</p>
-   * @param pRqVs request scoped vars, must has upf - UsPrf, and cpf - CmnPrf
-   * @param pObj BigDecimal with maximum decimal places
-   * @return string representation
+   * <p>Converts named field from resultset.</p>
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars.
+   * @param pRs result-set, not null
+   * @param pFdNm Field name, not null
+   * @return field's value from RS
    * @throws Exception - an exception
    **/
   @Override
-  public final String conv(final Map<String, Object> pRqVs,
-    final BigDecimal pObj) throws Exception {
-    if (pObj == null) {
-      return "";
-    }
-    CmnPrf cpf = (CmnPrf) pRqVs.get("cpf");
-    UsPrf upf = (UsPrf) pRqVs.get("upf");
-    return this.numStr.frmt(pObj.toString(), cpf.getDcSpv(),
-      cpf.getDcGrSpv(), cpf.getMaxDp(), upf.getDgInGr());
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for numStr.</p>
-   * @return INumStr
-   **/
-  public final INumStr getNumStr() {
-    return this.numStr;
-  }
-
-  /**
-   * <p>Setter for numStr.</p>
-   * @param pNumStr reference
-   **/
-  public final void setNumStr(final INumStr pNumStr) {
-    this.numStr = pNumStr;
+  public final Float conv(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final IRecSet<RS> pRs,
+      final String pFdNm) throws Exception {
+    return pRs.getFloat(pFdNm);
   }
 }

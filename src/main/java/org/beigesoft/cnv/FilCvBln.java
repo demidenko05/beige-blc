@@ -29,59 +29,41 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
-import java.math.BigDecimal;
+import java.util.HashMap;
 
-import org.beigesoft.mdl.CmnPrf;
-import org.beigesoft.mdlp.UsPrf;
-import org.beigesoft.srv.INumStr;
+import org.beigesoft.mdl.ColVals;
 
 /**
- * <p>Converter of a BigDecimal with maximum decimal places to string
- * representation with digital separators, null represents as "".
- * It requires request scoped digital preferences.</p>
+ * <p>Fills column values with given value of Boolean type
+ * with transformation into Integer.</p>
  *
  * @author Yury Demidenko
  */
-public class CnvMaxStr implements ICnToSt<BigDecimal> {
+public class FilCvBln implements IFilCvFdv<Boolean> {
 
   /**
-   * <p>Number to string service.</p>
-   **/
-  private INumStr numStr;
-
-  /**
-   * <p>Converts BigDecimal to string.</p>
-   * @param pRqVs request scoped vars, must has upf - UsPrf, and cpf - CmnPrf
-   * @param pObj BigDecimal with maximum decimal places
-   * @return string representation
+   * <p>Puts Boolean object to column values with transformation
+   * into Integer.</p>
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pFdNm field name
+   * @param pFdv field value
+   * @param pCv column values
    * @throws Exception - an exception
    **/
   @Override
-  public final String conv(final Map<String, Object> pRqVs,
-    final BigDecimal pObj) throws Exception {
-    if (pObj == null) {
-      return "";
+  public final void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final String pFdNm, final Boolean pFdv,
+      final ColVals pCv) throws Exception {
+    Integer value;
+    if (pFdv == null || !pFdv) { // Boolean is non-nullable
+      value = 0;
+    } else {
+      value = 1;
     }
-    CmnPrf cpf = (CmnPrf) pRqVs.get("cpf");
-    UsPrf upf = (UsPrf) pRqVs.get("upf");
-    return this.numStr.frmt(pObj.toString(), cpf.getDcSpv(),
-      cpf.getDcGrSpv(), cpf.getMaxDp(), upf.getDgInGr());
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for numStr.</p>
-   * @return INumStr
-   **/
-  public final INumStr getNumStr() {
-    return this.numStr;
-  }
-
-  /**
-   * <p>Setter for numStr.</p>
-   * @param pNumStr reference
-   **/
-  public final void setNumStr(final INumStr pNumStr) {
-    this.numStr = pNumStr;
+    if (pCv.getInts() == null) {
+      pCv.setInts(new HashMap<String, Integer>());
+    }
+    pCv.getInts().put(pFdNm, value);
   }
 }

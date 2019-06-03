@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Method;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClMt;
@@ -46,7 +47,7 @@ import org.beigesoft.hld.IHlNmClCl;
  * @author Yury Demidenko
  */
 public class FilFldEnmRs<E extends Enum<E>, RS>
-  implements IFilFld<IRecSet<RS>> {
+  implements IFilFldRs<RS> {
 
   /**
    * <p>Log.</p>
@@ -66,19 +67,18 @@ public class FilFldEnmRs<E extends Enum<E>, RS>
   /**
    * <p>Fills/converts object's field of type Enum from
    * given result-set.</p>
-   * @param <T> object type
-   * @param pRqVs request scoped vars
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pObj Object to fill, not null
-   * @param pRs Source with field value
-   * @param pFdNm Field name
+   * @param <T> object (entity) type
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pEnt Entity to fill, not null
+   * @param pFlNm Field name, not null
+   * @param pRs record-set, not null
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void fill(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final T pObj,
-      final IRecSet<RS> pRs, final String pFdNm) throws Exception {
+  public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final T pEnt, final String pFdNm,
+      final IRecSet<RS> pRs) throws Exception {
     String clNm;
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7004 && this.log.getDbgCl() > 7002;
@@ -90,18 +90,18 @@ public class FilFldEnmRs<E extends Enum<E>, RS>
       clNm = pFdNm.toUpperCase();
     }
     if (isDbgSh) {
-      this.log.debug(pRqVs, FilFldSmpRs.class, "Column alias/cls: "
-        + clNm + "/" + pObj.getClass());
+      this.log.debug(pRvs, FilFldSmpRs.class, "Column alias/cls: "
+        + clNm + "/" + pEnt.getClass());
     }
     Integer intVal = pRs.getInt(clNm);
     Enum<?> val = null;
     if (intVal != null) {
       @SuppressWarnings("unchecked")
-      Class<E> fdCls = (Class<E>) hldFdCls.get(pObj.getClass(), pFdNm);
+      Class<E> fdCls = (Class<E>) hldFdCls.get(pEnt.getClass(), pFdNm);
       val = fdCls.getEnumConstants()[intVal];
     }
-    Method setr = this.hldSets.get(pObj.getClass(), pFdNm);
-    setr.invoke(pObj, val);
+    Method setr = this.hldSets.get(pEnt.getClass(), pFdNm);
+    setr.invoke(pEnt, val);
   }
 
   //Simple getters and setters:

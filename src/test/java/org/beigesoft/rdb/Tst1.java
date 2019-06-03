@@ -329,7 +329,7 @@ public class Tst1<RS> {
     }
   }
 
-  private void muExFstLoc(IRdb<RS> pRdb, Class<?> pCls, ColVals pCv,
+  private <T extends IHasId<?>> void muExFstLoc(IRdb<RS> pRdb, Class<T> pCls, ColVals pCv,
     String pWhe) throws Exception {
     boolean isEx = false;
     try {

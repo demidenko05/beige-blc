@@ -39,7 +39,7 @@ import org.beigesoft.mdl.CmnPrf;
  *
  * @author Yury Demidenko
  */
-public class CnvStrBgd implements IConv<String, BigDecimal> {
+public class CnvStrBgd implements ICnFrSt<BigDecimal> {
 
   /**
    * <p>Converts BigDecimal from string.</p>

@@ -29,59 +29,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
-import java.math.BigDecimal;
+import java.util.HashMap;
 
-import org.beigesoft.mdl.CmnPrf;
-import org.beigesoft.mdlp.UsPrf;
-import org.beigesoft.srv.INumStr;
+import org.beigesoft.mdl.ColVals;
 
 /**
- * <p>Converter of a BigDecimal with maximum decimal places to string
- * representation with digital separators, null represents as "".
- * It requires request scoped digital preferences.</p>
+ * <p>Fills column values with given value of Double type
+ * without transformation.</p>
  *
  * @author Yury Demidenko
  */
-public class CnvMaxStr implements ICnToSt<BigDecimal> {
+public class FilCvDbl implements IFilCvFdv<Double> {
 
   /**
-   * <p>Number to string service.</p>
-   **/
-  private INumStr numStr;
-
-  /**
-   * <p>Converts BigDecimal to string.</p>
-   * @param pRqVs request scoped vars, must has upf - UsPrf, and cpf - CmnPrf
-   * @param pObj BigDecimal with maximum decimal places
-   * @return string representation
+   * <p>Puts Double object to column values without transformation.</p>
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pFdNm field name
+   * @param pFdv field value
+   * @param pCv column values
    * @throws Exception - an exception
    **/
   @Override
-  public final String conv(final Map<String, Object> pRqVs,
-    final BigDecimal pObj) throws Exception {
-    if (pObj == null) {
-      return "";
+  public final void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final String pFdNm, final Double pFdv,
+      final ColVals pCv) throws Exception {
+    if (pCv.getDoubles() == null) {
+      pCv.setDoubles(new HashMap<String, Double>());
     }
-    CmnPrf cpf = (CmnPrf) pRqVs.get("cpf");
-    UsPrf upf = (UsPrf) pRqVs.get("upf");
-    return this.numStr.frmt(pObj.toString(), cpf.getDcSpv(),
-      cpf.getDcGrSpv(), cpf.getMaxDp(), upf.getDgInGr());
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for numStr.</p>
-   * @return INumStr
-   **/
-  public final INumStr getNumStr() {
-    return this.numStr;
-  }
-
-  /**
-   * <p>Setter for numStr.</p>
-   * @param pNumStr reference
-   **/
-  public final void setNumStr(final INumStr pNumStr) {
-    this.numStr = pNumStr;
+    pCv.getDoubles().put(pFdNm, pFdv);
   }
 }

@@ -33,7 +33,7 @@ import java.util.HashMap;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.log.ILog;
-import org.beigesoft.cnv.IConv;
+import org.beigesoft.cnv.ICnFrSt;
 import org.beigesoft.cnv.CnvStrLng;
 import org.beigesoft.cnv.CnvStrInt;
 import org.beigesoft.cnv.CnvStrFlt;
@@ -61,7 +61,7 @@ import org.beigesoft.srv.ISrvDt;
  *
  * @author Yury Demidenko
  */
-public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
+public class FctNmCnFrSt implements IFctCnFrSt {
 
   //services/parts:
   /**
@@ -83,8 +83,8 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
   /**
    * <p>Converters map.</p>
    **/
-  private final Map<String, IConv<String, ?>> convrts
-    = new HashMap<String, IConv<String, ?>>();
+  private final Map<String, ICnFrSt<?>> convrts
+    = new HashMap<String, ICnFrSt<?>>();
 
   /**
    * <p>Get converter in lazy mode (if bean is null then initialize it).</p>
@@ -93,9 +93,9 @@ public class FctNmCnFrSt implements IFctNm<IConv<String, ?>> {
    * @return requested converter
    * @throws Exception - an exception
    */
-  public final IConv<String, ?> laz(final Map<String, Object> pRqVs,
+  public final ICnFrSt<?> laz(final Map<String, Object> pRqVs,
     final String pCnNm) throws Exception {
-    IConv<String, ?> rz = this.convrts.get(pCnNm);
+    ICnFrSt<?> rz = this.convrts.get(pCnNm);
     if (rz == null) {
       synchronized (this) {
         rz = this.convrts.get(pCnNm);

@@ -138,7 +138,7 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
 
   /**
    * <p>Getter for Admin non-shared Ents.</p>
-   * @return List<Class<IHasId<?>>>
+   * @return List<Class<? extends IHasId<?>>>
    **/
   public final List<Class<? extends IHasId<?>>> getAdmEnts() {
     List<Class<? extends IHasId<?>>> admEnts =
@@ -186,7 +186,7 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlClSt = new HldClsStg(stgNm, stgNm);
     hlClSt.setNulSclss(new HashSet<Class<?>>());
     hlClSt.getNulSclss().add(IOwned.class);
-    hlClSt.setNulClss(new HashSet<Class<?>>());
+    hlClSt.setNulClss(new HashSet<Class<? extends IHasId<?>>>());
     hlClSt.getNulClss().add(EmCon.class);
     hlClSt.getNulClss().add(UsPrf.class);
     hlClSt.getNulClss().add(UsTmc.class);
@@ -206,12 +206,12 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlClSt = new HldClsStg(stgNm, stgNm);
     hlClSt.setStgSclss(new LinkedHashMap<Class<?>, String>());
     hlClSt.getStgSclss().put(IOwned.class, "acd");
-    hlClSt.setStgClss(new HashMap<Class<?>, String>());
+    hlClSt.setStgClss(new HashMap<Class<? extends IHasId<?>>, String>());
     hlClSt.getStgClss().put(EmMsg.class, "eml");
     pFct.getFctBlc().getFctDt().getHlClStgMp().put(stgNm, hlClSt);
     stgNm = "ordDf"; //list order by field default
     hlClSt = new HldClsStg(stgNm, stgNm);
-    hlClSt.setStgClss(new HashMap<Class<?>, String>());
+    hlClSt.setStgClss(new HashMap<Class<? extends IHasId<?>>, String>());
     hlClSt.getStgClss().put(UsTmc.class, "usr");
     hlClSt.getStgClss().put(UsRlTmc.class, "usr");
     hlClSt.getStgClss().put(UsPrf.class, "cntr");
@@ -229,7 +229,7 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlClSt = new HldClsStg(stgNm, stgNm);
     hlClSt.setStgSclss(new LinkedHashMap<Class<?>, String>());
     hlClSt.getStgSclss().put(IOwned.class, "aco");
-    hlClSt.setStgClss(new HashMap<Class<?>, String>());
+    hlClSt.setStgClss(new HashMap<Class<? extends IHasId<?>>, String>());
     hlClSt.getStgClss().put(EmMsg.class, "eml");
     pFct.getFctBlc().getFctDt().getHlClStgMp().put(stgNm, hlClSt);
     stgNm = "dlAc"; //form delete actions

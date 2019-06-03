@@ -39,12 +39,13 @@ import java.util.LinkedHashMap;
 import java.lang.reflect.Field;
 
 import org.beigesoft.exc.ExcCode;
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.srv.IReflect;
 
 /**
- * <p>Service that loads classes and their fields settings
+ * <p>Service that loads entity classes and their fields settings
  * from XML property file.
  * Priority of XML classes properties:
  * <pre>
@@ -103,27 +104,27 @@ public class Setng implements ISetng {
   /**
    * <p>Classes settings.</p>
    */
-  private Map<Class<?>, Map<String, String>> clsStgs;
+  private Map<Class<? extends IHasId<?>>, Map<String, String>> clsStgs;
 
   /**
    * <p>Fields settings.</p>
    */
-  private Map<Class<?>, Map<String, Map<String, String>>> fldStgs;
+  private Map<Class<? extends IHasId<?>>, Map<String, Map<String, String>>> fldStgs;
 
   /**
    * <p>All involved classes.</p>
    **/
-  private List<Class<?>> clss;
+  private List<Class<? extends IHasId<?>>> clss;
 
   /**
    * <p>Fields names involved excluding IDs.</p>
    */
-  private Map<Class<?>, List<String>> fldNms;
+  private Map<Class<? extends IHasId<?>>, List<String>> fldNms;
 
   /**
    * <p>ID fields names.</p>
    */
-  private Map<Class<?>, List<String>> idFldNms;
+  private Map<Class<? extends IHasId<?>>, List<String>> idFldNms;
 
     //Loaded sources properties from conf.xml:
   /**
@@ -146,21 +147,21 @@ public class Setng implements ISetng {
   /**
    * <p>Setting name - Class type to CS properties map.</p>
    */
-  private Map<String, Map<Class<?>, String>> clsTyCs;
+  private Map<String, Map<Class<? extends IHasId<?>>, String>> clsTyCs;
 
   /**
    * <p>Class - setting name to classes props.
    * It may contains NULL properties - lazy loaded empty.
    * It also emptied when any setting is revealed from it.</p>
    */
-  private Map<Class<?>, Map<String, String>> clsCs;
+  private Map<Class<? extends IHasId<?>>, Map<String, String>> clsCs;
 
   /**
    * <p>Class - Field name + setting name to fields props.
    * It may contains NULL properties - lazy loaded empty.
    * It also emptied when any setting is revealed from it.</p>
    */
-  private Map<Class<?>, Map<String, String>> clsFs;
+  private Map<Class<? extends IHasId<?>>, Map<String, String>> clsFs;
 
   /**
    * <p>Setting name - Field type to FS properties.</p>
@@ -180,7 +181,7 @@ public class Setng implements ISetng {
   /**
    * <p>Field name + Setting name - class type to FS properties.</p>
    */
-  private Map<String, Map<Class<?>, String>> fldNmClTyFs;
+  private Map<String, Map<Class<? extends IHasId<?>>, String>> fldNmClTyFs;
 
   /**
    * <p>Lazy gets common settings.</p>
@@ -215,8 +216,8 @@ public class Setng implements ISetng {
    * @throws Exception - an exception
    **/
   @Override
-  public final String lazFldStg(final Class<?> pCls, final String pFldNm,
-    final String pStgNm) throws Exception {
+  public final <T extends IHasId<?>> String lazFldStg(final Class<T> pCls,
+    final String pFldNm, final String pStgNm) throws Exception {
     if (pCls == null || pFldNm == null || pStgNm == null) {
       throw new ExcCode(ExcCode.WRPR, "Null parameter cls/fd/stg: " + pCls
         + "/" + pFldNm + "/" + pStgNm);
@@ -249,8 +250,8 @@ public class Setng implements ISetng {
               if (this.fldStgs != null) {
                 this.fldStgs.put(pCls, flsSts);
               } else {
-                Map<Class<?>, Map<String, Map<String, String>>> tfldStgs =
-                  new HashMap<Class<?>, Map<String, Map<String, String>>>();
+                Map<Class<? extends IHasId<?>>, Map<String, Map<String, String>>> tfldStgs =
+                  new HashMap<Class<? extends IHasId<?>>, Map<String, Map<String, String>>>();
                 tfldStgs.put(pCls, flsSts);
                 this.fldStgs = tfldStgs;
               }
@@ -270,7 +271,8 @@ public class Setng implements ISetng {
    * @throws Exception - an exception
    **/
   @Override
-  public final List<String> lazFldNms(final Class<?> pCls) throws Exception {
+  public final <T extends IHasId<?>> List<String> lazFldNms(
+    final Class<T> pCls) throws Exception {
     if (pCls == null) {
       throw new ExcCode(ExcCode.WRPR, "Null parameter cls!");
     }
@@ -299,7 +301,7 @@ public class Setng implements ISetng {
             }
           }
           if (this.fldNms == null) {
-            this.fldNms = new HashMap<Class<?>, List<String>>();
+            this.fldNms = new HashMap<Class<? extends IHasId<?>>, List<String>>();
           }
           this.fldNms.put(pCls, fNms);
         }
@@ -314,7 +316,7 @@ public class Setng implements ISetng {
    * @throws Exception - an exception
    **/
   @Override
-  public final List<Class<?>> lazClss() throws Exception {
+  public final List<Class<? extends IHasId<?>>> lazClss() throws Exception {
     lazConf();
     return this.clss;
   }
@@ -327,7 +329,7 @@ public class Setng implements ISetng {
    * @throws Exception - an exception
    **/
   @Override
-  public final String lazClsStg(final Class<?> pCls,
+  public final <T extends IHasId<?>> String lazClsStg(final Class<T> pCls,
     final String pStgNm) throws Exception {
     if (pCls == null || pStgNm == null) {
       throw new ExcCode(ExcCode.WRPR, "Null parameter cls/stg: " + pCls
@@ -350,7 +352,7 @@ public class Setng implements ISetng {
             Map<String, String> clSts = new HashMap<String, String>();
             clSts.put(pStgNm, stg);
             if (this.clsStgs == null) {
-              this.clsStgs = new HashMap<Class<?>, Map<String, String>>();
+              this.clsStgs = new HashMap<Class<? extends IHasId<?>>, Map<String, String>>();
             }
             this.clsStgs.put(pCls, clSts);
           }
@@ -367,7 +369,8 @@ public class Setng implements ISetng {
    * @throws Exception - an exception
    **/
   @Override
-  public final List<String> lazIdFldNms(final Class<?> pCls) throws Exception {
+  public final <T extends IHasId<?>> List<String> lazIdFldNms(
+    final Class<T> pCls) throws Exception {
     lazConf();
     if (!this.clss.contains(pCls)) {
       throw new ExcCode(ExcCode.WRPR, "Excluded class " + pCls);
@@ -391,7 +394,7 @@ public class Setng implements ISetng {
             }
           }
           if (this.idFldNms == null) {
-            this.idFldNms = new HashMap<Class<?>, List<String>>();
+            this.idFldNms = new HashMap<Class<? extends IHasId<?>>, List<String>>();
           }
           this.idFldNms.put(pCls, idNms);
         }
@@ -435,20 +438,20 @@ public class Setng implements ISetng {
 
   /**
    * <p>Getter for clsStgs.</p>
-   * @return Map<Class<?>, Map<String, String>>
+   * @return Map<Class<? extends IHasId<?>>, Map<String, String>>
    **/
   @Override
-  public final synchronized Map<Class<?>, Map<String, String>> getClsStgs() {
+  public final synchronized Map<Class<? extends IHasId<?>>, Map<String, String>> getClsStgs() {
     return this.clsStgs;
   }
 
   /**
    * <p>Getter for fldStgs.</p>
-   * @return Map<Class<?>, Map<String, Map<String, String>>>
+   * @return Map<Class<? extends IHasId<?>>, Map<String, Map<String, String>>>
    **/
   @Override
   public final synchronized
-    Map<Class<?>, Map<String, Map<String, String>>> getFldStgs() {
+    Map<Class<? extends IHasId<?>>, Map<String, Map<String, String>>> getFldStgs() {
     return this.fldStgs;
   }
 
@@ -461,7 +464,7 @@ public class Setng implements ISetng {
    * @return string or NULL
    * @throws Exception - an exception
    **/
-  public final synchronized String revFldStg(final Class<?> pCls,
+  public final synchronized String revFldStg(final Class<? extends IHasId<?>> pCls,
     final String pFldNm, final String pStgNm) throws Exception {
     String kyFdSt = pFldNm + pStgNm;
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
@@ -483,14 +486,14 @@ public class Setng implements ISetng {
       return rz;
     }
     if (this.fldNmClTyFs != null && this.fldNmClTyFs.get(kyFdSt) != null) {
-      String trz = revStgByTy(this.fldNmClTyFs.get(kyFdSt), pCls);
+      String trz = revStgByEnTy(this.fldNmClTyFs.get(kyFdSt), pCls);
       if (!"".equals(trz)) {
         return trz;
       }
     }
     if (this.fldNmTyFs != null && this.fldNmTyFs.get(kyFdSt) != null) {
       Class<?> fdCls = this.hldFdCls.get(pCls, pFldNm);
-      String trz = revStgByTy(this.fldNmTyFs.get(kyFdSt), fdCls);
+      String trz = revStgByFdTy(this.fldNmTyFs.get(kyFdSt), fdCls);
       if (!"".equals(trz)) {
         return trz;
       }
@@ -501,7 +504,7 @@ public class Setng implements ISetng {
     }
     if (this.fldTyFs != null && this.fldTyFs.get(pStgNm) != null) {
       Class<?> fdCls = this.hldFdCls.get(pCls, pFldNm);
-      String trz = revStgByTy(this.fldTyFs.get(pStgNm), fdCls);
+      String trz = revStgByFdTy(this.fldTyFs.get(pStgNm), fdCls);
       if (!"".equals(trz)) {
         return trz;
       }
@@ -520,7 +523,7 @@ public class Setng implements ISetng {
    * @return string or NULL
    * @throws Exception - an exception
    **/
-  public final synchronized String revClsStg(final Class<?> pCls,
+  public final synchronized String revClsStg(final Class<? extends IHasId<?>> pCls,
     final String pStgNm) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 6008 && this.log.getDbgCl() > 6006;
@@ -541,7 +544,7 @@ public class Setng implements ISetng {
       return rz;
     }
     if (this.clsTyCs != null && this.clsTyCs.get(pStgNm) != null) {
-      String trz = revStgByTy(this.clsTyCs.get(pStgNm), pCls);
+      String trz = revStgByEnTy(this.clsTyCs.get(pStgNm), pCls);
       if (!"".equals(trz)) {
         return trz;
       }
@@ -554,13 +557,45 @@ public class Setng implements ISetng {
   }
 
   /**
-   * <p>Reveal setting from type map for given type.</p>
+   * <p>Reveal entity setting from type map
+   * for given entity type.</p>
    * @param pTy class or field type
    * @param pStgs map
    * @return string value including NULL, empty string "" if not found
    * @throws Exception - an exception
    **/
-  public final synchronized String revStgByTy(
+  public final synchronized String revStgByEnTy(
+    final Map<Class<? extends IHasId<?>>, String> pStgs, final Class<? extends IHasId<?>> pTy) {
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 6004 && this.log.getDbgCl() > 6002;
+    if (pStgs.keySet().contains(pTy)) {
+      if (isDbgSh) {
+        this.log.debug(null, Setng.class, "found exact type/value: "
+          + pTy + "/" + pStgs.get(pTy));
+      }
+      return pStgs.get(pTy);
+    }
+    for (Entry<Class<? extends IHasId<?>>, String> enr : pStgs.entrySet()) {
+      if (enr.getKey().isAssignableFrom(pTy)) {
+        if (isDbgSh) {
+          this.log.debug(null, Setng.class, "found sub-type/type/value: "
+            + pTy + "/" + enr.getKey() + "/" + enr.getValue());
+        }
+        return enr.getValue();
+      }
+    }
+    return "";
+  }
+
+  /**
+   * <p>Reveal field setting from type map
+   * for given field type.</p>
+   * @param pTy class or field type
+   * @param pStgs map
+   * @return string value including NULL, empty string "" if not found
+   * @throws Exception - an exception
+   **/
+  public final synchronized String revStgByFdTy(
     final Map<Class<?>, String> pStgs, final Class<?> pTy) {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 6004 && this.log.getDbgCl() > 6002;
@@ -591,7 +626,7 @@ public class Setng implements ISetng {
    * @param pStgNm setting name
    * @throws Exception - an exception
    **/
-  public final void lazFldPrp(final Class<?> pCls, final String pFldNm,
+  public final void lazFldPrp(final Class<? extends IHasId<?>> pCls, final String pFldNm,
     final String pStgNm) throws Exception {
     String fdStNm = pFldNm + pStgNm;
     if (this.clsFs == null || !this.clsFs.keySet().contains(pCls)
@@ -617,14 +652,14 @@ public class Setng implements ISetng {
               + pCls.getSimpleName() + ".xml";
             Map<String, String> clFsPr = ldPrps(fiPa);
             if (this.clsFs == null) {
-              this.clsFs = new HashMap<Class<?>, Map<String, String>>();
+              this.clsFs = new HashMap<Class<? extends IHasId<?>>, Map<String, String>>();
             }
             this.clsFs.put(pCls, clFsPr);
           }
           if (this.fldTyFs == null || !this.fldTyFs.keySet().contains(pStgNm)) {
             fiPa = "/" + this.dir + "/" + DIRFLDTYFS + "/" + pStgNm
               + ".xml";
-            Map<Class<?>, String> flTyFsMp = ldClPrps(pStgNm, fiPa);
+            Map<Class<?>, String> flTyFsMp = ldFdClPrps(pStgNm, fiPa);
             if (this.fldTyFs == null) {
               this.fldTyFs = new HashMap<String, Map<Class<?>, String>>();
             }
@@ -641,7 +676,7 @@ public class Setng implements ISetng {
           if (this.fldNmTyFs == null
             || !this.fldNmTyFs.keySet().contains(fdStNm)) {
             fiPa = "/" + this.dir + "/" + DIRFLDNMTYFS + "/" + fdStNm + ".xml";
-            Map<Class<?>, String> flNmTyFsMp = ldClPrps(fdStNm, fiPa);
+            Map<Class<?>, String> flNmTyFsMp = ldFdClPrps(fdStNm, fiPa);
             if (this.fldNmTyFs == null) {
               this.fldNmTyFs = new HashMap<String, Map<Class<?>, String>>();
             }
@@ -651,9 +686,9 @@ public class Setng implements ISetng {
             || !this.fldNmClTyFs.keySet().contains(fdStNm)) {
             fiPa = "/" + this.dir + "/" + DIRFLDNMCLSTYFS + "/"
               + fdStNm + ".xml";
-            Map<Class<?>, String> flNmClTyFsMp = ldClPrps(fdStNm, fiPa);
+            Map<Class<? extends IHasId<?>>, String> flNmClTyFsMp = ldClPrps(fdStNm, fiPa);
             if (this.fldNmClTyFs == null) {
-              this.fldNmClTyFs = new HashMap<String, Map<Class<?>, String>>();
+              this.fldNmClTyFs = new HashMap<String, Map<Class<? extends IHasId<?>>, String>>();
             }
             this.fldNmClTyFs.put(fdStNm, flNmClTyFsMp);
           }
@@ -668,7 +703,7 @@ public class Setng implements ISetng {
    * @param pStgNm setting name
    * @throws Exception - an exception
    **/
-  public final void lazClsPrp(final Class<?> pCls,
+  public final void lazClsPrp(final Class<? extends IHasId<?>> pCls,
     final String pStgNm) throws Exception {
     if (this.clsCs == null || !this.clsCs.keySet().contains(pCls)
       || !this.clsTyCs.keySet().contains(pStgNm)) {
@@ -685,20 +720,20 @@ public class Setng implements ISetng {
           if (this.clsCs == null || !this.clsCs.keySet().contains(pCls)) {
             fiPa = "/" + this.dir + "/" + DIRCLSCS + "/"
               + pCls.getSimpleName() + ".xml";
-            Map<String, String> clFsPr = ldPrps(fiPa);
+            Map<String, String> clCsPr = ldPrps(fiPa);
             if (this.clsCs == null) {
-              this.clsCs = new HashMap<Class<?>, Map<String, String>>();
+              this.clsCs = new HashMap<Class<? extends IHasId<?>>, Map<String, String>>();
             }
-            this.clsCs.put(pCls, clFsPr);
+            this.clsCs.put(pCls, clCsPr);
           }
           if (this.clsTyCs == null || !this.clsTyCs.keySet().contains(pStgNm)) {
             fiPa = "/" + this.dir + "/" + DIRCLSTYCS + "/" + pStgNm
               + ".xml";
-            Map<Class<?>, String> flTyFsMp = ldClPrps(pStgNm, fiPa);
+            Map<Class<? extends IHasId<?>>, String> clTyCsMp = ldClPrps(pStgNm, fiPa);
             if (this.clsTyCs == null) {
-              this.clsTyCs = new HashMap<String, Map<Class<?>, String>>();
+              this.clsTyCs = new HashMap<String, Map<Class<? extends IHasId<?>>, String>>();
             }
-            this.clsTyCs.put(pStgNm, flTyFsMp);
+            this.clsTyCs.put(pStgNm, clTyCsMp);
           }
         }
       }
@@ -727,9 +762,12 @@ public class Setng implements ISetng {
           }
           this.log.info(null, Setng.class, "classes: " + strClss);
           LinkedHashSet<String> clsNms = this.utlPrp.evPrpStrSet(strClss);
-          List<Class<?>> tclss = new ArrayList<Class<?>>();
+          List<Class<? extends IHasId<?>>> tclss = new ArrayList<Class<? extends IHasId<?>>>();
           for (String clsNm : clsNms) {
-            tclss.add(Class.forName(clsNm));
+            @SuppressWarnings("unchecked")
+            Class<? extends IHasId<?>> cls =
+              (Class<? extends IHasId<?>>) Class.forName(clsNm);
+            tclss.add(cls);
           }
           String strClsStgNms = conf.getProperty(KEYCLSSTNMS);
           LinkedHashSet<String> tclsStgNms = null;
@@ -811,22 +849,56 @@ public class Setng implements ISetng {
   }
 
   /**
-   * <p>Load properties Class-String from XML file.</p>
+   * <p>Load properties Entity Class-String from XML file.</p>
    * @param pKey setting file name - setting name or
    *  field name + setting name or class name
    * @param pFiNm File Name
    * @return class-property map
    * @throws Exception - an exception
    **/
-  public final synchronized Map<Class<?>, String> ldClPrps(
+  public final synchronized Map<Class<? extends IHasId<?>>, String> ldClPrps(
     final String pKey, final String pFiNm) throws Exception {
-    Map<Class<?>, String> rz = new LinkedHashMap<Class<?>, String>();
+    Map<Class<? extends IHasId<?>>, String> rz = new LinkedHashMap<Class<? extends IHasId<?>>, String>();
     LnkPrps lprp = this.utlPrp.load(pFiNm);
     if (lprp != null) {
       boolean isDbgSh = this.log.getDbgSh(this.getClass())
         && this.log.getDbgFl() < 6003 && this.log.getDbgCl() > 6001;
       if (isDbgSh) {
-        this.log.debug(null, Setng.class, "added setting BT file: " + pFiNm);
+        this.log.debug(null, Setng.class, "added setting BCT file: " + pFiNm);
+      }
+      for (String ky : lprp.getOrdKeys()) {
+        String valOr = lprp.getProperty(ky);
+        String val = this.utlPrp.evPrpVl(lprp, ky);
+        @SuppressWarnings("unchecked")
+        Class<? extends IHasId<?>> cls =
+          (Class<? extends IHasId<?>>) Class.forName(ky);
+        rz.put(cls, val);
+        if (isDbgSh) {
+          this.log.debug(null, Setng.class, "added stg/valOr/val: " + ky
+            + "/" + valOr + "/" + val);
+        }
+      }
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Load properties Field Class-String from XML file.</p>
+   * @param pKey setting file name - setting name or
+   *  field name + setting name or class name
+   * @param pFiNm File Name
+   * @return class-property map
+   * @throws Exception - an exception
+   **/
+  public final synchronized Map<Class<?>, String> ldFdClPrps(
+    final String pKey, final String pFiNm) throws Exception {
+    Map<Class<?>, String> rz = new LinkedHashMap<Class<?>, String>();
+    LnkPrps lprp = this.utlPrp.load(pFiNm);
+    if (lprp != null) {
+      boolean isDbgSh = this.log.getDbgSh(this.getClass())
+        && this.log.getDbgFl() < 6004 && this.log.getDbgCl() > 6002;
+      if (isDbgSh) {
+        this.log.debug(null, Setng.class, "added setting BFT file: " + pFiNm);
       }
       for (String ky : lprp.getOrdKeys()) {
         String valOr = lprp.getProperty(ky);
@@ -927,25 +999,25 @@ public class Setng implements ISetng {
   //For debugging purposes:
   /**
    * <p>Getter for fldNms.</p>
-   * @return Map<Class<?>, List<String>>
+   * @return Map<Class<? extends IHasId<?>>, List<String>>
    **/
-  public final synchronized Map<Class<?>, List<String>> getFldNms() {
+  public final synchronized Map<Class<? extends IHasId<?>>, List<String>> getFldNms() {
     return this.fldNms;
   }
 
   /**
    * <p>Getter for idFldNms.</p>
-   * @return Map<Class<?>, List<String>>
+   * @return Map<Class<? extends IHasId<?>>, List<String>>
    **/
-  public final synchronized Map<Class<?>, List<String>> getIdFldNms() {
+  public final synchronized Map<Class<? extends IHasId<?>>, List<String>> getIdFldNms() {
     return this.idFldNms;
   }
 
   /**
    * <p>Getter for clss.</p>
-   * @return LinkedHashSet<Class<?>>
+   * @return LinkedHashSet<Class<? extends IHasId<?>>>
    **/
-  public final synchronized List<Class<?>> getClss() {
+  public final synchronized List<Class<? extends IHasId<?>>> getClss() {
     return this.clss;
   }
 
@@ -975,25 +1047,25 @@ public class Setng implements ISetng {
 
   /**
    * <p>Getter for clsTyCs.</p>
-   * @return Map<String, Map<Class<?>, String>>
+   * @return Map<String, Map<Class<? extends IHasId<?>>, String>>
    **/
-  public final synchronized Map<String, Map<Class<?>, String>> getClsTyCs() {
+  public final synchronized Map<String, Map<Class<? extends IHasId<?>>, String>> getClsTyCs() {
     return this.clsTyCs;
   }
 
   /**
    * <p>Getter for clsFs.</p>
-   * @return Map<Class<?>, Map<String, String>>
+   * @return Map<Class<? extends IHasId<?>>, Map<String, String>>
    **/
-  public final synchronized Map<Class<?>, Map<String, String>> getClsFs() {
+  public final synchronized Map<Class<? extends IHasId<?>>, Map<String, String>> getClsFs() {
     return this.clsFs;
   }
 
   /**
    * <p>Getter for clsCs.</p>
-   * @return Map<Class<?>, Map<String, String>>
+   * @return Map<Class<? extends IHasId<?>>, Map<String, String>>
    **/
-  public final synchronized Map<Class<?>, Map<String, String>> getClsCs() {
+  public final synchronized Map<Class<? extends IHasId<?>>, Map<String, String>> getClsCs() {
     return this.clsCs;
   }
 
@@ -1023,10 +1095,10 @@ public class Setng implements ISetng {
 
   /**
    * <p>Getter for fldNmClTyFs.</p>
-   * @return Map<String, Map<Class<?>, String>>
+   * @return Map<String, Map<Class<? extends IHasId<?>>, String>>
    **/
   public final synchronized
-    Map<String, Map<Class<?>, String>> getFldNmClTyFs() {
+    Map<String, Map<Class<? extends IHasId<?>>, String>> getFldNmClTyFs() {
     return this.fldNmClTyFs;
   }
 }

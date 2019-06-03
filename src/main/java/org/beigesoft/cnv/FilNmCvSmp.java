@@ -31,6 +31,7 @@ package org.beigesoft.cnv;
 import java.util.Map;
 import java.lang.reflect.Method;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.ColVals;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
@@ -41,10 +42,9 @@ import org.beigesoft.hld.IHlNmClSt;
  * <p>Fills given column values with given entity's field of simple type
  * that handled by simple type converter.</p>
  *
- * @param <S> source type
  * @author Yury Demidenko
  */
-public class FilNmCvSmp<S> implements IFilNm<S, ColVals> {
+public class FilNmCvSmp implements IFilCvFld {
 
   /**
    * <p>Log.</p>
@@ -64,12 +64,12 @@ public class FilNmCvSmp<S> implements IFilNm<S, ColVals> {
   /**
    * <p>Converters fields factory.</p>
    */
-  private IFctNm<IConvNmInto<?, ColVals>> fctCnvFld;
+  private IFctNm<IFilCvFdv<?>> fctCnvFld;
 
   /**
    * <p>Fills given column values with given entity's field of simple type
    * that handled by simple type converter.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pVs invoker scoped vars, e.g. needed fields {id, ver, nme}.
    * @param pEnt source entity
    * @param pClVl column values
@@ -77,23 +77,23 @@ public class FilNmCvSmp<S> implements IFilNm<S, ColVals> {
    * @throws Exception - an exception
    **/
   @Override
-  public final void fill(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final S pEnt, final ColVals pClVl,
-    final String pFdNm) throws Exception {
+  public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final T pEnt, final String pFdNm,
+      final ColVals pClVl) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7022 && this.log.getDbgCl() > 7020;
     String cnvFdNm = this.hldCnvFdNms.get(pEnt.getClass(), pFdNm);
     @SuppressWarnings("unchecked")
-    IConvNmInto<Object, ColVals> cnvFl = (IConvNmInto<Object, ColVals>)
-      this.fctCnvFld.laz(pRqVs, cnvFdNm);
+    IFilCvFdv<Object> flCvFdv = (IFilCvFdv<Object>)
+      this.fctCnvFld.laz(pRvs, cnvFdNm);
     Method getter = this.hldGets.get(pEnt.getClass(), pFdNm);
     Object val = getter.invoke(pEnt);
     if (isDbgSh) {
-      this.log.debug(pRqVs, FilNmCvSmp.class,
+      this.log.debug(pRvs, FilNmCvSmp.class,
     "Converts fdNm/cls/val/converter: " + pFdNm + "/" + pEnt.getClass()
-  .getSimpleName() + "/" + val + "/" + cnvFl.getClass().getSimpleName());
+  .getSimpleName() + "/" + val + "/" + flCvFdv.getClass().getSimpleName());
     }
-    cnvFl.conv(pRqVs, pVs, val, pClVl, pFdNm);
+    flCvFdv.fill(pRvs, pVs, pFdNm, val, pClVl);
   }
 
   //Simple getters and setters:
@@ -147,9 +147,9 @@ public class FilNmCvSmp<S> implements IFilNm<S, ColVals> {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<IConvNmInto<?, ColVals>>
+   * @return IFctNm<IFilCvFdv<?>>
    **/
-  public final IFctNm<IConvNmInto<?, ColVals>> getFctCnvFld() {
+  public final IFctNm<IFilCvFdv<?>> getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -158,7 +158,7 @@ public class FilNmCvSmp<S> implements IFilNm<S, ColVals> {
    * @param pFctCnvFld reference
    **/
   public final void setFctCnvFld(
-    final IFctNm<IConvNmInto<?, ColVals>> pFctCnvFld) {
+    final IFctNm<IFilCvFdv<?>> pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 }

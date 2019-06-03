@@ -51,7 +51,7 @@ import org.beigesoft.srv.IEmSnd;
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
+public class FctEnPrc<RS> implements IFctPrcEnt {
 
   /**
    * <p>Main factory.</p>
@@ -61,7 +61,7 @@ public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
   /**
    * <p>Additional factories.</p>
    **/
-  private Set<IFctNm<IPrcEnt<?, ?>>> fctsPrc;
+  private Set<IFctPrcEnt> fctsPrc;
 
   //requested data:
   /**
@@ -104,7 +104,7 @@ public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
             rz = crPuPrcEntRt(pRvs);
           } else {
             if (this.fctsPrc != null) {
-              for (IFctNm<IPrcEnt<?, ?>> fct : this.fctsPrc) {
+              for (IFctPrcEnt fct : this.fctsPrc) {
                 rz = fct.laz(pRvs, pPrNm);
                 if (rz != null) {
                   break;
@@ -290,9 +290,9 @@ public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
 
   /**
    * <p>Getter for fctsPrc.</p>
-   * @return Set<IFctNm<IPrcEnt<?, ?>>>
+   * @return Set<IFctPrcEnt>
    **/
-  public final synchronized Set<IFctNm<IPrcEnt<?, ?>>> getFctsPrc() {
+  public final synchronized Set<IFctPrcEnt> getFctsPrc() {
     return this.fctsPrc;
   }
 
@@ -300,8 +300,7 @@ public class FctEnPrc<RS> implements IFctNm<IPrcEnt<?, ?>> {
    * <p>Setter for fctsPrc.</p>
    * @param pFctsPrc reference
    **/
-  public final synchronized void setFctsPrc(
-    final Set<IFctNm<IPrcEnt<?, ?>>> pFctsPrc) {
+  public final synchronized void setFctsPrc(final Set<IFctPrcEnt> pFctsPrc) {
     this.fctsPrc = pFctsPrc;
   }
 }

@@ -36,7 +36,7 @@ import java.util.Map;
  * @param <E> enum type
  * @author Yury Demidenko
  */
-public class CnvEnmStr<E extends Enum<E>> implements IConv<E, String> {
+public class CnvEnmStr<E extends Enum<E>> implements ICnToSt<E> {
 
   /**
    * <p>Convert to string Enum as name.</p>

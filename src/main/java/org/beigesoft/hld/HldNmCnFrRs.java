@@ -33,14 +33,15 @@ import java.util.Map;
 import java.util.HashMap;
 import java.math.BigDecimal;
 
-import org.beigesoft.cnv.CnvBnRsBgd;
-import org.beigesoft.cnv.CnvBnRsBln;
-import org.beigesoft.cnv.CnvBnRsDbl;
-import org.beigesoft.cnv.CnvBnRsDt;
-import org.beigesoft.cnv.CnvBnRsFlt;
-import org.beigesoft.cnv.CnvBnRsInt;
-import org.beigesoft.cnv.CnvBnRsLng;
-import org.beigesoft.cnv.CnvBnRsStr;
+import org.beigesoft.mdl.IHasId;
+import org.beigesoft.cnv.CvRsFvBgd;
+import org.beigesoft.cnv.CvRsFvBln;
+import org.beigesoft.cnv.CvRsFvDbl;
+import org.beigesoft.cnv.CvRsFvDt;
+import org.beigesoft.cnv.CvRsFvFlt;
+import org.beigesoft.cnv.CvRsFvInt;
+import org.beigesoft.cnv.CvRsFvLng;
+import org.beigesoft.cnv.CvRsFvStr;
 
 /**
  * <p>Holder of names of converters of fields values from DB result-set.
@@ -67,14 +68,14 @@ public class HldNmCnFrRs implements IHlNmClSt {
    **/
   public HldNmCnFrRs() {
     this.stdCnvNms = new HashMap<Class<?>, String>();
-    this.stdCnvNms.put(Date.class, CnvBnRsDt.class.getSimpleName());
-    this.stdCnvNms.put(Integer.class, CnvBnRsInt.class.getSimpleName());
-    this.stdCnvNms.put(Long.class, CnvBnRsLng.class.getSimpleName());
-    this.stdCnvNms.put(String.class, CnvBnRsStr.class.getSimpleName());
-    this.stdCnvNms.put(Float.class, CnvBnRsFlt.class.getSimpleName());
-    this.stdCnvNms.put(Double.class, CnvBnRsDbl.class.getSimpleName());
-    this.stdCnvNms.put(Boolean.class, CnvBnRsBln.class.getSimpleName());
-    this.stdCnvNms.put(BigDecimal.class, CnvBnRsBgd.class.getSimpleName());
+    this.stdCnvNms.put(Date.class, CvRsFvDt.class.getSimpleName());
+    this.stdCnvNms.put(Integer.class, CvRsFvInt.class.getSimpleName());
+    this.stdCnvNms.put(Long.class, CvRsFvLng.class.getSimpleName());
+    this.stdCnvNms.put(String.class, CvRsFvStr.class.getSimpleName());
+    this.stdCnvNms.put(Float.class, CvRsFvFlt.class.getSimpleName());
+    this.stdCnvNms.put(Double.class, CvRsFvDbl.class.getSimpleName());
+    this.stdCnvNms.put(Boolean.class, CvRsFvBln.class.getSimpleName());
+    this.stdCnvNms.put(BigDecimal.class, CvRsFvBgd.class.getSimpleName());
   }
 
   /**
@@ -85,7 +86,7 @@ public class HldNmCnFrRs implements IHlNmClSt {
    * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls,
+  public final <T extends IHasId<?>> String get(final Class<T> pCls,
     final String pFlNm) throws Exception {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
     String rez = this.stdCnvNms.get(fdCls);

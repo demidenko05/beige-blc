@@ -31,7 +31,9 @@ package org.beigesoft.hld;
 import java.util.Set;
 import java.util.Map;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.prp.ISetng;
+
 /**
  * <p>Holds a string setting for given class. Setting is either standard
  * hard-coded or from ISetng.</p>
@@ -58,7 +60,7 @@ public class HldClsStg {
   /**
    * <p>Map of fields settings for field's class.</p>
    **/
-  private Map<Class<?>, String> stgClss;
+  private Map<Class<? extends IHasId<?>>, String> stgClss;
 
   /**
    * <p>Map of fields settings for field's super class.</p>
@@ -68,12 +70,12 @@ public class HldClsStg {
   /**
    * <p>Classes with custom setting from ISetng.</p>
    **/
-  private Set<Class<?>> custClss;
+  private Set<Class<? extends IHasId<?>>> custClss;
 
   /**
    * <p>Classes with NULL setting.</p>
    **/
-  private Set<Class<?>> nulClss;
+  private Set<Class<? extends IHasId<?>>> nulClss;
 
   /**
    * <p>Super-Classes with NULL setting, e.g. IOwned.</p>
@@ -95,7 +97,7 @@ public class HldClsStg {
    * @param pCls a Class
    * @return setting or NULL
    **/
-  public final String get(final Class<?> pCls) {
+  public final <T extends IHasId<?>> String get(final Class<T> pCls) {
     if (this.stgClss != null && this.stgClss.keySet().contains(pCls)) {
       return this.stgClss.get(pCls);
     }
@@ -168,9 +170,9 @@ public class HldClsStg {
 
   /**
    * <p>Getter for stgClss.</p>
-   * @return Map<Class<?>, String>
+   * @return Map<Class<? extends IHasId<?>>, String>
    **/
-  public final Map<Class<?>, String> getStgClss() {
+  public final Map<Class<? extends IHasId<?>>, String> getStgClss() {
     return this.stgClss;
   }
 
@@ -178,7 +180,7 @@ public class HldClsStg {
    * <p>Setter for stgClss.</p>
    * @param pStgClss reference
    **/
-  public final void setStgClss(final Map<Class<?>, String> pStgClss) {
+  public final void setStgClss(final Map<Class<? extends IHasId<?>>, String> pStgClss) {
     this.stgClss = pStgClss;
   }
 
@@ -200,9 +202,9 @@ public class HldClsStg {
 
   /**
    * <p>Getter for custClss.</p>
-   * @return Set<Class<?>>
+   * @return Set<Class<? extends IHasId<?>>>
    **/
-  public final Set<Class<?>> getCustClss() {
+  public final Set<Class<? extends IHasId<?>>> getCustClss() {
     return this.custClss;
   }
 
@@ -210,15 +212,15 @@ public class HldClsStg {
    * <p>Setter for custClss.</p>
    * @param pCustClss reference
    **/
-  public final void setCustClss(final Set<Class<?>> pCustClss) {
+  public final void setCustClss(final Set<Class<? extends IHasId<?>>> pCustClss) {
     this.custClss = pCustClss;
   }
 
   /**
    * <p>Getter for nulClss.</p>
-   * @return Set<Class<?>>
+   * @return Set<Class<? extends IHasId<?>>>
    **/
-  public final Set<Class<?>> getNulClss() {
+  public final Set<Class<? extends IHasId<?>>> getNulClss() {
     return this.nulClss;
   }
 
@@ -226,7 +228,7 @@ public class HldClsStg {
    * <p>Setter for nulClss.</p>
    * @param pNulClss reference
    **/
-  public final void setNulClss(final Set<Class<?>> pNulClss) {
+  public final void setNulClss(final Set<Class<? extends IHasId<?>>> pNulClss) {
     this.nulClss = pNulClss;
   }
 

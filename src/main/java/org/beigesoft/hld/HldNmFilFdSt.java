@@ -87,7 +87,7 @@ public class HldNmFilFdSt implements IHlNmClSt {
    * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls,
+  public final <T extends IHasId<?>> String get(final Class<T> pCls,
     final String pFlNm) throws Exception {
     if (this.stdFilNms == null) {
       synchronized (this) {

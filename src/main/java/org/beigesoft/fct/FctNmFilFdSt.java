@@ -37,8 +37,8 @@ import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
-import org.beigesoft.cnv.IConv;
-import org.beigesoft.cnv.IFilFld;
+import org.beigesoft.cnv.ICnFrSt;
+import org.beigesoft.cnv.IFilFldStr;
 import org.beigesoft.cnv.FilFldEnmStr;
 import org.beigesoft.cnv.FilFldHsIdStr;
 import org.beigesoft.cnv.FilFldSmpStr;
@@ -48,7 +48,7 @@ import org.beigesoft.cnv.FilFldSmpStr;
  *
  * @author Yury Demidenko
  */
-public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
+public class FctNmFilFdSt implements IFctNm<IFilFldStr> {
 
   /**
    * <p>DB-Copy filler owned entity from string name.</p>
@@ -100,7 +100,7 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
   /**
    * <p>Factory simple converters.</p>
    **/
-  private IFctNm<IConv<String, ?>> fctCnvFld;
+  private IFctCnFrSt fctCnvFld;
 
   /**
    * <p>Holder of fillers fields names UVD.</p>
@@ -126,8 +126,8 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
   /**
    * <p>Fillers map.</p>
    **/
-  private final Map<String, IFilFld<String>> fillers
-    = new HashMap<String, IFilFld<String>>();
+  private final Map<String, IFilFldStr> fillers
+    = new HashMap<String, IFilFldStr>();
 
   /**
    * <p>Get filler in lazy mode (if bean is null then initialize it).</p>
@@ -136,9 +136,9 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
    * @return requested filler
    * @throws Exception - an exception
    */
-  public final IFilFld<String> laz(final Map<String, Object> pRqVs,
+  public final IFilFldStr laz(final Map<String, Object> pRqVs,
     final String pFiNm) throws Exception {
-    IFilFld<String> rz = this.fillers.get(pFiNm);
+    IFilFldStr rz = this.fillers.get(pFiNm);
     if (rz == null) {
       synchronized (this) {
         rz = this.fillers.get(pFiNm);
@@ -272,9 +272,9 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<IConv<String, ?>>
+   * @return IFctCnFrSt
    **/
-  public final IFctNm<IConv<String, ?>> getFctCnvFld() {
+  public final IFctCnFrSt getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -282,8 +282,7 @@ public class FctNmFilFdSt implements IFctNm<IFilFld<String>> {
    * <p>Setter for fctCnvFld.</p>
    * @param pFctCnvFld reference
    **/
-  public final void setFctCnvFld(
-    final IFctNm<IConv<String, ?>> pFctCnvFld) {
+  public final void setFctCnvFld(final IFctCnFrSt pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 

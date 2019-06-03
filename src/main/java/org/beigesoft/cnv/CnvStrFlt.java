@@ -36,7 +36,7 @@ import java.util.Map;
  *
  * @author Yury Demidenko
  */
-public class CnvStrFlt implements IConv<String, Float> {
+public class CnvStrFlt implements ICnFrSt<Float> {
 
   /**
    * <p>Convert from string.</p>

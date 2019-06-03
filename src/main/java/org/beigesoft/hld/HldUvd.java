@@ -39,11 +39,12 @@ import org.beigesoft.mdl.CmnPrf;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IOwned;
 import org.beigesoft.mdlp.UsPrf;
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.fct.IFctCnvId;
+import org.beigesoft.fct.IFctCnToSt;
 import org.beigesoft.log.ILog;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.ICnvId;
-import org.beigesoft.cnv.IConv;
+import org.beigesoft.cnv.ICnToSt;
 
 /**
  * <p>Service that transforms and holds part of settings from ISetng UVD.
@@ -78,7 +79,7 @@ public class HldUvd {
   /**
    * <p>Factory of converters ID-SQL/HTML.</p>
    */
-  private IFctNm<ICnvId<?, ?>> fctCnvId;
+  private IFctCnvId fctCnvId;
 
   /**
    * <p>Holders class string settings.</p>
@@ -93,7 +94,7 @@ public class HldUvd {
   /**
    * <p>Converters fields to string factory.</p>
    */
-  private IFctNm<IConv<?, String>> fcCnToSt;
+  private IFctCnToSt fcCnToSt;
 
   /**
    * <p>Fields converters to string names holder.</p>
@@ -109,26 +110,26 @@ public class HldUvd {
   /**
    * <p>Entities fields in form map.</p>
    **/
-  private final Map<Class<?>, String[]> frmFdsMp =
-    new HashMap<Class<?>, String[]>();
+  private final Map<Class<? extends IHasId<?>>, String[]> frmFdsMp =
+    new HashMap<Class<? extends IHasId<?>>, String[]>();
 
   /**
    * <p>Entities fields in list map that is different from frmFds.</p>
    **/
-  private final Map<Class<?>, String[]> lstFdsMp =
-    new HashMap<Class<?>, String[]>();
+  private final Map<Class<? extends IHasId<?>>, String[]> lstFdsMp =
+    new HashMap<Class<? extends IHasId<?>>, String[]>();
 
   /**
    * <p>Entities fields in picker list map that is different from frmFds.</p>
    **/
-  private final Map<Class<?>, String[]> pickFdsMp =
-    new HashMap<Class<?>, String[]>();
+  private final Map<Class<? extends IHasId<?>>, String[]> pickFdsMp =
+    new HashMap<Class<? extends IHasId<?>>, String[]>();
 
   /**
    * <p>Owned entities classes map.</p>
    **/
-  private final Map<Class<?>, List<Class<IOwned<?, ?>>>> owdEnts =
-    new HashMap<Class<?>, List<Class<IOwned<?, ?>>>>();
+  private final Map<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>> owdEnts =
+    new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
 
   /**
    * <p>Entities fields nullable, [ClassSimpleName+FieldName]-[isNullable].</p>
@@ -213,7 +214,7 @@ public class HldUvd {
    * @return string setting, maybe null
    * @throws Exception - an exception
    **/
-  public final String stg(final Class<?> pCls,
+  public final <T extends IHasId<?>> String stg(final Class<T> pCls,
     final String pStgNm) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
@@ -243,7 +244,7 @@ public class HldUvd {
    * @return string setting, not null
    * @throws Exception - an exception
    **/
-  public final String stgNn(final Class<?> pCls,
+  public final <T extends IHasId<?>> String stgNn(final Class<T> pCls,
     final String pStgNm) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
@@ -269,8 +270,8 @@ public class HldUvd {
    * @return string setting, maybe null
    * @throws Exception - an exception
    **/
-  public final String stg(final Class<?> pCls, final String pFdNm,
-    final String pStgNm) throws Exception {
+  public final <T extends IHasId<?>> String stg(final Class<T> pCls,
+    final String pFdNm, final String pStgNm) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
     }
@@ -303,8 +304,8 @@ public class HldUvd {
    * @return string setting, not null
    * @throws Exception - an exception
    **/
-  public final String stgNn(final Class<?> pCls, final String pFdNm,
-    final String pStgNm) throws Exception {
+  public final <T extends IHasId<?>> String stgNn(final Class<T> pCls,
+    final String pFdNm, final String pStgNm) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
     }
@@ -329,7 +330,7 @@ public class HldUvd {
    * @return field class
    * @throws Exception - an exception
    **/
-  public final Class<?> fldCls(final Class<?> pCls,
+  public final <T extends IHasId<?>> Class<?> fldCls(final Class<T> pCls,
     final String pFdNm) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
@@ -350,8 +351,9 @@ public class HldUvd {
    * @return string setting
    * @throws Exception - an exception
    **/
-  public final String toStr(final Map<String, Object> pRvs, final Class<?> pCls,
-    final String pFdNm, final Object pFdVl) throws Exception {
+  public final <T extends IHasId<?>> String toStr(final Map<String, Object> pRvs,
+    final Class<T> pCls, final String pFdNm,
+      final Object pFdVl) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
     }
@@ -360,7 +362,7 @@ public class HldUvd {
     }
     String cnm = this.hlCnToSt.get(pCls, pFdNm);
     @SuppressWarnings("unchecked")
-    IConv<Object, String> cnv = (IConv<Object, String>) this.fcCnToSt
+    ICnToSt<Object> cnv = (ICnToSt<Object>) this.fcCnToSt
       .laz(pRvs, cnm);
     return cnv.conv(pRvs, pFdVl);
   }
@@ -371,8 +373,8 @@ public class HldUvd {
    * @return fields list, not null
    * @throws Exception - an exception
    **/
-  public final String[] lazFrmFds(
-    final Class<?> pCls) throws Exception {
+  public final <T extends IHasId<?>> String[] lazFrmFds(
+    final Class<T> pCls) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
     }
@@ -414,8 +416,8 @@ public class HldUvd {
    * @return fields list, not null
    * @throws Exception - an exception
    **/
-  public final String[] lazLstFds(
-    final Class<?> pCls) throws Exception {
+  public final <T extends IHasId<?>> String[] lazLstFds(
+    final Class<T> pCls) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
     }
@@ -460,8 +462,8 @@ public class HldUvd {
    * @return fields list, not null
    * @throws Exception - an exception
    **/
-  public final String[] lazPickFds(
-    final Class<?> pCls) throws Exception {
+  public final <T extends IHasId<?>>String[] lazPickFds(
+    final Class<T> pCls) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
     }
@@ -507,7 +509,7 @@ public class HldUvd {
    * @return if field nullable
    * @throws Exception - an exception
    **/
-  public final Boolean lazNulb(final Class<?> pCls,
+  public final <T extends IHasId<?>> Boolean lazNulb(final Class<T> pCls,
     final String pFdNm) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
@@ -549,8 +551,8 @@ public class HldUvd {
    * @return owned list
    * @throws Exception - an exception
    **/
-  public final List<Class<IOwned<?, ?>>> lazOwnd(
-    final Class<?> pCls) throws Exception {
+ public final <T extends IHasId<?>> List<Class<? extends IOwned<?, ?>>> lazOwnd(
+    final Class<T> pCls) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
     }
@@ -565,11 +567,11 @@ public class HldUvd {
             }
           }
           if (owdes != null) {
-            List<Class<IOwned<?, ?>>> oeLst =
-              new ArrayList<Class<IOwned<?, ?>>>();
+            List<Class<? extends IOwned<?, ?>>> oeLst =
+              new ArrayList<Class<? extends IOwned<?, ?>>>();
             for (String oec : owdes.split(",")) {
               @SuppressWarnings("unchecked")
-              Class<IOwned<?, ?>> cl = (Class<IOwned<?, ?>>) Class.forName(oec);
+              Class<? extends IOwned<?, ?>> cl = (Class<? extends IOwned<?, ?>>) Class.forName(oec);
               oeLst.add(cl);
             }
             this.owdEnts.put(pCls, oeLst);
@@ -665,9 +667,9 @@ public class HldUvd {
 
   /**
    * <p>Getter for fctCnvId.</p>
-   * @return IFctNm<ICnvId<?, ?>>
+   * @return IFctCnvId
    **/
-  public final IFctNm<ICnvId<?, ?>> getFctCnvId() {
+  public final IFctCnvId getFctCnvId() {
     return this.fctCnvId;
   }
 
@@ -675,15 +677,15 @@ public class HldUvd {
    * <p>Setter for fctCnvId.</p>
    * @param pFctCnvId reference
    **/
-  public final void setFctCnvId(final IFctNm<ICnvId<?, ?>> pFctCnvId) {
+  public final void setFctCnvId(final IFctCnvId pFctCnvId) {
     this.fctCnvId = pFctCnvId;
   }
 
   /**
    * <p>Getter for fcCnToSt.</p>
-   * @return IFctNm<IConv<?, String>>
+   * @return IFctCnToSt
    **/
-  public final IFctNm<IConv<?, String>> getFcCnToSt() {
+  public final IFctCnToSt getFcCnToSt() {
     return this.fcCnToSt;
   }
 
@@ -691,7 +693,7 @@ public class HldUvd {
    * <p>Setter for fcCnToSt.</p>
    * @param pFcCnToSt reference
    **/
-  public final void setFcCnToSt(final IFctNm<IConv<?, String>> pFcCnToSt) {
+  public final void setFcCnToSt(final IFctCnToSt pFcCnToSt) {
     this.fcCnToSt = pFcCnToSt;
   }
 

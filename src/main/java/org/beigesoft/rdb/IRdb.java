@@ -30,6 +30,7 @@ package org.beigesoft.rdb;
 
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.mdl.ColVals;
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdlp.DbInf;
 
 /**
@@ -185,7 +186,8 @@ public interface IRdb<RS> {
    * @return row count affected
    * @throws Exception - an exception
    **/
-  int update(Class<?> pCls, ColVals pClVls, String pWhe) throws Exception;
+  <T extends IHasId<?>> int update(Class<T> pCls, ColVals pClVls,
+    String pWhe) throws Exception;
 
   /**
    * <p>Executes SQL INSERT that returns affected rows.
@@ -196,7 +198,8 @@ public interface IRdb<RS> {
    * for Android -1 - error or row IDX
    * @throws Exception - an exception
    **/
-  long insert(Class<?> pCls, ColVals pClVls) throws Exception;
+  <T extends IHasId<?>> long insert(Class<T> pCls,
+    ColVals pClVls) throws Exception;
 
   /**
    * <p>Executes SQL DELETE that returns affected rows.

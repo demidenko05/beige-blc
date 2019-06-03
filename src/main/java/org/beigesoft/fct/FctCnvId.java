@@ -46,7 +46,7 @@ import org.beigesoft.prp.ISetng;
  *
  * @author Yury Demidenko
  */
-public class FctCnvId implements IFctNm<ICnvId<?, ?>> {
+public class FctCnvId implements IFctCnvId {
 
   //services:
   /**

@@ -34,15 +34,15 @@ import java.util.HashMap;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.log.ILog;
-import org.beigesoft.cnv.IConvNm;
-import org.beigesoft.cnv.CnvBnRsBgd;
-import org.beigesoft.cnv.CnvBnRsBln;
-import org.beigesoft.cnv.CnvBnRsDbl;
-import org.beigesoft.cnv.CnvBnRsDt;
-import org.beigesoft.cnv.CnvBnRsFlt;
-import org.beigesoft.cnv.CnvBnRsInt;
-import org.beigesoft.cnv.CnvBnRsLng;
-import org.beigesoft.cnv.CnvBnRsStr;
+import org.beigesoft.cnv.ICnvRsFdv;
+import org.beigesoft.cnv.CvRsFvBgd;
+import org.beigesoft.cnv.CvRsFvBln;
+import org.beigesoft.cnv.CvRsFvDbl;
+import org.beigesoft.cnv.CvRsFvDt;
+import org.beigesoft.cnv.CvRsFvFlt;
+import org.beigesoft.cnv.CvRsFvInt;
+import org.beigesoft.cnv.CvRsFvLng;
+import org.beigesoft.cnv.CvRsFvStr;
 
 /**
  * <p>Factory of fields converters from DB result-set.</p>
@@ -50,7 +50,7 @@ import org.beigesoft.cnv.CnvBnRsStr;
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FctNmCnFrRs<RS> implements IFctNm<IConvNm<IRecSet<RS>, ?>> {
+public class FctNmCnFrRs<RS> implements IFctNm<ICnvRsFdv<?, RS>> {
 
   //services/parts:
   /**
@@ -62,8 +62,8 @@ public class FctNmCnFrRs<RS> implements IFctNm<IConvNm<IRecSet<RS>, ?>> {
   /**
    * <p>Converters map.</p>
    **/
-  private final Map<String, IConvNm<IRecSet<RS>, ?>> convrts
-    = new HashMap<String, IConvNm<IRecSet<RS>, ?>>();
+  private final Map<String, ICnvRsFdv<?, RS>> convrts
+    = new HashMap<String, ICnvRsFdv<?, RS>>();
 
   /**
    * <p>Get converter in lazy mode (if bean is null then initialize it).</p>
@@ -72,29 +72,29 @@ public class FctNmCnFrRs<RS> implements IFctNm<IConvNm<IRecSet<RS>, ?>> {
    * @return requested converter
    * @throws Exception - an exception
    */
-  public final IConvNm<IRecSet<RS>, ?> laz(final Map<String, Object> pRqVs,
+  public final ICnvRsFdv<?, RS> laz(final Map<String, Object> pRqVs,
     final String pCnNm) throws Exception {
-    IConvNm<IRecSet<RS>, ?> rz = this.convrts.get(pCnNm);
+    ICnvRsFdv<?, RS> rz = this.convrts.get(pCnNm);
     if (rz == null) {
       synchronized (this) {
         rz = this.convrts.get(pCnNm);
         if (rz == null) {
-          if (CnvBnRsBgd.class.getSimpleName().equals(pCnNm)) {
-            rz = crPuCnvBnRsBgd();
-          } else if (CnvBnRsBln.class.getSimpleName().equals(pCnNm)) {
-            rz = crPuCnvBnRsBln();
-          } else if (CnvBnRsDbl.class.getSimpleName().equals(pCnNm)) {
-            rz = crPuCnvBnRsDbl();
-          } else if (CnvBnRsDt.class.getSimpleName().equals(pCnNm)) {
-            rz = crPuCnvBnRsDt();
-          } else if (CnvBnRsFlt.class.getSimpleName().equals(pCnNm)) {
-            rz = crPuCnvBnRsFlt();
-          } else if (CnvBnRsInt.class.getSimpleName().equals(pCnNm)) {
-            rz = crPuCnvBnRsInt();
-          } else if (CnvBnRsLng.class.getSimpleName().equals(pCnNm)) {
-            rz = crPuCnvBnRsLng();
-          } else if (CnvBnRsStr.class.getSimpleName().equals(pCnNm)) {
-            rz = crPuCnvBnRsStr();
+          if (CvRsFvBgd.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCvRsFvBgd();
+          } else if (CvRsFvBln.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCvRsFvBln();
+          } else if (CvRsFvDbl.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCvRsFvDbl();
+          } else if (CvRsFvDt.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCvRsFvDt();
+          } else if (CvRsFvFlt.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCvRsFvFlt();
+          } else if (CvRsFvInt.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCvRsFvInt();
+          } else if (CvRsFvLng.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCvRsFvLng();
+          } else if (CvRsFvStr.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCvRsFvStr();
           } else {
             throw new ExcCode(ExcCode.WRCN, "There is no CNV FR RS: " + pCnNm);
           }
@@ -105,97 +105,97 @@ public class FctNmCnFrRs<RS> implements IFctNm<IConvNm<IRecSet<RS>, ?>> {
   }
 
   /**
-   * <p>Create and put into the Map CnvBnRsBgd.</p>
-   * @return CnvBnRsBgd
+   * <p>Create and put into the Map CvRsFvBgd.</p>
+   * @return CvRsFvBgd
    */
-  private CnvBnRsBgd crPuCnvBnRsBgd() {
-    CnvBnRsBgd rz = new CnvBnRsBgd();
-    this.convrts.put(CnvBnRsBgd.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvBnRsBgd.class.getSimpleName()
+  private CvRsFvBgd crPuCvRsFvBgd() {
+    CvRsFvBgd rz = new CvRsFvBgd();
+    this.convrts.put(CvRsFvBgd.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CvRsFvBgd.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvBnRsBln.</p>
-   * @return CnvBnRsBln
+   * <p>Create and put into the Map CvRsFvBln.</p>
+   * @return CvRsFvBln
    */
-  private CnvBnRsBln crPuCnvBnRsBln() {
-    CnvBnRsBln rz = new CnvBnRsBln();
-    this.convrts.put(CnvBnRsBln.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvBnRsBln.class.getSimpleName()
+  private CvRsFvBln crPuCvRsFvBln() {
+    CvRsFvBln rz = new CvRsFvBln();
+    this.convrts.put(CvRsFvBln.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CvRsFvBln.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvBnRsDbl.</p>
-   * @return CnvBnRsDbl
+   * <p>Create and put into the Map CvRsFvDbl.</p>
+   * @return CvRsFvDbl
    */
-  private CnvBnRsDbl crPuCnvBnRsDbl() {
-    CnvBnRsDbl rz = new CnvBnRsDbl();
-    this.convrts.put(CnvBnRsDbl.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvBnRsDbl.class.getSimpleName()
+  private CvRsFvDbl crPuCvRsFvDbl() {
+    CvRsFvDbl rz = new CvRsFvDbl();
+    this.convrts.put(CvRsFvDbl.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CvRsFvDbl.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvBnRsDt.</p>
-   * @return CnvBnRsDt
+   * <p>Create and put into the Map CvRsFvDt.</p>
+   * @return CvRsFvDt
    */
-  private CnvBnRsDt crPuCnvBnRsDt() {
-    CnvBnRsDt rz = new CnvBnRsDt();
-    this.convrts.put(CnvBnRsDt.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvBnRsDt.class.getSimpleName()
+  private CvRsFvDt crPuCvRsFvDt() {
+    CvRsFvDt rz = new CvRsFvDt();
+    this.convrts.put(CvRsFvDt.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CvRsFvDt.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvBnRsFlt.</p>
-   * @return CnvBnRsFlt
+   * <p>Create and put into the Map CvRsFvFlt.</p>
+   * @return CvRsFvFlt
    */
-  private CnvBnRsFlt crPuCnvBnRsFlt() {
-    CnvBnRsFlt rz = new CnvBnRsFlt();
-    this.convrts.put(CnvBnRsFlt.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvBnRsFlt.class.getSimpleName()
+  private CvRsFvFlt crPuCvRsFvFlt() {
+    CvRsFvFlt rz = new CvRsFvFlt();
+    this.convrts.put(CvRsFvFlt.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CvRsFvFlt.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvBnRsInt.</p>
-   * @return CnvBnRsInt
+   * <p>Create and put into the Map CvRsFvInt.</p>
+   * @return CvRsFvInt
    */
-  private CnvBnRsInt crPuCnvBnRsInt() {
-    CnvBnRsInt rz = new CnvBnRsInt();
-    this.convrts.put(CnvBnRsInt.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvBnRsInt.class.getSimpleName()
+  private CvRsFvInt crPuCvRsFvInt() {
+    CvRsFvInt rz = new CvRsFvInt();
+    this.convrts.put(CvRsFvInt.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CvRsFvInt.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvBnRsLng.</p>
-   * @return CnvBnRsLng
+   * <p>Create and put into the Map CvRsFvLng.</p>
+   * @return CvRsFvLng
    */
-  private CnvBnRsLng crPuCnvBnRsLng() {
-    CnvBnRsLng rz = new CnvBnRsLng();
-    this.convrts.put(CnvBnRsLng.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvBnRsLng.class.getSimpleName()
+  private CvRsFvLng crPuCvRsFvLng() {
+    CvRsFvLng rz = new CvRsFvLng();
+    this.convrts.put(CvRsFvLng.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CvRsFvLng.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvBnRsStr.</p>
-   * @return CnvBnRsStr
+   * <p>Create and put into the Map CvRsFvStr.</p>
+   * @return CvRsFvStr
    */
-  private CnvBnRsStr crPuCnvBnRsStr() {
-    CnvBnRsStr rz = new CnvBnRsStr();
-    this.convrts.put(CnvBnRsStr.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvBnRsStr.class.getSimpleName()
+  private CvRsFvStr crPuCvRsFvStr() {
+    CvRsFvStr rz = new CvRsFvStr();
+    this.convrts.put(CvRsFvStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CvRsFvStr.class.getSimpleName()
       + " has been created.");
     return rz;
   }

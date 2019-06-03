@@ -36,7 +36,7 @@ import java.util.Map;
  *
  * @author Yury Demidenko
  */
-public class CnvStrBln implements IConv<String, Boolean> {
+public class CnvStrBln implements ICnFrSt<Boolean> {
 
   /**
    * <p>Converts Boolean from string.</p>

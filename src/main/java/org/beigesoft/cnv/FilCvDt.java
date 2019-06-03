@@ -35,37 +35,36 @@ import java.util.Date;
 import org.beigesoft.mdl.ColVals;
 
 /**
- * <p>Converter from a Date type to column values
+ * <p>Fills column values with given value of Date type
  * with transformation into Long.</p>
  *
  * @author Yury Demidenko
  */
-public class CnvIbnDtCv implements IConvNmInto<Date, ColVals> {
+public class FilCvDt implements IFilCvFdv<Date> {
 
   /**
-   * <p>Put Date object to column values with transformation
+   * <p>Puts Date object to column values with transformation
    * into Long.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pFrom from a Date object
-   * @param pClVl to column values
-   * @param pNm field name
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pFdNm field name
+   * @param pFdv field value
+   * @param pCv column values
    * @throws Exception - an exception
    **/
   @Override
-  public final void conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Date pFrom,
-      final ColVals pClVl, final String pNm) throws Exception {
+  public final void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final String pFdNm, final Date pFdv,
+      final ColVals pCv) throws Exception {
     Long value;
-    if (pFrom == null) {
+    if (pFdv == null) {
       value = null;
     } else {
-      value = pFrom.getTime();
+      value = pFdv.getTime();
     }
-    if (pClVl.getLongs() == null) {
-      pClVl.setLongs(new HashMap<String, Long>());
+    if (pCv.getLongs() == null) {
+      pCv.setLongs(new HashMap<String, Long>());
     }
-    pClVl.getLongs().put(pNm, value);
+    pCv.getLongs().put(pFdNm, value);
   }
 }

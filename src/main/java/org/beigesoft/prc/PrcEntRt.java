@@ -88,19 +88,19 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
     pEnt.setIsNew(false);
     UvdVar uvs = (UvdVar) pRvs.get("uvs");
     uvs.setEnt(pEnt);
-    List<Class<IOwned<?, ?>>> oeLst = this.hldUvd
+    List<Class<? extends IOwned<?, ?>>> oeLst = this.hldUvd
       .lazOwnd(pEnt.getClass());
     if (oeLst != null) {
-      Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>> owdEntsMp =
-        new LinkedHashMap<Class<IOwned<?, ?>>, List<IOwned<?, ?>>>();
+      Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>> owdEntsMp =
+        new LinkedHashMap<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>>();
       String idOwnr = this.hldUvd.idSql(pRvs, pEnt);
-      for (Class oecg : oeLst) {
-        Class<IOwned<T, ?>> oec = (Class<IOwned<T, ?>>) oecg;
+      for (Class<? extends IOwned<?, ?>> oecg : oeLst) {
+        Class<? extends IOwned<T, ?>> oec = (Class<? extends IOwned<T, ?>>) oecg;
         String[] lstFds = this.hldUvd.lazLstFds(oec);
         String[] ndFds = Arrays.copyOf(lstFds, lstFds.length);
         Arrays.sort(ndFds);
         vs.put(oec.getSimpleName() + "ndFds", ndFds);
-        List<IOwned<T, ?>> lst = this.orm.retLstCnd(pRvs, vs, oec,
+        List<? extends IOwned<T, ?>> lst = this.orm.retLstCnd(pRvs, vs, oec,
           "where OWNR=" + idOwnr);
         vs.remove(oec.getSimpleName() + "ndFds");
         owdEntsMp.put(oecg, (List) lst);

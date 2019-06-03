@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.List;
 import java.io.Writer;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.log.ILog;
 import org.beigesoft.dlg.IMake;
 import org.beigesoft.prp.ISetng;
@@ -70,14 +71,14 @@ public class ClrDb<RS> implements IMake {
    **/
   @Override
   public final void make(final Map<String, Object> pRqVs) throws Exception {
-    List<Class<?>> clss = this.setng.lazClss();
+    List<Class<? extends IHasId<?>>> clss = this.setng.lazClss();
     try {
       this.rdb.setAcmt(false);
       this.rdb.setTrIsl(IRdb.TRRUC);
       this.rdb.begin();
       this.log.info(pRqVs, ClrDb.class, "Start clear database.");
       for (int i = clss.size() - 1; i >= 0; i--) {
-        Class<?> cls = clss.get(i);
+        Class<? extends IHasId<?>> cls = clss.get(i);
         this.rdb.delete(cls.getSimpleName().toUpperCase(), null);
       }
       this.rdb.commit();

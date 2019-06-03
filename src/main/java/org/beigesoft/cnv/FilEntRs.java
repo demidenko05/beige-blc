@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.mdl.LvDep;
 import org.beigesoft.log.ILog;
@@ -48,7 +49,7 @@ import org.beigesoft.prp.ISetng;
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
+public class FilEntRs<RS> implements IFilEntRs<RS> {
 
   /**
    * <p>Log.</p>
@@ -68,20 +69,19 @@ public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
   /**
    * <p>Fillers fields factory.</p>
    */
-  private IFctNm<IFilFld<IRecSet<RS>>> fctFilFld;
+  private IFctNm<IFilFldRs<RS>> fctFilFld;
 
   /**
    * <p>Fill entity from DB recods-set.</p>
-   * @param <T> entity type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pEnt Entity to fill
-   * @param pRs - request data
+   * @param <T> object (entity) type
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pEnt Entity to fill, not null
+   * @param pRs record-set, not null
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void fill(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final T pEnt,
       final IRecSet<RS> pRs) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
@@ -99,13 +99,13 @@ public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
       lvDeps.add(clvDep);
       pVs.put("lvDeps", lvDeps);
       if (isDbgSh) {
-        this.log.debug(pRqVs, getClass(), "Start fill root entity/DL/CL: "
+        this.log.debug(pRvs, getClass(), "Start fill root entity/DL/CL: "
           + pEnt.getClass() + "/" + clvDep.getDep() + "/" + clvDep.getCur());
       }
       List<String> tbAls = new ArrayList<String>();
       pVs.put("tbAls", tbAls);
       if (isDbgSh) {
-        this.log.debug(pRqVs, getClass(), "tbAls created");
+        this.log.debug(pRvs, getClass(), "tbAls created");
       }
     } else {
       clvDep = lvDeps.get(lvDeps.size() - 1);
@@ -113,7 +113,7 @@ public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
     String[] ndFds = (String[]) pVs.
       get(pEnt.getClass().getSimpleName() + "ndFds");
     if (ndFds != null && isDbgSh) {
-      this.log.debug(pRqVs, getClass(), "Needed fields entity: "
+      this.log.debug(pRvs, getClass(), "Needed fields entity: "
         + pEnt.getClass() + "/" + Arrays.toString(ndFds));
     }
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
@@ -122,7 +122,7 @@ public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
         isNd = Arrays.binarySearch(ndFds, fdNm) >= 0;
       }
       if (isNd) {
-        fillFld(pRqVs, pVs, pEnt, pRs, fdNm, isDbgSh);
+        fillFld(pRvs, pVs, pEnt, pRs, fdNm, isDbgSh);
       }
     }
     if (clvDep.getCur() < clvDep.getDep()) {
@@ -132,7 +132,7 @@ public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
           isNd = Arrays.binarySearch(ndFds, fdNm) >= 0;
         }
         if (isNd) {
-          fillFld(pRqVs, pVs, pEnt, pRs, fdNm, isDbgSh);
+          fillFld(pRvs, pVs, pEnt, pRs, fdNm, isDbgSh);
         }
       }
     }
@@ -142,7 +142,7 @@ public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
         pVs.remove("lvDeps");
         pVs.remove("tbAls");
         if (isDbgSh) {
-          this.log.debug(pRqVs, getClass(),
+          this.log.debug(pRvs, getClass(),
             "Finish filling root entity: " + pEnt.getClass());
         }
       }
@@ -152,26 +152,25 @@ public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
   /**
    * <p>Fill entity field from DB recods-set.</p>
    * @param <T> entity type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
    * @param pEnt Entity to fill
    * @param pRs - request data
    * @param pFdNm field name
    * @param pIsDbgSh show debug msgs
    * @throws Exception - an exception
    **/
-  private <T> void fillFld(final Map<String, Object> pRqVs,
+  private <T extends IHasId<?>> void fillFld(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final T pEnt, final IRecSet<RS> pRs,
       final String pFdNm, final boolean pIsDbgSh) throws Exception {
     String filFdNm = this.hldFilFdNms.get(pEnt.getClass(), pFdNm);
-    IFilFld<IRecSet<RS>> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
+    IFilFldRs<RS> filFl = this.fctFilFld.laz(pRvs, filFdNm);
     if (pIsDbgSh) {
-      this.log.debug(pRqVs, getClass(),
+      this.log.debug(pRvs, getClass(),
         "Filling DB fdNm/cls/filler: " + pFdNm + "/" + pEnt.getClass()
           .getSimpleName() + "/" + filFl.getClass().getSimpleName());
     }
-    filFl.fill(pRqVs, pVs, pEnt, pRs, pFdNm);
+    filFl.fill(pRvs, pVs, pEnt, pFdNm, pRs);
   }
 
   //Simple getters and setters:
@@ -193,9 +192,9 @@ public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
 
   /**
    * <p>Getter for fctFilFld.</p>
-   * @return IFctNm<IFilFld<IRecSet<RS>>>
+   * @return IFctNm<IFilFldRs<RS>>
    **/
-  public final IFctNm<IFilFld<IRecSet<RS>>> getFctFilFld() {
+  public final IFctNm<IFilFldRs<RS>> getFctFilFld() {
     return this.fctFilFld;
   }
 
@@ -204,7 +203,7 @@ public class FilEntRs<RS> implements IFilObj<IRecSet<RS>> {
    * @param pFctFilFld reference
    **/
   public final void setFctFilFld(
-    final IFctNm<IFilFld<IRecSet<RS>>> pFctFilFld) {
+    final IFctNm<IFilFldRs<RS>> pFctFilFld) {
     this.fctFilFld = pFctFilFld;
   }
 

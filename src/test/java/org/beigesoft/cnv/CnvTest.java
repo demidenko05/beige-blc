@@ -134,7 +134,7 @@ public class CnvTest<RS> {
     assertTrue(stgUvd.getClsFs().get(PersistableHead.class).size() == 1);
     for (String fdNm : stgUvd.lazIdFldNms(PersistableHead.class)) {
       String cnNm = hldNmCnvStr.get(PersistableHead.class, fdNm);
-      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      ICnToSt<Object> cnv = (ICnToSt<Object>) fctNmCnvStr.laz(this.rqVs, cnNm);
       Method gets = reflect.retGet(PersistableHead.class, fdNm);
       Object fdVl = gets.invoke(prsh);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
@@ -143,7 +143,7 @@ public class CnvTest<RS> {
     }
     for (String fdNm : stgUvd.lazFldNms(PersistableHead.class)) {
       String cnNm = hldNmCnvStr.get(PersistableHead.class, fdNm);
-      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      ICnToSt<Object> cnv = (ICnToSt<Object>) fctNmCnvStr.laz(this.rqVs, cnNm);
       Method gets = reflect.retGet(PersistableHead.class, fdNm);
       Object fdVl = gets.invoke(prsh);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
@@ -169,7 +169,7 @@ public class CnvTest<RS> {
     parPref = UsRlTmc.class.getSimpleName() + ".";
     for (String fdNm : stgUvd.lazIdFldNms(UsRlTmc.class)) {
       String cnNm = hldNmCnvStr.get(UsRlTmc.class, fdNm);
-      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      ICnToSt<Object> cnv = (ICnToSt<Object>) fctNmCnvStr.laz(this.rqVs, cnNm);
       Method gets = reflect.retGet(UsRlTmc.class, fdNm);
       Object fdVl = gets.invoke(usRlTmc);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
@@ -178,7 +178,7 @@ public class CnvTest<RS> {
     }
     for (String fdNm : stgUvd.lazFldNms(UsRlTmc.class)) {
       String cnNm = hldNmCnvStr.get(UsRlTmc.class, fdNm);
-      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      ICnToSt<Object> cnv = (ICnToSt<Object>) fctNmCnvStr.laz(this.rqVs, cnNm);
       Method gets = reflect.retGet(UsRlTmc.class, fdNm);
       Object fdVl = gets.invoke(usRlTmc);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
@@ -216,7 +216,7 @@ public class CnvTest<RS> {
     parPref = PersistableHead.class.getSimpleName() + ".";
     for (String fdNm : stgUvd.lazIdFldNms(PersistableHead.class)) {
       String cnNm = hldNmCnvStr.get(PersistableHead.class, fdNm);
-      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      ICnToSt<Object> cnv = (ICnToSt<Object>) fctNmCnvStr.laz(this.rqVs, cnNm);
       Method gets = reflect.retGet(PersistableHead.class, fdNm);
       Object fdVl = gets.invoke(prsh);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
@@ -225,7 +225,7 @@ public class CnvTest<RS> {
     }
     for (String fdNm : stgUvd.lazFldNms(PersistableHead.class)) {
       String cnNm = hldNmCnvStr.get(PersistableHead.class, fdNm);
-      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      ICnToSt<Object> cnv = (ICnToSt<Object>) fctNmCnvStr.laz(this.rqVs, cnNm);
       Method gets = reflect.retGet(PersistableHead.class, fdNm);
       Object fdVl = gets.invoke(prsh);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
@@ -269,7 +269,7 @@ public class CnvTest<RS> {
     parPref = GoodsRating.class.getSimpleName() + ".";
     for (String fdNm : stgUvd.lazIdFldNms(GoodsRating.class)) {
       String cnNm = hldNmCnvStr.get(GoodsRating.class, fdNm);
-      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      ICnToSt<Object> cnv = (ICnToSt<Object>) fctNmCnvStr.laz(this.rqVs, cnNm);
       Method gets = reflect.retGet(GoodsRating.class, fdNm);
       Object fdVl = gets.invoke(goodsRating);
       String fdSvl = cnv.conv(this.rqVs, fdVl);
@@ -278,7 +278,7 @@ public class CnvTest<RS> {
     }
     for (String fdNm : stgUvd.lazFldNms(GoodsRating.class)) {
       String cnNm = hldNmCnvStr.get(GoodsRating.class, fdNm);
-      IConv<Object, String> cnv = (IConv<Object, String>) fctNmCnvStr.laz(this.rqVs, cnNm);
+      ICnToSt<Object> cnv = (ICnToSt<Object>) fctNmCnvStr.laz(this.rqVs, cnNm);
       Method gets = reflect.retGet(GoodsRating.class, fdNm);
       Object fdVl = gets.invoke(goodsRating);
       String fdSvl = cnv.conv(this.rqVs, fdVl);

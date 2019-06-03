@@ -320,14 +320,12 @@ public class FctBlc<RS> implements IFctApp {
       hlNmAdEnPr.setHldsAdEnPr(this.fctDt.getHldsAdEnPr());
       rz.setHldEntPrcNm(hlNmAdEnPr);
       rz.setFctEntPrc(lazFctEnPrc(pRvs));
-      rz.setEntMap(new HashMap<String, Class<IHasId<?>>>());
+      rz.setEntMap(new HashMap<String, Class<? extends IHasId<?>>>());
       Setng setng = lazStgUvd(pRvs);
-      for (Class<?> cls  : setng.lazClss()) {
-        @SuppressWarnings("unchecked")
-        Class<IHasId<?>> ecls = (Class<IHasId<?>>) cls;
+      for (Class<? extends IHasId<?>> cls  : setng.lazClss()) {
         if (this.fctDt.getAdmEnts() == null
-          || this.fctDt.getAdmEnts().contains(ecls)) {
-          rz.getEntMap().put(cls.getSimpleName(), ecls);
+          || this.fctDt.getAdmEnts().contains(cls)) {
+          rz.getEntMap().put(cls.getSimpleName(), cls);
         }
       }
       this.beans.put(FctDt.HNADENRQ, rz);
@@ -368,14 +366,12 @@ public class FctBlc<RS> implements IFctApp {
       rz.setHldEntPrcNm(hlep);
       rz.setFctEntPrc(lazFctEnPrc(pRvs));
       rz.setHldPrcFenNm(new HlNmPrFe());
-      rz.setEntMap(new HashMap<String, Class<IHasId<?>>>());
+      rz.setEntMap(new HashMap<String, Class<? extends IHasId<?>>>());
       Setng setng = lazStgUvd(pRvs);
-      for (Class<?> cls  : setng.lazClss()) {
-        @SuppressWarnings("unchecked")
-        Class<IHasId<?>> ecls = (Class<IHasId<?>>) cls;
+      for (Class<? extends IHasId<?>> cls  : setng.lazClss()) {
         if (this.fctDt.getFbdEnts() == null
-          || !this.fctDt.getFbdEnts().contains(ecls)) {
-          rz.getEntMap().put(cls.getSimpleName(), ecls);
+          || !this.fctDt.getFbdEnts().contains(cls)) {
+          rz.getEntMap().put(cls.getSimpleName(), cls);
         }
       }
       this.beans.put(FctDt.HNACENRQ, rz);
@@ -604,10 +600,9 @@ public class FctBlc<RS> implements IFctApp {
    * @return FilCvEnt
    * @throws Exception - an exception
    */
-  public final synchronized FilCvEnt<IHasId<?>, ?> lazFilCvEnt(
+  public final synchronized FilCvEnt lazFilCvEnt(
     final Map<String, Object> pRvs) throws Exception {
-    @SuppressWarnings("unchecked")
-    FilCvEnt<IHasId<?>, ?> rz = (FilCvEnt<IHasId<?>, ?>) this.beans
+    FilCvEnt rz = (FilCvEnt) this.beans
       .get(FilCvEnt.class.getSimpleName());
     if (rz == null) {
       rz = new FilCvEnt();

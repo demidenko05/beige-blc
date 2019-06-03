@@ -31,8 +31,10 @@ package org.beigesoft.prp;
 import java.util.List;
 import java.util.Map;
 
+import org.beigesoft.mdl.IHasId;
+
 /**
- * <p>Abstraction of service that loads classes and their fields settings
+ * <p>Abstraction of service that loads entity classes and their fields settings
  * from XML property file.
  * Priority of XML classes properties:
  * <pre>
@@ -138,7 +140,7 @@ public interface ISetng {
    * @return String setting, maybe NULL
    * @throws Exception - an exception
    **/
-  String lazFldStg(Class<?> pCls, String pFldNm,
+  <T extends IHasId<?>> String lazFldStg(Class<T> pCls, String pFldNm,
     String pStgNm) throws Exception;
 
   /**
@@ -148,7 +150,8 @@ public interface ISetng {
    * @return String setting, maybe NULL
    * @throws Exception - an exception
    **/
-  String lazClsStg(Class<?> pCls, String pStgNm) throws Exception;
+  <T extends IHasId<?>> String lazClsStg(Class<T> pCls,
+    String pStgNm) throws Exception;
 
   /**
    * <p>Lazy gets fields names for given class excluding ID, collections and
@@ -157,7 +160,7 @@ public interface ISetng {
    * @return fields names set
    * @throws Exception - an exception
    **/
-  List<String> lazFldNms(Class<?> pCls) throws Exception;
+  <T extends IHasId<?>>List<String> lazFldNms(Class<T> pCls) throws Exception;
 
   /**
    * <p>Lazy gets ID fields names for given class.</p>
@@ -165,14 +168,14 @@ public interface ISetng {
    * @return fields names set
    * @throws Exception - an exception
    **/
-  List<String> lazIdFldNms(Class<?> pCls) throws Exception;
+  <T extends IHasId<?>>List<String> lazIdFldNms(Class<T> pCls) throws Exception;
 
   /**
    * <p>Lazy gets all involved classes.</p>
    * @return classes list
    * @throws Exception - an exception
    **/
-  List<Class<?>> lazClss() throws Exception;
+  List<Class<? extends IHasId<?>>> lazClss() throws Exception;
 
   /**
    * <p>Lazy gets common settings.</p>
@@ -209,13 +212,13 @@ public interface ISetng {
 
   /**
    * <p>Getter for clsStgs.</p>
-   * @return Map<Class<?>, Map<String, String>>
+   * @return Map<Class<? extends IHasId<?>>, Map<String, String>>
    **/
-  Map<Class<?>, Map<String, String>> getClsStgs();
+  Map<Class<? extends IHasId<?>>, Map<String, String>> getClsStgs();
 
   /**
    * <p>Getter for fldStgs.</p>
-   * @return Map<Class<?>, Map<String, Map<String, String>>>
+   * @return Map<Class<? extends IHasId<?>>, Map<String, Map<String, String>>>
    **/
-  Map<Class<?>, Map<String, Map<String, String>>> getFldStgs();
+  Map<Class<? extends IHasId<?>>, Map<String, Map<String, String>>> getFldStgs();
 }

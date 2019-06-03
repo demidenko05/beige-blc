@@ -38,7 +38,7 @@ import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.hld.IHlNmClSt;
-import org.beigesoft.cnv.IFilFld;
+import org.beigesoft.cnv.IFilFldStr;
 import org.beigesoft.srv.IUtlXml;
 
 /**
@@ -66,7 +66,7 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
   /**
    * <p>Fillers fields factory.</p>
    */
-  private IFctNm<IFilFld<String>> fctFilFld;
+  private IFctNm<IFilFldStr> fctFilFld;
 
   /**
    * <p>XML service.</p>
@@ -88,7 +88,8 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
      throw new ExcCode(ExcCode.WRCN, "There is no class attribute for entity!");
     }
     @SuppressWarnings("unchecked")
-    Class<IHasId<?>> cls = (Class<IHasId<?>>) Class.forName(attrs.get("class"));
+    Class<IHasId<?>> cls = (Class<IHasId<?>>) Class
+      .forName(attrs.get("class"));
     Constructor<IHasId<?>> constructor = cls.getDeclaredConstructor();
     IHasId<?> ent = constructor.newInstance();
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
@@ -99,13 +100,13 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
     }
     for (String flNm : this.setng.lazIdFldNms(cls)) {
       String filFdNm = this.hldFilFdNms.get(cls, flNm);
-      IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
-      filFl.fill(pRqVs, null, ent, attrs.get(flNm), flNm);
+      IFilFldStr filFl = this.fctFilFld.laz(pRqVs, filFdNm);
+      filFl.fill(pRqVs, null, ent, flNm, attrs.get(flNm));
     }
     for (String flNm : this.setng.lazFldNms(cls)) {
       String filFdNm = this.hldFilFdNms.get(cls, flNm);
-      IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
-      filFl.fill(pRqVs, null, ent, attrs.get(flNm), flNm);
+      IFilFldStr filFl = this.fctFilFld.laz(pRqVs, filFdNm);
+      filFl.fill(pRqVs, null, ent, flNm, attrs.get(flNm));
     }
     return ent;
   }
@@ -161,9 +162,9 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
 
   /**
    * <p>Getter for fctFilFld.</p>
-   * @return IFctNm<IFilFld<String>>
+   * @return IFctNm<IFilFldStr>
    **/
-  public final IFctNm<IFilFld<String>> getFctFilFld() {
+  public final IFctNm<IFilFldStr> getFctFilFld() {
     return this.fctFilFld;
   }
 
@@ -171,7 +172,7 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
    * <p>Setter for fctFilFld.</p>
    * @param pFctFilFld reference
    **/
-  public final void setFctFilFld(final IFctNm<IFilFld<String>> pFctFilFld) {
+  public final void setFctFilFld(final IFctNm<IFilFldStr> pFctFilFld) {
     this.fctFilFld = pFctFilFld;
   }
 

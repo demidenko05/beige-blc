@@ -30,6 +30,8 @@ package org.beigesoft.rdb;
 
 import java.util.Map;
 
+import org.beigesoft.mdl.IHasId;
+
 /**
  * <p>Abstraction of service that generates DML/DDL statements(queries).</p>
  *
@@ -60,19 +62,19 @@ public interface ISqlQu {
    * @return Select query in String Buffer
    * @throws Exception - an exception
    **/
-  <T> String evCreate(Map<String, Object> pRqVs,
+  <T extends IHasId<?>> String evCreate(Map<String, Object> pRqVs,
     Class<T> pCls) throws Exception;
 
   /**
    * <p>Generates DML Select statement for given entity and vars.</p>
    * @param <T> object (entity) type
    * @param pRqVs request scoped vars
-   * @param pVs invoker scoped vars, e.g. entity's needed fields, nullable.
+   * @param pVs invoker scoped vars, e.g. entity's needed fields, not null.
    * @param pCls entity class, not null
    * @return Select query in String Buffer
    * @throws Exception - an exception
    **/
-  <T> StringBuffer evSel(Map<String, Object> pRqVs,
+  <T extends IHasId<?>> StringBuffer evSel(Map<String, Object> pRqVs,
     Map<String, Object> pVs, Class<T> pCls) throws Exception;
 
   /**
@@ -85,6 +87,6 @@ public interface ISqlQu {
    *   or "[TBL].WHOUS=1 and [TBL].ITM=2 and [TBL].UOM=5"
    * @throws Exception - an exception
    **/
-  <T> void evCndId(Map<String, Object> pRqVs,
+  <T extends IHasId<?>> void evCndId(Map<String, Object> pRqVs,
     T pEnt, StringBuffer pSb) throws Exception;
 }

@@ -30,30 +30,29 @@ package org.beigesoft.cnv;
 
 import java.util.Map;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IRecSet;
 
 /**
- * <p>Converts named field from result-set to String.</p>
+ * <p>Abstraction of service that fills object's field with data from given
+ * record-set.</p>
  *
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class CnvBnRsStr<RS> implements IConvNm<IRecSet<RS>, String> {
+public interface IFilFldRs<RS> {
 
   /**
-   * <p>Converts named field from resultset.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pRs result set
-   * @param pNm field name
-   * @return pTo to value
+   * <p>Fills entity's field with given record-set.</p>
+   * @param <T> object (entity) type
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pEnt Entity to fill, not null
+   * @param pFlNm Field name, not null
+   * @param pRs record-set, not null
    * @throws Exception - an exception
    **/
-  @Override
-  public final String conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final IRecSet<RS> pRs,
-      final String pNm) throws Exception {
-    return pRs.getStr(pNm);
-  }
+  <T extends IHasId<?>> void fill(Map<String, Object> pRvs,
+    Map<String, Object> pVs, T pEnt, String pFlNm,
+      IRecSet<RS> pRs) throws Exception;
 }

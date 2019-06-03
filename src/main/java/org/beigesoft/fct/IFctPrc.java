@@ -26,25 +26,25 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.cnv;
+package org.beigesoft.fct;
 
 import java.util.Map;
 
+import org.beigesoft.prc.IPrc;
+
 /**
- * <p>Abstraction of simple generic converter from a type to another one.</p>
+ * <p>Abstraction of processors factory.</p>
  *
  * @author Yury Demidenko
- * @param <FR> type of original
- * @param <TO> type of converted
  */
-public interface IConv<FR, TO> {
+public interface IFctPrc {
 
   /**
-   * <p>Convert parameter.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pFrom value
-   * @return TO converted value
+   * <p>Gets processor in lazy mode by given name.</p>
+   * @param pRqVs request scoped vars
+   * @param pPrNm - processor name
+   * @return requested processor
    * @throws Exception - an exception
-   **/
-  TO conv(Map<String, Object> pRqVs, FR pFrom) throws Exception;
+   */
+  IPrc laz(Map<String, Object> pRqVs, String pPrNm) throws Exception;
 }

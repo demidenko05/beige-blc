@@ -38,7 +38,7 @@ import org.beigesoft.mdl.CmnPrf;
  *
  * @author Yury Demidenko
  */
-public class CnvStrDblFm implements IConv<String, Double> {
+public class CnvStrDblFm implements ICnFrSt<Double> {
 
   /**
    * <p>Converts Double from string.</p>

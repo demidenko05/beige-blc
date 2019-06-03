@@ -46,13 +46,13 @@ public class UvdVar {
   /**
    * <p>Requested entity class.</p>
    **/
-  private Class<IHasId<?>> cls;
+  private Class<? extends IHasId<?>> cls;
 
     //list:
   /**
    * <p>Requested entities.</p>
    **/
-  private List<IHasId<?>> ents;
+  private List<? extends IHasId<?>> ents;
 
   /**
    * <p>Pages.</p>
@@ -90,15 +90,15 @@ public class UvdVar {
   /**
    * <p>Owned lists.</p>
    **/
-  private Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>> owdEntsMp;
+  private Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>> owdEntsMp;
 
   //Simple getters and setters:
 
   /**
    * <p>Getter for cls.</p>
-   * @return Class<IHasId<?>>
+   * @return Class<? extends IHasId<?>>
    **/
-  public final Class<IHasId<?>> getCls() {
+  public final Class<? extends IHasId<?>> getCls() {
     return this.cls;
   }
 
@@ -106,7 +106,7 @@ public class UvdVar {
    * <p>Setter for cls.</p>
    * @param pCls reference
    **/
-  public final void setCls(final Class<IHasId<?>> pCls) {
+  public final void setCls(final Class<? extends IHasId<?>> pCls) {
     this.cls = pCls;
   }
 
@@ -114,7 +114,7 @@ public class UvdVar {
    * <p>Getter for ents.</p>
    * @return List<?>
    **/
-  public final List<IHasId<?>> getEnts() {
+  public final List<? extends IHasId<?>> getEnts() {
     return this.ents;
   }
 
@@ -122,7 +122,7 @@ public class UvdVar {
    * <p>Setter for ents.</p>
    * @param pEnts reference
    **/
-  public final void setEnts(final List<IHasId<?>> pEnts) {
+  public final void setEnts(final List<? extends IHasId<?>> pEnts) {
     this.ents = pEnts;
   }
 
@@ -175,15 +175,15 @@ public class UvdVar {
     if (this.ent == null) {
       this.cls = null;
     } else {
-      this.cls = (Class<IHasId<?>>) this.ent.getClass();
+      this.cls = (Class<? extends IHasId<?>>) this.ent.getClass();
     }
   }
 
   /**
    * <p>Getter for owdEntsMp.</p>
-   * @return Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>>
+   * @return Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>>
    **/
-  public final Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>> getOwdEntsMp() {
+  public final Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>> getOwdEntsMp() {
     return this.owdEntsMp;
   }
 
@@ -192,7 +192,7 @@ public class UvdVar {
    * @param pOwdEntsMp reference
    **/
   public final void setOwdEntsMp(
-    final Map<Class<IOwned<?, ?>>, List<IOwned<?, ?>>> pOwdEntsMp) {
+    final Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>> pOwdEntsMp) {
     this.owdEntsMp = pOwdEntsMp;
   }
 

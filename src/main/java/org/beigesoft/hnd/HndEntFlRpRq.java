@@ -37,7 +37,7 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctRq;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.fct.IFcClFcRq;
-import org.beigesoft.cnv.IFilObj;
+import org.beigesoft.cnv.IFilEntRq;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.srv.IEntFlRp;
 
@@ -57,7 +57,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
   /**
    * <p>Service that fill entity from request.</p>
    **/
-  private IFilObj<IReqDt> filEntRq;
+  private IFilEntRq filEntRq;
 
   /**
    * <p>Entities factories factory.</p>
@@ -67,7 +67,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
   /**
    * <p>Entities map "EntitySimpleName"-"Class".</p>
    **/
-  private Map<String, Class<IHasId<?>>> entMap;
+  private Map<String, Class<? extends IHasId<?>>> entMap;
 
   /**
    * <p>Entities file-reporter factory.</p>
@@ -92,7 +92,8 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
     Map<String, Object> vs = new HashMap<String, Object>();
     try {
       String ent = pRqDt.getParam("ent");
-      Class<IHasId<?>> cls = this.entMap.get(ent);
+      @SuppressWarnings("unchecked")
+      Class<IHasId<?>> cls = (Class<IHasId<?>>) this.entMap.get(ent);
       this.rdb.setAcmt(false);
       this.rdb.setTrIsl(this.trIsl);
       this.rdb.begin();
@@ -135,9 +136,9 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
 
   /**
    * <p>Getter for filEntRq.</p>
-   * @return IFilObj<IReqDt>
+   * @return IFilEntRq
    **/
-  public final IFilObj<IReqDt> getFilEntRq() {
+  public final IFilEntRq getFilEntRq() {
     return this.filEntRq;
   }
 
@@ -145,7 +146,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
    * <p>Setter for filEntRq.</p>
    * @param pFilEntRq reference
    **/
-  public final void setFilEntRq(final IFilObj<IReqDt> pFilEntRq) {
+  public final void setFilEntRq(final IFilEntRq pFilEntRq) {
     this.filEntRq = pFilEntRq;
   }
 
@@ -167,9 +168,9 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
 
   /**
    * <p>Getter for entMap.</p>
-   * @return Map<String, Class<?>>
+   * @return Map<String, Class<? extends IHasId<?>>>
    **/
-  public final Map<String, Class<IHasId<?>>> getEntMap() {
+  public final Map<String, Class<? extends IHasId<?>>> getEntMap() {
     return this.entMap;
   }
 
@@ -177,7 +178,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
    * <p>Setter for entMap.</p>
    * @param pEntMap reference
    **/
-  public final void setEntMap(final Map<String, Class<IHasId<?>>> pEntMap) {
+  public final void setEntMap(final Map<String, Class<? extends IHasId<?>>> pEntMap) {
     this.entMap = pEntMap;
   }
 

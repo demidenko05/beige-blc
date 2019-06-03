@@ -30,6 +30,7 @@ package org.beigesoft.cnv;
 
 import java.util.Map;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.log.ILog;
 import org.beigesoft.fct.IFctNm;
@@ -41,7 +42,7 @@ import org.beigesoft.prp.ISetng;
  *
  * @author Yury Demidenko
  */
-public class FilEntRq implements IFilObj<IReqDt> {
+public class FilEntRq implements IFilEntRq {
 
   /**
    * <p>Log.</p>
@@ -61,58 +62,56 @@ public class FilEntRq implements IFilObj<IReqDt> {
   /**
    * <p>Fillers fields factory.</p>
    */
-  private IFctNm<IFilFld<String>> fctFilFld;
+  private IFctNm<IFilFldStr> fctFilFld;
 
   /**
-   * <p>Fill entity from request.</p>
-   * @param <T> entity type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pEnt Entity to fill
-   * @param pRqDt - request data
+   * <p>Fills entity from request.</p>
+   * @param <T> object (entity) type
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pEnt Entity to fill, not null
+   * @param pRqDt request data, not null
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void fill(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final T pEnt,
       final IReqDt pRqDt) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 5001 && this.log.getDbgCl() > 4999;
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
-      fillFld(pRqVs, pVs, pEnt, pRqDt, fdNm, isDbgSh);
+      fillFld(pRvs, pVs, pEnt, pRqDt, fdNm, isDbgSh);
     }
     for (String fdNm : this.setng.lazFldNms(pEnt.getClass())) {
-      fillFld(pRqVs, pVs, pEnt, pRqDt, fdNm, isDbgSh);
+      fillFld(pRvs, pVs, pEnt, pRqDt, fdNm, isDbgSh);
     }
   }
 
   /**
-   * <p>Fill entity field from request.</p>
+   * <p>Fills entity field from request.</p>
    * @param <T> entity type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
    * @param pEnt Entity to fill
    * @param pRqDt - request data
    * @param pFdNm field name
    * @param pIsDbgSh show debug msgs
    * @throws Exception - an exception
    **/
-  private <T> void fillFld(final Map<String, Object> pRqVs,
+  private <T extends IHasId<?>> void fillFld(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final T pEnt, final IReqDt pRqDt,
       final String pFdNm, final boolean pIsDbgSh) throws Exception {
     String valStr = pRqDt.getParam(pEnt.getClass().getSimpleName()
       + "." + pFdNm); // standard
     if (valStr != null) { // e.g. Boolean checkbox or none-editable
       String filFdNm = this.hldFilFdNms.get(pEnt.getClass(), pFdNm);
-      IFilFld<String> filFl = this.fctFilFld.laz(pRqVs, filFdNm);
+      IFilFldStr filFl = this.fctFilFld.laz(pRvs, filFdNm);
       if (pIsDbgSh) {
-        this.log.debug(pRqVs, FilEntRq.class,
+        this.log.debug(pRvs, FilEntRq.class,
       "Filling fdNm/cls/val/filler: " + pFdNm + "/" + pEnt.getClass()
     .getSimpleName() + "/" + valStr + "/" + filFl.getClass().getSimpleName());
       }
-      filFl.fill(pRqVs, pVs, pEnt, valStr, pFdNm);
+      filFl.fill(pRvs, pVs, pEnt, pFdNm, valStr);
     }
   }
 
@@ -151,9 +150,9 @@ public class FilEntRq implements IFilObj<IReqDt> {
 
   /**
    * <p>Getter for fctFilFld.</p>
-   * @return IFctNm<IFilFld<String>>
+   * @return IFctNm<IFilFldStr>
    **/
-  public final IFctNm<IFilFld<String>> getFctFilFld() {
+  public final IFctNm<IFilFldStr> getFctFilFld() {
     return this.fctFilFld;
   }
 
@@ -161,7 +160,7 @@ public class FilEntRq implements IFilObj<IReqDt> {
    * <p>Setter for fctFilFld.</p>
    * @param pFctFilFld reference
    **/
-  public final void setFctFilFld(final IFctNm<IFilFld<String>> pFctFilFld) {
+  public final void setFctFilFld(final IFctNm<IFilFldStr> pFctFilFld) {
     this.fctFilFld = pFctFilFld;
   }
 

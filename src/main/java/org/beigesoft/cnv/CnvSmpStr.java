@@ -39,7 +39,7 @@ import java.util.Map;
  * @param <T> object type
  * @author Yury Demidenko
  */
-public class CnvSmpStr<T> implements IConv<T, String> {
+public class CnvSmpStr<T> implements ICnToSt<T> {
 
   /**
    * <p>Convert to string any standard object - Integer,  Long,  etc.</p>

@@ -41,10 +41,10 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.Page;
 import org.beigesoft.mdl.CmnPrf;
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.fct.IFctCnToSt;
 import org.beigesoft.log.ILog;
 import org.beigesoft.dlg.IEvalFr;
-import org.beigesoft.cnv.IConv;
+import org.beigesoft.cnv.ICnToSt;
 import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.hld.HldUvd;
@@ -107,7 +107,7 @@ public class HlpEntPg<RS> {
   /**
    * <p>Fields converters factory.</p>
    **/
-  private IFctNm<IConv<?, String>> fctCnvFd;
+  private IFctCnToSt fctCnvFd;
 
   /**
    * <p>Field converter names holder.</p>
@@ -132,7 +132,7 @@ public class HlpEntPg<RS> {
    * @throws Exception - an exception
    **/
   public final void retPg(final Map<String, Object> pRvs, final IReqDt pRqd,
-    final Map<String, Class<IHasId<?>>> pEntMp, final boolean pDbgSh,
+    final Map<String, Class<? extends IHasId<?>>> pEntMp, final boolean pDbgSh,
       final IEvalFr<IReqDt, String> pMkFlt) throws Exception {
     Map<String, Object> vs = new HashMap<String, Object>();
     UvdVar uvs = (UvdVar) pRvs.get("uvs");
@@ -149,7 +149,7 @@ public class HlpEntPg<RS> {
         this.log.debug(pRvs, getClass(), "It's used ent: " + ent);
       }
     }
-    Class<IHasId<?>> cls = pEntMp.get(ent);
+    Class<? extends IHasId<?>> cls = pEntMp.get(ent);
     Set<String> fltAp = null;
     if (pRqd.getParam("flyNdFltAp") != null) {
       //to print used filter, e.g. used filter in assign goods to catalog
@@ -248,7 +248,7 @@ public class HlpEntPg<RS> {
       pg = pgCnt;
     }
     int fstRz = (pg - 1) * pgSz; //0-20,20-40
-    List<IHasId<?>> ents;
+    List<? extends IHasId<?>> ents;
     String[] lstFds = this.hldUvd.lazLstFds(cls);
     String[] ndFds = Arrays.copyOf(lstFds, lstFds.length);
     Arrays.sort(ndFds);
@@ -281,7 +281,7 @@ public class HlpEntPg<RS> {
    * @throws Exception - an Exception
    **/
   public final StringBuffer revPgFltDt(final Map<String, Object> pRvs,
-    final IReqDt pRqd, final Class<?> pCls,
+    final IReqDt pRqd, final Class<? extends IHasId<?>> pCls,
       final boolean pDbgSh) throws Exception {
     UvdVar uvs = (UvdVar) pRvs.get("uvs");
     StringBuffer sbWhe = new StringBuffer("");
@@ -620,7 +620,7 @@ public class HlpEntPg<RS> {
    * @throws Exception - an Exception
    **/
   public final void mkWheEnm(final StringBuffer pSbw, final IReqDt pRqd,
-    final Class<?> pCls, final String pFdNm,
+    final Class<? extends IHasId<?>> pCls, final String pFdNm,
       final UvdVar pUvs) throws Exception {
     String rnd = pRqd.getParam("rnd");
     String foprf;
@@ -710,7 +710,7 @@ public class HlpEntPg<RS> {
    * @throws Exception - an Exception
    **/
   public final void mkWheExcpl(final StringBuffer pSbw, final IReqDt pRqd,
-    final Class<?> pCls, final String pFdNm,
+    final Class<? extends IHasId<?>> pCls, final String pFdNm,
       final UvdVar pUvs) throws Exception {
     String rnd = pRqd.getParam("rnd");
     String foprf;
@@ -761,7 +761,7 @@ public class HlpEntPg<RS> {
    * @throws Exception - an Exception
    **/
   public final void mkWheBln(final StringBuffer pSbw, final IReqDt pRqd,
-    final Class<?> pCls, final String pFdNm,
+    final Class<? extends IHasId<?>> pCls, final String pFdNm,
       final UvdVar pUvs) throws Exception {
     String rnd = pRqd.getParam("rnd");
     String foprf;
@@ -884,9 +884,9 @@ public class HlpEntPg<RS> {
 
   /**
    * <p>Getter for fctCnvFd.</p>
-   * @return IFctNm<IConv<?, String>>
+   * @return IFctCnToSt
    **/
-  public final IFctNm<IConv<?, String>> getFctCnvFd() {
+  public final IFctCnToSt getFctCnvFd() {
     return this.fctCnvFd;
   }
 
@@ -894,7 +894,7 @@ public class HlpEntPg<RS> {
    * <p>Setter for fctCnvFd.</p>
    * @param pFctCnvFd reference
    **/
-  public final void setFctCnvFd(final IFctNm<IConv<?, String>> pFctCnvFd) {
+  public final void setFctCnvFd(final IFctCnToSt pFctCnvFd) {
     this.fctCnvFd = pFctCnvFd;
   }
 

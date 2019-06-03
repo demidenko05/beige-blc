@@ -26,39 +26,25 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.cnv;
+package org.beigesoft.fct;
 
 import java.util.Map;
-import java.math.BigDecimal;
 
-import org.beigesoft.mdl.IRecSet;
+import org.beigesoft.cnv.ICnvId;
 
 /**
- * <p>Converts named field from result-set to BigDecimal.</p>
+ * <p>Abstraction of converters entity ID factory.</p>
  *
- * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class CnvBnRsBgd<RS> implements IConvNm<IRecSet<RS>, BigDecimal> {
+public interface IFctCnvId {
 
   /**
-   * <p>Converts named field from resultset.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pRs result set
-   * @param pNm field name
-   * @return pTo to value
+   * <p>Gets converter in lazy mode by given name.</p>
+   * @param pRqVs request scoped vars
+   * @param pNm - converter name
+   * @return requested converter
    * @throws Exception - an exception
-   **/
-  @Override
-  public final BigDecimal conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final IRecSet<RS> pRs,
-      final String pNm) throws Exception {
-    Double doubleVal = pRs.getDouble(pNm);
-    if (doubleVal != null) {
-      return BigDecimal.valueOf(doubleVal);
-    }
-    return null;
-  }
+   */
+  ICnvId<?, ?> laz(Map<String, Object> pRqVs, String pNm) throws Exception;
 }

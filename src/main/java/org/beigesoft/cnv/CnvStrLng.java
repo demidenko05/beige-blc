@@ -32,11 +32,11 @@ import java.util.Map;
 
 /**
  * <p>Converter of Long from string representation, null represents as "".
- * String value must not be formatted, e.g. "1234.56789".</p>
+ * String value must not be formatted, e.g. "1234567".</p>
  *
  * @author Yury Demidenko
  */
-public class CnvStrLng implements IConv<String, Long> {
+public class CnvStrLng implements ICnFrSt<Long> {
 
   /**
    * <p>Convert from string.</p>

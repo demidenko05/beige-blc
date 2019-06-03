@@ -38,8 +38,8 @@ import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
-import org.beigesoft.cnv.IConvNmInto;
-import org.beigesoft.cnv.IFilNm;
+import org.beigesoft.cnv.IFilCvFdv;
+import org.beigesoft.cnv.IFilCvFld;
 import org.beigesoft.cnv.FilNmCvHsId;
 import org.beigesoft.cnv.FilNmCvSmp;
 import org.beigesoft.prp.ISetng;
@@ -49,7 +49,7 @@ import org.beigesoft.prp.ISetng;
  *
  * @author Yury Demidenko
  */
-public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
+public class FctFilFdCv implements IFctNm<IFilCvFld> {
 
   //services:
   /**
@@ -81,7 +81,7 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
   /**
    * <p>Factory simple converters.</p>
    **/
-  private IFctNm<IConvNmInto<?, ColVals>> fctCnvFld;
+  private IFctNm<IFilCvFdv<?>> fctCnvFld;
 
   /**
    * <p>Holder of fillers fields names.</p>
@@ -92,19 +92,19 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
   /**
    * <p>Fillers map.</p>
    **/
-  private final Map<String, IFilNm<IHasId<?>, ColVals>> fillers
-    = new HashMap<String, IFilNm<IHasId<?>, ColVals>>();
+  private final Map<String, IFilCvFld> fillers
+    = new HashMap<String, IFilCvFld>();
 
   /**
    * <p>Get filler in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pFiNm - filler name
    * @return requested filler
    * @throws Exception - an exception
    */
-  public final IFilNm<IHasId<?>, ColVals> laz(final Map<String, Object> pRqVs,
+  public final IFilCvFld laz(final Map<String, Object> pRvs,
     final String pFiNm) throws Exception {
-    IFilNm<IHasId<?>, ColVals> rz = this.fillers.get(pFiNm);
+    IFilCvFld rz = this.fillers.get(pFiNm);
     if (rz == null) {
       synchronized (this) {
         rz = this.fillers.get(pFiNm);
@@ -208,9 +208,9 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<IConvNmInto<?, ColVals>>
+   * @return IFctNm<IFilCvFdv<?>>
    **/
-  public final IFctNm<IConvNmInto<?, ColVals>> getFctCnvFld() {
+  public final IFctNm<IFilCvFdv<?>> getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -219,7 +219,7 @@ public class FctFilFdCv implements IFctNm<IFilNm<IHasId<?>, ColVals>> {
    * @param pFctCnvFld reference
    **/
   public final void setFctCnvFld(
-    final IFctNm<IConvNmInto<?, ColVals>> pFctCnvFld) {
+    final IFctNm<IFilCvFdv<?>> pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 

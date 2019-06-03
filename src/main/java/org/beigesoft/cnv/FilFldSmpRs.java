@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Method;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
@@ -46,7 +47,7 @@ import org.beigesoft.hld.IHlNmClSt;
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
+public class FilFldSmpRs<RS> implements IFilFldRs<RS> {
 
   /**
    * <p>Log.</p>
@@ -66,30 +67,29 @@ public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
   /**
    * <p>Factory simple converters.</p>
    **/
-  private IFctNm<IConvNm<IRecSet<RS>, ?>> fctCnvFld;
+  private IFctNm<ICnvRsFdv<?, RS>> fctCnvFld;
 
   /**
    * <p>Fills object's field.</p>
-   * @param <T> object type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pObj Object to fill, not null
-   * @param pRs Source record-set with field value
-   * @param pFdNm Field name
+   * @param <T> object (entity) type
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pEnt Entity to fill, not null
+   * @param pFlNm Field name, not null
+   * @param pRs record-set, not null
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void fill(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final T pObj,
-    final IRecSet<RS> pRs, final String pFdNm) throws Exception {
+  public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final T pEnt, final String pFdNm,
+    final IRecSet<RS> pRs) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7003 && this.log.getDbgCl() > 7001;
     Object val = null;
-    String cnNm = this.hldNmFdCn.get(pObj.getClass(), pFdNm);
+    String cnNm = this.hldNmFdCn.get(pEnt.getClass(), pFdNm);
     @SuppressWarnings("unchecked")
-    IConvNm<IRecSet<RS>, Object> flCnv =
-      (IConvNm<IRecSet<RS>, Object>) this.fctCnvFld.laz(pRqVs, cnNm);
+    ICnvRsFdv<Object, RS> flCnv =
+      (ICnvRsFdv<Object, RS>) this.fctCnvFld.laz(pRvs, cnNm);
     String clNm;
     @SuppressWarnings("unchecked")
     List<String> tbAls = (List<String>) pVs.get("tbAls");
@@ -99,12 +99,12 @@ public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
       clNm = pFdNm.toUpperCase();
     }
     if (isDbgSh) {
-      this.log.debug(pRqVs, FilFldSmpRs.class, "Column alias/cls: "
-        + clNm + "/" + pObj.getClass());
+      this.log.debug(pRvs, FilFldSmpRs.class, "Column alias/cls: "
+        + clNm + "/" + pEnt.getClass());
     }
-    val = flCnv.conv(pRqVs, pVs, pRs, clNm);
-    Method setr = this.hldSets.get(pObj.getClass(), pFdNm);
-    setr.invoke(pObj, val);
+    val = flCnv.conv(pRvs, pVs, pRs, clNm);
+    Method setr = this.hldSets.get(pEnt.getClass(), pFdNm);
+    setr.invoke(pEnt, val);
   }
 
   //Simple getters and setters:
@@ -143,9 +143,9 @@ public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<IConvNm<IRecSet<RS>, ?>>
+   * @return IFctNm<ICnvRsFdv<?, RS>>
    **/
-  public final IFctNm<IConvNm<IRecSet<RS>, ?>> getFctCnvFld() {
+  public final IFctNm<ICnvRsFdv<?, RS>> getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -154,7 +154,7 @@ public class FilFldSmpRs<RS> implements IFilFld<IRecSet<RS>> {
    * @param pFctCnvFld reference
    **/
   public final void setFctCnvFld(
-    final IFctNm<IConvNm<IRecSet<RS>, ?>> pFctCnvFld) {
+    final IFctNm<ICnvRsFdv<?, RS>> pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 

@@ -37,7 +37,7 @@ import java.math.BigDecimal;
  *
  * @author Yury Demidenko
  */
-public class CnvStrBgdNf implements IConv<String, BigDecimal> {
+public class CnvStrBgdNf implements ICnFrSt<BigDecimal> {
 
   /**
    * <p>Converts BigDecimal from string.</p>

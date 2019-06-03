@@ -35,6 +35,7 @@ import java.util.HashMap;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.ColVals;
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.prp.ISetng;
 
 /**
@@ -67,7 +68,7 @@ public class SrvClVl {
    * @return string representation
    * @throws Exception an Exception
    **/
-  public final String str(final Class<?> pCls,
+  public final <T extends IHasId<?>> String str(final Class<T> pCls,
     final ColVals pCv) throws Exception {
     StringBuffer sb = new StringBuffer("IDs column names: ");
     boolean isFirst = true;
@@ -462,7 +463,7 @@ public class SrvClVl {
    * @return insert query
    * @throws Exception - an exception
    **/
-  public final String evInsert(final Class<?> pCls,
+  public final <T extends IHasId<?>> String evInsert(final Class<T> pCls,
     final ColVals pCv) throws Exception {
     StringBuffer res = new StringBuffer("insert into "
       + pCls.getSimpleName().toUpperCase() + " (");
@@ -546,7 +547,7 @@ public class SrvClVl {
    * @return where conditions e.g. "IID=1 and VER=2"
    * @throws Exception - an exception
    **/
-  public final String evWheUpd(final Class<?> pCls,
+  public final <T extends IHasId<?>> String evWheUpd(final Class<T> pCls,
     final ColVals pCv) throws Exception {
     StringBuffer sb = new StringBuffer("");
     boolean isFst = true;
@@ -572,7 +573,7 @@ public class SrvClVl {
    * @return update statement
    * @throws Exception - an exception
    **/
-  public final String evUpdate(final Class<?> pCls,
+  public final <T extends IHasId<?>> String evUpdate(final Class<T> pCls,
     final ColVals pCv) throws Exception {
     String cnd = evWheUpd(pCls, pCv);
     return evUpdateCnd(pCls, pCv, cnd);
@@ -587,7 +588,7 @@ public class SrvClVl {
    * @return update statement
    * @throws Exception - an exception
    **/
-  public final String evUpdateCnd(final Class<?> pCls,
+  public final <T extends IHasId<?>> String evUpdateCnd(final Class<T> pCls,
     final ColVals pCv, final String pCnd) throws Exception {
     StringBuffer res = new StringBuffer("update "
       + pCls.getSimpleName().toUpperCase() + " set ");

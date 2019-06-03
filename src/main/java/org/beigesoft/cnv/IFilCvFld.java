@@ -29,35 +29,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
-import java.util.HashMap;
 
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.ColVals;
 
 /**
- * <p>Converter from a Double type to column values
- * without transformation.</p>
+ * <p>Abstraction of service fills column values with given entity's field.</p>
  *
  * @author Yury Demidenko
  */
-public class CnvIbnDblCv implements IConvNmInto<Double, ColVals> {
+public interface IFilCvFld {
 
   /**
-   * <p>Put Double object to column values without transformation.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pFrom from a Double object
-   * @param pClVl to column values
-   * @param pNm field name
+   * <p>Fills given column values with given entity's field.</p>
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, ver, nme} not null.
+   * @param pEnt entity
+   * @param pFdNm field name
+   * @param pCv column values
    * @throws Exception - an exception
    **/
-  @Override
-  public final void conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Double pFrom,
-      final ColVals pClVl, final String pNm) throws Exception {
-    if (pClVl.getDoubles() == null) {
-      pClVl.setDoubles(new HashMap<String, Double>());
-    }
-    pClVl.getDoubles().put(pNm, pFrom);
-  }
+  <T extends IHasId<?>> void fill(Map<String, Object> pRvs,
+    Map<String, Object> pVs, T pEnt, String pFdNm,
+      ColVals pCv) throws Exception;
 }

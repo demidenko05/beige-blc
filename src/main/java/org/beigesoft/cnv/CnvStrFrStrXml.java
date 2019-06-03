@@ -38,7 +38,7 @@ import org.beigesoft.srv.IUtlXml;
  *
  * @author Yury Demidenko
  */
-public class CnvStrFrStrXml implements IConv<String, String> {
+public class CnvStrFrStrXml implements ICnFrSt<String> {
 
   /**
    * <p>XML service.</p>

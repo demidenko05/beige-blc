@@ -65,13 +65,13 @@ public class HlNmAdEnPr implements IHlNmClSt {
 
   /**
    * <p>Get processor name for given class and action name.</p>
-   * @param pCls a Class
+   * @param pCls entity Class
    * @param pAct action name
    * @return processor FE name
    * @throws Exception an Exception
    **/
   @Override
-  public final String get(final Class<?> pCls,
+  public final <T extends IHasId<?>> String get(final Class<T> pCls,
     final String pAct) throws Exception {
     if (this.shrEnts != null && this.shrEnts.contains(pCls)) {
       return null;
@@ -121,7 +121,7 @@ public class HlNmAdEnPr implements IHlNmClSt {
   //SGS:
   /**
    * <p>Getter for shrEnts.</p>
-   * @return List<Class<IHasId<?>>>
+   * @return List<Class<? extends IHasId<?>>>
    **/
   public final List<Class<? extends IHasId<?>>> getShrEnts() {
     return this.shrEnts;

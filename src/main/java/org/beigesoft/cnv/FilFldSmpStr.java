@@ -31,7 +31,8 @@ package org.beigesoft.cnv;
 import java.util.Map;
 import java.lang.reflect.Method;
 
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.mdl.IHasId;
+import org.beigesoft.fct.IFctCnFrSt;
 import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClSt;
 
@@ -42,7 +43,7 @@ import org.beigesoft.hld.IHlNmClSt;
  *
  * @author Yury Demidenko
  */
-public class FilFldSmpStr implements IFilFld<String> {
+public class FilFldSmpStr implements IFilFldStr {
 
   /**
    * <p>Fields setters RAPI holder.</p>
@@ -57,33 +58,32 @@ public class FilFldSmpStr implements IFilFld<String> {
   /**
    * <p>Factory simple converters.</p>
    **/
-  private IFctNm<IConv<String, ?>> fctCnvFld;
+  private IFctCnFrSt fctCnvFld;
 
   /**
    * <p>Fills object's field.</p>
-   * @param <T> object type
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pObj Object to fill, not null
-   * @param pStVl Source field string value
-   * @param pFlNm Field name
+   * @param <T> object (entity) type
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pEnt Entity to fill, not null
+   * @param pFlNm Field name, not null
+   * @param pStVl string value
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void fill(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final T pObj,
-    final String pStVl, final String pFlNm) throws Exception {
+  public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final T pEnt, final String pFlNm,
+    final String pStVl) throws Exception {
     Object val = null;
     if (pStVl != null && !"".equals(pStVl)) {
-      String cnNm = this.hldNmFdCn.get(pObj.getClass(), pFlNm);
+      String cnNm = this.hldNmFdCn.get(pEnt.getClass(), pFlNm);
       @SuppressWarnings("unchecked")
-      IConv<String, Object> flCnv =
-        (IConv<String, Object>) this.fctCnvFld.laz(pRqVs, cnNm);
-      val = flCnv.conv(pRqVs, pStVl);
+      ICnFrSt<Object> flCnv =
+        (ICnFrSt<Object>) this.fctCnvFld.laz(pRvs, cnNm);
+      val = flCnv.conv(pRvs, pStVl);
     }
-    Method setr = this.hldSets.get(pObj.getClass(), pFlNm);
-    setr.invoke(pObj, val);
+    Method setr = this.hldSets.get(pEnt.getClass(), pFlNm);
+    setr.invoke(pEnt, val);
   }
 
   //Simple getters and setters:
@@ -106,9 +106,9 @@ public class FilFldSmpStr implements IFilFld<String> {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<IConv<String, ?>>
+   * @return IFctCnFrSt
    **/
-  public final IFctNm<IConv<String, ?>> getFctCnvFld() {
+  public final IFctCnFrSt getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -116,8 +116,7 @@ public class FilFldSmpStr implements IFilFld<String> {
    * <p>Setter for fctCnvFld.</p>
    * @param pFctCnvFld reference
    **/
-  public final void setFctCnvFld(
-    final IFctNm<IConv<String, ?>> pFctCnvFld) {
+  public final void setFctCnvFld(final IFctCnFrSt pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 

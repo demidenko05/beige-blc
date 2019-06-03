@@ -37,7 +37,7 @@ import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
-import org.beigesoft.cnv.IConv;
+import org.beigesoft.cnv.ICnToSt;
 import org.beigesoft.cnv.CnvMnthStr;
 import org.beigesoft.cnv.CnvDtStr;
 import org.beigesoft.cnv.CnvDtScStr;
@@ -66,7 +66,7 @@ import org.beigesoft.srv.ISrvDt;
  *
  * @author Yury Demidenko
  */
-public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
+public class FctNmCnToSt implements IFctCnToSt {
 
   /**
    * <p>DB-Copy converter owned entity to string name.</p>
@@ -129,8 +129,8 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
   /**
    * <p>Converters map.</p>
    **/
-  private final Map<String, IConv<?, String>> convrts
-    = new HashMap<String, IConv<?, String>>();
+  private final Map<String, ICnToSt<?>> convrts
+    = new HashMap<String, ICnToSt<?>>();
 
   /**
    * <p>Get converter in lazy mode (if bean is null then initialize it).</p>
@@ -139,9 +139,9 @@ public class FctNmCnToSt implements IFctNm<IConv<?, String>> {
    * @return requested converter
    * @throws Exception - an exception
    */
-  public final IConv<?, String> laz(final Map<String, Object> pRqVs,
+  public final ICnToSt<?> laz(final Map<String, Object> pRqVs,
     final String pCnNm) throws Exception {
-    IConv<?, String> rz = this.convrts.get(pCnNm);
+    ICnToSt<?> rz = this.convrts.get(pCnNm);
     if (rz == null) {
       synchronized (this) {
         rz = this.convrts.get(pCnNm);

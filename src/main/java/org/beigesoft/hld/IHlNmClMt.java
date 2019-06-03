@@ -30,8 +30,10 @@ package org.beigesoft.hld;
 
 import java.lang.reflect.Method;
 
+import org.beigesoft.mdl.IHasId;
+
 /**
- * <p>Abstraction of holder of a RAPI method for a class  by field's name.</p>
+ * <p>Abstraction of holder of a RAPI method for entity's class by field's name.</p>
  *
  * @author Yury Demidenko
  */
@@ -45,5 +47,5 @@ public interface IHlNmClMt {
    * @return method
    * @throws Exception an Exception
    **/
-  Method get(Class<?> pCls, String pFdNm) throws Exception;
+  <T extends IHasId<?>> Method get(Class<T> pCls, String pFdNm) throws Exception;
 }

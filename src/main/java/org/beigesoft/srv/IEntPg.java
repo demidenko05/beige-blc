@@ -31,6 +31,7 @@ package org.beigesoft.srv;
 import java.util.Map;
 
 import org.beigesoft.mdl.IReqDt;
+import org.beigesoft.mdl.IHasId;
 
 /**
  * <p>Abstraction of service that retrieve entities page
@@ -58,5 +59,5 @@ public interface IEntPg {
    * @throws Exception - an Exception
    **/
   StringBuffer revPgFltDt(Map<String, Object> pRqVs,
-    IReqDt pRqDt, Class<?> pCls) throws Exception;
+    IReqDt pRqDt, Class<? extends IHasId<?>> pCls) throws Exception;
 }

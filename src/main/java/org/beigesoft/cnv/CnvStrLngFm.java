@@ -38,7 +38,7 @@ import org.beigesoft.mdl.CmnPrf;
  *
  * @author Yury Demidenko
  */
-public class CnvStrLngFm implements IConv<String, Long> {
+public class CnvStrLngFm implements ICnFrSt<Long> {
 
   /**
    * <p>Convert from string.</p>

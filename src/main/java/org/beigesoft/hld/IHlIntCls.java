@@ -28,8 +28,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.hld;
 
+import org.beigesoft.mdl.IHasId;
+
 /**
- * <p>Abstraction of generic holder of a Class that reflects to an Integer.</p>
+ * <p>Abstraction of generic holder of a entity Class that reflects to
+ * an Integer, e.g. getting entity class by it's type code.</p>
  *
  * @author Yury Demidenko
  */
@@ -42,5 +45,5 @@ public interface IHlIntCls {
    * @return associated thing
    * @throws Exception an Exception
    **/
-  Class<?> get(Integer pKey) throws Exception;
+  Class<? extends IHasId<?>> get(Integer pKey) throws Exception;
 }

@@ -29,35 +29,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
-import java.util.HashMap;
 
-import org.beigesoft.mdl.ColVals;
+import org.beigesoft.mdl.IRecSet;
 
 /**
- * <p>Converter from a Integer type to column values
- * without transformation.</p>
+ * <p>Converts named field from result-set to String.</p>
  *
+ * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class CnvIbnIntCv implements IConvNmInto<Integer, ColVals> {
+public class CvRsFvStr<RS> implements ICnvRsFdv<String, RS> {
 
   /**
-   * <p>Put Integer object to column values without transformation.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pFrom from a Integer object
-   * @param pClVl to column values
-   * @param pNm field name
+   * <p>Converts named field from resultset.</p>
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars.
+   * @param pRs result-set, not null
+   * @param pFdNm Field name, not null
+   * @return field's value from RS
    * @throws Exception - an exception
    **/
   @Override
-  public final void conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final Integer pFrom,
-      final ColVals pClVl, final String pNm) throws Exception {
-    if (pClVl.getInts() == null) {
-      pClVl.setInts(new HashMap<String, Integer>());
-    }
-    pClVl.getInts().put(pNm, pFrom);
+  public final String conv(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final IRecSet<RS> pRs,
+      final String pFdNm) throws Exception {
+    return pRs.getStr(pFdNm);
   }
 }

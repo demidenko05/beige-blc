@@ -30,30 +30,20 @@ package org.beigesoft.cnv;
 
 import java.util.Map;
 
-import org.beigesoft.mdl.IRecSet;
-
 /**
- * <p>Converts named field from result-set to Double.</p>
+ * <p>Abstraction of simple generic converter from string value to another one.</p>
  *
- * @param <RS> platform dependent record set type
  * @author Yury Demidenko
+ * @param <T> type of converted
  */
-public class CnvBnRsDbl<RS> implements IConvNm<IRecSet<RS>, Double> {
+public interface ICnFrSt<T> {
 
   /**
-   * <p>Converts named field from resultset.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pRs result set
-   * @param pNm field name
-   * @return pTo to value
+   * <p>Converts from string value to another one.</p>
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
+   * @param pFrom value
+   * @return converted value
    * @throws Exception - an exception
    **/
-  @Override
-  public final Double conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final IRecSet<RS> pRs,
-      final String pNm) throws Exception {
-    return pRs.getDouble(pNm);
-  }
+  T conv(Map<String, Object> pRvs, String pFrom) throws Exception;
 }

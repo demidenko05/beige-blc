@@ -29,38 +29,42 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.cnv;
 
 import java.util.Map;
+import java.util.HashMap;
+import java.math.BigDecimal;
 
-import org.beigesoft.mdl.IRecSet;
+import org.beigesoft.mdl.ColVals;
 
 /**
- * <p>Converts named field from result-set to Boolean.</p>
+ * <p>Fills column values with given value of BigDecimal type
+ * with transformation into Double.</p>
  *
- * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class CnvBnRsBln<RS> implements IConvNm<IRecSet<RS>, Boolean> {
+public class FilCvBgd implements IFilCvFdv<BigDecimal> {
 
   /**
-   * <p>Converts named field from resultset.</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
-   * @param pVs invoker scoped vars, e.g. a current converted field's class of
-   * an entity. Maybe NULL, e.g. for converting simple entity {id, ver, nme}.
-   * @param pRs result set
-   * @param pNm field name
-   * @return pTo to value
+   * <p>Puts BigDecimal object to column values with transformation
+   * into Double.</p>
+   * @param pRvs request scoped vars
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pFdNm field name
+   * @param pFdv field value
+   * @param pCv column values
    * @throws Exception - an exception
    **/
   @Override
-  public final Boolean conv(final Map<String, Object> pRqVs,
-    final Map<String, Object> pVs, final IRecSet<RS> pRs,
-      final String pNm) throws Exception {
-    //The simple, the better
-    //Findbugs NP_BOOLEAN_RETURN_NULL prohibit Boolean to be null
-    //So Boolean must be always initialized to false/true
-    //And database fields that hold Booleans must be not null
-    //And any user interface also must treat Booleans as false/true, not null
-    //For 3-states values use Enum "YES/NO" instead where null
-    //equivalent "not answered yet"
-    return pRs.getInt(pNm) == 1;
+  public final void fill(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final String pFdNm, final BigDecimal pFdv,
+      final ColVals pCv) throws Exception {
+    Double value;
+    if (pFdv == null) {
+      value = null;
+    } else {
+      value = pFdv.doubleValue();
+    }
+    if (pCv.getDoubles() == null) {
+      pCv.setDoubles(new HashMap<String, Double>());
+    }
+    pCv.getDoubles().put(pFdNm, value);
   }
 }

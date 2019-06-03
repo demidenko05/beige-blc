@@ -34,23 +34,23 @@ import java.util.HashMap;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.ColVals;
 import org.beigesoft.log.ILog;
-import org.beigesoft.cnv.IConvNmInto;
-import org.beigesoft.cnv.CnvIbnBgdCv;
-import org.beigesoft.cnv.CnvIbnBlnCv;
-import org.beigesoft.cnv.CnvIbnDblCv;
-import org.beigesoft.cnv.CnvIbnDtCv;
-import org.beigesoft.cnv.CnvIbnEnmCv;
-import org.beigesoft.cnv.CnvIbnFltCv;
-import org.beigesoft.cnv.CnvIbnIntCv;
-import org.beigesoft.cnv.CnvIbnLngCv;
-import org.beigesoft.cnv.CnvIbnStrCv;
+import org.beigesoft.cnv.IFilCvFdv;
+import org.beigesoft.cnv.FilCvBgd;
+import org.beigesoft.cnv.FilCvBln;
+import org.beigesoft.cnv.FilCvDbl;
+import org.beigesoft.cnv.FilCvDt;
+import org.beigesoft.cnv.FilCvEnm;
+import org.beigesoft.cnv.FilCvFlt;
+import org.beigesoft.cnv.FilCvInt;
+import org.beigesoft.cnv.FilCvLng;
+import org.beigesoft.cnv.FilCvStr;
 import org.beigesoft.srv.ISqlEsc;
 /**
  * <p>Factory of converters fields to column values.</p>
  *
  * @author Yury Demidenko
  */
-public class FctCnvCv implements IFctNm<IConvNmInto<?, ColVals>> {
+public class FctCnvCv implements IFctNm<IFilCvFdv<?>> {
 
   //services/parts:
   /**
@@ -67,8 +67,8 @@ public class FctCnvCv implements IFctNm<IConvNmInto<?, ColVals>> {
   /**
    * <p>Converters map.</p>
    **/
-  private final Map<String, IConvNmInto<?, ColVals>> convrts
-    = new HashMap<String, IConvNmInto<?, ColVals>>();
+  private final Map<String, IFilCvFdv<?>> convrts
+    = new HashMap<String, IFilCvFdv<?>>();
 
   /**
    * <p>Get converter in lazy mode (if bean is null then initialize it).</p>
@@ -77,30 +77,30 @@ public class FctCnvCv implements IFctNm<IConvNmInto<?, ColVals>> {
    * @return requested converter
    * @throws Exception - an exception
    */
-  public final IConvNmInto<?, ColVals> laz(final Map<String, Object> pRqVs,
+  public final IFilCvFdv<?> laz(final Map<String, Object> pRqVs,
     final String pCnNm) throws Exception {
-    IConvNmInto<?, ColVals> rz = this.convrts.get(pCnNm);
+    IFilCvFdv<?> rz = this.convrts.get(pCnNm);
     if (rz == null) {
       synchronized (this) {
         rz = this.convrts.get(pCnNm);
         if (rz == null) {
-          if (CnvIbnBgdCv.class.getSimpleName().equals(pCnNm)) {
+          if (FilCvBgd.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvIbnBgdCv();
-          } else if (CnvIbnBlnCv.class.getSimpleName().equals(pCnNm)) {
+          } else if (FilCvBln.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvIbnBlnCv();
-          } else if (CnvIbnDblCv.class.getSimpleName().equals(pCnNm)) {
+          } else if (FilCvDbl.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvIbnDblCv();
-          } else if (CnvIbnDtCv.class.getSimpleName().equals(pCnNm)) {
+          } else if (FilCvDt.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvIbnDtCv();
-          } else if (CnvIbnEnmCv.class.getSimpleName().equals(pCnNm)) {
+          } else if (FilCvEnm.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvIbnEnmCv();
-          } else if (CnvIbnFltCv.class.getSimpleName().equals(pCnNm)) {
+          } else if (FilCvFlt.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvIbnFltCv();
-          } else if (CnvIbnIntCv.class.getSimpleName().equals(pCnNm)) {
+          } else if (FilCvInt.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvIbnIntCv();
-          } else if (CnvIbnLngCv.class.getSimpleName().equals(pCnNm)) {
+          } else if (FilCvLng.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvIbnLngCv();
-          } else if (CnvIbnStrCv.class.getSimpleName().equals(pCnNm)) {
+          } else if (FilCvStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvIbnStrCv();
           } else {
             throw new ExcCode(ExcCode.WRCN, "There is no CNV IN CV: " + pCnNm);
@@ -112,110 +112,110 @@ public class FctCnvCv implements IFctNm<IConvNmInto<?, ColVals>> {
   }
 
   /**
-   * <p>Create and put into the Map CnvIbnStrCv.</p>
-   * @return CnvIbnStrCv
+   * <p>Create and put into the Map FilCvStr.</p>
+   * @return FilCvStr
    */
-  private CnvIbnStrCv crPuCnvIbnStrCv() {
-    CnvIbnStrCv rz = new CnvIbnStrCv();
+  private FilCvStr crPuCnvIbnStrCv() {
+    FilCvStr rz = new FilCvStr();
     rz.setSqlEsc(getSqlEsc());
-    this.convrts.put(CnvIbnStrCv.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvIbnStrCv.class.getSimpleName()
+    this.convrts.put(FilCvStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), FilCvStr.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvIbnLngCv.</p>
-   * @return CnvIbnLngCv
+   * <p>Create and put into the Map FilCvLng.</p>
+   * @return FilCvLng
    */
-  private CnvIbnLngCv crPuCnvIbnLngCv() {
-    CnvIbnLngCv rz = new CnvIbnLngCv();
-    this.convrts.put(CnvIbnLngCv.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvIbnLngCv.class.getSimpleName()
+  private FilCvLng crPuCnvIbnLngCv() {
+    FilCvLng rz = new FilCvLng();
+    this.convrts.put(FilCvLng.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), FilCvLng.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvIbnIntCv.</p>
-   * @return CnvIbnIntCv
+   * <p>Create and put into the Map FilCvInt.</p>
+   * @return FilCvInt
    */
-  private CnvIbnIntCv crPuCnvIbnIntCv() {
-    CnvIbnIntCv rz = new CnvIbnIntCv();
-    this.convrts.put(CnvIbnIntCv.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvIbnIntCv.class.getSimpleName()
+  private FilCvInt crPuCnvIbnIntCv() {
+    FilCvInt rz = new FilCvInt();
+    this.convrts.put(FilCvInt.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), FilCvInt.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvIbnFltCv.</p>
-   * @return CnvIbnFltCv
+   * <p>Create and put into the Map FilCvFlt.</p>
+   * @return FilCvFlt
    */
-  private CnvIbnFltCv crPuCnvIbnFltCv() {
-    CnvIbnFltCv rz = new CnvIbnFltCv();
-    this.convrts.put(CnvIbnFltCv.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvIbnFltCv.class.getSimpleName()
+  private FilCvFlt crPuCnvIbnFltCv() {
+    FilCvFlt rz = new FilCvFlt();
+    this.convrts.put(FilCvFlt.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), FilCvFlt.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvIbnEnmCv.</p>
-   * @return CnvIbnEnmCv
+   * <p>Create and put into the Map FilCvEnm.</p>
+   * @return FilCvEnm
    */
-  private CnvIbnEnmCv crPuCnvIbnEnmCv() {
-    CnvIbnEnmCv rz = new CnvIbnEnmCv();
-    this.convrts.put(CnvIbnEnmCv.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvIbnEnmCv.class.getSimpleName()
+  private FilCvEnm crPuCnvIbnEnmCv() {
+    FilCvEnm rz = new FilCvEnm();
+    this.convrts.put(FilCvEnm.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), FilCvEnm.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvIbnDtCv.</p>
-   * @return CnvIbnDtCv
+   * <p>Create and put into the Map FilCvDt.</p>
+   * @return FilCvDt
    */
-  private CnvIbnDtCv crPuCnvIbnDtCv() {
-    CnvIbnDtCv rz = new CnvIbnDtCv();
-    this.convrts.put(CnvIbnDtCv.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvIbnDtCv.class.getSimpleName()
+  private FilCvDt crPuCnvIbnDtCv() {
+    FilCvDt rz = new FilCvDt();
+    this.convrts.put(FilCvDt.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), FilCvDt.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvIbnDblCv.</p>
-   * @return CnvIbnDblCv
+   * <p>Create and put into the Map FilCvDbl.</p>
+   * @return FilCvDbl
    */
-  private CnvIbnDblCv crPuCnvIbnDblCv() {
-    CnvIbnDblCv rz = new CnvIbnDblCv();
-    this.convrts.put(CnvIbnDblCv.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvIbnDblCv.class.getSimpleName()
+  private FilCvDbl crPuCnvIbnDblCv() {
+    FilCvDbl rz = new FilCvDbl();
+    this.convrts.put(FilCvDbl.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), FilCvDbl.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvIbnBlnCv.</p>
-   * @return CnvIbnBlnCv
+   * <p>Create and put into the Map FilCvBln.</p>
+   * @return FilCvBln
    */
-  private CnvIbnBlnCv crPuCnvIbnBlnCv() {
-    CnvIbnBlnCv rz = new CnvIbnBlnCv();
-    this.convrts.put(CnvIbnBlnCv.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvIbnBlnCv.class.getSimpleName()
+  private FilCvBln crPuCnvIbnBlnCv() {
+    FilCvBln rz = new FilCvBln();
+    this.convrts.put(FilCvBln.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), FilCvBln.class.getSimpleName()
       + " has been created.");
     return rz;
   }
 
   /**
-   * <p>Create and put into the Map CnvIbnBgdCv.</p>
-   * @return CnvIbnBgdCv
+   * <p>Create and put into the Map FilCvBgd.</p>
+   * @return FilCvBgd
    */
-  private CnvIbnBgdCv crPuCnvIbnBgdCv() {
-    CnvIbnBgdCv rz = new CnvIbnBgdCv();
-    this.convrts.put(CnvIbnBgdCv.class.getSimpleName(), rz);
-    getLogStd().info(null, getClass(), CnvIbnBgdCv.class.getSimpleName()
+  private FilCvBgd crPuCnvIbnBgdCv() {
+    FilCvBgd rz = new FilCvBgd();
+    this.convrts.put(FilCvBgd.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), FilCvBgd.class.getSimpleName()
       + " has been created.");
     return rz;
   }
