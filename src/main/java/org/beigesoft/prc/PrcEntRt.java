@@ -91,11 +91,13 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
     List<Class<? extends IOwned<?, ?>>> oeLst = this.hldUvd
       .lazOwnd(pEnt.getClass());
     if (oeLst != null) {
-      Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>> owdEntsMp =
-        new LinkedHashMap<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>>();
+      Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>>
+    owdEntsMp = new
+  LinkedHashMap<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>>();
       String idOwnr = this.hldUvd.idSql(pRvs, pEnt);
       for (Class<? extends IOwned<?, ?>> oecg : oeLst) {
-        Class<? extends IOwned<T, ?>> oec = (Class<? extends IOwned<T, ?>>) oecg;
+        Class<? extends IOwned<T, ?>> oec =
+          (Class<? extends IOwned<T, ?>>) oecg;
         String[] lstFds = this.hldUvd.lazLstFds(oec);
         String[] ndFds = Arrays.copyOf(lstFds, lstFds.length);
         Arrays.sort(ndFds);

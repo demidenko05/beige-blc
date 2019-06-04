@@ -63,6 +63,7 @@ public class SrvClVl {
 
   /**
    * <p>Makes string representation.</p>
+   * @param <T> entity type
    * @param pCls entity class
    * @param pCv column values
    * @return string representation
@@ -458,6 +459,7 @@ public class SrvClVl {
   /**
    * <p>Evaluate SQL insert statement. It's assumed that ID maybe either Long
    * or String type, i.e. Integer is not.</p>
+   * @param <T> entity type
    * @param pCls entity class
    * @param pCv type-safe map column name - column value
    * @return insert query
@@ -542,6 +544,7 @@ public class SrvClVl {
   /**
    * <p>Evaluate where conditions for SQL update standard statement
    * with optimistic locking if need.</p>
+   * @param <T> entity type
    * @param pCls entity class
    * @param pCv type-safe map column name - column value
    * @return where conditions e.g. "IID=1 and VER=2"
@@ -568,6 +571,7 @@ public class SrvClVl {
   /**
    * <p>Evaluate SQL update standard statement
    * with optimistic locking if need.</p>
+   * @param <T> entity type
    * @param pCls entity class
    * @param pCv type-safe map column name - column value
    * @return update statement
@@ -582,6 +586,7 @@ public class SrvClVl {
   /**
    * <p>Evaluate SQL update statement with given conditions (nullable).
    * It's assumed that ID maybe either Long or String type!</p>
+   * @param <T> entity type
    * @param pCls entity class
    * @param pCv type-safe map column name - column value
    * @param pCnd where conditions e.g. "IID=2 and VER=2" or NULL

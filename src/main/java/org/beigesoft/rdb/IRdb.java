@@ -180,6 +180,7 @@ public interface IRdb<RS> {
   /**
    * <p>Executes SQL UPDATE that returns affected rows.
    * It is to adapt Android insert/update/delete interface.</p>
+   * @param <T> entity type
    * @param pCls entity class
    * @param pClVls type-safe map column name - column value
    * @param pWhe where conditions e.g. "IID=2" or NULL - update all
@@ -192,6 +193,7 @@ public interface IRdb<RS> {
   /**
    * <p>Executes SQL INSERT that returns affected rows.
    * It is to adapt Android insert/update/delete interface.</p>
+   * @param <T> entity type
    * @param pCls entity class
    * @param pClVls type-safe map column name - column value
    * @return row count affected for JDBC

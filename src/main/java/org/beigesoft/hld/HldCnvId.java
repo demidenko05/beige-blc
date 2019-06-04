@@ -52,13 +52,15 @@ public class HldCnvId implements IHlClSt {
 
   /**
    * <p>Get converter name for given class and field name.</p>
+   * @param <T> entity type
    * @param pCls a Class
    * @param pFlNm Field Name
    * @return converter from string name
    * @throws Exception an Exception
    **/
   @Override
-  public final <T extends IHasId<?>> String get(final Class<T> pCls) throws Exception {
+  public final <T extends IHasId<?>> String get(
+    final Class<T> pCls) throws Exception {
     if (this.custIdClss != null && this.custIdClss.contains(pCls)) {
       return CnvIdCst.class.getSimpleName();
     }

@@ -37,7 +37,6 @@ import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
-import org.beigesoft.cnv.ICnFrSt;
 import org.beigesoft.cnv.IFilFldStr;
 import org.beigesoft.cnv.FilFldEnmStr;
 import org.beigesoft.cnv.FilFldHsIdStr;
@@ -48,7 +47,7 @@ import org.beigesoft.cnv.FilFldSmpStr;
  *
  * @author Yury Demidenko
  */
-public class FctNmFilFdSt implements IFctNm<IFilFldStr> {
+public class FctNmFilFdSt implements IFcFlFdSt {
 
   /**
    * <p>DB-Copy filler owned entity from string name.</p>
@@ -131,12 +130,12 @@ public class FctNmFilFdSt implements IFctNm<IFilFldStr> {
 
   /**
    * <p>Get filler in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pFiNm - filler name
    * @return requested filler
    * @throws Exception - an exception
    */
-  public final IFilFldStr laz(final Map<String, Object> pRqVs,
+  public final IFilFldStr laz(final Map<String, Object> pRvs,
     final String pFiNm) throws Exception {
     IFilFldStr rz = this.fillers.get(pFiNm);
     if (rz == null) {

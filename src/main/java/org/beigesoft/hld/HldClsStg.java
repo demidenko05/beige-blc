@@ -94,6 +94,7 @@ public class HldClsStg {
 
   /**
    * <p>Get setting for given class.</p>
+   * @param <T> entity type
    * @param pCls a Class
    * @return setting or NULL
    **/
@@ -180,7 +181,8 @@ public class HldClsStg {
    * <p>Setter for stgClss.</p>
    * @param pStgClss reference
    **/
-  public final void setStgClss(final Map<Class<? extends IHasId<?>>, String> pStgClss) {
+  public final void setStgClss(
+    final Map<Class<? extends IHasId<?>>, String> pStgClss) {
     this.stgClss = pStgClss;
   }
 
@@ -212,7 +214,8 @@ public class HldClsStg {
    * <p>Setter for custClss.</p>
    * @param pCustClss reference
    **/
-  public final void setCustClss(final Set<Class<? extends IHasId<?>>> pCustClss) {
+  public final void setCustClss(
+    final Set<Class<? extends IHasId<?>>> pCustClss) {
     this.custClss = pCustClss;
   }
 

@@ -78,40 +78,42 @@ public class RpEntWriXml implements IRpEntWri {
 
   /**
    * <p>Writes given entity into given stream (writer) in XML format.</p>
-   * @param pRqVs request scoped vars
+   * @param <T> entity type
+   * @param pRvs request scoped vars
    * @param pEnt object
    * @param pWri writer
    * @throws Exception - an exception
    **/
   @Override
-  public final <T extends IHasId<?>> void write(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> void write(final Map<String, Object> pRvs,
     final T pEnt, final Writer pWri) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 6501 && this.log.getDbgCl() > 6499;
     if (isDbgSh) {
-      this.log.debug(pRqVs, RpEntWriXml.class, "Writing entity to XML: "
+      this.log.debug(pRvs, RpEntWriXml.class, "Writing entity to XML: "
         + pEnt.getClass());
     }
     pWri.write("<entity class=\"" + pEnt.getClass().getCanonicalName()
       + "\"\n");
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
-      writeFld(pRqVs, pEnt, pWri, fdNm);
+      writeFld(pRvs, pEnt, pWri, fdNm);
     }
     for (String fdNm : this.setng.lazFldNms(pEnt.getClass())) {
-      writeFld(pRqVs, pEnt, pWri, fdNm);
+      writeFld(pRvs, pEnt, pWri, fdNm);
     }
     pWri.write("/>\n");
   }
 
   /**
    * <p>Writes given field into given stream (writer) in XML format.</p>
-   * @param pRqVs request scoped vars
+   * @param <T> entity type
+   * @param pRvs request scoped vars
    * @param pEnt object
    * @param pWri writer
    * @param pFdNm field name
    * @throws Exception - an exception
    **/
-  private <T extends IHasId<?>> void writeFld(final Map<String, Object> pRqVs,
+  private <T extends IHasId<?>> void writeFld(final Map<String, Object> pRvs,
     final T pEnt, final Writer pWri, final String pFdNm) throws Exception {
     Method getter = this.hldGets.get(pEnt.getClass(), pFdNm);
     Object fdVl = getter.invoke(pEnt);
@@ -122,8 +124,8 @@ public class RpEntWriXml implements IRpEntWri {
       String cnNm = this.hldNmFdCn.get(pEnt.getClass(), pFdNm);
       @SuppressWarnings("unchecked")
       ICnToSt<Object> flCn = (ICnToSt<Object>) this.fctCnvFld
-        .laz(pRqVs, cnNm);
-      fdVlSt = flCn.conv(pRqVs, fdVl);
+        .laz(pRvs, cnNm);
+      fdVlSt = flCn.conv(pRvs, fdVl);
     }
     pWri.write(" " + pFdNm + "=\"" + fdVlSt + "\"\n");
   }

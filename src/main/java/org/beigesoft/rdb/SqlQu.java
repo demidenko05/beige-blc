@@ -143,6 +143,7 @@ public class SqlQu implements ISqlQu {
 
   /**
    * <p>Try to add constraint foreign key.</p>
+   * @param <T> entity type
    * @param pRvs request scoped vars
    * @param pCls entity class, not null
    * @param pFdNm field name
@@ -224,7 +225,7 @@ public class SqlQu implements ISqlQu {
   /**
    * <p>Generates condition ID for given entity and appends into given
    * String Buffer.</p>
-   * @param <T> object (entity) type
+   * @param <T> entity type
    * @param pRvs request scoped vars
    * @param pEnt entity, not null
    * @param pSb String Buffer to put ID condition e.g. "[TBL].IID=2"
@@ -232,7 +233,7 @@ public class SqlQu implements ISqlQu {
    * @throws Exception - an exception
    **/
   @Override
-  public final <T extends IHasId<?>> void evCndId(final Map<String, Object> pRvs,
+ public final <T extends IHasId<?>> void evCndId(final Map<String, Object> pRvs,
     final T pEnt, final StringBuffer pSb) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7102 && this.log.getDbgCl() > 7100;
@@ -297,9 +298,9 @@ public class SqlQu implements ISqlQu {
    * @param pIsDbgSh is show debug messages
    * @throws Exception - an exception
    **/
-  public final <T extends IHasId<?>> void makeCls(final Map<String, Object> pRvs,
-    final Map<String, Object> pVs, final Class<T> pCls,
-      final StringBuffer pSb, final StringBuffer pSbe,
+  public final <T extends IHasId<?>> void makeCls(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs,
+      final Class<T> pCls, final StringBuffer pSb, final StringBuffer pSbe,
         final boolean pIsDbgSh) throws Exception {
     @SuppressWarnings("unchecked")
     List<LvDep> lvDeps = (List<LvDep>) pVs.get("lvDeps");

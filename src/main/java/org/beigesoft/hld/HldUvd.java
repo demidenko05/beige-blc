@@ -128,8 +128,10 @@ public class HldUvd {
   /**
    * <p>Owned entities classes map.</p>
    **/
-  private final Map<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>> owdEnts =
-    new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
+  private final
+    Map<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>
+  owdEnts =
+new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
 
   /**
    * <p>Entities fields nullable, [ClassSimpleName+FieldName]-[isNullable].</p>
@@ -171,44 +173,47 @@ public class HldUvd {
   /**
    * <p>Converts to HTML ready ID, e.g. "IID=PAYB" for Account with String ID,
    * or "usr=User1&rol=Role1" for User-Role with composite ID.</p>
+   * @param <T> entity type
    * @param pRvs request scoped vars
    * @param pEnt entity
    * @return to value
    * @throws Exception - an exception
    **/
-  public final String idHtml(final Map<String, Object> pRvs,
-    final IHasId<?> pEnt) throws Exception {
+  public final <T extends IHasId<?>> String idHtml(
+    final Map<String, Object> pRvs, final T pEnt) throws Exception {
     if (pEnt == null) {
       throw new Exception("NULL pEnt!!!");
     }
     String cvIdSqNm = this.hldCnvId.get(pEnt.getClass());
-    @SuppressWarnings("rawtypes")
-    ICnvId cvIdSq = this.fctCnvId.laz(pRvs, cvIdSqNm);
+    @SuppressWarnings("unchecked")
+    ICnvId<T, ?> cvIdSq = (ICnvId<T, ?>) this.fctCnvId.laz(pRvs, cvIdSqNm);
     return cvIdSq.idHtml(pEnt);
   }
 
   /**
    * <p>Converts to SQL ready ID, e.g. "'PAYB'" for Account with String ID,
    * or "'User1','Role1'" for User-Role with composite ID.</p>
+   * @param <T> entity type
    * @param pRvs request scoped vars
    * @param pEnt entity
    * @return to value
    * @throws Exception - an exception
    **/
-  public final String idSql(final Map<String, Object> pRvs,
-    final IHasId<?> pEnt) throws Exception {
+  public final <T extends IHasId<?>> String idSql(
+    final Map<String, Object> pRvs, final T pEnt) throws Exception {
     if (pEnt == null) {
       throw new Exception("NULL pEnt!!!");
     }
     String cvIdSqNm = this.hldCnvId.get(pEnt.getClass());
-    @SuppressWarnings("rawtypes")
-    ICnvId cvIdSq = this.fctCnvId.laz(pRvs, cvIdSqNm);
+    @SuppressWarnings("unchecked")
+    ICnvId<T, ?> cvIdSq = (ICnvId<T, ?>) this.fctCnvId.laz(pRvs, cvIdSqNm);
     return cvIdSq.idSql(pEnt);
   }
 
   /**
    * <p>Gets class string setting for given class.
    * Maybe null, e.g. widget list header for entities in small numbers.</p>
+   * @param <T> entity type
    * @param pCls class
    * @param pStgNm setting name
    * @return string setting, maybe null
@@ -239,6 +244,7 @@ public class HldUvd {
 
   /**
    * <p>Gets class string setting for given class, not null.</p>
+   * @param <T> entity type
    * @param pCls class
    * @param pStgNm setting name
    * @return string setting, not null
@@ -264,6 +270,7 @@ public class HldUvd {
    * <p>Gets field string setting for given class, field name.
    * Maybe null, e.g. widget input for field whose input
    * is inside another field's input, or without any.</p>
+   * @param <T> entity type
    * @param pCls class
    * @param pFdNm field name
    * @param pStgNm setting name
@@ -298,6 +305,7 @@ public class HldUvd {
 
   /**
    * <p>Gets non-null field string setting for given class, field name.</p>
+   * @param <T> entity type
    * @param pCls class
    * @param pFdNm field name
    * @param pStgNm setting name
@@ -325,6 +333,7 @@ public class HldUvd {
 
   /**
    * <p>Gets field's class.</p>
+   * @param <T> entity type
    * @param pCls class
    * @param pFdNm field name
    * @return field class
@@ -344,6 +353,7 @@ public class HldUvd {
   /**
    * <p>Formats (converts) field value to string for given class, field name.
    * It delegates this to registered converter.</p>
+   * @param <T> entity type
    * @param pRvs request scoped vars
    * @param pCls class
    * @param pFdNm field name
@@ -351,8 +361,8 @@ public class HldUvd {
    * @return string setting
    * @throws Exception - an exception
    **/
-  public final <T extends IHasId<?>> String toStr(final Map<String, Object> pRvs,
-    final Class<T> pCls, final String pFdNm,
+  public final <T extends IHasId<?>> String toStr(
+    final Map<String, Object> pRvs, final Class<T> pCls, final String pFdNm,
       final Object pFdVl) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
@@ -369,6 +379,7 @@ public class HldUvd {
 
   /**
    * <p>Gets class fields for form in lazy mode.</p>
+   * @param <T> entity type
    * @param pCls Entity class
    * @return fields list, not null
    * @throws Exception - an exception
@@ -412,6 +423,7 @@ public class HldUvd {
 
   /**
    * <p>Gets class fields for list in lazy mode.</p>
+   * @param <T> entity type
    * @param pCls Entity class
    * @return fields list, not null
    * @throws Exception - an exception
@@ -458,11 +470,12 @@ public class HldUvd {
 
   /**
    * <p>Gets class fields for picker list in lazy mode.</p>
+   * @param <T> entity type
    * @param pCls Entity class
    * @return fields list, not null
    * @throws Exception - an exception
    **/
-  public final <T extends IHasId<?>>String[] lazPickFds(
+  public final <T extends IHasId<?>> String[] lazPickFds(
     final Class<T> pCls) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
@@ -504,6 +517,7 @@ public class HldUvd {
 
   /**
    * <p>Gets if field nullable in lazy mode.</p>
+   * @param <T> entity type
    * @param pCls Entity class
    * @param pFdNm field name
    * @return if field nullable
@@ -547,12 +561,13 @@ public class HldUvd {
 
   /**
    * <p>Gets owned list in lazy mode.</p>
+   * @param <T> entity type
    * @param pCls Entity class
    * @return owned list
    * @throws Exception - an exception
    **/
- public final <T extends IHasId<?>> List<Class<? extends IOwned<?, ?>>> lazOwnd(
-    final Class<T> pCls) throws Exception {
+ public final <T extends IHasId<?>> List<Class<? extends IOwned<?, ?>>>
+    lazOwnd(final Class<T> pCls) throws Exception {
     if (pCls == null) {
       throw new Exception("NULL pCls!!!");
     }
@@ -571,7 +586,8 @@ public class HldUvd {
               new ArrayList<Class<? extends IOwned<?, ?>>>();
             for (String oec : owdes.split(",")) {
               @SuppressWarnings("unchecked")
-              Class<? extends IOwned<?, ?>> cl = (Class<? extends IOwned<?, ?>>) Class.forName(oec);
+              Class<? extends IOwned<?, ?>> cl =
+                (Class<? extends IOwned<?, ?>>) Class.forName(oec);
               oeLst.add(cl);
             }
             this.owdEnts.put(pCls, oeLst);

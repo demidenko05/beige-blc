@@ -26,29 +26,26 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.hld;
+package org.beigesoft.hnd;
 
-import java.lang.reflect.Method;
+import java.util.Map;
 
-import org.beigesoft.mdl.IHasId;
+import org.beigesoft.srv.IEntFlRp;
 
 /**
- * <p>Abstraction of holder of a RAPI method for entity's class
- *  by field's name.</p>
+ * <p>Abstraction of entity file reporter factory.</p>
  *
  * @author Yury Demidenko
  */
-public interface IHlNmClMt {
+public interface IFcEnFlRp {
 
   /**
-   * <p>Get thing for given one and name,
-   * e.g. holder of getters (reflect.Method) for a class fields.</p>
-   * @param <T> entity type
-   * @param pCls class
-   * @param pFdNm field name
-   * @return method
-   * @throws Exception an Exception
-   **/
-  <T extends IHasId<?>> Method get(Class<T> pCls,
-    String pFdNm) throws Exception;
+   * <p>Gets entity file reporter in lazy mode by given name.</p>
+   * @param pRvs request scoped vars
+   * @param pNm - entity file reporter name
+   * @return requested entity file reporter
+   * @throws Exception - an exception
+   */
+  IEntFlRp laz(Map<String, Object> pRvs, String pNm) throws Exception;
 }
+

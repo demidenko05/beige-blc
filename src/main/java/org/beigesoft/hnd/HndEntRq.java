@@ -518,7 +518,8 @@ public class HndEntRq<RS> implements IHndRq {
    * <p>Setter for entMap.</p>
    * @param pEntMap reference
    **/
-  public final void setEntMap(final Map<String, Class<? extends IHasId<?>>> pEntMap) {
+  public final void setEntMap(
+    final Map<String, Class<? extends IHasId<?>>> pEntMap) {
     this.entMap = pEntMap;
   }
 

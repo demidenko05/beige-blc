@@ -1382,8 +1382,8 @@ public class FctBlc<RS> implements IFctApp {
 
   //Simple getters and setters:
   /**
-   * <p>Getter for fctConf.</p>
-   * @return IFctNm
+   * <p>Getter for List<IFctAux<RS>>.</p>
+   * @return List<IFctAux<RS>>
    **/
   public final synchronized List<IFctAux<RS>> getFctsAux() {
     return this.fctsAux;

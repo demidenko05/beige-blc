@@ -79,12 +79,12 @@ public class FctCnvId implements IFctCnvId {
 
   /**
    * <p>Get converter in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pFiNm - converter name
    * @return requested converter
    * @throws Exception - an exception
    */
-  public final ICnvId<?, ?> laz(final Map<String, Object> pRqVs,
+  public final ICnvId<?, ?> laz(final Map<String, Object> pRvs,
     final String pFiNm) throws Exception {
     ICnvId<?, ?> rz = this.converters.get(pFiNm);
     if (rz == null) {

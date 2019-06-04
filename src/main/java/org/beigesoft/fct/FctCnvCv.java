@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.beigesoft.exc.ExcCode;
-import org.beigesoft.mdl.ColVals;
 import org.beigesoft.log.ILog;
 import org.beigesoft.cnv.IFilCvFdv;
 import org.beigesoft.cnv.FilCvBgd;
@@ -50,7 +49,7 @@ import org.beigesoft.srv.ISqlEsc;
  *
  * @author Yury Demidenko
  */
-public class FctCnvCv implements IFctNm<IFilCvFdv<?>> {
+public class FctCnvCv implements IFcFlCvFdv {
 
   //services/parts:
   /**
@@ -72,12 +71,12 @@ public class FctCnvCv implements IFctNm<IFilCvFdv<?>> {
 
   /**
    * <p>Get converter in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pCnNm - converter name
    * @return requested converter
    * @throws Exception - an exception
    */
-  public final IFilCvFdv<?> laz(final Map<String, Object> pRqVs,
+  public final IFilCvFdv<?> laz(final Map<String, Object> pRvs,
     final String pCnNm) throws Exception {
     IFilCvFdv<?> rz = this.convrts.get(pCnNm);
     if (rz == null) {

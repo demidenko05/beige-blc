@@ -26,29 +26,23 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.hld;
+package org.beigesoft.rpl;
 
-import java.lang.reflect.Method;
-
-import org.beigesoft.mdl.IHasId;
+import java.util.Map;
 
 /**
- * <p>Abstraction of holder of a RAPI method for entity's class
- *  by field's name.</p>
+ * <p>Abstraction of filter entity factory.</p>
  *
  * @author Yury Demidenko
  */
-public interface IHlNmClMt {
+public interface IFctFltEnt {
 
   /**
-   * <p>Get thing for given one and name,
-   * e.g. holder of getters (reflect.Method) for a class fields.</p>
-   * @param <T> entity type
-   * @param pCls class
-   * @param pFdNm field name
-   * @return method
-   * @throws Exception an Exception
-   **/
-  <T extends IHasId<?>> Method get(Class<T> pCls,
-    String pFdNm) throws Exception;
+   * <p>Gets filter in lazy mode by given name.</p>
+   * @param pRvs request scoped vars
+   * @param pNm - filter name
+   * @return requested filter
+   * @throws Exception - an exception
+   */
+  IFltEnts laz(Map<String, Object> pRvs, String pNm) throws Exception;
 }

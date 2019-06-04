@@ -33,7 +33,7 @@ import java.util.Map;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.log.ILog;
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.fct.IFcFlFdSt;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 
@@ -62,7 +62,7 @@ public class FilEntRq implements IFilEntRq {
   /**
    * <p>Fillers fields factory.</p>
    */
-  private IFctNm<IFilFldStr> fctFilFld;
+  private IFcFlFdSt fctFilFld;
 
   /**
    * <p>Fills entity from request.</p>
@@ -150,9 +150,9 @@ public class FilEntRq implements IFilEntRq {
 
   /**
    * <p>Getter for fctFilFld.</p>
-   * @return IFctNm<IFilFldStr>
+   * @return IFcFlFdSt
    **/
-  public final IFctNm<IFilFldStr> getFctFilFld() {
+  public final IFcFlFdSt getFctFilFld() {
     return this.fctFilFld;
   }
 
@@ -160,7 +160,7 @@ public class FilEntRq implements IFilEntRq {
    * <p>Setter for fctFilFld.</p>
    * @param pFctFilFld reference
    **/
-  public final void setFctFilFld(final IFctNm<IFilFldStr> pFctFilFld) {
+  public final void setFctFilFld(final IFcFlFdSt pFctFilFld) {
     this.fctFilFld = pFctFilFld;
   }
 

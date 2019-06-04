@@ -44,7 +44,6 @@ import org.beigesoft.mdl.CmnPrf;
 import org.beigesoft.fct.IFctCnToSt;
 import org.beigesoft.log.ILog;
 import org.beigesoft.dlg.IEvalFr;
-import org.beigesoft.cnv.ICnToSt;
 import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.hld.HldUvd;

@@ -49,7 +49,6 @@ import javax.net.ssl.HttpsURLConnection;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdlp.DbInf;
 import org.beigesoft.mdl.IHasId;
-import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.dlg.IMake;
 import org.beigesoft.prp.ISetng;
@@ -108,7 +107,7 @@ public class RplXmlHttps<RS> implements IReplicator {
   /**
    * <p>Filters Entity factory.</p>
    **/
-  private IFctNm<IFltEnts> fctFltEnts;
+  private IFctFltEnt fctFltEnts;
 
   /**
    * <p>It will clear current database then copy
@@ -547,9 +546,9 @@ public class RplXmlHttps<RS> implements IReplicator {
 
   /**
    * <p>Getter for fctFltEnts.</p>
-   * @return IFctNm<IFltEnts>
+   * @return IFctFltEnt
    **/
-  public final IFctNm<IFltEnts> getFctFltEnts() {
+  public final IFctFltEnt getFctFltEnts() {
     return this.fctFltEnts;
   }
 
@@ -557,7 +556,7 @@ public class RplXmlHttps<RS> implements IReplicator {
    * <p>Setter for fctFltEnts.</p>
    * @param pFctFltEnts reference
    **/
-  public final void setFctFltEnts(final IFctNm<IFltEnts> pFctFltEnts) {
+  public final void setFctFltEnts(final IFctFltEnt pFctFltEnts) {
     this.fctFltEnts = pFctFltEnts;
   }
 }

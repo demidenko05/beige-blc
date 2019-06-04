@@ -35,7 +35,6 @@ import java.io.OutputStream;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFctRq;
-import org.beigesoft.fct.IFctNm;
 import org.beigesoft.fct.IFcClFcRq;
 import org.beigesoft.cnv.IFilEntRq;
 import org.beigesoft.rdb.IRdb;
@@ -72,7 +71,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
   /**
    * <p>Entities file-reporter factory.</p>
    **/
-  private IFctNm<IEntFlRp> fctEntFlRp;
+  private IFcEnFlRp fctEntFlRp;
 
   /**
    * <p>Transaction isolation for handling.</p>
@@ -178,15 +177,16 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
    * <p>Setter for entMap.</p>
    * @param pEntMap reference
    **/
-  public final void setEntMap(final Map<String, Class<? extends IHasId<?>>> pEntMap) {
+  public final void setEntMap(
+    final Map<String, Class<? extends IHasId<?>>> pEntMap) {
     this.entMap = pEntMap;
   }
 
   /**
    * <p>Getter for fctEntFlRp.</p>
-   * @return IFctNm<IEntFlRp>
+   * @return IFcEnFlRp
    **/
-  public final IFctNm<IEntFlRp> getFctEntFlRp() {
+  public final IFcEnFlRp getFctEntFlRp() {
     return this.fctEntFlRp;
   }
 
@@ -194,7 +194,7 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
    * <p>Setter for fctEntFlRp.</p>
    * @param pFctEntFlRp reference
    **/
-  public final void setFctEntFlRp(final IFctNm<IEntFlRp> pFctEntFlRp) {
+  public final void setFctEntFlRp(final IFcEnFlRp pFctEntFlRp) {
     this.fctEntFlRp = pFctEntFlRp;
   }
 

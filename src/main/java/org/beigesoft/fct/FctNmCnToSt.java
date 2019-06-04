@@ -134,12 +134,12 @@ public class FctNmCnToSt implements IFctCnToSt {
 
   /**
    * <p>Get converter in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pCnNm - converter name
    * @return requested converter
    * @throws Exception - an exception
    */
-  public final ICnToSt<?> laz(final Map<String, Object> pRqVs,
+  public final ICnToSt<?> laz(final Map<String, Object> pRvs,
     final String pCnNm) throws Exception {
     ICnToSt<?> rz = this.convrts.get(pCnNm);
     if (rz == null) {

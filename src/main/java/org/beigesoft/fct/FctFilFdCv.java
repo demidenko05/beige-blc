@@ -32,13 +32,10 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.beigesoft.exc.ExcCode;
-import org.beigesoft.mdl.IHasId;
-import org.beigesoft.mdl.ColVals;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
-import org.beigesoft.cnv.IFilCvFdv;
 import org.beigesoft.cnv.IFilCvFld;
 import org.beigesoft.cnv.FilNmCvHsId;
 import org.beigesoft.cnv.FilNmCvSmp;
@@ -49,7 +46,7 @@ import org.beigesoft.prp.ISetng;
  *
  * @author Yury Demidenko
  */
-public class FctFilFdCv implements IFctNm<IFilCvFld> {
+public class FctFilFdCv implements IFcFlCvFd {
 
   //services:
   /**
@@ -81,7 +78,7 @@ public class FctFilFdCv implements IFctNm<IFilCvFld> {
   /**
    * <p>Factory simple converters.</p>
    **/
-  private IFctNm<IFilCvFdv<?>> fctCnvFld;
+  private IFcFlCvFdv fctCnvFld;
 
   /**
    * <p>Holder of fillers fields names.</p>
@@ -208,9 +205,9 @@ public class FctFilFdCv implements IFctNm<IFilCvFld> {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<IFilCvFdv<?>>
+   * @return IFcFlCvFdv
    **/
-  public final IFctNm<IFilCvFdv<?>> getFctCnvFld() {
+  public final IFcFlCvFdv getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -219,7 +216,7 @@ public class FctFilFdCv implements IFctNm<IFilCvFld> {
    * @param pFctCnvFld reference
    **/
   public final void setFctCnvFld(
-    final IFctNm<IFilCvFdv<?>> pFctCnvFld) {
+    final IFcFlCvFdv pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 

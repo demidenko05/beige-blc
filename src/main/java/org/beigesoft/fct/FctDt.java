@@ -37,8 +37,6 @@ import org.beigesoft.rdb.IRdb;
 import org.beigesoft.hld.HldFldStg;
 import org.beigesoft.hld.HldClsStg;
 import org.beigesoft.hld.IHlNmClSt;
-import org.beigesoft.prc.IPrc;
-import org.beigesoft.prc.IPrcEnt;
 
 /**
  * <p>Holder of base and additional data for main factory.</p>

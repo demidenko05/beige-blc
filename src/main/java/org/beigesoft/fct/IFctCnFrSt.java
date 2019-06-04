@@ -41,10 +41,10 @@ public interface IFctCnFrSt {
 
   /**
    * <p>Gets converter in lazy mode by given name.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pNm - converter name
    * @return requested converter
    * @throws Exception - an exception
    */
-  ICnFrSt<?> laz(Map<String, Object> pRqVs, String pNm) throws Exception;
+  ICnFrSt<?> laz(Map<String, Object> pRvs, String pNm) throws Exception;
 }

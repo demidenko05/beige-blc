@@ -31,8 +31,8 @@ package org.beigesoft.hld;
 import org.beigesoft.mdl.IHasId;
 
 /**
- * <p>Abstraction of holder of a Class that associated with
- * another entity's one, e.g. holder of field's class for given entity class.</p>
+ * <p>Abstraction of holder of a Class that associated with another
+ * entity's one, e.g. holder of field's class for given entity class.</p>
  *
  * @author Yury Demidenko
  */
@@ -40,10 +40,12 @@ public interface IHlNmClCl {
 
   /**
    * <p>Get thing for given one and name.</p>
+   * @param <T> entity type
    * @param pCls entity class
    * @param pNm name
    * @return associated class
    * @throws Exception an Exception
    **/
-  <T extends IHasId<?>> Class<?> get(Class<T> pCls, String pNm) throws Exception;
+  <T extends IHasId<?>> Class<?> get(Class<T> pCls,
+    String pNm) throws Exception;
 }

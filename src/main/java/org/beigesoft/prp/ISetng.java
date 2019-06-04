@@ -134,6 +134,7 @@ public interface ISetng {
   /**
    * <p>Lazy gets field's setting for given class, field and name.
    * Maybe NULL.</p>
+   * @param <T> entity type
    * @param pCls class
    * @param pFldNm field name
    * @param pStgNm setting name
@@ -145,6 +146,7 @@ public interface ISetng {
 
   /**
    * <p>Lazy gets class's setting for given class and name. Maybe NULL.</p>
+   * @param <T> entity type
    * @param pCls class
    * @param pStgNm setting name
    * @return String setting, maybe NULL
@@ -156,19 +158,21 @@ public interface ISetng {
   /**
    * <p>Lazy gets fields names for given class excluding ID, collections and
    * excluded fields by XML file.</p>
+   * @param <T> entity type
    * @param pCls class
    * @return fields names set
    * @throws Exception - an exception
    **/
-  <T extends IHasId<?>>List<String> lazFldNms(Class<T> pCls) throws Exception;
+  <T extends IHasId<?>> List<String> lazFldNms(Class<T> pCls) throws Exception;
 
   /**
    * <p>Lazy gets ID fields names for given class.</p>
+   * @param <T> entity type
    * @param pCls class
    * @return fields names set
    * @throws Exception - an exception
    **/
-  <T extends IHasId<?>>List<String> lazIdFldNms(Class<T> pCls) throws Exception;
+ <T extends IHasId<?>> List<String> lazIdFldNms(Class<T> pCls) throws Exception;
 
   /**
    * <p>Lazy gets all involved classes.</p>
@@ -220,5 +224,5 @@ public interface ISetng {
    * <p>Getter for fldStgs.</p>
    * @return Map<Class<? extends IHasId<?>>, Map<String, Map<String, String>>>
    **/
-  Map<Class<? extends IHasId<?>>, Map<String, Map<String, String>>> getFldStgs();
+ Map<Class<? extends IHasId<?>>, Map<String, Map<String, String>>> getFldStgs();
 }

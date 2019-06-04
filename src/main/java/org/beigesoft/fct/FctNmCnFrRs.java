@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.beigesoft.exc.ExcCode;
-import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.log.ILog;
 import org.beigesoft.cnv.ICnvRsFdv;
 import org.beigesoft.cnv.CvRsFvBgd;
@@ -50,7 +49,7 @@ import org.beigesoft.cnv.CvRsFvStr;
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FctNmCnFrRs<RS> implements IFctNm<ICnvRsFdv<?, RS>> {
+public class FctNmCnFrRs<RS> implements IFcCnRsFdv<RS> {
 
   //services/parts:
   /**
@@ -67,12 +66,12 @@ public class FctNmCnFrRs<RS> implements IFctNm<ICnvRsFdv<?, RS>> {
 
   /**
    * <p>Get converter in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pCnNm - converter name
    * @return requested converter
    * @throws Exception - an exception
    */
-  public final ICnvRsFdv<?, RS> laz(final Map<String, Object> pRqVs,
+  public final ICnvRsFdv<?, RS> laz(final Map<String, Object> pRvs,
     final String pCnNm) throws Exception {
     ICnvRsFdv<?, RS> rz = this.convrts.get(pCnNm);
     if (rz == null) {

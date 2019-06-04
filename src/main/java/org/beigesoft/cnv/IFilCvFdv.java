@@ -30,7 +30,6 @@ package org.beigesoft.cnv;
 
 import java.util.Map;
 
-import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.ColVals;
 
 /**

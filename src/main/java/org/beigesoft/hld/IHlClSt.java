@@ -40,9 +40,10 @@ public interface IHlClSt {
   /**
    * <p>Get associated thing for given one,
    * e.g. name of converter ID for given class.</p>
-   * @param pKey key thing
-   * @return associated thing
+   * @param <T> entity type
+   * @param pCls class
+   * @return setting
    * @throws Exception an Exception
    **/
-  <T extends IHasId<?>> String get(Class<T> pKey) throws Exception;
+  <T extends IHasId<?>> String get(Class<T> pCls) throws Exception;
 }

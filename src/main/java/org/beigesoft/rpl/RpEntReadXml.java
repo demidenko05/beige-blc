@@ -34,7 +34,7 @@ import java.lang.reflect.Constructor;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.fct.IFcFlFdSt;
 import org.beigesoft.log.ILog;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.hld.IHlNmClSt;
@@ -66,7 +66,7 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
   /**
    * <p>Fillers fields factory.</p>
    */
-  private IFctNm<IFilFldStr> fctFilFld;
+  private IFcFlFdSt fctFilFld;
 
   /**
    * <p>XML service.</p>
@@ -162,9 +162,9 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
 
   /**
    * <p>Getter for fctFilFld.</p>
-   * @return IFctNm<IFilFldStr>
+   * @return IFcFlFdSt
    **/
-  public final IFctNm<IFilFldStr> getFctFilFld() {
+  public final IFcFlFdSt getFctFilFld() {
     return this.fctFilFld;
   }
 
@@ -172,7 +172,7 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
    * <p>Setter for fctFilFld.</p>
    * @param pFctFilFld reference
    **/
-  public final void setFctFilFld(final IFctNm<IFilFldStr> pFctFilFld) {
+  public final void setFctFilFld(final IFcFlFdSt pFctFilFld) {
     this.fctFilFld = pFctFilFld;
   }
 

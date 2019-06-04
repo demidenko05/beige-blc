@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
 
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.ColVals;
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.fct.IFcFlCvFdv;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClCl;
@@ -75,7 +75,7 @@ public class FilNmCvHsId implements IFilCvFld {
   /**
    * <p>Converters fields factory.</p>
    */
-  private IFctNm<IFilCvFdv<?>> fctCnvFld;
+  private IFcFlCvFdv fctCnvFld;
 
   /**
    * <p>Fills given column values with given entity's field of entity type.</p>
@@ -202,9 +202,9 @@ public class FilNmCvHsId implements IFilCvFld {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<IFilCvFdv<?>>
+   * @return IFcFlCvFdv
    **/
-  public final IFctNm<IFilCvFdv<?>> getFctCnvFld() {
+  public final IFcFlCvFdv getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -213,7 +213,7 @@ public class FilNmCvHsId implements IFilCvFld {
    * @param pFctCnvFld reference
    **/
   public final void setFctCnvFld(
-    final IFctNm<IFilCvFdv<?>> pFctCnvFld) {
+    final IFcFlCvFdv pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 }

@@ -64,13 +64,13 @@ public class CnvHsIdStr<T extends IHasId<?>> implements ICnToSt<T> {
 
   /**
    * <p>Converts any entity to string (ID).</p>
-   * @param pRqVs request scoped vars, e.g. user preference decimal separator
+   * @param pRvs request scoped vars, e.g. user preference decimal separator
    * @param pHsId Entity that ID
    * @return string representation
    * @throws Exception - an exception
    **/
   @Override
-  public final String conv(final Map<String, Object> pRqVs,
+  public final String conv(final Map<String, Object> pRvs,
     final T pHsId) throws Exception {
     if (pHsId == null) {
       return "";
@@ -82,8 +82,8 @@ public class CnvHsIdStr<T extends IHasId<?>> implements ICnToSt<T> {
     String cnNm = this.hldNmFdCn.get(pHsId.getClass(), fdIdNms.get(0));
     @SuppressWarnings("unchecked")
     ICnToSt<Object> flCn = (ICnToSt<Object>) this.fctCnvFld
-      .laz(pRqVs, cnNm);
-    return flCn.conv(pRqVs, pHsId.getIid());
+      .laz(pRvs, cnNm);
+    return flCn.conv(pRvs, pHsId.getIid());
   }
 
   //Simple getters and setters:

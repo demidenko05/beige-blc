@@ -32,12 +32,10 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.beigesoft.exc.ExcCode;
-import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
-import org.beigesoft.cnv.ICnvRsFdv;
 import org.beigesoft.cnv.IFilEntRs;
 import org.beigesoft.cnv.IFilFldRs;
 import org.beigesoft.cnv.FilFldEnmRs;
@@ -50,7 +48,7 @@ import org.beigesoft.cnv.FilFldSmpRs;
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class FctNmFilFdRs<RS> implements IFctNm<IFilFldRs<RS>> {
+public class FctNmFilFdRs<RS> implements IFcFlFdRs<RS> {
 
   //services:
   /**
@@ -77,7 +75,7 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFldRs<RS>> {
   /**
    * <p>Factory simple converters.</p>
    **/
-  private IFctNm<ICnvRsFdv<?, RS>> fctCnvFld;
+  private IFcCnRsFdv<RS> fctCnvFld;
 
   /**
    * <p>Filler entity factory.</p>
@@ -93,12 +91,12 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFldRs<RS>> {
 
   /**
    * <p>Get filler in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pFiNm - filler name
    * @return requested filler
    * @throws Exception - an exception
    */
-  public final IFilFldRs<RS> laz(final Map<String, Object> pRqVs,
+  public final IFilFldRs<RS> laz(final Map<String, Object> pRvs,
     final String pFiNm) throws Exception {
     IFilFldRs<RS> rz = this.fillers.get(pFiNm);
     if (rz == null) {
@@ -203,9 +201,9 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFldRs<RS>> {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<ICnvRsFdv<?, RS>>
+   * @return IFcCnRsFdv<RS>
    **/
-  public final IFctNm<ICnvRsFdv<?, RS>> getFctCnvFld() {
+  public final IFcCnRsFdv<RS> getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -213,7 +211,7 @@ public class FctNmFilFdRs<RS> implements IFctNm<IFilFldRs<RS>> {
    * <p>Setter for fctCnvFld.</p>
    * @param pFctCnvFld reference
    **/
-  public final void setFctCnvFld(final IFctNm<ICnvRsFdv<?, RS>> pFctCnvFld) {
+  public final void setFctCnvFld(final IFcCnRsFdv<RS> pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 

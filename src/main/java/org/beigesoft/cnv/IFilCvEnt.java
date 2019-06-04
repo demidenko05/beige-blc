@@ -42,6 +42,7 @@ public interface IFilCvEnt {
 
   /**
    * <p>Fills given column values with given entity.</p>
+   * @param <T> entity type
    * @param pRqVs request scoped vars
    * @param pVs invoker scoped vars, e.g. needed fields {id, ver, nme} not null.
    * @param pEnt entity

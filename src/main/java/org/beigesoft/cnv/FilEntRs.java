@@ -37,7 +37,7 @@ import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.mdl.LvDep;
 import org.beigesoft.log.ILog;
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.fct.IFcFlFdRs;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
 
@@ -69,7 +69,7 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
   /**
    * <p>Fillers fields factory.</p>
    */
-  private IFctNm<IFilFldRs<RS>> fctFilFld;
+  private IFcFlFdRs<RS> fctFilFld;
 
   /**
    * <p>Fill entity from DB recods-set.</p>
@@ -192,9 +192,9 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
 
   /**
    * <p>Getter for fctFilFld.</p>
-   * @return IFctNm<IFilFldRs<RS>>
+   * @return IFcFlFdRs<RS>
    **/
-  public final IFctNm<IFilFldRs<RS>> getFctFilFld() {
+  public final IFcFlFdRs<RS> getFctFilFld() {
     return this.fctFilFld;
   }
 
@@ -202,8 +202,7 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
    * <p>Setter for fctFilFld.</p>
    * @param pFctFilFld reference
    **/
-  public final void setFctFilFld(
-    final IFctNm<IFilFldRs<RS>> pFctFilFld) {
+  public final void setFctFilFld(final IFcFlFdRs<RS> pFctFilFld) {
     this.fctFilFld = pFctFilFld;
   }
 

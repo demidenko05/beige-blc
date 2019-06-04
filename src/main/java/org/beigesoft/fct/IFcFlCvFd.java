@@ -30,21 +30,21 @@ package org.beigesoft.fct;
 
 import java.util.Map;
 
+import org.beigesoft.cnv.IFilCvFld;
+
 /**
- * <p>Abstraction of type checked application scope beans factory.
- * Beans are same type and same sphere, e.g. fields converters.</p>
+ * <p>Abstraction of filler CV with entity's field factory.</p>
  *
- * @param <T> bean super-type
  * @author Yury Demidenko
  */
-public interface IFctNm<T> {
-//TODO subs less generic
+public interface IFcFlCvFd {
+
   /**
-   * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
-   * @param pBnNm - bean name
-   * @return requested bean
+   * <p>Gets filler in lazy mode by given name.</p>
+   * @param pRvs request scoped vars
+   * @param pNm - filler name
+   * @return requested filler
    * @throws Exception - an exception
    */
-  T laz(Map<String, Object> pRqVs, String pBnNm) throws Exception;
+  IFilCvFld laz(Map<String, Object> pRvs, String pNm) throws Exception;
 }

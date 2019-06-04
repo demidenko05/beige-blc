@@ -33,7 +33,6 @@ import java.io.Reader;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
-import org.beigesoft.fct.IFctNm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.rdb.IOrm;
@@ -78,7 +77,7 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
   /**
    * <p>Syncer's factory.</p>
    */
-  private IFctNm<IRpEntSync<?>> fctEntSy;
+  private IFcRpEnSy fctEntSy;
 
   /**
    * <p>Settings service.</p>
@@ -212,9 +211,9 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
 
   /**
    * <p>Getter for fctEntSy.</p>
-   * @return IFctNm<IRpEntSync<?>>
+   * @return IFcRpEnSy
    **/
-  public final IFctNm<IRpEntSync<?>> getFctEntSy() {
+  public final IFcRpEnSy getFctEntSy() {
     return this.fctEntSy;
   }
 
@@ -222,7 +221,7 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
    * <p>Setter for fctEntSy.</p>
    * @param pFctEntSy reference
    **/
-  public final void setFctEntSy(final IFctNm<IRpEntSync<?>> pFctEntSy) {
+  public final void setFctEntSy(final IFcRpEnSy pFctEntSy) {
     this.fctEntSy = pFctEntSy;
   }
 

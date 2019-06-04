@@ -31,7 +31,8 @@ package org.beigesoft.cnv;
 import java.util.Map;
 
 /**
- * <p>Abstraction of simple generic converter from string value to another one.</p>
+ * <p>Abstraction of simple generic converter from string value
+ *  to another one.</p>
  *
  * @author Yury Demidenko
  * @param <T> type of converted

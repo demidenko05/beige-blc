@@ -48,7 +48,7 @@ public interface IFilEntRs<RS> {
    * @param pRvs request scoped vars, not null
    * @param pVs invoker scoped vars, e.g. needed fields {id, ver, nme} not null.
    * @param pEnt entity to fill, not null
-   * @param pRqDt record-set, not null
+   * @param pRs record-set, not null
    * @throws Exception - an exception
    **/
   <T extends IHasId<?>>  void fill(Map<String, Object> pRvs,

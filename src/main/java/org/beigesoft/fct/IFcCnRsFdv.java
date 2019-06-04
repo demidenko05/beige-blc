@@ -26,29 +26,26 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.hld;
+package org.beigesoft.fct;
 
-import java.lang.reflect.Method;
+import java.util.Map;
 
-import org.beigesoft.mdl.IHasId;
+import org.beigesoft.cnv.ICnvRsFdv;
 
 /**
- * <p>Abstraction of holder of a RAPI method for entity's class
- *  by field's name.</p>
+ * <p>Abstraction of converters RS to field's value factory.</p>
  *
  * @author Yury Demidenko
+ * @param <RS> platform dependent record set type
  */
-public interface IHlNmClMt {
+public interface IFcCnRsFdv<RS> {
 
   /**
-   * <p>Get thing for given one and name,
-   * e.g. holder of getters (reflect.Method) for a class fields.</p>
-   * @param <T> entity type
-   * @param pCls class
-   * @param pFdNm field name
-   * @return method
-   * @throws Exception an Exception
-   **/
-  <T extends IHasId<?>> Method get(Class<T> pCls,
-    String pFdNm) throws Exception;
+   * <p>Gets converter in lazy mode by given name.</p>
+   * @param pRvs request scoped vars
+   * @param pNm - converter name
+   * @return requested converter
+   * @throws Exception - an exception
+   */
+  ICnvRsFdv<?, RS> laz(Map<String, Object> pRvs, String pNm) throws Exception;
 }

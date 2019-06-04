@@ -90,7 +90,8 @@ public class UvdVar {
   /**
    * <p>Owned lists.</p>
    **/
-  private Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>> owdEntsMp;
+  private Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>>
+    owdEntsMp;
 
   //Simple getters and setters:
 
@@ -183,7 +184,9 @@ public class UvdVar {
    * <p>Getter for owdEntsMp.</p>
    * @return Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>>
    **/
-  public final Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>> getOwdEntsMp() {
+  public final
+    Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>>
+      getOwdEntsMp() {
     return this.owdEntsMp;
   }
 
@@ -192,7 +195,8 @@ public class UvdVar {
    * @param pOwdEntsMp reference
    **/
   public final void setOwdEntsMp(
-    final Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>> pOwdEntsMp) {
+    final Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>>
+      pOwdEntsMp) {
     this.owdEntsMp = pOwdEntsMp;
   }
 

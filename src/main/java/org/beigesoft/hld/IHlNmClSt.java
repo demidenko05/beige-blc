@@ -46,6 +46,7 @@ public interface IHlNmClSt {
 
   /**
    * <p>Gets String thing for given Class and name.</p>
+   * @param <T> entity type
    * @param pKey entity Class
    * @param pNm fing name
    * @return associated thing

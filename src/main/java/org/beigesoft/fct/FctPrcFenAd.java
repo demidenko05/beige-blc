@@ -94,10 +94,11 @@ public class FctPrcFenAd<RS> implements IFctPrc {
     entPg.setLog(this.fctBlc.lazLogStd(pRqVs));
     entPg.setHlpEntPg(this.fctBlc.lazHlpEntPg(pRqVs));
     entPg.setEntMp(new HashMap<String, Class<? extends IHasId<?>>>());
-    for (Class<?> cls : this.fctBlc.lazStgUvd(pRqVs).lazClss()) {
+    for (Class<? extends IHasId<?>> cls : this.fctBlc
+      .lazStgUvd(pRqVs).lazClss()) {
       if (this.fctBlc.getFctDt().getAdmEnts() != null
         && this.fctBlc.getFctDt().getAdmEnts().contains(cls)) {
-        entPg.getEntMp().put(cls.getSimpleName(), (Class<? extends IHasId<?>>) cls);
+        entPg.getEntMp().put(cls.getSimpleName(), cls);
       }
     }
     rz.setEntPg(entPg);

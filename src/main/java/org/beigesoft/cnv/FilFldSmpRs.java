@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
 
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IRecSet;
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.fct.IFcCnRsFdv;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClSt;
@@ -67,7 +67,7 @@ public class FilFldSmpRs<RS> implements IFilFldRs<RS> {
   /**
    * <p>Factory simple converters.</p>
    **/
-  private IFctNm<ICnvRsFdv<?, RS>> fctCnvFld;
+  private IFcCnRsFdv<RS> fctCnvFld;
 
   /**
    * <p>Fills object's field.</p>
@@ -143,9 +143,9 @@ public class FilFldSmpRs<RS> implements IFilFldRs<RS> {
 
   /**
    * <p>Getter for fctCnvFld.</p>
-   * @return IFctNm<ICnvRsFdv<?, RS>>
+   * @return IFcCnRsFdv<RS>
    **/
-  public final IFctNm<ICnvRsFdv<?, RS>> getFctCnvFld() {
+  public final IFcCnRsFdv<RS> getFctCnvFld() {
     return this.fctCnvFld;
   }
 
@@ -154,7 +154,7 @@ public class FilFldSmpRs<RS> implements IFilFldRs<RS> {
    * @param pFctCnvFld reference
    **/
   public final void setFctCnvFld(
-    final IFctNm<ICnvRsFdv<?, RS>> pFctCnvFld) {
+    final IFcCnRsFdv<RS> pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 

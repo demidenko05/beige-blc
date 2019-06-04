@@ -36,7 +36,7 @@ import java.util.Arrays;
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.ColVals;
-import org.beigesoft.fct.IFctNm;
+import org.beigesoft.fct.IFcFlCvFd;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
@@ -67,10 +67,11 @@ public class FilCvEnt implements IFilCvEnt {
   /**
    * <p>Fillers fields factory.</p>
    */
-  private IFctNm<IFilCvFld> fctFilFld;
+  private IFcFlCvFd fctFilFld;
 
   /**
    * <p>Fills/converts given column values with given entity.</p>
+   * @param <T> entity type
    * @param pRvs request scoped vars
    * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
    * @param pEnt entity
@@ -129,6 +130,7 @@ public class FilCvEnt implements IFilCvEnt {
 
   /**
    * <p>Fills/converts given column values with given entity.</p>
+   * @param <T> entity type
    * @param pRvs request scoped vars
    * @param pVs invoker scoped vars, e.g. needed fields {id, ver, nme} not null.
    * @param pEnt entity
@@ -201,9 +203,9 @@ public class FilCvEnt implements IFilCvEnt {
 
   /**
    * <p>Getter for fctFilFld.</p>
-   * @return IFctNm<IFilCvFld>
+   * @return IFcFlCvFd
    **/
-  public final IFctNm<IFilCvFld> getFctFilFld() {
+  public final IFcFlCvFd getFctFilFld() {
     return this.fctFilFld;
   }
 
@@ -211,7 +213,7 @@ public class FilCvEnt implements IFilCvEnt {
    * <p>Setter for fctFilFld.</p>
    * @param pFctFilFld reference
    **/
-  public final void setFctFilFld(final IFctNm<IFilCvFld> pFctFilFld) {
+  public final void setFctFilFld(final IFcFlCvFd pFctFilFld) {
     this.fctFilFld = pFctFilFld;
   }
 }
