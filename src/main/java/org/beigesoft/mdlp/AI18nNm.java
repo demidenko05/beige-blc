@@ -63,16 +63,16 @@ public abstract class AI18nNm<T extends IIdLnNm, ID extends AI18nNmId<T>>
   public abstract void setHasNm(T pHasNm);
 
   /**
-   * <p>Getter for lang.</p>
+   * <p>Getter for ang.</p>
    * @return Lng
    **/
   public abstract Lng getLng();
 
   /**
-   * <p>Setter for lang.</p>
-   * @param pLang reference
+   * <p>Setter for lng.</p>
+   * @param pLng reference
    **/
-  public abstract void setLng(Lng pLang);
+  public abstract void setLng(Lng pLng);
 
   /**
    * <p>Geter for nme.</p>

@@ -44,34 +44,34 @@ public abstract class AI18nNmId<T extends IIdLnNm> {
   /**
    * <p>The language.</p>
    **/
-  private Lng lang;
+  private Lng lng;
 
   /**
-   * <p>Getter for hasName.</p>
+   * <p>Getter for hasNm.</p>
    * @return IHasNm
    **/
   public abstract T getHasNm();
 
   /**
-   * <p>Setter for hasName.</p>
+   * <p>Setter for hasNm.</p>
    * @param pHasNm reference
    **/
   public abstract void setHasNm(T pHasNm);
 
   //Simple getters and setters:
   /**
-   * <p>Getter for lang.</p>
+   * <p>Getter for lng.</p>
    * @return Lng
    **/
-  public final Lng getLang() {
-    return this.lang;
+  public final Lng getLng() {
+    return this.lng;
   }
 
   /**
-   * <p>Setter for lang.</p>
-   * @param pLang reference
+   * <p>Setter for lng.</p>
+   * @param pLng reference
    **/
-  public final void setLang(final Lng pLang) {
-    this.lang = pLang;
+  public final void setLng(final Lng pLng) {
+    this.lng = pLng;
   }
 }

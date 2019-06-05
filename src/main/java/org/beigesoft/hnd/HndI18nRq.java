@@ -119,12 +119,13 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
   @Override
   public final void handle(final Map<String, Object> pRqVs,
     final IReqDt pRqDt) throws Exception {
-    //unlocked references of the latest versions of shared data:
+    //unshared references of the latest versions of shared data:
     Map<String, Object> vs = new HashMap<String, Object>();
     List<UsPrf> upfsTmp = null;
     List<Lng> lgsTmp = null;
     List<DcSp> dssTmp = null;
     List<DcGrSp> dgssTmp = null;
+    boolean tmpReady = false;
     if (this.usPrfs == null) {
       synchronized (this) {
         if (this.usPrfs == null) {
@@ -133,16 +134,17 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
             this.rdb.setAcmt(false);
             this.rdb.setTrIsl(IRdb.TRRUC);
             this.rdb.begin();
-            List<UsPrf> upfs = this.orm.retLst(pRqVs, vs, UsPrf.class);
-            List<Lng> lgs = this.orm.retLst(pRqVs, vs, Lng.class);
-            List<DcSp> dss = this.orm.retLst(pRqVs, vs, DcSp.class);
-            List<DcGrSp> dgss = this.orm.retLst(pRqVs, vs, DcGrSp.class);
+            upfsTmp = this.orm.retLst(pRqVs, vs, UsPrf.class);
+            lgsTmp = this.orm.retLst(pRqVs, vs, Lng.class);
+            dssTmp = this.orm.retLst(pRqVs, vs, DcSp.class);
+            dgssTmp = this.orm.retLst(pRqVs, vs, DcGrSp.class);
             this.rdb.commit();
             //assigning fully initialized data:
-            this.dcGrSps = dgss;
-            this.dcSps = dss;
-            this.lngs = lgs;
-            this.usPrfs = upfs;
+            this.dcGrSps = dgssTmp;
+            this.dcSps = dssTmp;
+            this.lngs = lgsTmp;
+            this.usPrfs = upfsTmp;
+            tmpReady = true;
           } catch (Exception ex) {
             if (!this.rdb.getAcmt()) {
               this.rdb.rollBack();
@@ -152,24 +154,15 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
             this.rdb.release();
           }
         }
-        upfsTmp = this.usPrfs;
-        lgsTmp = this.lngs;
-        dssTmp = this.dcSps;
-        dgssTmp = this.dcGrSps;
       }
     }
-    upfsTmp = this.usPrfs;
-    lgsTmp = this.lngs;
-    dssTmp = this.dcSps;
-    dgssTmp = this.dcGrSps;
-    if (upfsTmp == null || lgsTmp == null || dssTmp == null
-      || dgssTmp == null) {
-      synchronized (this) { //waiting for another thread refresh data
-        upfsTmp = this.usPrfs;
-        lgsTmp = this.lngs;
-        dssTmp = this.dcSps;
-        dgssTmp = this.dcGrSps;
-      }
+    if (!tmpReady) {
+      upfsTmp = this.usPrfs;
+      lgsTmp = this.lngs;
+      dssTmp = this.dcSps;
+      dgssTmp = this.dcGrSps;
+      //it will be error in case when other thread is clearing these unlocked
+      //data for refreshing
     }
     UsPrf upf = revUsPrf(pRqDt, lgsTmp, dssTmp, dgssTmp, upfsTmp);
     CmnPrf cpf = revCmnPrf(upf);
