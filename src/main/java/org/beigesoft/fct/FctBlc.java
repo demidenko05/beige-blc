@@ -65,6 +65,7 @@ import org.beigesoft.log.ALogFile;
 import org.beigesoft.log.LogFile;
 import org.beigesoft.cnv.FilEntRs;
 import org.beigesoft.cnv.FilEntRq;
+import org.beigesoft.cnv.IFilEntRq;
 import org.beigesoft.cnv.FilCvEnt;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.rdb.Orm;
@@ -177,7 +178,7 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazFctCnvCv(pRvs);
           } else if (FctNmCnFrRs.class.getSimpleName().equals(pBnNm)) {
             rz = lazFctNmCnFrRs(pRvs);
-          } else if (FilEntRq.class.getSimpleName().equals(pBnNm)) {
+          } else if (IFilEntRq.class.getSimpleName().equals(pBnNm)) {
             rz = lazFilEntRq(pRvs);
           } else if (FctDt.STGUVDNM.equals(pBnNm)) {
             rz = lazStgUvd(pRvs);
@@ -415,6 +416,7 @@ public class FctBlc<RS> implements IFctApp {
       .get(HndI18nRq.class.getSimpleName());
     if (rz == null) {
       rz = new HndI18nRq<RS>();
+      rz.setNumStr(lazNumStr(pRvs));
       rz.setSrvDt(lazSrvDt(pRvs));
       rz.setOrm(lazOrm(pRvs));
       @SuppressWarnings("unchecked")
@@ -848,15 +850,15 @@ public class FctBlc<RS> implements IFctApp {
   public final synchronized FilEntRq lazFilEntRq(
     final Map<String, Object> pRvs) throws Exception {
     FilEntRq rz = (FilEntRq) this.beans
-      .get(FilEntRq.class.getSimpleName());
+      .get(IFilEntRq.class.getSimpleName());
     if (rz == null) {
       rz = new FilEntRq();
       rz.setLog(lazLogStd(pRvs));
       rz.setSetng(lazStgUvd(pRvs));
       rz.setHldFilFdNms(lazHldNmFilFdStUvd(pRvs));
       rz.setFctFilFld(lazFctNmFilFd(pRvs));
-      this.beans.put(FilEntRq.class.getSimpleName(), rz);
-      lazLogStd(pRvs).info(pRvs, getClass(), FilEntRq.class.getSimpleName()
+      this.beans.put(IFilEntRq.class.getSimpleName(), rz);
+      lazLogStd(pRvs).info(pRvs, getClass(), IFilEntRq.class.getSimpleName()
         + " has been created.");
     }
     return rz;

@@ -45,6 +45,7 @@ import org.beigesoft.rdb.IOrm;
 import org.beigesoft.srv.UtlJsp;
 import org.beigesoft.srv.II18n;
 import org.beigesoft.srv.ISrvDt;
+import org.beigesoft.srv.INumStr;
 
 /**
  * <p>It handles request internationalization and other preferences.
@@ -84,6 +85,11 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    * <p>Date service.</p>
    **/
   private ISrvDt srvDt;
+
+  /**
+   * <p>Print number service.</p>
+   **/
+  private INumStr numStr;
 
   //Cached data:
   /**
@@ -192,6 +198,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     pRqDt.setAttr("utJsp", this.utJsp);
     pRqDt.setAttr("i18n", this.i18n);
     pRqDt.setAttr("srvDt", this.srvDt);
+    pRqDt.setAttr("numStr", this.numStr);
   }
 
   /**
@@ -572,5 +579,21 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    **/
   public final void setSrvDt(final ISrvDt pSrvDt) {
     this.srvDt = pSrvDt;
+  }
+
+  /**
+   * <p>Getter for numStr.</p>
+   * @return INumStr
+   **/
+  public final INumStr getNumStr() {
+    return this.numStr;
+  }
+
+  /**
+   * <p>Setter for numStr.</p>
+   * @param pNumStr reference
+   **/
+  public final void setNumStr(final INumStr pNumStr) {
+    this.numStr = pNumStr;
   }
 }

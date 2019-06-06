@@ -115,7 +115,7 @@ public class CnvTest<RS> {
     HldNmCnToSt hldNmCnvStr = (HldNmCnToSt) this.fctApp.laz(this.rqVs, HldNmCnToSt.class.getSimpleName());
     FctNmCnToSt fctNmCnvStr = (FctNmCnToSt) this.fctApp.laz(this.rqVs, FctNmCnToSt.class.getSimpleName());
     Reflect reflect = (Reflect) this.fctApp.laz(this.rqVs, IReflect.class.getSimpleName());
-    FilEntRq filEntRq = (FilEntRq) this.fctApp.laz(this.rqVs, FilEntRq.class.getSimpleName());
+    FilEntRq filEntRq = (FilEntRq) this.fctApp.laz(this.rqVs, IFilEntRq.class.getSimpleName());
     Setng stgUvd = (Setng) this.fctApp.laz(this.rqVs, FctDt.STGUVDNM);
     stgUvd.lazConf();
     //write:

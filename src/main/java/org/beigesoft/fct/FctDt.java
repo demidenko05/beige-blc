@@ -190,7 +190,7 @@ public class FctDt {
   /**
    * <p>Transaction isolation for reading DB phase.</p>
    **/
-  private Integer readTi = IRdb.TRRC;
+  private Integer readTi = IRdb.TRRUC;
 
   /**
    * <p>Transaction isolation for writing and reading DB phase.</p>
@@ -233,6 +233,7 @@ public class FctDt {
    **/
   private List<Class<? extends IHasId<?>>> admEnts;
 
+//TODO base non-shared, base shared, admin...
   /**
    * <p>Forbidden entities for base entity request handler, e.g. UsTmc.</p>
    **/
@@ -243,6 +244,11 @@ public class FctDt {
    * e.g. email connection EmCon.</p>
    **/
   private List<Class<? extends IHasId<?>>> shrEnts;
+
+  /**
+   * <p>Entities that can be printed via PDF, etc.</p>
+   **/
+  private List<Class<? extends IHasId<?>>> flRpEnts;
 
   /**
    * <p>Holders class string settings.</p>
@@ -276,6 +282,11 @@ public class FctDt {
   private Set<IFctPrcEnt> fctsPrcEnt;
 
   /**
+   * <p>Additional file report processor factories.</p>
+   **/
+  private Set<IFctPrcFl> fctrsPrcFl;
+
+  /**
    * <p>Additional base entity processors names holders
    *  with high priority.</p>
    **/
@@ -292,7 +303,7 @@ public class FctDt {
    * <p>Getter for stgDbCpDir.</p>
    * @return String
    **/
-  public final synchronized String getStgDbCpDir() {
+  public final String getStgDbCpDir() {
     return this.stgDbCpDir;
   }
 
@@ -300,7 +311,7 @@ public class FctDt {
    * <p>Setter for stgDbCpDir.</p>
    * @param pStgDbCpDir reference
    **/
-  public final synchronized void setStgDbCpDir(final String pStgDbCpDir) {
+  public final void setStgDbCpDir(final String pStgDbCpDir) {
     this.stgDbCpDir = pStgDbCpDir;
   }
 
@@ -308,7 +319,7 @@ public class FctDt {
    * <p>Getter for stgOrmDir.</p>
    * @return String
    **/
-  public final synchronized String getStgOrmDir() {
+  public final String getStgOrmDir() {
     return this.stgOrmDir;
   }
 
@@ -316,7 +327,7 @@ public class FctDt {
    * <p>Setter for stgOrmDir.</p>
    * @param pStgOrmDir reference
    **/
-  public final synchronized void setStgOrmDir(final String pStgOrmDir) {
+  public final void setStgOrmDir(final String pStgOrmDir) {
     this.stgOrmDir = pStgOrmDir;
   }
 
@@ -324,7 +335,7 @@ public class FctDt {
    * <p>Getter for stgUvdDir.</p>
    * @return String
    **/
-  public final synchronized String getStgUvdDir() {
+  public final String getStgUvdDir() {
     return this.stgUvdDir;
   }
 
@@ -332,7 +343,7 @@ public class FctDt {
    * <p>Setter for stgUvdDir.</p>
    * @param pStgUvdDir reference
    **/
-  public final synchronized void setStgUvdDir(final String pStgUvdDir) {
+  public final void setStgUvdDir(final String pStgUvdDir) {
     this.stgUvdDir = pStgUvdDir;
   }
 
@@ -340,7 +351,7 @@ public class FctDt {
    * <p>Getter for lngCntr.</p>
    * @return String
    **/
-  public final synchronized String getLngCntr() {
+  public final String getLngCntr() {
     return this.lngCntr;
   }
 
@@ -348,7 +359,7 @@ public class FctDt {
    * <p>Setter for lngCntr.</p>
    * @param pLngCntr reference
    **/
-  public final synchronized void setLngCntr(final String pLngCntr) {
+  public final void setLngCntr(final String pLngCntr) {
     this.lngCntr = pLngCntr;
   }
 
@@ -356,7 +367,7 @@ public class FctDt {
    * <p>Getter for dbCls.</p>
    * @return String
    **/
-  public final synchronized String getDbCls() {
+  public final String getDbCls() {
     return this.dbCls;
   }
 
@@ -364,7 +375,7 @@ public class FctDt {
    * <p>Setter for dbCls.</p>
    * @param pDbCls reference
    **/
-  public final synchronized void setDbCls(final String pDbCls) {
+  public final void setDbCls(final String pDbCls) {
     this.dbCls = pDbCls;
   }
 
@@ -372,7 +383,7 @@ public class FctDt {
    * <p>Getter for dbUrl.</p>
    * @return String
    **/
-  public final synchronized String getDbUrl() {
+  public final String getDbUrl() {
     return this.dbUrl;
   }
 
@@ -380,7 +391,7 @@ public class FctDt {
    * <p>Setter for dbUrl.</p>
    * @param pDbUrl reference
    **/
-  public final synchronized void setDbUrl(final String pDbUrl) {
+  public final void setDbUrl(final String pDbUrl) {
     this.dbUrl = pDbUrl;
   }
 
@@ -388,7 +399,7 @@ public class FctDt {
    * <p>Getter for dbUsr.</p>
    * @return String
    **/
-  public final synchronized String getDbUsr() {
+  public final String getDbUsr() {
     return this.dbUsr;
   }
 
@@ -396,7 +407,7 @@ public class FctDt {
    * <p>Setter for dbUsr.</p>
    * @param pDbUsr reference
    **/
-  public final synchronized void setDbUsr(final String pDbUsr) {
+  public final void setDbUsr(final String pDbUsr) {
     this.dbUsr = pDbUsr;
   }
 
@@ -404,7 +415,7 @@ public class FctDt {
    * <p>Getter for dbPwd.</p>
    * @return String
    **/
-  public final synchronized String getDbPwd() {
+  public final String getDbPwd() {
     return this.dbPwd;
   }
 
@@ -412,7 +423,7 @@ public class FctDt {
    * <p>Setter for dbPwd.</p>
    * @param pDbPwd reference
    **/
-  public final synchronized void setDbPwd(final String pDbPwd) {
+  public final void setDbPwd(final String pDbPwd) {
     this.dbPwd = pDbPwd;
   }
 
@@ -420,7 +431,7 @@ public class FctDt {
    * <p>Getter for isAndr.</p>
    * @return boolean
    **/
-  public final synchronized boolean getIsAndr() {
+  public final boolean getIsAndr() {
     return this.isAndr;
   }
 
@@ -428,7 +439,7 @@ public class FctDt {
    * <p>Setter for isAndr.</p>
    * @param pIsAndr reference
    **/
-  public final synchronized void setIsAndr(final boolean pIsAndr) {
+  public final void setIsAndr(final boolean pIsAndr) {
     this.isAndr = pIsAndr;
   }
 
@@ -436,7 +447,7 @@ public class FctDt {
    * <p>Getter for newDbId.</p>
    * @return int
    **/
-  public final synchronized int getNewDbId() {
+  public final int getNewDbId() {
     return this.newDbId;
   }
 
@@ -444,7 +455,7 @@ public class FctDt {
    * <p>Setter for newDbId.</p>
    * @param pNewDbId reference
    **/
-  public final synchronized void setNewDbId(final int pNewDbId) {
+  public final void setNewDbId(final int pNewDbId) {
     this.newDbId = pNewDbId;
   }
 
@@ -452,7 +463,7 @@ public class FctDt {
    * <p>Getter for dbgSh.</p>
    * @return boolean
    **/
-  public final synchronized boolean getDbgSh() {
+  public final boolean getDbgSh() {
     return this.dbgSh;
   }
 
@@ -460,7 +471,7 @@ public class FctDt {
    * <p>Setter for dbgSh.</p>
    * @param pDbgSh reference
    **/
-  public final synchronized void setDbgSh(final boolean pDbgSh) {
+  public final void setDbgSh(final boolean pDbgSh) {
     this.dbgSh = pDbgSh;
   }
 
@@ -468,7 +479,7 @@ public class FctDt {
    * <p>Getter for dbgFl.</p>
    * @return int
    **/
-  public final synchronized int getDbgFl() {
+  public final int getDbgFl() {
     return this.dbgFl;
   }
 
@@ -476,7 +487,7 @@ public class FctDt {
    * <p>Setter for dbgFl.</p>
    * @param pDbgFl reference
    **/
-  public final synchronized void setDbgFl(final int pDbgFl) {
+  public final void setDbgFl(final int pDbgFl) {
     this.dbgFl = pDbgFl;
   }
 
@@ -484,7 +495,7 @@ public class FctDt {
    * <p>Getter for dbgCl.</p>
    * @return int
    **/
-  public final synchronized int getDbgCl() {
+  public final int getDbgCl() {
     return this.dbgCl;
   }
 
@@ -492,7 +503,7 @@ public class FctDt {
    * <p>Setter for dbgCl.</p>
    * @param pDbgCl reference
    **/
-  public final synchronized void setDbgCl(final int pDbgCl) {
+  public final void setDbgCl(final int pDbgCl) {
     this.dbgCl = pDbgCl;
   }
 
@@ -500,7 +511,7 @@ public class FctDt {
    * <p>Getter for writeTi.</p>
    * @return Integer
    **/
-  public final synchronized Integer getWriteTi() {
+  public final Integer getWriteTi() {
     return this.writeTi;
   }
 
@@ -508,7 +519,7 @@ public class FctDt {
    * <p>Setter for writeTi.</p>
    * @param pWriteTi reference
    **/
-  public final synchronized void setWriteTi(final Integer pWriteTi) {
+  public final void setWriteTi(final Integer pWriteTi) {
     this.writeTi = pWriteTi;
   }
 
@@ -516,7 +527,7 @@ public class FctDt {
    * <p>Getter for readTi.</p>
    * @return Integer
    **/
-  public final synchronized Integer getReadTi() {
+  public final Integer getReadTi() {
     return this.readTi;
   }
 
@@ -524,7 +535,7 @@ public class FctDt {
    * <p>Setter for readTi.</p>
    * @param pReadTi reference
    **/
-  public final synchronized void setReadTi(final Integer pReadTi) {
+  public final void setReadTi(final Integer pReadTi) {
     this.readTi = pReadTi;
   }
 
@@ -532,7 +543,7 @@ public class FctDt {
    * <p>Getter for writeReTi.</p>
    * @return Integer
    **/
-  public final synchronized Integer getWriteReTi() {
+  public final Integer getWriteReTi() {
     return this.writeReTi;
   }
 
@@ -540,7 +551,7 @@ public class FctDt {
    * <p>Setter for writeReTi.</p>
    * @param pWriteReTi reference
    **/
-  public final synchronized void setWriteReTi(final Integer pWriteReTi) {
+  public final void setWriteReTi(final Integer pWriteReTi) {
     this.writeReTi = pWriteReTi;
   }
 
@@ -548,7 +559,7 @@ public class FctDt {
    * <p>Getter for wrReSpTr.</p>
    * @return Boolean
    **/
-  public final synchronized Boolean getWrReSpTr() {
+  public final Boolean getWrReSpTr() {
     return this.wrReSpTr;
   }
 
@@ -556,7 +567,7 @@ public class FctDt {
    * <p>Setter for wrReSpTr.</p>
    * @param pWrReSpTr reference
    **/
-  public final synchronized void setWrReSpTr(final Boolean pWrReSpTr) {
+  public final void setWrReSpTr(final Boolean pWrReSpTr) {
     this.wrReSpTr = pWrReSpTr;
   }
 
@@ -564,7 +575,7 @@ public class FctDt {
    * <p>Getter for logPth.</p>
    * @return String
    **/
-  public final synchronized String getLogPth() {
+  public final String getLogPth() {
     return this.logPth;
   }
 
@@ -572,7 +583,7 @@ public class FctDt {
    * <p>Setter for logPth.</p>
    * @param pLogPth reference
    **/
-  public final synchronized void setLogPth(final String pLogPth) {
+  public final void setLogPth(final String pLogPth) {
     this.logPth = pLogPth;
   }
 
@@ -580,7 +591,7 @@ public class FctDt {
    * <p>Getter for logSize.</p>
    * @return size
    **/
-  public final synchronized int getLogSize() {
+  public final int getLogSize() {
     return this.logSize;
   }
 
@@ -588,7 +599,7 @@ public class FctDt {
    * <p>Setter for logSize.</p>
    * @param pLogSize value
    **/
-  public final synchronized void setLogSize(final int pLogSize) {
+  public final void setLogSize(final int pLogSize) {
     this.logSize = pLogSize;
   }
 
@@ -596,7 +607,7 @@ public class FctDt {
    * <p>Getter for logStdNm.</p>
    * @return String
    **/
-  public final synchronized String getLogStdNm() {
+  public final String getLogStdNm() {
     return this.logStdNm;
   }
 
@@ -604,7 +615,7 @@ public class FctDt {
    * <p>Setter for logStdNm.</p>
    * @param pLogStdNm reference
    **/
-  public final synchronized void setLogStdNm(final String pLogStdNm) {
+  public final void setLogStdNm(final String pLogStdNm) {
     this.logStdNm = pLogStdNm;
   }
 
@@ -612,7 +623,7 @@ public class FctDt {
    * <p>Getter for appPth.</p>
    * @return String
    **/
-  public final synchronized String getAppPth() {
+  public final String getAppPth() {
     return this.appPth;
   }
 
@@ -620,7 +631,7 @@ public class FctDt {
    * <p>Setter for appPth.</p>
    * @param pAppPth reference
    **/
-  public final synchronized void setAppPth(final String pAppPth) {
+  public final void setAppPth(final String pAppPth) {
     this.appPth = pAppPth;
   }
 
@@ -628,7 +639,7 @@ public class FctDt {
    * <p>Getter for shrEnts.</p>
    * @return List<Class<? extends IHasId<?>>>
    **/
-  public final synchronized List<Class<? extends IHasId<?>>> getShrEnts() {
+  public final List<Class<? extends IHasId<?>>> getShrEnts() {
     return this.shrEnts;
   }
 
@@ -636,7 +647,7 @@ public class FctDt {
    * <p>Setter for shrEnts.</p>
    * @param pShrEnts reference
    **/
-  public final synchronized void setShrEnts(
+  public final void setShrEnts(
     final List<Class<? extends IHasId<?>>> pShrEnts) {
     this.shrEnts = pShrEnts;
   }
@@ -645,7 +656,7 @@ public class FctDt {
    * <p>Getter for admEnts.</p>
    * @return List<Class<? extends IHasId<?>>>
    **/
-  public final synchronized List<Class<? extends IHasId<?>>> getAdmEnts() {
+  public final List<Class<? extends IHasId<?>>> getAdmEnts() {
     return this.admEnts;
   }
 
@@ -653,7 +664,7 @@ public class FctDt {
    * <p>Setter for admEnts.</p>
    * @param pAdmEnts reference
    **/
-  public final synchronized void setAdmEnts(
+  public final void setAdmEnts(
     final List<Class<? extends IHasId<?>>> pAdmEnts) {
     this.admEnts = pAdmEnts;
   }
@@ -662,7 +673,7 @@ public class FctDt {
    * <p>Getter for fbdEnts.</p>
    * @return List<? extends Class<? extends IHasId<?>>>
    **/
-  public final synchronized List<Class<? extends IHasId<?>>> getFbdEnts() {
+  public final List<Class<? extends IHasId<?>>> getFbdEnts() {
     return this.fbdEnts;
   }
 
@@ -670,16 +681,33 @@ public class FctDt {
    * <p>Setter for fbdEnts.</p>
    * @param pFbdEnts reference
    **/
-  public final synchronized void setFbdEnts(
+  public final void setFbdEnts(
     final List<Class<? extends IHasId<?>>> pFbdEnts) {
     this.fbdEnts = pFbdEnts;
+  }
+
+  /**
+   * <p>Getter for flRpEnts.</p>
+   * @return List<? extends Class<? extends IHasId<?>>>
+   **/
+  public final List<Class<? extends IHasId<?>>> getFlRpEnts() {
+    return this.flRpEnts;
+  }
+
+  /**
+   * <p>Setter for flRpEnts.</p>
+   * @param pFlRpEnts reference
+   **/
+  public final void setFlRpEnts(
+    final List<Class<? extends IHasId<?>>> pFlRpEnts) {
+    this.flRpEnts = pFlRpEnts;
   }
 
   /**
    * <p>Getter for hlClStgMp.</p>
    * @return Map<String, HldClsStg>
    **/
-  public final synchronized Map<String, HldClsStg> getHlClStgMp() {
+  public final Map<String, HldClsStg> getHlClStgMp() {
     return this.hlClStgMp;
   }
 
@@ -687,8 +715,7 @@ public class FctDt {
    * <p>Setter for hlClStgMp.</p>
    * @param pHlClStgMp reference
    **/
-  public final synchronized void setHlClStgMp(
-    final Map<String, HldClsStg> pHlClStgMp) {
+  public final void setHlClStgMp(final Map<String, HldClsStg> pHlClStgMp) {
     this.hlClStgMp = pHlClStgMp;
   }
 
@@ -696,7 +723,7 @@ public class FctDt {
    * <p>Getter for hlFdStgMp.</p>
    * @return Map<String, HldFldStg>
    **/
-  public final synchronized Map<String, HldFldStg> getHlFdStgMp() {
+  public final Map<String, HldFldStg> getHlFdStgMp() {
     return this.hlFdStgMp;
   }
 
@@ -704,8 +731,7 @@ public class FctDt {
    * <p>Setter for hlFdStgMp.</p>
    * @param pHlFdStgMp reference
    **/
-  public final synchronized void setHlFdStgMp(
-    final Map<String, HldFldStg> pHlFdStgMp) {
+  public final void setHlFdStgMp(final Map<String, HldFldStg> pHlFdStgMp) {
     this.hlFdStgMp = pHlFdStgMp;
   }
 
@@ -713,7 +739,7 @@ public class FctDt {
    * <p>Getter for custIdClss.</p>
    * @return Set<Class<? extends IHasId<?>>>
    **/
-  public final synchronized Set<Class<? extends IHasId<?>>> getCustIdClss() {
+  public final Set<Class<? extends IHasId<?>>> getCustIdClss() {
     return this.custIdClss;
   }
 
@@ -721,7 +747,7 @@ public class FctDt {
    * <p>Setter for custIdClss.</p>
    * @param pCustIdClss reference
    **/
-  public final synchronized void setCustIdClss(
+  public final void setCustIdClss(
     final Set<Class<? extends IHasId<?>>> pCustIdClss) {
     this.custIdClss = pCustIdClss;
   }
@@ -730,7 +756,7 @@ public class FctDt {
    * <p>Getter for uplDir.</p>
    * @return String
    **/
-  public final synchronized String getUplDir() {
+  public final String getUplDir() {
     return this.uplDir;
   }
 
@@ -738,7 +764,7 @@ public class FctDt {
    * <p>Setter for uplDir.</p>
    * @param pUplDir reference
    **/
-  public final synchronized void setUplDir(final String pUplDir) {
+  public final void setUplDir(final String pUplDir) {
     this.uplDir = pUplDir;
   }
 
@@ -746,7 +772,7 @@ public class FctDt {
    * <p>Getter for fctsPrcAd.</p>
    * @return Set<IFctPrc>
    **/
-  public final synchronized Set<IFctPrc> getFctsPrcAd() {
+  public final Set<IFctPrc> getFctsPrcAd() {
     return this.fctsPrcAd;
   }
 
@@ -754,7 +780,7 @@ public class FctDt {
    * <p>Setter for fctsPrcAd.</p>
    * @param pFctsPrcAd reference
    **/
-  public final synchronized void setFctsPrcAd(final Set<IFctPrc> pFctsPrcAd) {
+  public final void setFctsPrcAd(final Set<IFctPrc> pFctsPrcAd) {
     this.fctsPrcAd = pFctsPrcAd;
   }
 
@@ -762,7 +788,7 @@ public class FctDt {
    * <p>Getter for fctsPrc.</p>
    * @return Set<IFctPrc>
    **/
-  public final synchronized Set<IFctPrc> getFctsPrc() {
+  public final Set<IFctPrc> getFctsPrc() {
     return this.fctsPrc;
   }
 
@@ -770,7 +796,7 @@ public class FctDt {
    * <p>Setter for fctsPrc.</p>
    * @param pFctsPrc reference
    **/
-  public final synchronized void setFctsPrc(final Set<IFctPrc> pFctsPrc) {
+  public final void setFctsPrc(final Set<IFctPrc> pFctsPrc) {
     this.fctsPrc = pFctsPrc;
   }
 
@@ -778,7 +804,7 @@ public class FctDt {
    * <p>Getter for fctsPrcEnt.</p>
    * @return Set<IFctPrcEnt>
    **/
-  public final synchronized Set<IFctPrcEnt> getFctsPrcEnt() {
+  public final Set<IFctPrcEnt> getFctsPrcEnt() {
     return this.fctsPrcEnt;
   }
 
@@ -786,8 +812,7 @@ public class FctDt {
    * <p>Setter for fctsPrcEnt.</p>
    * @param pFctsPrcEnt reference
    **/
-  public final synchronized void setFctsPrcEnt(
-    final Set<IFctPrcEnt> pFctsPrcEnt) {
+  public final void setFctsPrcEnt(final Set<IFctPrcEnt> pFctsPrcEnt) {
     this.fctsPrcEnt = pFctsPrcEnt;
   }
 
@@ -795,7 +820,7 @@ public class FctDt {
    * <p>Getter for hldsBsEnPr.</p>
    * @return Set<IHlNmClSt>
    **/
-  public final synchronized Set<IHlNmClSt> getHldsBsEnPr() {
+  public final Set<IHlNmClSt> getHldsBsEnPr() {
     return this.hldsBsEnPr;
   }
 
@@ -803,8 +828,7 @@ public class FctDt {
    * <p>Setter for hldsBsEnPr.</p>
    * @param pHldsBsEnPr reference
    **/
-  public final synchronized void setHldsBsEnPr(
-    final Set<IHlNmClSt> pHldsBsEnPr) {
+  public final void setHldsBsEnPr(final Set<IHlNmClSt> pHldsBsEnPr) {
     this.hldsBsEnPr = pHldsBsEnPr;
   }
 
@@ -812,7 +836,7 @@ public class FctDt {
    * <p>Getter for hldsAdEnPr.</p>
    * @return Set<IHlNmClSt>
    **/
-  public final synchronized Set<IHlNmClSt> getHldsAdEnPr() {
+  public final Set<IHlNmClSt> getHldsAdEnPr() {
     return this.hldsAdEnPr;
   }
 
@@ -820,8 +844,23 @@ public class FctDt {
    * <p>Setter for hldsAdEnPr.</p>
    * @param pHldsAdEnPr reference
    **/
-  public final synchronized void setHldsAdEnPr(
-    final Set<IHlNmClSt> pHldsAdEnPr) {
+  public final void setHldsAdEnPr(final Set<IHlNmClSt> pHldsAdEnPr) {
     this.hldsAdEnPr = pHldsAdEnPr;
+  }
+
+  /**
+   * <p>Getter for fctrsPrcFl.</p>
+   * @return Set<IFctPrcFl>
+   **/
+  public final Set<IFctPrcFl> getFctrsPrcFl() {
+    return this.fctrsPrcFl;
+  }
+
+  /**
+   * <p>Setter for fctrsPrcFl.</p>
+   * @param pFctrsPrcFl reference
+   **/
+  public final void setFctrsPrcFl(final Set<IFctPrcFl> pFctrsPrcFl) {
+    this.fctrsPrcFl = pFctrsPrcFl;
   }
 }

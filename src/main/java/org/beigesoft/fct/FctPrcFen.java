@@ -44,7 +44,7 @@ import org.beigesoft.srv.EntPg;
  * @author Yury Demidenko
  */
 public class FctPrcFen<RS> implements IFctPrc {
-
+//TODO extending
   /**
    * <p>Main factory.</p>
    **/
