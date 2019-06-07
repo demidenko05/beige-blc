@@ -267,6 +267,11 @@ public class FctDt {
   private Set<Class<? extends IHasId<?>>> custIdClss;
 
   /**
+   * <p>Set of classes for matching to foreign.</p>
+   **/
+  private Set<Class<? extends IHasId<?>>> maFrClss;
+
+  /**
    * <p>Outside base processors factories.</p>
    **/
   private Set<IFctPrc> fctsPrc;
@@ -733,6 +738,23 @@ public class FctDt {
    **/
   public final void setHlFdStgMp(final Map<String, HldFldStg> pHlFdStgMp) {
     this.hlFdStgMp = pHlFdStgMp;
+  }
+
+  /**
+   * <p>Getter for maFrClss.</p>
+   * @return Set<Class<? extends IHasId<?>>>
+   **/
+  public final Set<Class<? extends IHasId<?>>> getMaFrClss() {
+    return this.maFrClss;
+  }
+
+  /**
+   * <p>Setter for maFrClss.</p>
+   * @param pMaFrClss reference
+   **/
+  public final void setMaFrClss(
+    final Set<Class<? extends IHasId<?>>> pMaFrClss) {
+    this.maFrClss = pMaFrClss;
   }
 
   /**

@@ -54,6 +54,7 @@ import org.beigesoft.hld.HlNmBsEnPr;
 import org.beigesoft.hld.HlNmAdEnPr;
 import org.beigesoft.hld.HldUvd;
 import org.beigesoft.hld.HldCnvId;
+import org.beigesoft.hld.HlMaFrCl;
 import org.beigesoft.hnd.HndEntRq;
 import org.beigesoft.hnd.HndI18nRq;
 import org.beigesoft.hnd.HndNtrRq;
@@ -422,6 +423,8 @@ public class FctBlc<RS> implements IFctApp {
       @SuppressWarnings("unchecked")
       IRdb<RS> rdb = (IRdb<RS>) laz(pRvs, IRdb.class.getSimpleName());
       rz.setRdb(rdb);
+      HlMaFrCl hlMaFrCl = (HlMaFrCl) laz(pRvs, HlMaFrCl.class.getSimpleName());
+      rz.setHlMaFrCl(hlMaFrCl);
       rz.setLog(lazLogStd(pRvs));
       rz.setI18n(lazI18n(pRvs));
       rz.setUtJsp(new UtlJsp());

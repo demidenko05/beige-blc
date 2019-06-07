@@ -40,6 +40,7 @@ import org.beigesoft.mdlp.DcSp;
 import org.beigesoft.mdlp.DcGrSp;
 import org.beigesoft.mdlp.UsPrf;
 import org.beigesoft.log.ILog;
+import org.beigesoft.hld.HlMaFrCl;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.rdb.IOrm;
 import org.beigesoft.srv.UtlJsp;
@@ -90,6 +91,11 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    * <p>Print number service.</p>
    **/
   private INumStr numStr;
+
+  /**
+   * <p>Holder of classes to match.</p>
+   **/
+  private HlMaFrCl hlMaFrCl;
 
   //Cached data:
   /**
@@ -199,6 +205,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     pRqDt.setAttr("i18n", this.i18n);
     pRqDt.setAttr("srvDt", this.srvDt);
     pRqDt.setAttr("numStr", this.numStr);
+    pRqDt.setAttr("hlMaFrCl", this.hlMaFrCl);
   }
 
   /**
@@ -595,5 +602,21 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    **/
   public final void setNumStr(final INumStr pNumStr) {
     this.numStr = pNumStr;
+  }
+
+  /**
+   * <p>Getter for hlMaFrCl.</p>
+   * @return HlMaFrCl
+   **/
+  public final HlMaFrCl getHlMaFrCl() {
+    return this.hlMaFrCl;
+  }
+
+  /**
+   * <p>Setter for hlMaFrCl.</p>
+   * @param pHlMaFrCl reference
+   **/
+  public final void setHlMaFrCl(final HlMaFrCl pHlMaFrCl) {
+    this.hlMaFrCl = pHlMaFrCl;
   }
 }

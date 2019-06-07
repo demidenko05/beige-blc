@@ -83,6 +83,9 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     makeVars(pRvs, pFct, pCtx);
     makeUvdCls(pRvs, pFct);
     makeUvdFds(pRvs, pFct);
+    pFct.getFctBlc().getFctDt()
+      .setMaFrClss(new HashSet<Class<? extends IHasId<?>>>());
+    pFct.getFctBlc().getFctDt().getMaFrClss().add(Lng.class);
   }
 
   /**

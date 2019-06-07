@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.List;
 
 import org.beigesoft.mdl.IHasId;
+import org.beigesoft.mdl.IOwned;
 import org.beigesoft.mdlp.EmAtch;
 import org.beigesoft.mdlp.EmMsg;
 import org.beigesoft.prc.PrcEntRt;
@@ -95,25 +96,22 @@ public class HlNmAdEnPr implements IHlNmClSt {
       return PrcEntCr.class.getSimpleName();
     }
     if ("entDl".equals(pAct)) {
-      return PrcEntDl.class.getSimpleName();
-    }
-    if ("entFoDl".equals(pAct)) {
       if (pCls == EmAtch.class) {
         return PrcEnofDl.class.getSimpleName();
+      } else if (IOwned.class.isAssignableFrom(pCls)) {
+        return PrcEnoDl.class.getSimpleName();
       }
-      return PrcEnoDl.class.getSimpleName();
+      return PrcEntDl.class.getSimpleName();
     }
     if ("entSv".equals(pAct)) {
       if (pCls == EmMsg.class) {
         return PrcEmMsgSv.class.getSimpleName();
+      } else if (pCls == EmAtch.class) {
+        return PrcEnofSv.class.getSimpleName();
+      } else if (IOwned.class.isAssignableFrom(pCls)) {
+        return PrcEnoSv.class.getSimpleName();
       }
       return PrcEntSv.class.getSimpleName();
-    }
-    if ("entFoSv".equals(pAct)) {
-      if (pCls == EmAtch.class) {
-        return PrcEnofSv.class.getSimpleName();
-      }
-      return PrcEnoSv.class.getSimpleName();
     }
     return null;
   }
