@@ -423,7 +423,8 @@ public class FctBlc<RS> implements IFctApp {
       @SuppressWarnings("unchecked")
       IRdb<RS> rdb = (IRdb<RS>) laz(pRvs, IRdb.class.getSimpleName());
       rz.setRdb(rdb);
-      HlMaFrCl hlMaFrCl = (HlMaFrCl) laz(pRvs, HlMaFrCl.class.getSimpleName());
+      HlMaFrCl hlMaFrCl = new HlMaFrCl();
+      hlMaFrCl.setClss(getFctDt().getMaFrClss());
       rz.setHlMaFrCl(hlMaFrCl);
       rz.setLog(lazLogStd(pRvs));
       rz.setI18n(lazI18n(pRvs));

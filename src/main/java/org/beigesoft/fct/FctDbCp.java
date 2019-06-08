@@ -32,15 +32,13 @@ import java.util.Map;
 
 import org.beigesoft.hld.HldNmFilFdSt;
 import org.beigesoft.hld.HldNmCnToStXml;
-import org.beigesoft.hld.HlMaFrCl;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.prp.ISetng;
 import org.beigesoft.rpl.RpEntWriXml;
 import org.beigesoft.rpl.RpEntReadXml;
 
 /**
- * <p>Auxiliary factory for database full copy and holder
- * match foreign classes.</p>
+ * <p>Auxiliary factory for database full copy.</p>
  *
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
@@ -80,8 +78,6 @@ public class FctDbCp<RS> implements IFctAux<RS> {
       rz = crPuRpHldNmCnToStXml(pRvs, pFctApp);
     } else if (FctDt.HLFILFDNMDBCP.equals(pBnNm)) {
       rz = crPuHldNmFilFdStDbCp(pRvs, pFctApp);
-    } else if (HlMaFrCl.class.getSimpleName().equals(pBnNm)) {
-      rz = crPuHlMaFrCl(pRvs, pFctApp);
     }
     return rz;
   }
@@ -180,23 +176,6 @@ public class FctDbCp<RS> implements IFctAux<RS> {
     pFctApp.put(pRvs, ENRDDBCPNM, rz);
     pFctApp.lazLogStd(pRvs).info(pRvs, getClass(), ENRDDBCPNM
       + " has been created.");
-    return rz;
-  }
-
-  /**
-   * <p>Creates and puts into MF HlMaFrCl.</p>
-   * @param pRvs request scoped vars
-   * @param pFctApp main factory
-   * @return HlMaFrCl
-   * @throws Exception - an exception
-   */
-  private HlMaFrCl crPuHlMaFrCl(final Map<String, Object> pRvs,
-    final FctBlc<RS> pFctApp) throws Exception {
-    HlMaFrCl rz = new HlMaFrCl();
-    rz.setClss(pFctApp.getFctDt().getMaFrClss());
-    pFctApp.put(pRvs, HlMaFrCl.class.getSimpleName(), rz);
-    pFctApp.lazLogStd(pRvs).info(pRvs, getClass(), HlMaFrCl.class
-      .getSimpleName() + " has been created.");
     return rz;
   }
 

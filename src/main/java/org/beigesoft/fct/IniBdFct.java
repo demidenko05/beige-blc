@@ -281,6 +281,8 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.setStgFdNm(new HashMap<String, String>());
     hlFdSt.getStgFdNm().put("idOr", null);
     hlFdSt.getStgFdNm().put("dbOr", null);
+    hlFdSt.getStgFdNm().put("lnId1", null);
+    hlFdSt.getStgFdNm().put("lnId2", null);
     pFct.getFctBlc().getFctDt().getHlFdStgMp().put(stgNm, hlFdSt);
     stgNm = "ceHe"; //to cell header
     hlFdSt = new HldFldStg(stgNm, stgNm);
@@ -288,6 +290,8 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.setStgFdNm(new HashMap<String, String>());
     hlFdSt.getStgFdNm().put("idOr", null);
     hlFdSt.getStgFdNm().put("dbOr", null);
+    hlFdSt.getStgFdNm().put("lnId1", null);
+    hlFdSt.getStgFdNm().put("lnId2", null);
     pFct.getFctBlc().getFctDt().getHlFdStgMp().put(stgNm, hlFdSt);
     stgNm = "flt"; //filter
     hlFdSt = new HldFldStg(stgNm, stgNm);
