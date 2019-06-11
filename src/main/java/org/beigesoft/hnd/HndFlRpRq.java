@@ -28,10 +28,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.hnd;
 
+import java.util.Set;
 import java.util.Map;
 import java.io.OutputStream;
 
 import org.beigesoft.mdl.IReqDt;
+import org.beigesoft.log.ILog;
 import org.beigesoft.fct.IFctPrcFl;
 import org.beigesoft.prc.IPrcFl;
 import org.beigesoft.rdb.IRdb;
@@ -44,6 +46,11 @@ import org.beigesoft.rdb.IRdb;
  * @author Yury Demidenko
  */
 public class HndFlRpRq<RS> implements IHndFlRpRq {
+
+  /**
+   * <p>Standard logger.</p>
+   **/
+  private ILog logStd;
 
   /**
    * <p>Database service.</p>
@@ -79,6 +86,18 @@ public class HndFlRpRq<RS> implements IHndFlRpRq {
       proc.process(pRvs, pRqDt, pSous);
       this.rdb.commit();
     } catch (Exception ex) {
+      @SuppressWarnings("unchecked")
+      Set<IHnTrRlBk> hnsTrRlBk = (Set<IHnTrRlBk>) pRvs.get(IHnTrRlBk.HNSTRRLBK);
+      if (hnsTrRlBk != null) {
+        pRvs.remove(IHnTrRlBk.HNSTRRLBK);
+        for (IHnTrRlBk hnTrRlBk : hnsTrRlBk) {
+          try {
+            hnTrRlBk.hndRlBk(pRvs);
+          } catch (Exception ex1) {
+            this.logStd.error(pRvs, getClass(), "Handler roll back: ", ex1);
+          }
+        }
+      }
       if (!this.rdb.getAcmt()) {
         this.rdb.rollBack();
       }
@@ -89,6 +108,22 @@ public class HndFlRpRq<RS> implements IHndFlRpRq {
   }
 
   //Simple getters and setters:
+  /**
+   * <p>Geter for logStd.</p>
+   * @return ILog
+   **/
+  public final ILog getLogStd() {
+    return this.logStd;
+  }
+
+  /**
+   * <p>Setter for logStd.</p>
+   * @param pLogStd reference
+   **/
+  public final void setLogStd(final ILog pLogStd) {
+    this.logStd = pLogStd;
+  }
+
   /**
    * <p>Getter for rdb.</p>
    * @return IRdb<RS>

@@ -294,7 +294,7 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.getStgFdNm().put("lnId2", null);
     pFct.getFctBlc().getFctDt().getHlFdStgMp().put(stgNm, hlFdSt);
     stgNm = "flt"; //filter
-    hlFdSt = new HldFldStg(stgNm, stgNm);
+    hlFdSt = new HldFldStg(stgNm, null);
     hlFdSt.setHldFdCls(pFct.getFctBlc().lazHldFldCls(pRvs));
     hlFdSt.setEnumVal("enm");
     hlFdSt.setSetng(pFct.getFctBlc().lazStgUvd(pRvs));

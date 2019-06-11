@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.hnd;
 
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -225,6 +226,18 @@ public class HndEntRq<RS> implements IHndRq {
       ent = ep.process(pRvs, ent, pRqDt);
       this.rdb.commit();
     } catch (Exception ex) {
+      @SuppressWarnings("unchecked")
+      Set<IHnTrRlBk> hnsTrRlBk = (Set<IHnTrRlBk>) pRvs.get(IHnTrRlBk.HNSTRRLBK);
+      if (hnsTrRlBk != null) {
+        pRvs.remove(IHnTrRlBk.HNSTRRLBK);
+        for (IHnTrRlBk hnTrRlBk : hnsTrRlBk) {
+          try {
+            hnTrRlBk.hndRlBk(pRvs);
+          } catch (Exception ex1) {
+            this.logStd.error(pRvs, getClass(), "Handler roll back: ", ex1);
+          }
+        }
+      }
       if (!this.rdb.getAcmt()) {
         this.rdb.rollBack();
       }
@@ -285,6 +298,18 @@ public class HndEntRq<RS> implements IHndRq {
         }
         this.rdb.commit();
       } catch (Exception ex) {
+        @SuppressWarnings("unchecked")
+        Set<IHnTrRlBk> hnsTrRl = (Set<IHnTrRlBk>) pRvs.get(IHnTrRlBk.HNSTRRLBK);
+        if (hnsTrRl != null) {
+          pRvs.remove(IHnTrRlBk.HNSTRRLBK);
+          for (IHnTrRlBk hnTrRlBk : hnsTrRl) {
+            try {
+              hnTrRlBk.hndRlBk(pRvs);
+            } catch (Exception ex1) {
+              this.logStd.error(pRvs, getClass(), "Handler roll back: ", ex1);
+            }
+          }
+        }
         if (!this.rdb.getAcmt()) {
           this.rdb.rollBack();
         }
@@ -367,6 +392,18 @@ public class HndEntRq<RS> implements IHndRq {
       }
       this.rdb.commit();
     } catch (Exception ex) {
+      @SuppressWarnings("unchecked")
+      Set<IHnTrRlBk> hnsTrRlBk = (Set<IHnTrRlBk>) pRvs.get(IHnTrRlBk.HNSTRRLBK);
+      if (hnsTrRlBk != null) {
+        pRvs.remove(IHnTrRlBk.HNSTRRLBK);
+        for (IHnTrRlBk hnTrRlBk : hnsTrRlBk) {
+          try {
+            hnTrRlBk.hndRlBk(pRvs);
+          } catch (Exception ex1) {
+            this.logStd.error(pRvs, getClass(), "Handler roll back: ", ex1);
+          }
+        }
+      }
       if (!this.rdb.getAcmt()) {
         this.rdb.rollBack();
       }

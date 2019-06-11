@@ -118,6 +118,7 @@ public class FctFlRep<RS> implements IFctAux<RS> {
       .laz(pRvs, IFilEntRq.class.getSimpleName());
     rz.setFilEntRq(filEnRq);
     rz.setFctFctEnt(pFctApp.lazFctFctEnt(pRvs));
+    rz.setLogStd(pFctApp.lazLogStd(pRvs));
     Map<String, Class<? extends IHasId<?>>> entMap =
       new HashMap<String, Class<? extends IHasId<?>>>();
     for (Class<? extends IHasId<?>> cls : pFctApp.getFctDt().getFlRpEnts()) {
@@ -141,6 +142,7 @@ public class FctFlRep<RS> implements IFctAux<RS> {
   private HndFlRpRq<RS> crPuHndFlRpRq(final Map<String, Object> pRvs,
     final FctBlc<RS> pFctApp) throws Exception {
     HndFlRpRq<RS> rz = new HndFlRpRq<RS>();
+    rz.setLogStd(pFctApp.lazLogStd(pRvs));
     @SuppressWarnings("unchecked")
     IRdb<RS> rdb = (IRdb<RS>) pFctApp.laz(pRvs, IRdb.class.getSimpleName());
     rz.setRdb(rdb);

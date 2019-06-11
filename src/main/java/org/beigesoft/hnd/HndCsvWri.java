@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.hnd;
 
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdlp.CsvMth;
 import org.beigesoft.mdlp.CsvCl;
+import org.beigesoft.log.ILog;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.rdb.IOrm;
 import org.beigesoft.srv.ICsvDtRet;
@@ -51,6 +53,11 @@ import org.beigesoft.srv.ICsvWri;
  * @author Yury Demidenko
  */
 public class HndCsvWri<RS> implements IHndFlRpRq {
+
+  /**
+   * <p>Standard logger.</p>
+   **/
+  private ILog logStd;
 
   /**
    * <p>Database service.</p>
@@ -74,30 +81,30 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
 
   /**
    * <p>Handle file-report request.</p>
-   * @param pRqVs Request scoped variables
+   * @param pRvs Request scoped variables
    * @param pRqDt Request Data
    * @param pSous servlet output stream
    * @throws Exception - an exception
    */
   @Override
-  public final void handle(final Map<String, Object> pRqVs,
+  public final void handle(final Map<String, Object> pRvs,
     final IReqDt pRqDt, final OutputStream pSous) throws Exception {
     String csMtIdStr = pRqDt.getParam("csMt");
     Long csMtId = Long.parseLong(csMtIdStr);
     String priCtIdStr = pRqDt.getParam("priCt");
     Long priCtId = Long.parseLong(priCtIdStr);
-    pRqVs.put("priCtId", priCtId);
+    pRvs.put("priCtId", priCtId);
     String unPriStr = pRqDt.getParam("unPri");
     if (unPriStr != null && !"".equals(unPriStr)) {
       BigDecimal unPri = new BigDecimal(unPriStr);
       if (unPri.compareTo(BigDecimal.ZERO) != 0) {
-        pRqVs.put("unPri", unPri);
+        pRvs.put("unPri", unPri);
       }
     }
     String optQuanStr = pRqDt.getParam("optQuan");
     if (optQuanStr != null && !"".equals(optQuanStr)) {
       BigDecimal optQuan = new BigDecimal(optQuanStr);
-      pRqVs.put("optQuan", optQuan);
+      pRvs.put("optQuan", optQuan);
     }
     CsvMth csMt = null;
     List<List<Object>> data = null;
@@ -109,8 +116,8 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
       this.rdb.begin();
       CsvMth csMtt = new CsvMth();
       csMtt.setIid(csMtId);
-      csMt = getOrm().retEnt(pRqVs, vs, csMtt);
-      List<CsvCl> cols = getOrm().retLstCnd(pRqVs, vs,
+      csMt = getOrm().retEnt(pRvs, vs, csMtt);
+      List<CsvCl> cols = getOrm().retLstCnd(pRvs, vs,
         CsvCl.class, "where OWNR=" + csMt.getIid());
       csMt.setClns(cols);
       ret = this.retrs.get(csMt.getRtrNm());
@@ -118,9 +125,21 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
         throw new ExcCode(ExcCode.WRPR,
           "Can't find retriever " + csMt.getRtrNm());
       }
-      data = ret.retData(pRqVs);
+      data = ret.retData(pRvs);
       this.rdb.commit();
     } catch (Exception ex) {
+      @SuppressWarnings("unchecked")
+      Set<IHnTrRlBk> hnsTrRlBk = (Set<IHnTrRlBk>) pRvs.get(IHnTrRlBk.HNSTRRLBK);
+      if (hnsTrRlBk != null) {
+        pRvs.remove(IHnTrRlBk.HNSTRRLBK);
+        for (IHnTrRlBk hnTrRlBk : hnsTrRlBk) {
+          try {
+            hnTrRlBk.hndRlBk(pRvs);
+          } catch (Exception ex1) {
+            this.logStd.error(pRvs, getClass(), "Handler roll back: ", ex1);
+          }
+        }
+      }
       if (!this.rdb.getAcmt()) {
         this.rdb.rollBack();
       }
@@ -129,11 +148,27 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
       this.rdb.release();
     }
     if (data != null) {
-      this.csvWri.write(pRqVs, data, csMt, pSous);
+      this.csvWri.write(pRvs, data, csMt, pSous);
     }
   }
 
   //Simple getters and setters:
+  /**
+   * <p>Geter for logStd.</p>
+   * @return ILog
+   **/
+  public final ILog getLogStd() {
+    return this.logStd;
+  }
+
+  /**
+   * <p>Setter for logStd.</p>
+   * @param pLogStd reference
+   **/
+  public final void setLogStd(final ILog pLogStd) {
+    this.logStd = pLogStd;
+  }
+
   /**
    * <p>Getter for retrs.</p>
    * @return Map<String, ICsvDtRet>

@@ -28,12 +28,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.hnd;
 
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.OutputStream;
 
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.IHasId;
+import org.beigesoft.log.ILog;
 import org.beigesoft.fct.IFctRq;
 import org.beigesoft.fct.IFcClFcRq;
 import org.beigesoft.cnv.IFilEntRq;
@@ -47,6 +49,11 @@ import org.beigesoft.srv.IEntFlRp;
  * @author Yury Demidenko
  */
 public class HndEntFlRpRq<RS> implements IHndFlRpRq {
+
+  /**
+   * <p>Standard logger.</p>
+   **/
+  private ILog logStd;
 
   /**
    * <p>Database service.</p>
@@ -80,13 +87,13 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
 
   /**
    * <p>Handle request.</p>
-   * @param pRqVs Request scoped variables
+   * @param pRvs Request scoped variables
    * @param pRqDt Request Data
    * @param pSous servlet output stream
    * @throws Exception - an exception
    */
   @Override
-  public final void handle(final Map<String, Object> pRqVs,
+  public final void handle(final Map<String, Object> pRvs,
     final IReqDt pRqDt, final OutputStream pSous) throws Exception {
     Map<String, Object> vs = new HashMap<String, Object>();
     try {
@@ -97,16 +104,28 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
       this.rdb.setTrIsl(this.trIsl);
       this.rdb.begin();
       IHasId<?> entity = null;
-      IFctRq<IHasId<?>> entFac = this.fctFctEnt.laz(pRqVs, cls);
-      entity = entFac.create(pRqVs);
-      this.filEntRq.fill(pRqVs, vs, entity, pRqDt);
+      IFctRq<IHasId<?>> entFac = this.fctFctEnt.laz(pRvs, cls);
+      entity = entFac.create(pRvs);
+      this.filEntRq.fill(pRvs, vs, entity, pRqDt);
       String nmRep = pRqDt.getParam("nmRep");
       @SuppressWarnings("unchecked")
       IEntFlRp<IHasId<?>, ?> efr = (IEntFlRp<IHasId<?>, ?>)
-        this.fctEntFlRp.laz(pRqVs, nmRep);
-      efr.report(pRqVs, entity, pRqDt, pSous);
+        this.fctEntFlRp.laz(pRvs, nmRep);
+      efr.report(pRvs, entity, pRqDt, pSous);
       this.rdb.commit();
     } catch (Exception ex) {
+      @SuppressWarnings("unchecked")
+      Set<IHnTrRlBk> hnsTrRlBk = (Set<IHnTrRlBk>) pRvs.get(IHnTrRlBk.HNSTRRLBK);
+      if (hnsTrRlBk != null) {
+        pRvs.remove(IHnTrRlBk.HNSTRRLBK);
+        for (IHnTrRlBk hnTrRlBk : hnsTrRlBk) {
+          try {
+            hnTrRlBk.hndRlBk(pRvs);
+          } catch (Exception ex1) {
+            this.logStd.error(pRvs, getClass(), "Handler roll back: ", ex1);
+          }
+        }
+      }
       if (!this.rdb.getAcmt()) {
         this.rdb.rollBack();
       }
@@ -117,6 +136,22 @@ public class HndEntFlRpRq<RS> implements IHndFlRpRq {
   }
 
   //Simple getters and setters:
+  /**
+   * <p>Geter for logStd.</p>
+   * @return ILog
+   **/
+  public final ILog getLogStd() {
+    return this.logStd;
+  }
+
+  /**
+   * <p>Setter for logStd.</p>
+   * @param pLogStd reference
+   **/
+  public final void setLogStd(final ILog pLogStd) {
+    this.logStd = pLogStd;
+  }
+
   /**
    * <p>Getter for rdb.</p>
    * @return IRdb<RS>
