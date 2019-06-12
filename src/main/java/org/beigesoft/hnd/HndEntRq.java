@@ -256,7 +256,7 @@ public class HndEntRq<RS> implements IHndRq {
             if (ent == null) { // it's may be change ent to owner:
               ent = uvs.getOwnr();
               if (ent == null) {
-                throw new ExcCode(ExcCode.WRPR,
+                throw new ExcCode(ExcCode.WR,
                   "wrong_request_entity_not_filled");
               }
              cls = (Class<T>) ent.getClass();
@@ -354,7 +354,7 @@ public class HndEntRq<RS> implements IHndRq {
           if (ent == null) { // it's may be change ent to owner:
            ent = uvs.getOwnr();
            if (ent == null) {
-              throw new ExcCode(ExcCode.WRPR,
+              throw new ExcCode(ExcCode.WR,
                 "wrong_request_entity_not_filled");
             }
             cls = (Class<T>) ent.getClass();

@@ -123,7 +123,7 @@ public class RplXmlHttps<RS> implements IReplicator {
       //URL must be
       String urlSrcStr = "https://" + (String) pRvs.get("urlSrc");
       if (urlSrcStr == null || urlSrcStr.length() < 10) {
-        throw new ExcCode(ExcCode.WRPR, "Where is no urlSrc!!!");
+        throw new ExcCode(ExcCode.WRPR, "Where_is_no_urlSrc");
       }
       this.log.info(pRvs, getClass(), "URL source: " + urlSrcStr);
       URL url = new URL(urlSrcStr);
@@ -186,7 +186,7 @@ public class RplXmlHttps<RS> implements IReplicator {
     String srDbId = (String) pRvs.get("srDbId");
     String maxRecsStr = (String) pRvs.get("maxRecs");
     if (maxRecsStr == null || maxRecsStr.length() == 0) {
-      throw new ExcCode(ExcCode.WRPR, "Where is no maxRecs!!!");
+      throw new ExcCode(ExcCode.WRPR, "WhereisnomaxRecs");
     }
     int maxRecs = Integer.parseInt(maxRecsStr);
     Map<String, Integer> clsCnts = new LinkedHashMap<String, Integer>();

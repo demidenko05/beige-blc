@@ -76,14 +76,14 @@ public class PrcEmMsgSv implements IPrcEnt<EmMsg, Long> {
        this.orm.refrEnt(pRvs, vs, pEnt);
     }
     if (!pEnt.getIsNew() && !pEnt.getDbOr().equals(this.orm.getDbId())) {
-      throw new ExcCode(ExcCode.WRPR, "can_not_change_foreign_src");
+      throw new ExcCode(ExcCode.WR, "can_not_change_foreign_src");
     }
     if (pEnt.getIsNew()) {
       this.orm.insert(pRvs, vs, pEnt);
       pRvs.put("msgSuc", "insert_ok");
     } else {
       if (pEnt.getSent()) {
-        throw new ExcCode(ExcCode.WRPR, "can_not_change_sent_email");
+        throw new ExcCode(ExcCode.WR, "can_not_change_sent_email");
       }
       if (pRqDt.getParam("ndSnd") != null) {
         //ORM refresh:

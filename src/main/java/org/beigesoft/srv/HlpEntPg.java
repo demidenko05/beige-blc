@@ -38,6 +38,7 @@ import java.util.Arrays;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
+import org.beigesoft.mdl.IIdStr;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.Page;
 import org.beigesoft.mdl.CmnPrf;
@@ -272,6 +273,7 @@ public class HlpEntPg<RS> {
 
   /**
    * <p>Retrieves pg's filter data like SQL where and filter map.</p>
+   * @param <T> entity type
    * @param pRvs request scoped vars to return revealed data
    * @param pRqd - Request Data
    * @param pCls Entity Class
@@ -279,14 +281,13 @@ public class HlpEntPg<RS> {
    * @return StringBuffer with "where"
    * @throws Exception - an Exception
    **/
-  public final StringBuffer revPgFltDt(final Map<String, Object> pRvs,
-    final IReqDt pRqd, final Class<? extends IHasId<?>> pCls,
+  public final <T extends IHasId<?>> StringBuffer revPgFltDt(
+    final Map<String, Object> pRvs, final IReqDt pRqd, final Class<T> pCls,
       final boolean pDbgSh) throws Exception {
     UvdVar uvs = (UvdVar) pRvs.get("uvs");
     StringBuffer sbWhe = new StringBuffer("");
     Map<String, Object> fltMp = new HashMap<String, Object>();
     uvs.setFltMp(fltMp);
-    String ent = pCls.getSimpleName();
     for (String fdNm : this.hldUvd.lazLstFds(pCls)) {
       String flt = this.hldUvd.stg(pCls, fdNm, "flt");
       if (pDbgSh) {
@@ -294,12 +295,12 @@ public class HlpEntPg<RS> {
       }
       if (flt != null) {
         if ("ent".equals(flt)) {
-          mkWheEnt(sbWhe, pRqd, ent, fdNm, uvs);
+          mkWheEnt(sbWhe, pRqd, pCls, fdNm, uvs);
         } else if ("str".equals(flt)) {
-          mkWheStr(sbWhe, pRqd, ent, fdNm, uvs);
+          mkWheStr(sbWhe, pRqd, pCls, fdNm, uvs);
         } else if (flt.startsWith("dt")) {
-          mkWheDtTm(sbWhe, pRqd, ent, fdNm, "1", uvs);
-          mkWheDtTm(sbWhe, pRqd, ent, fdNm, "2", uvs);
+          mkWheDtTm(sbWhe, pRqd, pCls, fdNm, "1", uvs);
+          mkWheDtTm(sbWhe, pRqd, pCls, fdNm, "2", uvs);
         } else if ("enm".equals(flt)) {
           mkWheEnm(sbWhe, pRqd, pCls, fdNm, uvs);
         } else if ("bln".equals(flt)) {
@@ -307,8 +308,8 @@ public class HlpEntPg<RS> {
         } else if (flt.startsWith("expl")) {
           mkWheExcpl(sbWhe, pRqd, pCls, fdNm, uvs);
         } else {
-          mkWheStd(sbWhe, pRqd, ent, fdNm, "1", uvs);
-          mkWheStd(sbWhe, pRqd, ent, fdNm, "2", uvs);
+          mkWheStd(sbWhe, pRqd, pCls, fdNm, "1", uvs);
+          mkWheStd(sbWhe, pRqd, pCls, fdNm, "2", uvs);
         }
       }
     }
@@ -317,15 +318,16 @@ public class HlpEntPg<RS> {
 
   /**
    * <p>Make SQL WHERE clause if need.</p>
+   * @param <T> entity type
    * @param pSbw result clause
    * @param pRqd - Request Data
-   * @param pEntNm - entity name
+   * @param pCls entity class
    * @param pFdNm - field name
    * @param pUvs UVD vars
    * @throws Exception - an Exception
    **/
-  public final void mkWheStr(final StringBuffer pSbw, final IReqDt pRqd,
-    final String pEntNm, final String pFdNm,
+  public final <T extends IHasId<?>> void mkWheStr(final StringBuffer pSbw,
+    final IReqDt pRqd, final Class<T> pCls, final String pFdNm,
       final UvdVar pUvs) throws Exception {
     String rnd = pRqd.getParam("rnd");
     String foprf;
@@ -346,13 +348,12 @@ public class HlpEntPg<RS> {
     String nmFldOpr = foprf + pFdNm + "Opr";
     String fltOp = pRqd.getParam(nmFldOpr);
     String cond = null;
+    String tbNm = pCls.getSimpleName().toUpperCase();
     if ("isnotnull".equals(fltOp) || "isnull".equals(fltOp)) {
-        cond = pEntNm.toUpperCase()
-            + "." + pFdNm.toUpperCase() + " "
-            + toSqlOp(fltOp);
+        cond = tbNm + "." + pFdNm.toUpperCase() + " " + toSqlOp(fltOp);
     } else if (fltVal != null && fltOp != null
       && !fltOp.equals("disabled") && !fltOp.equals("")) {
-      cond = pEntNm.toUpperCase() + "." + pFdNm.toUpperCase() + " "
+      cond = tbNm + "." + pFdNm.toUpperCase() + " "
         + toSqlOp(fltOp) + " '" + fltVal + "'";
     }
     if (cond != null) {
@@ -372,17 +373,18 @@ public class HlpEntPg<RS> {
 
   /**
    * <p>Make SQL WHERE clause if need.</p>
+   * @param <T> entity type
    * @param pSbw result clause
    * @param pRqd - Request Data
-   * @param pEntNm - entity name
+   * @param pCls entity class
    * @param pFdNm - field name
    * @param pParSuffix - parameter suffix
    * @param pUvs UVD vars
    * @throws Exception - an Exception
    **/
-  public final void mkWheStd(final StringBuffer pSbw, final IReqDt pRqd,
-    final String pEntNm, final String pFdNm, final String pParSuffix,
-      final UvdVar pUvs) throws Exception {
+  public final <T extends IHasId<?>> void mkWheStd(final StringBuffer pSbw,
+    final IReqDt pRqd, final Class<T> pCls, final String pFdNm,
+      final String pParSuffix, final UvdVar pUvs) throws Exception {
     String rnd = pRqd.getParam("rnd");
     String foprf;
     if (rnd != null && rnd.startsWith("pd")) {
@@ -403,16 +405,13 @@ public class HlpEntPg<RS> {
       + "Opr" + pParSuffix;
     String fltOp = pRqd.getParam(nmFldOpr);
     String cond = null;
+    String tbNm = pCls.getSimpleName().toUpperCase();
     if ("isnotnull".equals(fltOp) || "isnull".equals(fltOp)) {
-        cond = pEntNm.toUpperCase()
-            + "." + pFdNm.toUpperCase() + " "
-            + toSqlOp(fltOp);
+        cond = tbNm + "." + pFdNm.toUpperCase() + " " + toSqlOp(fltOp);
     } else if (fltVal != null && fltOp != null
       && !fltOp.equals("disabled") && !fltOp.equals("")) {
-      cond = pEntNm.toUpperCase()
-          + "." + pFdNm.toUpperCase() + " "
-          + toSqlOp(fltOp)
-          + " " + fltVal;
+      cond = tbNm + "." + pFdNm.toUpperCase() + " " + toSqlOp(fltOp)
+        + " " + fltVal;
     }
     if (cond != null) {
       pUvs.getFltMp().put(nmFldVal, fltVal);
@@ -431,17 +430,18 @@ public class HlpEntPg<RS> {
 
   /**
    * <p>Make SQL WHERE clause for date-time if need.</p>
+   * @param <T> entity type
    * @param pSbw result clause
    * @param pRqd - Request Data
-   * @param pEntNm - entity name
+   * @param pCls entity class
    * @param pFdNm - field name
    * @param pParSuffix - parameter suffix
    * @param pUvs UVD vars
    * @throws Exception - an Exception
    **/
-  public final void mkWheDtTm(final StringBuffer pSbw, final IReqDt pRqd,
-    final String pEntNm, final String pFdNm, final String pParSuffix,
-      final UvdVar pUvs) throws Exception {
+  public final <T extends IHasId<?>> void mkWheDtTm(final StringBuffer pSbw,
+    final IReqDt pRqd, final Class<T> pCls, final String pFdNm,
+      final String pParSuffix, final UvdVar pUvs) throws Exception {
     String rnd = pRqd.getParam("rnd");
     String foprf;
     if (rnd != null && rnd.startsWith("pd")) {
@@ -462,10 +462,9 @@ public class HlpEntPg<RS> {
       + "Opr" + pParSuffix;
     String fltOp = pRqd.getParam(nmFldOpr);
     String cond = null;
+    String tbNm = pCls.getSimpleName().toUpperCase();
     if ("isnotnull".equals(fltOp) || "isnull".equals(fltOp)) {
-        cond = pEntNm.toUpperCase()
-            + "." + pFdNm.toUpperCase() + " "
-            + toSqlOp(fltOp);
+        cond = tbNm + "." + pFdNm.toUpperCase() + " " + toSqlOp(fltOp);
     } else if (fltVal != null && fltOp != null
       && !fltOp.equals("disabled") && !fltOp.equals("")) {
       Date valDt;
@@ -480,7 +479,7 @@ public class HlpEntPg<RS> {
       } else { //2001-07-04
         valDt = this.srvDt.from8601Date(fltVal);
       }
-      cond = pEntNm.toUpperCase() + "." + pFdNm.toUpperCase() + " "
+      cond = tbNm + "." + pFdNm.toUpperCase() + " "
         + toSqlOp(fltOp) + " " + valDt.getTime();
     }
     if (cond != null) {
@@ -499,10 +498,10 @@ public class HlpEntPg<RS> {
   }
 
   /**
-   * <p>Make SQL operator e.g. 'eq'-&gt;'&gt;'.</p>
+   * <p>Make SQL operator e.g. eq, gt, lt.</p>
    * @param pOper operator - eq, gt, lt
    * @return SQL operator
-   * @throws ExcCode - code 1003 WRPR
+   * @throws ExcCode - unknown operator
    **/
   public final String toSqlOp(
     final String pOper) throws ExcCode {
@@ -527,21 +526,22 @@ public class HlpEntPg<RS> {
     } else if ("like".equals(pOper)) {
       return "like";
     } else {
-      throw new ExcCode(ExcCode.WRPR, "can't match SQL operator: " + pOper);
+      throw new ExcCode(ExcCode.SPAM, "Can't match SQL operator: " + pOper);
     }
   }
 
   /**
    * <p>Make SQL WHERE clause for entity if need.</p>
+   * @param <T> entity type
    * @param pSbw result clause
    * @param pRqd - Request Data
-   * @param pEntNm - entity name
+   * @param pCls entity class
    * @param pFdNm - field name
    * @param pUvs UVD vars
    * @throws Exception - an Exception
    **/
-  public final void mkWheEnt(final StringBuffer pSbw, final IReqDt pRqd,
-    final String pEntNm, final String pFdNm,
+  public final <T extends IHasId<?>> void mkWheEnt(final StringBuffer pSbw,
+    final IReqDt pRqd, final Class<T> pCls, final String pFdNm,
       final UvdVar pUvs) throws Exception {
     String rnd = pRqd.getParam("rnd");
     String foprf;
@@ -557,6 +557,8 @@ public class HlpEntPg<RS> {
     String nmFldOpr = foprf + pFdNm + "Opr";
     String fltOp = pRqd.getParam(nmFldOpr);
     if (fltOp != null && !fltOp.equals("disabled")) {
+      Class<?> fdCls = this.hldUvd.fldCls(pCls, pFdNm);
+      boolean isStrId = IIdStr.class.isAssignableFrom(fdCls);
       // equals or not to empty
       if (fltVlId == null || fltVlId.length() == 0) {
         if (fltOp.equals("eq")) {
@@ -571,10 +573,9 @@ public class HlpEntPg<RS> {
       if (flFrcdVl != null) {
         pUvs.getFltMp().put(flFrcdNm, flFrcdVl);
       }
+      String tbNm = pCls.getSimpleName().toUpperCase();
       if (fltOp.equals("isnull") || fltOp.equals("isnotnull")) {
-        String cond = pEntNm.toUpperCase()
-          + "." + pFdNm.toUpperCase() + " "
-            + toSqlOp(fltOp);
+        String cond = tbNm + "." + pFdNm.toUpperCase() + " " + toSqlOp(fltOp);
         if (pSbw.toString().length() == 0) {
           pSbw.append(cond);
         } else {
@@ -586,15 +587,18 @@ public class HlpEntPg<RS> {
         }
       } else {
         pUvs.getFltMp().put(nmFldVlId, fltVlId);
-        String nmFldVlAp = foprf + pFdNm
-          + "VlAp";
+        String nmFldVlAp = foprf + pFdNm + "VlAp";
         String fltVlAp = pRqd.getParam(nmFldVlAp);
         pUvs.getFltMp().put(nmFldVlAp, fltVlAp);
-        String valId = fltVlId;
+        String valId;
         if (fltOp.equals("in")) {
-          valId = "(" + valId + ")";
+          valId = "(" + fltVlId + ")";
+        } else if (isStrId) {
+          valId = "'" + fltVlId + "'";
+        } else {
+          valId = fltVlId;
         }
-        String cond = pEntNm.toUpperCase() + "." + pFdNm.toUpperCase() + " "
+        String cond = tbNm + "." + pFdNm.toUpperCase() + " "
           + toSqlOp(fltOp) + " " + valId;
         if (pSbw.toString().length() == 0) {
           pSbw.append(cond);
@@ -611,6 +615,7 @@ public class HlpEntPg<RS> {
 
   /**
    * <p>Make SQL WHERE clause for enum if need.</p>
+   * @param <T> entity type
    * @param pSbw result clause
    * @param pRqd - Request Data
    * @param pCls - entity class
@@ -618,8 +623,8 @@ public class HlpEntPg<RS> {
    * @param pUvs UVD vars
    * @throws Exception - an Exception
    **/
-  public final void mkWheEnm(final StringBuffer pSbw, final IReqDt pRqd,
-    final Class<? extends IHasId<?>> pCls, final String pFdNm,
+  public final <T extends IHasId<?>> void mkWheEnm(final StringBuffer pSbw,
+    final IReqDt pRqd, final Class<T> pCls, final String pFdNm,
       final UvdVar pUvs) throws Exception {
     String rnd = pRqd.getParam("rnd");
     String foprf;
@@ -701,6 +706,7 @@ public class HlpEntPg<RS> {
    * is treated as
    * "DESCRIPTION '%200' and PAYMENTTOTAL/ITSTOTAL >= 0.05".
    * </p>
+   * @param <T> entity type
    * @param pSbw result clause
    * @param pRqd - Request Data
    * @param pCls - entity class
@@ -708,8 +714,8 @@ public class HlpEntPg<RS> {
    * @param pUvs UVD vars
    * @throws Exception - an Exception
    **/
-  public final void mkWheExcpl(final StringBuffer pSbw, final IReqDt pRqd,
-    final Class<? extends IHasId<?>> pCls, final String pFdNm,
+  public final <T extends IHasId<?>> void mkWheExcpl(final StringBuffer pSbw,
+    final IReqDt pRqd, final Class<T> pCls, final String pFdNm,
       final UvdVar pUvs) throws Exception {
     String rnd = pRqd.getParam("rnd");
     String foprf;
@@ -752,6 +758,7 @@ public class HlpEntPg<RS> {
 
   /**
    * <p>Make SQL WHERE clause for boolean if need.</p>
+   * @param <T> entity type
    * @param pSbw result clause
    * @param pRqd - Request Data
    * @param pCls - entity class
@@ -759,8 +766,8 @@ public class HlpEntPg<RS> {
    * @param pUvs UVD vars
    * @throws Exception - an Exception
    **/
-  public final void mkWheBln(final StringBuffer pSbw, final IReqDt pRqd,
-    final Class<? extends IHasId<?>> pCls, final String pFdNm,
+  public final <T extends IHasId<?>> void mkWheBln(final StringBuffer pSbw,
+    final IReqDt pRqd, final Class<T> pCls, final String pFdNm,
       final UvdVar pUvs) throws Exception {
     String rnd = pRqd.getParam("rnd");
     String foprf;

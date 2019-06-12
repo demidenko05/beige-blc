@@ -77,7 +77,7 @@ public class CnvIdCst implements ICnvId<IHasId<Object>, Object> {
       Method getter = this.hldGets.get(pEnt.getClass(), fdNm);
       fdVl = getter.invoke(pEnt);
       if (fdVl == null) {
-        throw new ExcCode(ExcCode.WRPR, "Entity with NULL ID!");
+        throw new ExcCode(ExcCode.WR, "Entity with NULL ID!");
       }
       if (IHasId.class.isAssignableFrom(fdCls)) {
         @SuppressWarnings("unchecked")
@@ -123,7 +123,7 @@ public class CnvIdCst implements ICnvId<IHasId<Object>, Object> {
       Method getter = this.hldGets.get(pEnt.getClass(), fdNm);
       fdVl = getter.invoke(pEnt);
       if (fdVl == null) {
-        throw new ExcCode(ExcCode.WRPR, "Entity with NULL ID!");
+        throw new ExcCode(ExcCode.WR, "Entity with NULL ID!");
       }
       if (IHasId.class.isAssignableFrom(fdCls)) {
         @SuppressWarnings("unchecked")

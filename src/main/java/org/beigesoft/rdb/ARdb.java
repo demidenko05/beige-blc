@@ -68,7 +68,7 @@ public abstract class ARdb<RS> implements IRdb<RS> {
       if (rs.first()) {
         result = rs.getInt(pClNm);
         if (rs.next()) {
-          throw new ExcCode(ExcCode.WRPR,
+          throw new ExcCode(ExcCode.WR,
             "Query returns more than 1 result - " + pQu);
         }
       }
@@ -97,7 +97,7 @@ public abstract class ARdb<RS> implements IRdb<RS> {
       if (rs.first()) {
         result = rs.getLong(pClNm);
         if (rs.next()) {
-          throw new ExcCode(ExcCode.WRPR,
+          throw new ExcCode(ExcCode.WR,
             "Query returns more than 1 result - " + pQu);
         }
       }
@@ -126,7 +126,7 @@ public abstract class ARdb<RS> implements IRdb<RS> {
       if (rs.first()) {
         result = rs.getFloat(pClNm);
         if (rs.next()) {
-          throw new ExcCode(ExcCode.WRPR,
+          throw new ExcCode(ExcCode.WR,
             "Query returns more than 1 result - " + pQu);
         }
       }
@@ -155,7 +155,7 @@ public abstract class ARdb<RS> implements IRdb<RS> {
       if (rs.first()) {
         result = rs.getDouble(pClNm);
         if (rs.next()) {
-          throw new ExcCode(ExcCode.WRPR,
+          throw new ExcCode(ExcCode.WR,
             "Query returns more than 1 result - " + pQu);
         }
       }

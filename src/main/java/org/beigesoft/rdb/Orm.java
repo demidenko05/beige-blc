@@ -309,7 +309,7 @@ public class Orm<RS> implements IOrm {
       if (rs.first()) {
         this.filEntRs.fill(pRvs, pVs, pEnt, rs);
         if (rs.next()) {
-          throw new ExcCode(ExcCode.WRPR,
+          throw new ExcCode(ExcCode.WR,
             "Select entity returns more than 1 result - " + sb.toString());
         }
       } else {
@@ -346,7 +346,7 @@ public class Orm<RS> implements IOrm {
         ent = fctEnt.create(pRvs);
         this.filEntRs.fill(pRvs, pVs, ent, rs);
         if (rs.next()) {
-          throw new ExcCode(ExcCode.WRPR,
+          throw new ExcCode(ExcCode.WR,
             "Select entity returns more than 1 result - " + pQu);
         }
       }

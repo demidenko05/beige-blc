@@ -57,7 +57,8 @@ public class ExcCode extends Exception {
   public static final int WRCN = 1002;
 
   /**
-   * <p>Unexpectable parameter.</p>
+   * <p>Unacceptable parameter, servlet will report
+   * internationalized short message to the client.</p>
    **/
   public static final int WRPR = 1003;
 
@@ -68,9 +69,15 @@ public class ExcCode extends Exception {
 
   /**
    * <p>System is busy, e.g. when factory application beans has been changed
-   * during runtime, then it lock factory for clients.</p>
+   * during runtime, then it lock factory for clients. Servlet will report
+   * internationalized short message to the client.</p>
    **/
   public static final int BUSY = 1005;
+
+  /**
+   * <p>Possibly spam.</p>
+   **/
+  public static final int SPAM = 100;
 
   /**
    * <p>Code.</p>

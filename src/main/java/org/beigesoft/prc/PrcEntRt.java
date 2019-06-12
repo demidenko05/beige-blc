@@ -79,7 +79,7 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
       if (!oid.getDbOr().equals(this.orm.getDbId())) {
         String[] aar = pRqDt.getParam("act").split(",");
         if ("entEd".equals(aar[0]) || "entCd".equals(aar[0])) {
-          throw new ExcCode(ExcCode.WRPR, "can_not_change_foreign_src");
+          throw new ExcCode(ExcCode.WR, "can_not_change_foreign_src");
         }
       }
     }

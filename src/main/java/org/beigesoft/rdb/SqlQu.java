@@ -249,7 +249,7 @@ public class SqlQu implements ISqlQu {
           + pEnt.getClass() + "/" + fdNm + "/" + fdCls + "/" + fdVl);
       }
       if (fdVl == null) {
-        throw new ExcCode(ExcCode.WRPR, "Entity with NULL ID!");
+        throw new ExcCode(ExcCode.WR, "Entity with NULL ID!");
       }
       if (IHasId.class.isAssignableFrom(fdCls)) {
         @SuppressWarnings("unchecked")

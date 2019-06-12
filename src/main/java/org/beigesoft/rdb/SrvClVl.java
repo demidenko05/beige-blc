@@ -254,7 +254,7 @@ public class SrvClVl {
     if (pCv.getInts() != null && pCv.getInts().keySet().contains(pNm)) {
       return pCv.getInts().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+    throw new ExcCode(ExcCode.WR, "There is no field/CV - " + pNm
       + "/" + str(pCv));
   }
 
@@ -270,7 +270,7 @@ public class SrvClVl {
     if (pCv.getLongs() != null && pCv.getLongs().keySet().contains(pNm)) {
       return pCv.getLongs().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+    throw new ExcCode(ExcCode.WR, "There is no field/CV - " + pNm
       + "/" + str(pCv));
   }
 
@@ -286,7 +286,7 @@ public class SrvClVl {
     if (pCv.getStrs() != null && pCv.getStrs().keySet().contains(pNm)) {
       return pCv.getStrs().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+    throw new ExcCode(ExcCode.WR, "There is no field/CV - " + pNm
       + "/" + str(pCv));
   }
 
@@ -305,7 +305,7 @@ public class SrvClVl {
     if (pCv.getStrs() != null && pCv.getStrs().keySet().contains(pNm)) {
       return pCv.getStrs().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+    throw new ExcCode(ExcCode.WR, "There is no field/CV - " + pNm
       + "/" + str(pCv));
   }
 
@@ -321,7 +321,7 @@ public class SrvClVl {
     if (pCv.getFloats() != null && pCv.getFloats().keySet().contains(pNm)) {
       return pCv.getFloats().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+    throw new ExcCode(ExcCode.WR, "There is no field/CV - " + pNm
       + "/" + str(pCv));
   }
 
@@ -337,7 +337,7 @@ public class SrvClVl {
   if (pCv.getDoubles() != null && pCv.getDoubles().keySet().contains(pNm)) {
       return pCv.getDoubles().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+    throw new ExcCode(ExcCode.WR, "There is no field/CV - " + pNm
       + "/" + str(pCv));
   }
 
@@ -394,7 +394,7 @@ public class SrvClVl {
       && pCv.getDoubles().keySet().contains(pNm)) {
       return pCv.getDoubles().get(pNm);
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no field/CV - " + pNm
+    throw new ExcCode(ExcCode.WR, "There is no field/CV - " + pNm
       + "/" + str(pCv));
   }
 
@@ -452,7 +452,7 @@ public class SrvClVl {
       pCv.getDoubles().remove(pNm);
       return;
     }
-    throw new ExcCode(ExcCode.WRPR, "There is no column/CV " + pNm
+    throw new ExcCode(ExcCode.WR, "There is no column/CV " + pNm
       + "/" + str(pCv));
   }
 

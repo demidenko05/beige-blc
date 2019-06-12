@@ -220,12 +220,12 @@ public class Setng implements ISetng {
   public final <T extends IHasId<?>> String lazFldStg(final Class<T> pCls,
     final String pFldNm, final String pStgNm) throws Exception {
     if (pCls == null || pFldNm == null || pStgNm == null) {
-      throw new ExcCode(ExcCode.WRPR, "Null parameter cls/fd/stg: " + pCls
+      throw new ExcCode(ExcCode.WR, "Null parameter cls/fd/stg: " + pCls
         + "/" + pFldNm + "/" + pStgNm);
     }
     lazClsStg(pCls, KEYEXLFLDS);
     if (this.exlFlds != null && this.exlFlds.contains(pFldNm)) {
-      throw new ExcCode(ExcCode.WRPR, "Excluded field " + pFldNm);
+      throw new ExcCode(ExcCode.WR, "Excluded field " + pFldNm);
     }
     lazFldPrp(pCls, pFldNm, pStgNm);
     if (this.fldStgs == null || this.fldStgs.get(pCls) == null
@@ -276,7 +276,7 @@ public class Setng implements ISetng {
   public final <T extends IHasId<?>> List<String> lazFldNms(
     final Class<T> pCls) throws Exception {
     if (pCls == null) {
-      throw new ExcCode(ExcCode.WRPR, "Null parameter cls!");
+      throw new ExcCode(ExcCode.WR, "Null parameter cls!");
     }
     if (this.fldNms == null || this.fldNms.get(pCls) == null) {
       synchronized (this) {
@@ -335,12 +335,12 @@ public class Setng implements ISetng {
   public final <T extends IHasId<?>> String lazClsStg(final Class<T> pCls,
     final String pStgNm) throws Exception {
     if (pCls == null || pStgNm == null) {
-      throw new ExcCode(ExcCode.WRPR, "Null parameter cls/stg: " + pCls
+      throw new ExcCode(ExcCode.WR, "Null parameter cls/stg: " + pCls
         + "/" + pStgNm);
     }
     lazConf();
     if (!this.clss.contains(pCls)) {
-      throw new ExcCode(ExcCode.WRPR, "Excluded class " + pCls);
+      throw new ExcCode(ExcCode.WR, "Excluded class " + pCls);
     }
     lazClsPrp(pCls, pStgNm);
     if (this.clsStgs == null || !this.clsStgs.keySet().contains(pCls)
@@ -377,7 +377,7 @@ public class Setng implements ISetng {
     final Class<T> pCls) throws Exception {
     lazConf();
     if (!this.clss.contains(pCls)) {
-      throw new ExcCode(ExcCode.WRPR, "Excluded class " + pCls);
+      throw new ExcCode(ExcCode.WR, "Excluded class " + pCls);
     }
     if (this.idFldNms == null || !this.idFldNms.keySet().contains(pCls)) {
       synchronized (this) {

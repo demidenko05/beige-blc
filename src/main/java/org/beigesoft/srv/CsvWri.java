@@ -168,7 +168,7 @@ public class CsvWri implements ICsvWri {
                     mf = this.hlMaFrn.get(pRqVs, pCsMh
                       .getClns().get(i).getMaFrn().getIid());
                     if (mf == null) {
-                  throw new ExcCode(ExcCode.WRPR, "Can't find match foreign ID "
+                  throw new ExcCode(ExcCode.WR, "Can't find match foreign ID: "
                       + pCsMh.getClns().get(i).getMaFrn().getIid());
                     }
                     mfMap.put(pCsMh.getClns().get(i).getMaFrn().getIid(), mf);

@@ -113,7 +113,7 @@ public class PrcEnofSv<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
     if (!pEnt.getIsNew() && IOrId.class.isAssignableFrom(pEnt.getClass())) {
       IOrId oid = (IOrId) pEnt;
       if (!oid.getDbOr().equals(this.orm.getDbId())) {
-        throw new ExcCode(ExcCode.WRPR, "can_not_change_foreign_src");
+        throw new ExcCode(ExcCode.WR, "can_not_change_foreign_src");
       }
     }
     Map<String, Object> vs = new HashMap<String, Object>();

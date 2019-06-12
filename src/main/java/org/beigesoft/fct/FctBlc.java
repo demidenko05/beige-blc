@@ -136,7 +136,7 @@ public class FctBlc<RS> implements IFctApp {
   public final Object laz(final Map<String, Object> pRvs,
     final String pBnNm) throws Exception {
     if (pBnNm == null) {
-      throw new ExcCode(ExcCode.WRPR, "Null bean name!!!");
+      throw new ExcCode(ExcCode.WR, "Null bean name!!!");
     }
     Object rz = this.beans.get(pBnNm);
     if (rz == null) {
@@ -240,7 +240,7 @@ public class FctBlc<RS> implements IFctApp {
               }
             }
             if (rz == null) {
-              throw new ExcCode(ExcCode.WRPR, "There is no bean: " + pBnNm);
+              throw new ExcCode(ExcCode.WR, "There is no bean: " + pBnNm);
             }
           }
         }
@@ -260,11 +260,11 @@ public class FctBlc<RS> implements IFctApp {
   public final synchronized void put(final Map<String, Object> pRvs,
     final String pBnNm, final Object pBean) throws Exception {
     if (pBnNm == null || pBean == null) {
-      throw new ExcCode(ExcCode.WRPR, "Null bean or name: nm/bn"
+      throw new ExcCode(ExcCode.WR, "Null bean or name: nm/bn"
         + pBnNm + "/" + pBean);
     }
     if (this.beans.keySet().contains(pBnNm)) {
-      throw new ExcCode(ExcCode.WRPR, "Bean exists: " + pBnNm);
+      throw new ExcCode(ExcCode.WR, "Bean exists: " + pBnNm);
     }
     this.beans.put(pBnNm, pBean);
   }
@@ -1380,7 +1380,7 @@ public class FctBlc<RS> implements IFctApp {
    */
   public final synchronized void setLogStd(final ILog pLog) throws Exception {
     if (this.logStd != null) {
-      throw new ExcCode(ExcCode.WRPR, "Log STD exists!");
+      throw new ExcCode(ExcCode.WR, "Log STD exists!");
     }
     this.logStd = pLog;
     this.beans.put(FctDt.LOGSTDNM, this.logStd);

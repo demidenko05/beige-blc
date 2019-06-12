@@ -182,8 +182,11 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     pFct.getFctBlc().getFctDt().getCustIdClss().add(UsPrf.class);
     //classes settings:
     pFct.getFctBlc().getFctDt().setHlClStgMp(new HashMap<String, HldClsStg>());
-    String stgNm = "liHe"; //list header
+    String stgNm = "owl"; //owned list
     HldClsStg hlClSt = new HldClsStg(stgNm, stgNm);
+    pFct.getFctBlc().getFctDt().getHlClStgMp().put(stgNm, hlClSt);
+    stgNm = "liHe"; //list header
+    hlClSt = new HldClsStg(stgNm, stgNm);
     pFct.getFctBlc().getFctDt().getHlClStgMp().put(stgNm, hlClSt);
     stgNm = "flOr"; //list filter order
     hlClSt = new HldClsStg(stgNm, stgNm);

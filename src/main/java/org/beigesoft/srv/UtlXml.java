@@ -135,7 +135,7 @@ public class UtlXml implements IUtlXml {
     } else if ("&amp;".equals(pEscaped)) {
       return '&';
     }
-    throw new ExcCode(ExcCode.WRPR,
+    throw new ExcCode(ExcCode.WR,
       "There is no escape char for " + pEscaped);
   }
 

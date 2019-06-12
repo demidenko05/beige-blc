@@ -122,7 +122,7 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
       csMt.setClns(cols);
       ret = this.retrs.get(csMt.getRtrNm());
       if (ret == null) {
-        throw new ExcCode(ExcCode.WRPR,
+        throw new ExcCode(ExcCode.WR,
           "Can't find retriever " + csMt.getRtrNm());
       }
       data = ret.retData(pRvs);

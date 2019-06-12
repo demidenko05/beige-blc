@@ -58,7 +58,7 @@ public class PrCsSmDtRo implements IPrc {
     String nmRet = pRqDt.getParam("nmRet");
     ICsvDtRet ret = this.retrs.get(nmRet);
     if (ret == null) {
-      throw new ExcCode(ExcCode.WRPR, "Can't find retriever " + nmRet);
+      throw new ExcCode(ExcCode.WR, "Can't find retriever " + nmRet);
     }
     pRqDt.setAttr("csDtTr", ret.getSmpDtRow(pRqVs));
   }

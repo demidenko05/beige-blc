@@ -548,7 +548,14 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
             }
           }
           if (def != null) {
-            this.fldNulMp.put(key, def.contains("not null"));
+            Boolean nulb = !def.contains("not null");
+            boolean isDbgSh = this.log.getDbgSh(this.getClass())
+              && this.log.getDbgFl() < 6106 && this.log.getDbgCl() > 6104;
+            if (isDbgSh) {
+              this.log.debug(null, getClass(), "Nulable for cls/fd/def/nulb: "
+                + pCls.getSimpleName() + "/" + pFdNm + "/" + def + "/" + nulb);
+            }
+            this.fldNulMp.put(key, nulb);
           } else {
             throw new ExcCode(ExcCode.WR, "There is no fld def for cls/fld: "
               + pCls + "/" + pFdNm);
