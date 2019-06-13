@@ -87,9 +87,13 @@ public class Tst1<RS> {
     Map<String, Object> vs = new HashMap<String, Object>();
     IOrm orm = (IOrm) this.fctApp.laz(rvs, IOrm.class.getSimpleName());
     IRdb<RS> rdb = (IRdb<RS>) this.fctApp.laz(rvs, IRdb.class.getSimpleName());
-    orm.init(rvs);
     Setng stgOrm = (Setng) this.fctApp.laz(rvs, FctDt.STGORMNM);
+    assertTrue(stgOrm.lazFldStg(UserRoleTomcatPriority.class, "rol", "def").contains("not null"));
+    assertTrue(stgOrm.lazFldStg(UserRoleTomcatPriority.class, "priority", "nul").equals("false"));
+    orm.init(rvs);
     stgOrm.release();
+    assertTrue(stgOrm.lazFldStg(UserRoleTomcatPriority.class, "rol", "def").contains("not null"));
+    assertTrue(stgOrm.lazFldStg(UserRoleTomcatPriority.class, "priority", "nul").equals("false"));
     try {
       rdb.setAcmt(false);
       rdb.setTrIsl(IRdb.TRRUC);

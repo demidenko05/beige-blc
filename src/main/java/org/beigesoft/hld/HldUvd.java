@@ -536,24 +536,27 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
       synchronized (this) {
         if (!this.fldNulMp.keySet().contains(key)) {
           String def = null;
+          String nul = null;
           synchronized (this.stgOrm) {
             def = this.stgOrm.lazFldStg(pCls, pFdNm, "def");
-            if (this.stgOrm.getFldStgs().get(pCls).get(pFdNm).size() == 1) {
+            nul = this.stgOrm.lazFldStg(pCls, pFdNm, "nul");
+            if (this.stgOrm.getFldStgs().get(pCls).get(pFdNm).size() == 2) {
               this.stgOrm.getFldStgs().get(pCls).remove(pFdNm);
               if (this.stgOrm.getFldStgs().get(pCls).size() == 1) {
                 this.stgOrm.getFldStgs().remove(pCls);
               }
             } else {
               this.stgOrm.getFldStgs().get(pCls).get(pFdNm).remove("def");
+              this.stgOrm.getFldStgs().get(pCls).get(pFdNm).remove("nul");
             }
           }
           if (def != null) {
-            Boolean nulb = !def.contains("not null");
+            Boolean nulb = !(def.contains("not null") || "false".equals(nul));
             boolean isDbgSh = this.log.getDbgSh(this.getClass())
               && this.log.getDbgFl() < 6106 && this.log.getDbgCl() > 6104;
             if (isDbgSh) {
-              this.log.debug(null, getClass(), "Nulable for cls/fd/def/nulb: "
-                + pCls.getSimpleName() + "/" + pFdNm + "/" + def + "/" + nulb);
+       this.log.debug(null, getClass(), "Nulable for cls/fd/def/nul/nulb: "
+    + pCls.getSimpleName() + "/" + pFdNm + "/" + def + "/" + nul + "/" + nulb);
             }
             this.fldNulMp.put(key, nulb);
           } else {
