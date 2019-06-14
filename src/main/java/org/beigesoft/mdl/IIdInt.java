@@ -26,55 +26,13 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdlp;
+package org.beigesoft.mdl;
 
 /**
- * <p>Composite ID of I18N preferences for a user preferences.</p>
+ * <p>Abstraction of persistable model with Integer ID and version.</p>
  *
  * @author Yury Demidenko
  */
-public class UsPrfId {
+public interface IIdInt extends IHasId<Integer> {
 
-  /**
-   * <p>Country.</p>
-   **/
-  private Cntr cntr;
-
-  /**
-   * <p>Language.</p>
-   **/
-  private Lng lng;
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for cntr.</p>
-   * @return Cntr
-   **/
-  public final Cntr getCntr() {
-    return this.cntr;
-  }
-
-  /**
-   * <p>Setter for cntr.</p>
-   * @param pCntr reference
-   **/
-  public final void setCntr(final Cntr pCntr) {
-    this.cntr = pCntr;
-  }
-
-  /**
-   * <p>Getter for lng.</p>
-   * @return Lng
-   **/
-  public final Lng getLng() {
-    return this.lng;
-  }
-
-  /**
-   * <p>Setter for lng.</p>
-   * @param pLng reference
-   **/
-  public final void setLng(final Lng pLng) {
-    this.lng = pLng;
-  }
 }

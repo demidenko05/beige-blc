@@ -453,7 +453,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row inserted but it is " + r
     }
     if (pEnt.getIid() == null && r > 0L) {
       pEnt.setIid(r);
-    } else if (!this.isAndr && r == -1L || r != 1L) {
+    } else if (!this.isAndr && (r == -1L || r != 1L)) {
       String qu = getSrvClVl().evInsert(pEnt.getClass(), cv);
 throw new ExcCode(ACTROWERR, "It should be 1 row inserted but it is " + r
 + ", query:\n" + qu + ";\n" + "CV - "  + getSrvClVl().str(pEnt.getClass(), cv));

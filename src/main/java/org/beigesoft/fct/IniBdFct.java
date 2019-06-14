@@ -124,12 +124,15 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     pFct.getFctBlc().getFctDt()
       .setLogPth(pFct.getFctBlc().getFctDt().getAppPth());
     ISetng setng = pFct.getFctBlc().lazStgOrm(pRvs);
-    String dbUrl = setng.lazCmnst().get(IOrm.DBURL);
-    if (dbUrl.contains(IOrm.CURDIR)) { //sqlite
-      dbUrl = dbUrl.replace(IOrm.CURDIR, pFct.getFctBlc().getFctDt().getAppPth()
-        + File.separator);
+    if (pFct.getFctBlc().getFctDt().getDbUrl() == null) {
+      //Factory constructor has higher priority than XML settings!
+      String dbUrl = setng.lazCmnst().get(IOrm.DBURL);
+      if (dbUrl.contains(IOrm.CURDIR)) { //sqlite
+        dbUrl = dbUrl.replace(IOrm.CURDIR, pFct.getFctBlc().getFctDt()
+          .getAppPth() + File.separator);
+      }
+      pFct.getFctBlc().getFctDt().setDbUrl(dbUrl);
     }
-    pFct.getFctBlc().getFctDt().setDbUrl(dbUrl);
     String dbCls = setng.lazCmnst().get(IOrm.JDBCCLS);
     if (dbCls == null) {
       dbCls = setng.lazCmnst().get(IOrm.DSCLS);
@@ -248,6 +251,9 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlClSt = new HldClsStg(stgNm, stgNm);
     pFct.getFctBlc().getFctDt().getHlClStgMp().put(stgNm, hlClSt);
     stgNm = "prn"; //print
+    hlClSt = new HldClsStg(stgNm, stgNm);
+    pFct.getFctBlc().getFctDt().getHlClStgMp().put(stgNm, hlClSt);
+    stgNm = "de"; //delete form
     hlClSt = new HldClsStg(stgNm, stgNm);
     pFct.getFctBlc().getFctDt().getHlClStgMp().put(stgNm, hlClSt);
   }

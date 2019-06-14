@@ -28,7 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.mdlp;
 
-import org.beigesoft.mdl.IHasId;
+import org.beigesoft.mdl.IIdInt;
 
 /**
  * <p>Every database must has ID for replication purposes
@@ -36,7 +36,7 @@ import org.beigesoft.mdl.IHasId;
  *
  * @author Yury Demidenko
  */
-public class DbInf implements IHasId<Integer> {
+public class DbInf implements IIdInt {
 
   /**
    * <p>ID of type Integer.</p>

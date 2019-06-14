@@ -90,9 +90,8 @@ public class ToCvTest<RS> {
   @Test
   public void tst1() throws Exception {
     Department dp = new Department();
-    dp.setIid(1L);
+    dp.setIid(235569L);
     dp.setVer(new Date().getTime());
-    dp.setDbOr(1);
     dp.setNme("Dep1 1");
     GdCat gdc = new GdCat();
     gdc.setIid(2L);

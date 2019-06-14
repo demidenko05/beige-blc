@@ -19,6 +19,7 @@ See LICENSE in base folder
 <entry key="java.math.BigDecimal">decimal(19,4)</entry>
 <!--Foreign entities:-->
 <entry key="org.beigesoft.mdlp.UsTmc">text</entry>
-<entry key="org.beigesoft.mdlp.AIdLn">bigint</entry>
-<entry key="org.beigesoft.mdlp.AIdStr">text</entry>
+<entry key="org.beigesoft.mdl.IIdInt">integer</entry>
+<entry key="org.beigesoft.mdl.IIdLn">bigint</entry>
+<entry key="org.beigesoft.mdl.IIdStr">text</entry>
 </properties>
