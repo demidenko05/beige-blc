@@ -50,6 +50,7 @@ import org.beigesoft.cnv.CnvSmpStr;
 import org.beigesoft.cnv.CnvBlnStr;
 import org.beigesoft.cnv.CnvHsIdStr;
 import org.beigesoft.cnv.CnvMaxStr;
+import org.beigesoft.cnv.CnvTxrStr;
 import org.beigesoft.cnv.CnvPriStr;
 import org.beigesoft.cnv.CnvQuanStr;
 import org.beigesoft.cnv.CnvCostStr;
@@ -182,6 +183,8 @@ public class FctNmCnToSt implements IFctCnToSt {
             rz = crPuCnvIntStrFm();
           } else if (CnvLngStrFm.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvLngStrFm();
+          } else if (CnvTxrStr.class.getSimpleName().equals(pCnNm)) {
+            rz = crPuCnvTxrStr();
           } else if (CnvPriStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvPriStr();
           } else if (CnvBlnStr.class.getSimpleName().equals(pCnNm)) {
@@ -387,6 +390,19 @@ public class FctNmCnToSt implements IFctCnToSt {
     rz.setNumStr(getNumStr());
     this.convrts.put(CnvLngStrFm.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), CnvLngStrFm.class.getSimpleName()
+      + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map CnvTxrStr.</p>
+   * @return CnvTxrStr
+   */
+  private CnvTxrStr crPuCnvTxrStr() {
+    CnvTxrStr rz = new CnvTxrStr();
+    rz.setNumStr(getNumStr());
+    this.convrts.put(CnvTxrStr.class.getSimpleName(), rz);
+    getLogStd().info(null, getClass(), CnvTxrStr.class.getSimpleName()
       + " has been created.");
     return rz;
   }

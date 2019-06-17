@@ -77,12 +77,13 @@ public class FilFldSmpRs<RS> implements IFilFldRs<RS> {
    * @param pEnt Entity to fill, not null
    * @param pFlNm Field name, not null
    * @param pRs record-set, not null
+   * @return if not-null value
    * @throws Exception - an exception
    **/
   @Override
-  public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
-    final Map<String, Object> pVs, final T pEnt, final String pFdNm,
-    final IRecSet<RS> pRs) throws Exception {
+  public final <T extends IHasId<?>> boolean fill(
+    final Map<String, Object> pRvs, final Map<String, Object> pVs, final T pEnt,
+      final String pFdNm, final IRecSet<RS> pRs) throws Exception {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 7003 && this.log.getDbgCl() > 7001;
     Object val = null;
@@ -105,6 +106,7 @@ public class FilFldSmpRs<RS> implements IFilFldRs<RS> {
     val = flCnv.conv(pRvs, pVs, pRs, clNm);
     Method setr = this.hldSets.get(pEnt.getClass(), pFdNm);
     setr.invoke(pEnt, val);
+    return val != null;
   }
 
   //Simple getters and setters:

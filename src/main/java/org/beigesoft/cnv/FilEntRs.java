@@ -116,16 +116,13 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
       this.log.debug(pRvs, getClass(), "Needed fields entity: "
         + pEnt.getClass() + "/" + Arrays.toString(ndFds));
     }
+    boolean idFilled = true;
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
-      boolean isNd = true;
-      if (ndFds != null) {
-        isNd = Arrays.binarySearch(ndFds, fdNm) >= 0;
-      }
-      if (isNd) {
-        fillFld(pRvs, pVs, pEnt, pRs, fdNm, isDbgSh);
+      if (!fillFld(pRvs, pVs, pEnt, pRs, fdNm, isDbgSh)) {
+        idFilled = false;
       }
     }
-    if (clvDep.getCur() < clvDep.getDep()) {
+    if (idFilled && clvDep.getCur() < clvDep.getDep()) {
       for (String fdNm : this.setng.lazFldNms(pEnt.getClass())) {
         boolean isNd = true;
         if (ndFds != null) {
@@ -158,9 +155,10 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
    * @param pRs - request data
    * @param pFdNm field name
    * @param pIsDbgSh show debug msgs
+   * @return if not-null value
    * @throws Exception - an exception
    **/
-  private <T extends IHasId<?>> void fillFld(final Map<String, Object> pRvs,
+  private <T extends IHasId<?>> boolean fillFld(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final T pEnt, final IRecSet<RS> pRs,
       final String pFdNm, final boolean pIsDbgSh) throws Exception {
     String filFdNm = this.hldFilFdNms.get(pEnt.getClass(), pFdNm);
@@ -170,7 +168,7 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
         "Filling DB fdNm/cls/filler: " + pFdNm + "/" + pEnt.getClass()
           .getSimpleName() + "/" + filFl.getClass().getSimpleName());
     }
-    filFl.fill(pRvs, pVs, pEnt, pFdNm, pRs);
+    return filFl.fill(pRvs, pVs, pEnt, pFdNm, pRs);
   }
 
   //Simple getters and setters:

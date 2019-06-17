@@ -45,6 +45,11 @@ public class CmnPrf  {
   private Integer costDp = 2;
 
   /**
+   * <p>Tax rate decimal places.</p>
+   **/
+  private Integer txDp = 2;
+
+  /**
    * <p>Price decimal places.</p>
    **/
   private Integer priDp = 2;
@@ -107,6 +112,22 @@ public class CmnPrf  {
    **/
   public final void setCostDp(final Integer pCostDp) {
     this.costDp = pCostDp;
+  }
+
+  /**
+   * <p>Getter for txDp.</p>
+   * @return Integer
+   **/
+  public final Integer getTxDp() {
+    return this.txDp;
+  }
+
+  /**
+   * <p>Setter for txDp.</p>
+   * @param pTxDp reference
+   **/
+  public final void setTxDp(final Integer pTxDp) {
+    this.txDp = pTxDp;
   }
 
   /**

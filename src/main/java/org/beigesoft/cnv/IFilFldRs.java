@@ -50,9 +50,10 @@ public interface IFilFldRs<RS> {
    * @param pEnt Entity to fill, not null
    * @param pFlNm Field name, not null
    * @param pRs record-set, not null
+   * @return if not-null value
    * @throws Exception - an exception
    **/
-  <T extends IHasId<?>> void fill(Map<String, Object> pRvs,
+  <T extends IHasId<?>> boolean fill(Map<String, Object> pRvs,
     Map<String, Object> pVs, T pEnt, String pFlNm,
       IRecSet<RS> pRs) throws Exception;
 }
