@@ -307,6 +307,9 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.setHldFdCls(pFct.getFctBlc().lazHldFldCls(pRvs));
     hlFdSt.setEnumVal("enm");
     hlFdSt.setSetng(pFct.getFctBlc().lazStgUvd(pRvs));
+    hlFdSt.setStgFdNm(new HashMap<String, String>());
+    hlFdSt.getStgFdNm().put("idOr", null);
+    hlFdSt.getStgFdNm().put("dbOr", null);
     hlFdSt.setCustClss(new HashSet<Class<?>>());
     hlFdSt.getCustClss().add(Date.class);
     hlFdSt.getCustClss().add(BigDecimal.class);
@@ -324,6 +327,9 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.setEnumVal("ord");
     hlFdSt.setStgSclss(new LinkedHashMap<Class<?>, String>());
     hlFdSt.getStgSclss().put(IHasNm.class, "nme");
+    hlFdSt.setStgFdNm(new HashMap<String, String>());
+    hlFdSt.getStgFdNm().put("idOr", null);
+    hlFdSt.getStgFdNm().put("dbOr", null);
     pFct.getFctBlc().getFctDt().getHlFdStgMp().put(stgNm, hlFdSt);
     stgNm = "inWr"; //input wrapper
     hlFdSt = new HldFldStg(stgNm, stgNm);
@@ -347,7 +353,7 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.getCustClss().add(BigDecimal.class);
     hlFdSt.setCustSclss(new HashSet<Class<?>>());
     //ID-able:
-    hlFdSt.getCustSclss().add(IHasNm.class);
+    hlFdSt.getCustSclss().add(IHasId.class);
     //Standard:
     hlFdSt.setStgClss(new HashMap<Class<?>, String>());
     hlFdSt.getStgClss().put(Integer.class, "int"); //WARN avoid use as ID
@@ -364,7 +370,7 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.getCustClss().add(Long.class);
     hlFdSt.getCustClss().add(String.class);
     hlFdSt.setCustSclss(new HashSet<Class<?>>());
-    hlFdSt.getCustSclss().add(IHasNm.class);
+    hlFdSt.getCustSclss().add(IHasId.class);
     hlFdSt.setStgClss(new HashMap<Class<?>, String>());
     hlFdSt.getStgClss().put(UsTmc.class, "usr");
     hlFdSt.setStgFdNm(new HashMap<String, String>());

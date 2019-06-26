@@ -103,8 +103,7 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
         Arrays.sort(ndFds);
         vs.put(oec.getSimpleName() + "ndFds", ndFds);
         List<? extends IOwned<T, ?>> lst = this.orm.retLstCnd(pRvs, vs, oec,
-          "where OWNR=" + idOwnr);
-        vs.remove(oec.getSimpleName() + "ndFds");
+          "where OWNR=" + idOwnr); vs.clear();
         owdEntsMp.put(oecg, (List) lst);
         for (IOwned<T, ?> owd : lst) {
           owd.setOwnr(pEnt);
@@ -112,7 +111,7 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
       }
       uvs.setOwdEntsMp(owdEntsMp);
     }
-   return pEnt;
+    return pEnt;
   }
 
   //Simple getters and setters:
