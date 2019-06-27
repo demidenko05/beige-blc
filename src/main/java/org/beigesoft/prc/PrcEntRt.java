@@ -82,7 +82,7 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
           throw new ExcCode(ExcCode.WR, "can_not_change_foreign_src");
         }
       }
-    }
+    } //TODO ownr, other owned entities fields   
     Map<String, Object> vs = new HashMap<String, Object>();
     this.orm.refrEnt(pRvs, vs, pEnt);
     pEnt.setIsNew(false);

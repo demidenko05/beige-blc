@@ -123,20 +123,12 @@ public class HldFldStg implements IHlNmClSt {
       return this.enumVal;
     }
     if (this.setng != null && this.custClss.contains(fdCls)) {
-      try {
-        return this.setng.lazFldStg(pCls, pFlNm, this.stgNm);
-      } catch (Exception e) {
-        throw new Exception(e);
-      }
+      return this.setng.lazFldStg(pCls, pFlNm, this.stgNm);
     }
     if (this.setng != null && this.custSclss != null) {
       for (Class<?> cl : this.custSclss) {
         if (cl.isAssignableFrom(fdCls)) {
-          try {
-            return this.setng.lazFldStg(pCls, pFlNm, this.stgNm);
-          } catch (Exception e) {
-            throw new Exception(e);
-          }
+          return this.setng.lazFldStg(pCls, pFlNm, this.stgNm);
         }
       }
     }

@@ -97,8 +97,10 @@ public class HldClsStg {
    * @param <T> entity type
    * @param pCls a Class
    * @return setting or NULL
+   * @throws Exception an Exception
    **/
-  public final <T extends IHasId<?>> String get(final Class<T> pCls) {
+  public final <T extends IHasId<?>> String get(
+    final Class<T> pCls) throws Exception {
     if (this.stgClss != null && this.stgClss.keySet().contains(pCls)) {
       return this.stgClss.get(pCls);
     }
@@ -121,17 +123,16 @@ public class HldClsStg {
     }
     if (this.custClss != null && this.custClss.contains(pCls)) {
       String rez = null;
-      try {
-        rez = this.setng.lazClsStg(pCls, this.stgNm);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
+      rez = this.setng.lazClsStg(pCls, this.stgNm);
       if (rez == null) {
-        throw new RuntimeException(
-          "Custom setting not found cls/stgNm: "
-            + pCls.getSimpleName() + "/" + this.stgNm);
+        throw new Exception("Custom setting not found cls/stgNm: "
+          + pCls.getSimpleName() + "/" + this.stgNm);
       }
       return rez;
+    }
+    if (HldFldStg.NOSTD.equals(this.stdVal)) {
+      throw new Exception("There is no setting for cls/stg: "
+        + pCls + "/" + this.stgNm);
     }
     return this.stdVal;
   }
