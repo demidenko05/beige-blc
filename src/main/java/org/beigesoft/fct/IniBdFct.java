@@ -250,7 +250,7 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlClSt.getStgSclss().put(IHasNm.class, "nme");
     hlClSt.getStgSclss().put(IHasId.class, "pic");
     hlClSt.setStgClss(new HashMap<Class<? extends IHasId<?>>, String>());
-    hlFdSt.getStgClss().put(UsTmc.class, "usr");
+    hlClSt.getStgClss().put(UsTmc.class, "usr");
     pFct.getFctBlc().getFctDt().getHlClStgMp().put(stgNm, hlClSt);
     stgNm = "piFo"; //picker footer
     hlClSt = new HldClsStg(stgNm, stgNm);

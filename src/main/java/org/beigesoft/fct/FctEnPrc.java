@@ -34,6 +34,7 @@ import java.util.Set;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.prc.IPrcEnt;
+import org.beigesoft.prc.PrcEnoCr;
 import org.beigesoft.prc.PrcEntRt;
 import org.beigesoft.prc.PrcEntCr;
 import org.beigesoft.prc.PrcEnoDl;
@@ -100,6 +101,8 @@ public class FctEnPrc<RS> implements IFctPrcEnt {
             rz = crPuPrcEnofSv(pRvs);
           } else if (PrcEnoSv.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEnoSv(pRvs);
+          } else if (PrcEnoCr.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEnoCr(pRvs);
           } else if (PrcEntRt.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEntRt(pRvs);
           } else {
@@ -250,6 +253,23 @@ public class FctEnPrc<RS> implements IFctPrcEnt {
     rz.setOrm(this.fctBlc.lazOrm(pRvs));
     this.procs.put(PrcEntSv.class.getSimpleName(), rz);
     this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEntSv.class
+      .getSimpleName() + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map PrcEnoCr.</p>
+   * @param pRvs request scoped vars
+   * @return PrcEnoCr
+   * @throws Exception - an exception
+   */
+  private PrcEnoCr crPuPrcEnoCr(
+    final Map<String, Object> pRvs) throws Exception {
+    PrcEnoCr rz = new PrcEnoCr();
+    rz.setOrm(this.fctBlc.lazOrm(pRvs));
+    rz.setHldUvd(this.fctBlc.lazHldUvd(pRvs));
+    this.procs.put(PrcEnoCr.class.getSimpleName(), rz);
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEnoCr.class
       .getSimpleName() + " has been created.");
     return rz;
   }

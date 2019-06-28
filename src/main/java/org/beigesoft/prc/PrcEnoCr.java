@@ -28,29 +28,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.prc;
 
-import java.util.List;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
-import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IReqDt;
-import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IOwned;
-import org.beigesoft.mdlp.IOrId;
 import org.beigesoft.hld.HldUvd;
 import org.beigesoft.hld.UvdVar;
 import org.beigesoft.rdb.IOrm;
 
 /**
- * <p>Service that retrieves entity from DB.</p>
+ * <p>Service that creates entity from owned list.</p>
  *
  * @param <T> entity type
  * @param <ID> entity ID type
  * @author Yury Demidenko
  */
-public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
+public class PrcEnoCr<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
 
   /**
    * <p>ORM service.</p>
@@ -63,7 +57,7 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
   private HldUvd hldUvd;
 
   /**
-   * <p>Process that retrieves entity from DB.</p>
+   * <p>Process that saves entity.</p>
    * @param pRvs request scoped vars, e.g. return this line's
    * owner(document) in "nextEntity" for farther processing
    * @param pRqDt Request Data
@@ -74,55 +68,35 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
   @Override
   public final T process(final Map<String, Object> pRvs, final T pEnt,
     final IReqDt pRqDt) throws Exception {
-    if (IOrId.class.isAssignableFrom(pEnt.getClass())) {
-      IOrId oid = (IOrId) pEnt;
-      if (!oid.getDbOr().equals(this.orm.getDbId())) {
-        String[] aar = pRqDt.getParam("act").split(",");
-        if ("entEd".equals(aar[0]) || "entCd".equals(aar[0])) {
-          throw new ExcCode(ExcCode.WR, "can_not_change_foreign_src");
+    pEnt.setIsNew(true);
+    Map<String, String[]> selFds = this.hldUvd.lazSelFds(pEnt.getClass());
+    Map<String, Integer> selDpl = this.hldUvd.lazSelDpl(pEnt.getClass());
+    if (selFds != null || selDpl != null) {
+      boolean isOwnr = false;
+      String owSmNm = pEnt.getOwnr().getClass().getSimpleName();
+      Map<String, Object> vs = new HashMap<String, Object>();
+      if (selFds != null) {
+        for (Map.Entry<String, String[]> enr: selFds.entrySet()) {
+          if (enr.getKey().equals(owSmNm)) {
+            isOwnr = true;
+          }
+          vs.put(enr.getKey() + "ndFds", enr.getValue());
         }
       }
-    }
-    Map<String, Object> vs = new HashMap<String, Object>();
-    Map<String, String[]> selFds = this.hldUvd.lazSelFds(pEnt.getClass());
-    if (selFds != null) {
-      for (Map.Entry<String, String[]> enr: selFds.entrySet()) {
-        vs.put(enr.getKey() + "ndFds", enr.getValue());
+      if (selDpl != null) {
+        for (Map.Entry<String, Integer> enr: selDpl.entrySet()) {
+          if (enr.getKey().equals(owSmNm)) {
+            isOwnr = true;
+          }
+          vs.put(enr.getKey() + "dpLv", enr.getValue());
+        }
+      }
+      if (isOwnr) {
+        this.orm.refrEnt(pRvs, vs, pEnt.getOwnr()); vs.clear();
       }
     }
-    Map<String, Integer> selDpl = this.hldUvd.lazSelDpl(pEnt.getClass());
-    if (selDpl != null) {
-      for (Map.Entry<String, Integer> enr: selDpl.entrySet()) {
-        vs.put(enr.getKey() + "dpLv", enr.getValue());
-      }
-    }
-    this.orm.refrEnt(pRvs, vs, pEnt); vs.clear();
-    pEnt.setIsNew(false);
     UvdVar uvs = (UvdVar) pRvs.get("uvs");
     uvs.setEnt(pEnt);
-    List<Class<? extends IOwned<?, ?>>> oeLst = this.hldUvd
-      .lazOwnd(pEnt.getClass());
-    if (oeLst != null) {
-      Map<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>>
-    owdEntsMp = new
-  LinkedHashMap<Class<? extends IOwned<?, ?>>, List<? extends IOwned<?, ?>>>();
-      String idOwnr = this.hldUvd.idSql(pRvs, pEnt);
-      for (Class<? extends IOwned<?, ?>> oecg : oeLst) {
-        Class<? extends IOwned<T, ?>> oec =
-          (Class<? extends IOwned<T, ?>>) oecg;
-        String[] lstFds = this.hldUvd.lazLstFds(oec);
-        String[] ndFds = Arrays.copyOf(lstFds, lstFds.length);
-        Arrays.sort(ndFds);
-        vs.put(oec.getSimpleName() + "ndFds", ndFds);
-        List<? extends IOwned<T, ?>> lst = this.orm.retLstCnd(pRvs, vs, oec,
-          "where OWNR=" + idOwnr); vs.clear();
-        owdEntsMp.put(oecg, (List) lst);
-        for (IOwned<T, ?> owd : lst) {
-          owd.setOwnr(pEnt);
-        }
-      }
-      uvs.setOwdEntsMp(owdEntsMp);
-    }
     return pEnt;
   }
 

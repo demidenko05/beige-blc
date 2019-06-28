@@ -134,6 +134,24 @@ public class HldUvd {
 new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
 
   /**
+   * <p>Retrieved (selected) fields - selFds.
+   * Map[Cls, Map[SimpleName,ndFds]].
+   * It's for retriever processor and for creating owned line.</p>
+   **/
+  private final
+    Map<Class<? extends IHasId<?>>, Map<String, String[]>> selFdsMp =
+      new HashMap<Class<? extends IHasId<?>>, Map<String, String[]>>();
+
+  /**
+   * <p>Retrieved (selected) deep levels - selDpl.
+   * Map[Cls, Map[SimpleName,dpLv]].
+   * It's for retriever processor and for creating owned line.</p>
+   **/
+  private final
+    Map<Class<? extends IHasId<?>>, Map<String, Integer>> selDplMp =
+      new HashMap<Class<? extends IHasId<?>>, Map<String, Integer>>();
+
+  /**
    * <p>Entities fields nullable, [ClassSimpleName+FieldName]-[isNullable].</p>
    **/
   private final Map<String, Boolean> fldNulMp =
@@ -417,6 +435,141 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
     if (isDbgSh) {
       this.log.debug(null, getClass(), "frmFds for cls/frmFds: "
         + pCls.getSimpleName() + "/" + Arrays.toString(rz));
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Gets class selected fields in lazy mode. Nullable.
+   * Source format: SimpleName1,dpLv1,SimpleName2,dpLv2,...
+   * That is character "#" is prefix of next simpleName.
+   * It's for retriever processor and for creating owned line.</p>
+   * @param <T> entity type
+   * @param pCls Entity class
+   * @return map simpleName-deepLevel, may be null
+   * @throws Exception - an exception
+   **/
+  public final <T extends IHasId<?>> Map<String, Integer> lazSelDpl(
+    final Class<T> pCls) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (!this.selDplMp.keySet().contains(pCls)) {
+      synchronized (this) {
+        if (!this.selDplMp.keySet().contains(pCls)) {
+          String lFdSt = null;
+          synchronized (this.setng) {
+            lFdSt = this.setng.lazClsStg(pCls, "selDpl");
+            this.setng.getClsStgs().get(pCls).remove("selDpl");
+          }
+          if (lFdSt != null) {
+            Map<String, Integer> rzMp = new HashMap<String, Integer>();
+            boolean isSmpNm = true;
+            String smpNm = null;
+            for (String fn : lFdSt.split(",")) {
+              if (isSmpNm) {
+                smpNm = fn;
+                isSmpNm = false;
+              } else {
+                Integer dpLv = Integer.valueOf(fn);
+                rzMp.put(smpNm, dpLv);
+                isSmpNm = true;
+              }
+            }
+            this.selDplMp.put(pCls, rzMp);
+          } else {
+            this.selDplMp.put(pCls, null);
+          }
+        }
+      }
+    }
+    Map<String, Integer> rz = this.selDplMp.get(pCls);
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 6108 && this.log.getDbgCl() > 6106;
+    if (isDbgSh) {
+      if (rz != null) {
+        StringBuffer sb = new StringBuffer();
+        for (Map.Entry<String, Integer> enr : rz.entrySet()) {
+          sb.append(enr.getKey() + "=" + enr.getValue() + ";");
+        }
+        this.log.debug(null, getClass(), "selDpl for cls - "
+            + pCls.getSimpleName() + ": " + sb);
+      } else {
+        this.log.debug(null, getClass(), "selDpl is null for cls: "
+            + pCls.getSimpleName());
+      }
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Gets class selected fields in lazy mode. Nullable.
+   * Source format: SimpleName1,fd11,fd12,#SimpleName2,fd21,fd22,...
+   * That is character "#" is prefix of next simpleName.
+   * It's for retriever processor and for creating owned line.</p>
+   * @param <T> entity type
+   * @param pCls Entity class
+   * @return map simpleName-fields list, may be null
+   * @throws Exception - an exception
+   **/
+  public final <T extends IHasId<?>> Map<String, String[]> lazSelFds(
+    final Class<T> pCls) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (!this.selFdsMp.keySet().contains(pCls)) {
+      synchronized (this) {
+        if (!this.selFdsMp.keySet().contains(pCls)) {
+          String lFdSt = null;
+          synchronized (this.setng) {
+            lFdSt = this.setng.lazClsStg(pCls, "selFds");
+            this.setng.getClsStgs().get(pCls).remove("selFds");
+          }
+          if (lFdSt != null) {
+            Map<String, String[]> selMp = new HashMap<String, String[]>();
+            List<String> lFdLst = new ArrayList<String>();
+            boolean isFst = true;
+            String smpNm = null;
+            for (String fn : lFdSt.split(",")) {
+              if (isFst) {
+                isFst = false;
+                smpNm = fn;
+              } else if (fn.startsWith("#")) {
+                String[] rzt = new String[lFdLst.size()];
+                lFdLst.toArray(rzt); Arrays.sort(rzt);
+                selMp.put(smpNm, rzt);
+                lFdLst.clear();
+                smpNm = fn.replace("#", "");
+              } else {
+                lFdLst.add(fn);
+              }
+            }
+            String[] rzt = new String[lFdLst.size()];
+            lFdLst.toArray(rzt); Arrays.sort(rzt);
+            selMp.put(smpNm, rzt);
+            this.selFdsMp.put(pCls, selMp);
+          } else {
+            this.selFdsMp.put(pCls, null);
+          }
+        }
+      }
+    }
+    Map<String, String[]> rz = this.selFdsMp.get(pCls);
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 6107 && this.log.getDbgCl() > 6105;
+    if (isDbgSh) {
+      if (rz != null) {
+        StringBuffer sb = new StringBuffer();
+        for (Map.Entry<String, String[]> enr : rz.entrySet()) {
+          sb.append("\n" + enr.getKey() + ": "
+            + Arrays.toString(enr.getValue()));
+        }
+        this.log.debug(null, getClass(), "selFds for cls - "
+            + pCls.getSimpleName() + ": " + sb);
+      } else {
+        this.log.debug(null, getClass(), "selFds is null for cls: "
+            + pCls.getSimpleName());
+      }
     }
     return rz;
   }

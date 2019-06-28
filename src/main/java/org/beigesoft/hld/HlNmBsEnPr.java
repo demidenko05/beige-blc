@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IOwned;
+import org.beigesoft.prc.PrcEnoCr;
 import org.beigesoft.prc.PrcEntRt;
 import org.beigesoft.prc.PrcEntCr;
 import org.beigesoft.prc.PrcEntSv;
@@ -88,6 +89,9 @@ public class HlNmBsEnPr implements IHlNmClSt {
       return PrcEntRt.class.getSimpleName();
     }
     if ("entCr".equals(pAct)) {
+      if (IOwned.class.isAssignableFrom(pCls)) {
+        return PrcEnoCr.class.getSimpleName();
+      }
       return PrcEntCr.class.getSimpleName();
     }
     if ("entDl".equals(pAct)) {
