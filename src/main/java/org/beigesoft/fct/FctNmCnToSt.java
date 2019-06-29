@@ -140,6 +140,7 @@ public class FctNmCnToSt implements IFctCnToSt {
    * @return requested converter
    * @throws Exception - an exception
    */
+  @Override
   public final ICnToSt<?> laz(final Map<String, Object> pRvs,
     final String pCnNm) throws Exception {
     ICnToSt<?> rz = this.convrts.get(pCnNm);

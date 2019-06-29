@@ -208,12 +208,14 @@ public class SqlQu implements ISqlQu {
     }
     List<String> tbAls = new ArrayList<String>();
     pVs.put("tbAls", tbAls);
+    pVs.put("cuFdIdx", Integer.valueOf(0));
     if (isDbgSh) {
       this.log.debug(pRvs, getClass(), "tbAls created");
     }
     makeCls(pRvs, pVs, pCls, sb, sbe, isDbgSh);
     pVs.remove("lvDeps");
     pVs.remove("tbAls");
+    pVs.remove("cuFdIdx");
     if (isDbgSh) {
       this.log.debug(pRvs, getClass(),
         "Finish selecting root entity: " + pCls);
@@ -312,19 +314,15 @@ public class SqlQu implements ISqlQu {
         + pCls + "/" + Arrays.toString(ndFds));
     }
     boolean isFst = true;
+    Integer cuFdIdx = (Integer) pVs.get("cuFdIdx");
     for (String fdNm : this.setng.lazIdFldNms(pCls)) {
-      boolean isNd = true;
-      if (ndFds != null) {
-        isNd = Arrays.binarySearch(ndFds, fdNm) >= 0;
+      if (isFst) {
+        isFst = false;
+      } else {
+        pSb.append(", ");
       }
-      if (isNd) {
-        if (isFst) {
-          isFst = false;
-        } else {
-          pSb.append(", ");
-        }
-        makeFld(pRvs, pVs, pCls, fdNm, pSb, pSbe, pIsDbgSh);
-      }
+      pVs.put("cuFdIdx", cuFdIdx++);
+      makeFld(pRvs, pVs, pCls, fdNm, pSb, pSbe, pIsDbgSh);
     }
     if (clvDep.getCur() < clvDep.getDep()) {
       for (String fdNm : this.setng.lazFldNms(pCls)) {
@@ -338,6 +336,7 @@ public class SqlQu implements ISqlQu {
           } else {
             pSb.append(", ");
           }
+          pVs.put("cuFdIdx", cuFdIdx++);
           makeFld(pRvs, pVs, pCls, fdNm, pSb, pSbe, pIsDbgSh);
         }
       }
@@ -393,9 +392,11 @@ public class SqlQu implements ISqlQu {
         this.log.debug(pRvs, getClass(), "Main branch UP DL/CL: "
             + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
       }
-      String tbAl = pFdNm.toUpperCase() + lvDeps.get(0).getCur();
       @SuppressWarnings("unchecked")
       List<String> tbAls = (List<String>) pVs.get("tbAls");
+      //WrhEnr.wpFr.wrh and WrhEnr.wpTo.wrh
+      Integer cuFdIdx = (Integer) pVs.get("cuFdIdx");
+      String tbAl = pFdNm.toUpperCase() + lvDeps.get(0).getCur() + cuFdIdx;
       tbAls.add(tbAl);
       String owEnNm;
       if (tbAls.size() == 1) {

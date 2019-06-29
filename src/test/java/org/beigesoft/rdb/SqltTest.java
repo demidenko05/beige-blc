@@ -77,6 +77,8 @@ public class SqltTest {
     }
     this.fctApp.getFctBlc().getFctDt().setDbUrl(dbUrl);
     this.fctApp.getFctBlc().getFctDt().setDbCls(setng.lazCmnst().get(IOrm.JDBCCLS));
+    //this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgFl(8005);
+    //this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgCl(8005);
   }
 
   @Test

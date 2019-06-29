@@ -116,14 +116,12 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
       this.log.debug(pRvs, getClass(), "Main branch UP DL/CL: "
           + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
     }
-    String tbAl = pFlNm.toUpperCase() + lvDeps.get(0).getCur();
     @SuppressWarnings("unchecked")
     List<String> tbAls = (List<String>) pVs.get("tbAls");
+    //WrhEnr.wpFr.wrh and WrhEnr.wpTo.wrh
+    Integer cuFdIdx = (Integer) pVs.get("cuFdIdx");
+    String tbAl = pFlNm.toUpperCase() + lvDeps.get(0).getCur() + cuFdIdx;
     tbAls.add(tbAl);
-    if (isDbgSh) {
-      this.log.debug(pRvs, getClass(), "Added tbAl/cls: " + tbAl
-        + "/" + fdCls);
-    }
     this.filEnt.fill(pRvs, pVs, val, pRs);
     tbAls.remove(tbAl);
     if (lvDeps.size() > 1) { //move down through custom DL subentities branch:

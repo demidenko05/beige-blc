@@ -107,6 +107,7 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
       if (isDbgSh) {
         this.log.debug(pRvs, getClass(), "tbAls created");
       }
+      pVs.put("cuFdIdx", Integer.valueOf(0));
     } else {
       clvDep = lvDeps.get(lvDeps.size() - 1);
     }
@@ -117,7 +118,9 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
         + pEnt.getClass() + "/" + Arrays.toString(ndFds));
     }
     boolean idFilled = true;
+    Integer cuFdIdx = (Integer) pVs.get("cuFdIdx");
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
+      pVs.put("cuFdIdx", cuFdIdx++);
       if (!fillFld(pRvs, pVs, pEnt, pRs, fdNm, isDbgSh)) {
         idFilled = false;
       }
@@ -129,6 +132,7 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
           isNd = Arrays.binarySearch(ndFds, fdNm) >= 0;
         }
         if (isNd) {
+          pVs.put("cuFdIdx", cuFdIdx++);
           fillFld(pRvs, pVs, pEnt, pRs, fdNm, isDbgSh);
         }
       }
@@ -138,6 +142,7 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
       if (ld.getCur() == 0) { //current is root entity:
         pVs.remove("lvDeps");
         pVs.remove("tbAls");
+        pVs.remove("cuFdIdx");
         if (isDbgSh) {
           this.log.debug(pRvs, getClass(),
             "Finish filling root entity: " + pEnt.getClass());

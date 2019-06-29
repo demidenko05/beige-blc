@@ -78,6 +78,7 @@ public class FctEnPrc<RS> implements IFctPrcEnt {
    * @return requested processor
    * @throws Exception - an exception
    */
+  @Override
   public final IPrcEnt<?, ?> laz(final Map<String, Object> pRvs,
     final String pPrNm) throws Exception {
     IPrcEnt<?, ?> rz = this.procs.get(pPrNm);
@@ -117,6 +118,49 @@ public class FctEnPrc<RS> implements IFctPrcEnt {
             if (rz == null) {
               throw new ExcCode(ExcCode.WRCN, "There is no IProc: " + pPrNm);
             }
+          }
+        }
+      }
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Get part processor in lazy mode for inner factory.</p>
+   * @param pRvs request scoped vars
+   * @param pPrNm - filler name
+   * @return requested processor
+   * @throws Exception - an exception
+   */
+  public final IPrcEnt<?, ?> lazPart(final Map<String, Object> pRvs,
+    final String pPrNm) throws Exception {
+    IPrcEnt<?, ?> rz = this.procs.get(pPrNm);
+    if (rz == null) {
+      synchronized (this) {
+        rz = this.procs.get(pPrNm);
+        if (rz == null) {
+          if (PrcEntCr.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEntCr(pRvs);
+          } else if (PrcEnoDl.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEnoDl(pRvs);
+          } else if (PrcEntDl.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEntDl(pRvs);
+          } else if (PrcEmMsgSv.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEmMsgSv(pRvs);
+          } else if (PrcEntSv.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEntSv(pRvs);
+          } else if (PrcEnofDl.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEnofDl(pRvs);
+          } else if (PrcEnofSv.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEnofSv(pRvs);
+          } else if (PrcEnoSv.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEnoSv(pRvs);
+          } else if (PrcEnoCr.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEnoCr(pRvs);
+          } else if (PrcEntRt.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEntRt(pRvs);
+          } else {
+            throw new ExcCode(ExcCode.WRCN, "There is no IProc: " + pPrNm);
           }
         }
       }

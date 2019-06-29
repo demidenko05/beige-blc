@@ -84,7 +84,7 @@ public class FromRsTest<RS> {
     this.fctApp.getFctBlc().getFctDt().setLogStdNm(FromRsTest.class.getSimpleName());
     this.fctApp.getFctBlc().getFctDt().setStgOrmDir("sqlite");
     this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgFl(4001);
-    this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgCl(8002);
+    this.fctApp.getFctBlc().lazLogStd(this.rqVs).setDbgCl(8005);
   }
 
   @Test
@@ -131,20 +131,20 @@ public class FromRsTest<RS> {
     rs.getData().put("ITSTOTAL", pl.getItsTotal().doubleValue());
     rs.getData().put("ITSQUANTITY", pl.getItsQuantity().doubleValue());
       //dpLv 0 - only ID, 1 - its owned entities only ID...
-    rs.getData().put("OWNR1IID", pl.getOwnr().getIid()); //only ID, PersistableHeaddpLv=0 slv=0  exit
+    rs.getData().put("OWNR15IID", pl.getOwnr().getIid()); //only ID, PersistableHeaddpLv=0 slv=0  exit
     //1st level:
-    rs.getData().put("ITSPRODUCT1IID", pl.getItsProduct().getIid()); //GoodVersionTimedpLv=2 slv=0
-    rs.getData().put("ITSPRODUCT1VER", pl.getItsProduct().getVer());
-    rs.getData().put("ITSPRODUCT1DBOR", pl.getItsProduct().getDbOr());
-    rs.getData().put("ITSPRODUCT1IDOR", pl.getItsProduct().getIdOr());
-    rs.getData().put("ITSPRODUCT1NME", pl.getItsProduct().getNme());
+    rs.getData().put("ITSPRODUCT16IID", pl.getItsProduct().getIid()); //GoodVersionTimedpLv=2 slv=0
+    rs.getData().put("ITSPRODUCT16VER", pl.getItsProduct().getVer());
+    rs.getData().put("ITSPRODUCT16DBOR", pl.getItsProduct().getDbOr());
+    rs.getData().put("ITSPRODUCT16IDOR", pl.getItsProduct().getIdOr());
+    rs.getData().put("ITSPRODUCT16NME", pl.getItsProduct().getNme());
     //2nd level:
-    rs.getData().put("GDCAT2IID", pl.getItsProduct().getGdCat().getIid()); //GoodVersionTimedpLv=2 slv=1
-    rs.getData().put("GDCAT2VER", pl.getItsProduct().getGdCat().getVer());
-    rs.getData().put("GDCAT2DBOR", pl.getItsProduct().getGdCat().getDbOr());
-    rs.getData().put("GDCAT2IDOR", pl.getItsProduct().getGdCat().getIdOr());
-    rs.getData().put("GDCAT2NME", pl.getItsProduct().getGdCat().getNme());
-    rs.getData().put("DEP3IID", pl.getItsProduct().getGdCat().getDep().getIid()); //GoodVersionTimedpLv=2 slv=2 exit
+    rs.getData().put("GDCAT211IID", pl.getItsProduct().getGdCat().getIid()); //GoodVersionTimedpLv=2 slv=1
+    rs.getData().put("GDCAT211VER", pl.getItsProduct().getGdCat().getVer());
+    rs.getData().put("GDCAT211DBOR", pl.getItsProduct().getGdCat().getDbOr());
+    rs.getData().put("GDCAT211IDOR", pl.getItsProduct().getGdCat().getIdOr());
+    rs.getData().put("GDCAT211NME", pl.getItsProduct().getGdCat().getNme());
+    rs.getData().put("DEP313IID", pl.getItsProduct().getGdCat().getDep().getIid()); //GoodVersionTimedpLv=2 slv=2 exit
     //filling:
     Map<String, Object> vs = new HashMap<String, Object>();
     vs.put("PersistableHeaddpLv", 0);
@@ -156,9 +156,9 @@ public class FromRsTest<RS> {
     String cr = selct.evCreate(this.rqVs, pl.getClass());
     this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), cr);
     assertTrue(sel.contains("PERSISTABLELINE.VER as VER"));
-    assertTrue(sel.contains("GDCAT2.NME as GDCAT2NME"));
-    assertTrue(sel.contains("left join DEPARTMENT as DEP3 on GDCAT2.DEP=DEP3.IID"));
-    assertFalse(sel.contains("OWNR1.ITSSTATUS as OWNR1ITSSTATUS"));
+    assertTrue(sel.contains("GDCAT211.NME as GDCAT211NME"));
+    assertTrue(sel.contains("left join DEPARTMENT as DEP313 on GDCAT211.DEP=DEP313.IID"));
+    assertFalse(sel.contains("OWNR15.ITSSTATUS as OWNR15ITSSTATUS"));
     FilEntRs<RS> filEntRs = (FilEntRs<RS>) this.fctApp.laz(this.rqVs, FilEntRs.class.getSimpleName());
     filEntRs.fill(this.rqVs, vs, plf, rs);
     assertEquals(pl.getIid(), plf.getIid());
@@ -184,11 +184,11 @@ public class FromRsTest<RS> {
     String[] ndFds = new String[] {"iid", "isClosed", "itsDate", "itsStatus"};
     vs.put("PersistableHeadndFds", ndFds);
     sel = selct.evSel(this.rqVs, vs, pl.getClass()).toString();
-    assertTrue(sel.contains("OWNR1.ITSSTATUS as OWNR1ITSSTATUS"));
+    assertTrue(sel.contains("OWNR15.ITSSTATUS as OWNR15ITSSTATUS"));
     this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), sel);
-    rs.getData().put("OWNR1ITSSTATUS", pl.getOwnr().getItsStatus().ordinal());
-    rs.getData().put("OWNR1ITSDATE", pl.getOwnr().getItsDate().getTime());
-    rs.getData().put("OWNR1ISCLOSED", pl.getOwnr().getIsClosed() ? 1 : 0);
+    rs.getData().put("OWNR15ITSSTATUS", pl.getOwnr().getItsStatus().ordinal());
+    rs.getData().put("OWNR15ITSDATE", pl.getOwnr().getItsDate().getTime());
+    rs.getData().put("OWNR15ISCLOSED", pl.getOwnr().getIsClosed() ? 1 : 0);
     plf = new PersistableLine();
     filEntRs.fill(this.rqVs, vs, plf, rs);
     assertEquals(pl.getIid(), plf.getIid());
