@@ -248,7 +248,6 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlClSt = new HldClsStg(stgNm, HldFldStg.NOSTD);
     hlClSt.setStgSclss(new LinkedHashMap<Class<?>, String>());
     hlClSt.getStgSclss().put(IHasNm.class, "nme");
-    hlClSt.getStgSclss().put(IHasId.class, "pic");
     hlClSt.setStgClss(new HashMap<Class<? extends IHasId<?>>, String>());
     hlClSt.getStgClss().put(UsTmc.class, "usr");
     pFct.getFctBlc().getFctDt().getHlClStgMp().put(stgNm, hlClSt);
