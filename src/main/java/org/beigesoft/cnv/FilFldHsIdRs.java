@@ -113,8 +113,10 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
     }
     if (lvDeps.size() > 1) { //sub-branch, main branch level change:
       lvDeps.get(0).setCur(lvDeps.get(0).getCur() + 1);
-      this.log.debug(pRvs, getClass(), "Main branch UP DL/CL: "
+      if (isDbgSh) {
+        this.log.debug(pRvs, getClass(), "Main branch UP DL/CL: "
           + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
+      }
     }
     @SuppressWarnings("unchecked")
     List<String> tbAls = (List<String>) pVs.get("tbAls");
@@ -141,8 +143,10 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
       }
       //sub-branch, main branch level change:
       lvDeps.get(0).setCur(lvDeps.get(0).getCur() - 1);
-      this.log.debug(pRvs, getClass(), "Main branch DOWN DL/CL: "
+      if (isDbgSh) {
+        this.log.debug(pRvs, getClass(), "Main branch DOWN DL/CL: "
           + lvDeps.get(0).getDep() + "/" + lvDeps.get(0).getCur());
+      }
     } else {  //move down through root DL subentities branch:
       LvDep ld = lvDeps.get(0);
       if (ld.getCur() > 0) { //finish subentity:
