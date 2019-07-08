@@ -119,18 +119,15 @@ public class HldFldStg implements IHlNmClSt {
   public final <T extends IHasId<?>> String get(final Class<T> pCls,
     final String pFlNm) throws Exception {
     Class<?> fdCls = this.hldFdCls.get(pCls, pFlNm);
-    if (fdCls.isEnum() && this.enumVal != null) {
-      return this.enumVal;
-    }
-    if (this.setng != null && this.custClss.contains(fdCls)) {
-      return this.setng.lazFldStg(pCls, pFlNm, this.stgNm);
-    }
-    if (this.setng != null && this.custSclss != null) {
-      for (Class<?> cl : this.custSclss) {
-        if (cl.isAssignableFrom(fdCls)) {
-          return this.setng.lazFldStg(pCls, pFlNm, this.stgNm);
+    if (this.stgFdNm != null) { //fast setting for fields like idOr, dbOr, rvId
+      for (Map.Entry<String, String> enr : this.stgFdNm.entrySet()) {
+        if (enr.getKey().equals(pFlNm)) {
+          return enr.getValue();
         }
       }
+    }
+    if (fdCls.isEnum() && this.enumVal != null) {
+      return this.enumVal;
     }
     if (this.stgClss != null && this.stgClss.keySet().contains(fdCls)) {
       return this.stgClss.get(fdCls);
@@ -141,11 +138,14 @@ public class HldFldStg implements IHlNmClSt {
           return enr.getValue();
         }
       }
+    } //soft(XML) settings have lowest priority!!!:
+    if (this.setng != null && this.custClss.contains(fdCls)) {
+      return this.setng.lazFldStg(pCls, pFlNm, this.stgNm);
     }
-    if (this.stgFdNm != null) {
-      for (Map.Entry<String, String> enr : this.stgFdNm.entrySet()) {
-        if (enr.getKey().equals(pFlNm)) {
-          return enr.getValue();
+    if (this.setng != null && this.custSclss != null) {
+      for (Class<?> cl : this.custSclss) {
+        if (cl.isAssignableFrom(fdCls)) {
+          return this.setng.lazFldStg(pCls, pFlNm, this.stgNm);
         }
       }
     }

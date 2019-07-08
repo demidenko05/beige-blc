@@ -32,6 +32,7 @@ import java.util.LinkedHashSet;
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.HashMap;
@@ -283,13 +284,18 @@ public class Setng implements ISetng {
         if (this.fldNms == null || this.fldNms.get(pCls) == null) {
           lazIdFldNms(pCls);
           String exlFdStr = lazClsStg(pCls, KEYEXLFLDS);
+          String[] exlFdCls = null;
+          if (exlFdStr != null) {
+            exlFdCls = exlFdStr.split(",");
+            Arrays.sort(exlFdCls);
+          }
           List<String> fNms = new ArrayList<String>();
           for (Field fld : this.reflect.retFlds(pCls)) {
             if (!(Collection.class.isAssignableFrom(fld.getType())
-              || this.exlFlds != null && this.exlFlds.contains(fld.getName())
-                || exlFdStr != null && exlFdStr.contains(fld.getName())
-                  || this.idFldNms != null && this.idFldNms.get(pCls) != null
-                    && this.idFldNms.get(pCls).contains(fld.getName()))) {
+          || this.exlFlds != null && this.exlFlds.contains(fld.getName())
+        || exlFdCls != null && Arrays.binarySearch(exlFdCls, fld.getName()) >= 0
+          || this.idFldNms != null && this.idFldNms.get(pCls) != null
+            && this.idFldNms.get(pCls).contains(fld.getName()))) {
               fNms.add(fld.getName());
             }
           }

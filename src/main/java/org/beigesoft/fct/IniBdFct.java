@@ -330,6 +330,8 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.setHldFdCls(pFct.getFctBlc().lazHldFldCls(pRvs));
     hlFdSt.setEnumVal("ord");
     hlFdSt.setStgSclss(new LinkedHashMap<Class<?>, String>());
+    hlFdSt.setStgClss(new HashMap<Class<?>, String>());
+    hlFdSt.getStgClss().put(BigDecimal.class, null);
     hlFdSt.getStgSclss().put(IHasNm.class, "nme");
     hlFdSt.setStgFdNm(new HashMap<String, String>());
     hlFdSt.getStgFdNm().put("idOr", null);
