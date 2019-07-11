@@ -114,8 +114,21 @@ public class PrcEntRt<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
         String[] ndFds = Arrays.copyOf(lstFds, lstFds.length);
         Arrays.sort(ndFds);
         vs.put(oec.getSimpleName() + "ndFds", ndFds);
+        Map<String, String[]> pgFds = this.hldUvd.lazPgFds(oec);
+        if (pgFds != null) {
+          for (Map.Entry<String, String[]> enr: pgFds.entrySet()) {
+            vs.put(enr.getKey() + "ndFds", enr.getValue());
+          }
+        }
+        Map<String, Integer> pgDpl = this.hldUvd.lazPgDpl(oec);
+        if (pgDpl != null) {
+          for (Map.Entry<String, Integer> enr: pgDpl.entrySet()) {
+            vs.put(enr.getKey() + "dpLv", enr.getValue());
+          }
+        }
         List<? extends IOwned<T, ?>> lst = this.orm.retLstCnd(pRvs, vs, oec,
-          "where OWNR=" + idOwnr); vs.clear();
+          "where " + oec.getSimpleName().toUpperCase() + ".OWNR=" + idOwnr);
+        vs.clear();
         owdEntsMp.put(oecg, (List) lst);
         for (IOwned<T, ?> owd : lst) {
           owd.setOwnr(pEnt);

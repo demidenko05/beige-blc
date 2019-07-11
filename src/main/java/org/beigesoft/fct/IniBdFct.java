@@ -334,7 +334,7 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.getStgClss().put(BigDecimal.class, null);
     hlFdSt.getStgSclss().put(IHasNm.class, "nme");
     hlFdSt.setStgFdNm(new HashMap<String, String>());
-    hlFdSt.getStgFdNm().put("idOr", null);
+    hlFdSt.getStgFdNm().put("idOr", null); //TODO by default most must be null
     hlFdSt.getStgFdNm().put("dbOr", null);
     pFct.getFctBlc().getFctDt().getHlFdStgMp().put(stgNm, hlFdSt);
     stgNm = "inWr"; //input wrapper

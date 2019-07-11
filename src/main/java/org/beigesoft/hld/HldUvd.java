@@ -133,6 +133,26 @@ public class HldUvd {
   owdEnts =
 new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
 
+  //list/page selecting:
+  /**
+   * <p>Retrieved (selected) fields for list - pgFds.
+   * Map[Cls, Map[SimpleName,ndFds]].
+   * It's for retriever processor and for creating owned line.</p>
+   **/
+  private final
+    Map<Class<? extends IHasId<?>>, Map<String, String[]>> pgFdsMp =
+      new HashMap<Class<? extends IHasId<?>>, Map<String, String[]>>();
+
+  /**
+   * <p>Retrieved (selected) deep levels for list - pgDpl.
+   * Map[Cls, Map[SimpleName,dpLv]].
+   * It's for retriever processor and for creating owned line.</p>
+   **/
+  private final
+    Map<Class<? extends IHasId<?>>, Map<String, Integer>> pgDplMp =
+      new HashMap<Class<? extends IHasId<?>>, Map<String, Integer>>();
+
+  //entity selecting:
   /**
    * <p>Retrieved (selected) fields - selFds.
    * Map[Cls, Map[SimpleName,ndFds]].
@@ -435,6 +455,141 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
     if (isDbgSh) {
       this.log.debug(null, getClass(), "frmFds for cls/frmFds: "
         + pCls.getSimpleName() + "/" + Arrays.toString(rz));
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Gets class selected fields in lazy mode. Nullable.
+   * Source format: SimpleName1,dpLv1,SimpleName2,dpLv2,...
+   * That is character "#" is prefix of next simpleName.
+   * It's for retriever processor and for creating owned line.</p>
+   * @param <T> entity type
+   * @param pCls Entity class
+   * @return map simpleName-deepLevel, may be null
+   * @throws Exception - an exception
+   **/
+  public final <T extends IHasId<?>> Map<String, Integer> lazPgDpl(
+    final Class<T> pCls) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (!this.pgDplMp.keySet().contains(pCls)) {
+      synchronized (this) {
+        if (!this.pgDplMp.keySet().contains(pCls)) {
+          String lFdSt = null;
+          synchronized (this.setng) {
+            lFdSt = this.setng.lazClsStg(pCls, "pgDpl");
+            this.setng.getClsStgs().get(pCls).remove("pgDpl");
+          }
+          if (lFdSt != null) {
+            Map<String, Integer> rzMp = new HashMap<String, Integer>();
+            boolean isSmpNm = true;
+            String smpNm = null;
+            for (String fn : lFdSt.split(",")) {
+              if (isSmpNm) {
+                smpNm = fn;
+                isSmpNm = false;
+              } else {
+                Integer dpLv = Integer.valueOf(fn);
+                rzMp.put(smpNm, dpLv);
+                isSmpNm = true;
+              }
+            }
+            this.pgDplMp.put(pCls, rzMp);
+          } else {
+            this.pgDplMp.put(pCls, null);
+          }
+        }
+      }
+    }
+    Map<String, Integer> rz = this.pgDplMp.get(pCls);
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 6110 && this.log.getDbgCl() > 6108;
+    if (isDbgSh) {
+      if (rz != null) {
+        StringBuffer sb = new StringBuffer();
+        for (Map.Entry<String, Integer> enr : rz.entrySet()) {
+          sb.append(enr.getKey() + "=" + enr.getValue() + ";");
+        }
+        this.log.debug(null, getClass(), "pgDpl for cls - "
+            + pCls.getSimpleName() + ": " + sb);
+      } else {
+        this.log.debug(null, getClass(), "pgDpl is null for cls: "
+            + pCls.getSimpleName());
+      }
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Gets class selected fields in lazy mode. Nullable.
+   * Source format: SimpleName1,fd11,fd12,#SimpleName2,fd21,fd22,...
+   * That is character "#" is prefix of next simpleName.
+   * It's for retriever processor and for creating owned line.</p>
+   * @param <T> entity type
+   * @param pCls Entity class
+   * @return map simpleName-fields list, may be null
+   * @throws Exception - an exception
+   **/
+  public final <T extends IHasId<?>> Map<String, String[]> lazPgFds(
+    final Class<T> pCls) throws Exception {
+    if (pCls == null) {
+      throw new Exception("NULL pCls!!!");
+    }
+    if (!this.pgFdsMp.keySet().contains(pCls)) {
+      synchronized (this) {
+        if (!this.pgFdsMp.keySet().contains(pCls)) {
+          String lFdSt = null;
+          synchronized (this.setng) {
+            lFdSt = this.setng.lazClsStg(pCls, "pgFds");
+            this.setng.getClsStgs().get(pCls).remove("pgFds");
+          }
+          if (lFdSt != null) {
+            Map<String, String[]> selMp = new HashMap<String, String[]>();
+            List<String> lFdLst = new ArrayList<String>();
+            boolean isFst = true;
+            String smpNm = null;
+            for (String fn : lFdSt.split(",")) {
+              if (isFst) {
+                isFst = false;
+                smpNm = fn;
+              } else if (fn.startsWith("#")) {
+                String[] rzt = new String[lFdLst.size()];
+                lFdLst.toArray(rzt); Arrays.sort(rzt);
+                selMp.put(smpNm, rzt);
+                lFdLst.clear();
+                smpNm = fn.replace("#", "");
+              } else {
+                lFdLst.add(fn);
+              }
+            }
+            String[] rzt = new String[lFdLst.size()];
+            lFdLst.toArray(rzt); Arrays.sort(rzt);
+            selMp.put(smpNm, rzt);
+            this.pgFdsMp.put(pCls, selMp);
+          } else {
+            this.pgFdsMp.put(pCls, null);
+          }
+        }
+      }
+    }
+    Map<String, String[]> rz = this.pgFdsMp.get(pCls);
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 6109 && this.log.getDbgCl() > 6107;
+    if (isDbgSh) {
+      if (rz != null) {
+        StringBuffer sb = new StringBuffer();
+        for (Map.Entry<String, String[]> enr : rz.entrySet()) {
+          sb.append("\n" + enr.getKey() + ": "
+            + Arrays.toString(enr.getValue()));
+        }
+        this.log.debug(null, getClass(), "pgFds for cls - "
+            + pCls.getSimpleName() + ": " + sb);
+      } else {
+        this.log.debug(null, getClass(), "pgFds is null for cls: "
+            + pCls.getSimpleName());
+      }
     }
     return rz;
   }

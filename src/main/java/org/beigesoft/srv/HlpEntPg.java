@@ -253,6 +253,18 @@ public class HlpEntPg<RS> {
     String[] ndFds = Arrays.copyOf(lstFds, lstFds.length);
     Arrays.sort(ndFds);
     vs.put(cls.getSimpleName() + "ndFds", ndFds);
+    Map<String, String[]> pgFds = this.hldUvd.lazPgFds(cls);
+    if (pgFds != null) {
+      for (Map.Entry<String, String[]> enr: pgFds.entrySet()) {
+        vs.put(enr.getKey() + "ndFds", enr.getValue());
+      }
+    }
+    Map<String, Integer> pgDpl = this.hldUvd.lazPgDpl(cls);
+    if (pgDpl != null) {
+      for (Map.Entry<String, Integer> enr: pgDpl.entrySet()) {
+        vs.put(enr.getKey() + "dpLv", enr.getValue());
+      }
+    }
     if (strWhe != null || quOrdBy.length() > 0) {
       if (strWhe != null) {
         ents = this.orm.retPgCnd(pRvs, vs, cls, "where " + strWhe + quOrdBy,
