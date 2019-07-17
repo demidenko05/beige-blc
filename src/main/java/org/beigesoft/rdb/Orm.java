@@ -720,7 +720,7 @@ throw new ExcCode(ACTROWERR, "It should be 1 row updated but it is " + r
   /**
    * <p>Load string file (usually SQL query).</p>
    * @param pFiNm file name
-   * @return String usually SQL query
+   * @return String usually SQL query or null
    * @throws IOException - IO exception
    **/
   public final String loadStr(final String pFiNm) throws IOException {

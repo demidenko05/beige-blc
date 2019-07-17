@@ -306,36 +306,28 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.getStgFdNm().put("lnId1", "empt");
     hlFdSt.getStgFdNm().put("lnId2", "empt");
     pFct.getFctBlc().getFctDt().getHlFdStgMp().put(stgNm, hlFdSt);
+    stgNm = "flth"; //filter hidden
+    hlFdSt = new HldFldStg(stgNm, null);
+    hlFdSt.setHldFdCls(pFct.getFctBlc().lazHldFldCls(pRvs));
+    pFct.getFctBlc().getFctDt().getHlFdStgMp().put(stgNm, hlFdSt);
     stgNm = "flt"; //filter
     hlFdSt = new HldFldStg(stgNm, null);
     hlFdSt.setHldFdCls(pFct.getFctBlc().lazHldFldCls(pRvs));
     hlFdSt.setEnumVal("enm");
-    hlFdSt.setSetng(pFct.getFctBlc().lazStgUvd(pRvs));
     hlFdSt.setStgFdNm(new HashMap<String, String>());
-    hlFdSt.getStgFdNm().put("idOr", null);
-    hlFdSt.getStgFdNm().put("dbOr", null);
-    hlFdSt.setCustClss(new HashSet<Class<?>>());
-    hlFdSt.getCustClss().add(Date.class);
-    hlFdSt.getCustClss().add(BigDecimal.class);
-    hlFdSt.setStgClss(new HashMap<Class<?>, String>());
-    hlFdSt.getStgClss().put(Boolean.class, "bln");
-    hlFdSt.getStgClss().put(String.class, "str");
-    hlFdSt.getStgClss().put(Long.class, "int");
-    hlFdSt.getStgClss().put(Integer.class, "int");
-    hlFdSt.setStgSclss(new LinkedHashMap<Class<?>, String>());
-    hlFdSt.getStgSclss().put(IHasId.class, "ent");
+    hlFdSt.getStgFdNm().put("iid", "int");
+    hlFdSt.getStgFdNm().put("nme", "str");
+    hlFdSt.getStgFdNm().put("dscr", "str");
+    hlFdSt.getStgFdNm().put("dat", "dtTm");
     pFct.getFctBlc().getFctDt().getHlFdStgMp().put(stgNm, hlFdSt);
     stgNm = "ord"; //order
-    hlFdSt = new HldFldStg(stgNm, stgNm);
+    hlFdSt = new HldFldStg(stgNm, null);
     hlFdSt.setHldFdCls(pFct.getFctBlc().lazHldFldCls(pRvs));
     hlFdSt.setEnumVal("ord");
-    hlFdSt.setStgSclss(new LinkedHashMap<Class<?>, String>());
-    hlFdSt.setStgClss(new HashMap<Class<?>, String>());
-    hlFdSt.getStgClss().put(BigDecimal.class, null);
-    hlFdSt.getStgSclss().put(IHasNm.class, "nme");
     hlFdSt.setStgFdNm(new HashMap<String, String>());
-    hlFdSt.getStgFdNm().put("idOr", null); //TODO by default most must be null
-    hlFdSt.getStgFdNm().put("dbOr", null);
+    hlFdSt.getStgFdNm().put("iid", "ord");
+    hlFdSt.getStgFdNm().put("nme", "ord");
+    hlFdSt.getStgFdNm().put("dat", "ord");
     pFct.getFctBlc().getFctDt().getHlFdStgMp().put(stgNm, hlFdSt);
     stgNm = "inWr"; //input wrapper
     hlFdSt = new HldFldStg(stgNm, stgNm);

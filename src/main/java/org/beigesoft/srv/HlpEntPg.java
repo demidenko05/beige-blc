@@ -302,6 +302,9 @@ public class HlpEntPg<RS> {
     uvs.setFltMp(fltMp);
     for (String fdNm : this.hldUvd.lazLstFds(pCls)) {
       String flt = this.hldUvd.stg(pCls, fdNm, "flt");
+      if (flt == null) {
+        flt = this.hldUvd.stg(pCls, fdNm, "flth"); //hidden e.g. by picker
+      }
       if (pDbgSh) {
   this.log.debug(pRvs, getClass(), "It's used flt/field: " + flt + "/" + fdNm);
       }

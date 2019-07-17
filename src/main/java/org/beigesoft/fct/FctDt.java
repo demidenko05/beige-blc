@@ -233,7 +233,7 @@ public class FctDt {
    **/
   private List<Class<? extends IHasId<?>>> admEnts;
 
-//TODO base non-shared, base shared, admin...
+//TODO base non-shared, base shared, admin... DURING S.E.Seller!
   /**
    * <p>Forbidden entities for base entity request handler, e.g. UsTmc.</p>
    **/

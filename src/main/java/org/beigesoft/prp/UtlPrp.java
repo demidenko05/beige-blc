@@ -104,7 +104,7 @@ public class UtlPrp {
   /**
    * <p>Load properties from XML file.</p>
    * @param pFlNm file name
-   * @return props properties
+   * @return props properties or null
    * @throws Exception - an exception
    **/
   public final LnkPrps load(final String pFlNm) throws Exception {

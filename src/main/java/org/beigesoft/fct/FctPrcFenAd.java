@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.fct;
 
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -50,6 +51,11 @@ public class FctPrcFenAd<RS> implements IFctPrc {
    **/
   private FctBlc<RS> fctBlc;
 
+  /**
+   * <p>Outside factories.</p>
+   **/
+  private Set<IFctPrc> fctsPrc;
+
   //requested data:
   /**
    * <p>Processors map.</p>
@@ -58,12 +64,12 @@ public class FctPrcFenAd<RS> implements IFctPrc {
 
   /**
    * <p>Get processor in lazy mode (if bean is null then initialize it).</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pPrNm - filler name
    * @return requested processor
    * @throws Exception - an exception
    */
-  public final IPrc laz(final Map<String, Object> pRqVs,
+  public final IPrc laz(final Map<String, Object> pRvs,
     final String pPrNm) throws Exception {
     IPrc rz = this.procs.get(pPrNm);
     if (rz == null) {
@@ -71,9 +77,19 @@ public class FctPrcFenAd<RS> implements IFctPrc {
         rz = this.procs.get(pPrNm);
         if (rz == null) {
           if (FctDt.PRADENTPG.equals(pPrNm)) {
-            rz = crPuPrAdEnPg(pRqVs);
+            rz = crPuPrAdEnPg(pRvs);
           } else {
-            throw new ExcCode(ExcCode.WRCN, "There is no IProc: " + pPrNm);
+            if (this.fctsPrc != null) {
+              for (IFctPrc fp : this.fctsPrc) {
+                rz = fp.laz(pRvs, pPrNm);
+                if (rz != null) {
+                  break;
+                }
+              }
+            }
+            if (rz == null) {
+              throw new ExcCode(ExcCode.WRCN, "There is no IProc: " + pPrNm);
+            }
           }
         }
       }
@@ -83,19 +99,19 @@ public class FctPrcFenAd<RS> implements IFctPrc {
 
   /**
    * <p>Create and put into the Map PrcEntPg.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @return PrcEntPg
    * @throws Exception - an exception
    */
   private PrcEntPg crPuPrAdEnPg(
-    final Map<String, Object> pRqVs) throws Exception {
+    final Map<String, Object> pRvs) throws Exception {
     PrcEntPg rz = new PrcEntPg();
     EntPg<RS> entPg = new EntPg<RS>();
-    entPg.setLog(this.fctBlc.lazLogStd(pRqVs));
-    entPg.setHlpEntPg(this.fctBlc.lazHlpEntPg(pRqVs));
+    entPg.setLog(this.fctBlc.lazLogStd(pRvs));
+    entPg.setHlpEntPg(this.fctBlc.lazHlpEntPg(pRvs));
     entPg.setEntMp(new HashMap<String, Class<? extends IHasId<?>>>());
     for (Class<? extends IHasId<?>> cls : this.fctBlc
-      .lazStgUvd(pRqVs).lazClss()) {
+      .lazStgUvd(pRvs).lazClss()) {
       if (this.fctBlc.getFctDt().getAdmEnts() != null
         && this.fctBlc.getFctDt().getAdmEnts().contains(cls)) {
         entPg.getEntMp().put(cls.getSimpleName(), cls);
@@ -103,7 +119,7 @@ public class FctPrcFenAd<RS> implements IFctPrc {
     }
     rz.setEntPg(entPg);
     this.procs.put(FctDt.PRADENTPG, rz);
-    this.fctBlc.lazLogStd(pRqVs).info(pRqVs, getClass(), FctDt.PRACENTPG
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), FctDt.PRACENTPG
       + " has been created.");
     return rz;
   }
@@ -113,7 +129,7 @@ public class FctPrcFenAd<RS> implements IFctPrc {
    * <p>Getter for fctBlc.</p>
    * @return FctBlc<RS>
    **/
-  public final FctBlc<RS> getFctBlc() {
+  public final synchronized FctBlc<RS> getFctBlc() {
     return this.fctBlc;
   }
 
@@ -121,7 +137,23 @@ public class FctPrcFenAd<RS> implements IFctPrc {
    * <p>Setter for fctBlc.</p>
    * @param pFctBlc reference
    **/
-  public final void setFctBlc(final FctBlc<RS> pFctBlc) {
+  public final synchronized void setFctBlc(final FctBlc<RS> pFctBlc) {
     this.fctBlc = pFctBlc;
+  }
+
+  /**
+   * <p>Getter for fctsPrc.</p>
+   * @return Set<IFctPrc>
+   **/
+  public final synchronized Set<IFctPrc> getFctsPrc() {
+    return this.fctsPrc;
+  }
+
+  /**
+   * <p>Setter for fctsPrc.</p>
+   * @param pFctsPrc reference
+   **/
+  public final synchronized void setFctsPrc(final Set<IFctPrc> pFctsPrc) {
+    this.fctsPrc = pFctsPrc;
   }
 }
