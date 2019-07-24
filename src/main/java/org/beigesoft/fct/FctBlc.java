@@ -77,6 +77,8 @@ import org.beigesoft.rdb.SrvClVl;
 import org.beigesoft.srv.INumStr;
 import org.beigesoft.srv.NumStr;
 import org.beigesoft.srv.IReflect;
+import org.beigesoft.srv.CsvRdr;
+import org.beigesoft.srv.ICsvRdr;
 import org.beigesoft.srv.Reflect;
 import org.beigesoft.srv.UtlXml;
 import org.beigesoft.srv.IUtlXml;
@@ -161,6 +163,8 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazOrm(pRvs);
           } else if (SrvClVl.class.getSimpleName().equals(pBnNm)) {
             rz = lazSrvClVl(pRvs);
+          } else if (ICsvRdr.class.getSimpleName().equals(pBnNm)) {
+            rz = lazCsvRdr(pRvs);
           } else if (ISqlQu.class.getSimpleName().equals(pBnNm)) {
             rz = lazSqlQu(pRvs);
           } else if (FilCvEnt.class.getSimpleName().equals(pBnNm)) {
@@ -573,6 +577,24 @@ public class FctBlc<RS> implements IFctApp {
       rz.setSetng(lazStgOrm(pRvs));
       this.beans.put(SrvClVl.class.getSimpleName(), rz);
       lazLogStd(pRvs).info(pRvs, getClass(), SrvClVl.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter CsvRdr.</p>
+   * @param pRvs request scoped vars
+   * @return CsvRdr
+   * @throws Exception - an exception
+   */
+  public final synchronized CsvRdr lazCsvRdr(
+    final Map<String, Object> pRvs) throws Exception {
+    CsvRdr rz = (CsvRdr) this.beans.get(ICsvRdr.class.getSimpleName());
+    if (rz == null) {
+      rz = new CsvRdr();
+      this.beans.put(ICsvRdr.class.getSimpleName(), rz);
+      lazLogStd(pRvs).info(pRvs, getClass(), CsvRdr.class.getSimpleName()
         + " has been created.");
     }
     return rz;
