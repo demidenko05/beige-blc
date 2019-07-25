@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.rpl;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -38,11 +39,10 @@ import org.beigesoft.rdb.IOrm;
 /**
  * <p>Service that synchronizes IOrId {iid, idOr and dbOr}.</p>
  *
- * @param <RS> platform dependent record set type
  * @param <T> entity type
  * @author Yury Demidenko
  */
-public class RpEntSyOrId<RS, T extends IOrId> implements IRpEntSync<T> {
+public class RpEntSyOrId<T extends IOrId> implements IRpEntSync<T> {
 
   /**
    * <p>ORM service.</p>
@@ -64,14 +64,14 @@ public class RpEntSyOrId<RS, T extends IOrId> implements IRpEntSync<T> {
     "Foreign entity born in this database! {ID, ID BIRTH, DB BIRTH}:"
   + " {" + pEnt.getIid() + ", " + pEnt.getIdOr() + "," + pEnt.getDbOr());
     }
-    String tblNm = pEnt.getClass().getSimpleName().toUpperCase();
-    String whe = "where " + tblNm + ".IDOR=" + pEnt.getIid()
-      + " and " + tblNm + ".DBOR=" + pEnt.getDbOr();
+    String whe = "IDOR=" + pEnt.getIid() + " and DBOR=" + pEnt.getDbOr();
     Map<String, Object> vs = new HashMap<String, Object>();
     String[] ndFds = new String[] {"dbor", "idor", "iid", "ver"};
+    Arrays.sort(ndFds);
     vs.put(pEnt.getClass().getSimpleName() + "ndFds", ndFds);
     @SuppressWarnings("unchecked")
     T entDb = (T) getOrm().retEntCnd(pRqVs, vs, pEnt.getClass(), whe);
+    vs.clear();
     pEnt.setIdOr(pEnt.getIid());
     if (entDb != null) {
       pEnt.setVer(entDb.getVer());
