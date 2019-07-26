@@ -72,7 +72,7 @@ public class DbImp implements IPrc {
     String usr = pRqDt.getParam("usr");
     pRvs.put("urlSrc", pRqDt.getParam("urlSrc"));
     pRvs.put("maxRecs", pRqDt.getParam("maxRecs"));
-    pRvs.put("prc", pRqDt.getParam("prcExp"));
+    pRvs.put("prc", DbExp.class.getSimpleName());
     if (usr != null) {
       pRvs.put("pwd", pRqDt.getParam("pwd"));
       pRvs.put("usr", usr);

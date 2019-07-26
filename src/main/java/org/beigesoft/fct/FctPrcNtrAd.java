@@ -140,6 +140,7 @@ public class FctPrcNtrAd<RS> implements IFctPrc {
     retr.setRdb(rdb);
     retr.setOrm(this.fctBlc.lazOrm(pRvs));
     retr.setLog(this.fctBlc.lazLogStd(pRvs));
+    retr.setReadTi(this.fctBlc.getFctDt().getReadTi());
     RpEntWriXml entWr = (RpEntWriXml) this.fctBlc.laz(pRvs, FctDbCp.ENWRDBCPNM);
     retr.setRpEntWri(entWr);
     rz.setRetr(retr);
@@ -171,6 +172,7 @@ public class FctPrcNtrAd<RS> implements IFctPrc {
     rpStor.setOrm(this.fctBlc.lazOrm(pRvs));
     rpStor.setUtlXml(this.fctBlc.lazUtlXml(pRvs));
     rpStor.setRdb(rdb);
+    rpStor.setWriteTi(this.fctBlc.getFctDt().getWriteTi());
     RpEntReadXml erd = (RpEntReadXml) this.fctBlc.laz(pRvs, FctDbCp.ENRDDBCPNM);
     rpStor.setRpEntRead(erd);
     repl.setRpStor(rpStor);

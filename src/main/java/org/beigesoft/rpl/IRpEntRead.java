@@ -41,10 +41,10 @@ public interface IRpEntRead<T> {
 
   /**
    * <p>Reads an entity form given stream (reader).</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pReader reader.
    * @return entity filled/refreshed.
    * @throws Exception - an exception
    **/
-  T read(Map<String, Object> pRqVs, Reader pReader) throws Exception;
+  T read(Map<String, Object> pRvs, Reader pReader) throws Exception;
 }

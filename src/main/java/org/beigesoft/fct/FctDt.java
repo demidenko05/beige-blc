@@ -303,6 +303,16 @@ public class FctDt {
    **/
   private Set<IHlNmClSt> hldsAdEnPr;
 
+  /**
+   * <p>Outside factories of converters to string.</p>
+   **/
+  private Set<IFctCnToSt> fcsCnToSt;
+
+  /**
+   * <p>Outside factories of fillers fields from string.</p>
+   **/
+  private Set<IFcFlFdSt> fcsFlFdSt;
+
   //Simple getters and setters:
   /**
    * <p>Getter for stgDbCpDir.</p>
@@ -884,5 +894,38 @@ public class FctDt {
    **/
   public final void setFctrsPrcFl(final Set<IFctPrcFl> pFctrsPrcFl) {
     this.fctrsPrcFl = pFctrsPrcFl;
+  }
+
+
+  /**
+   * <p>Getter for fcsCnToSt.</p>
+   * @return Set<IFctCnToSt>
+   **/
+  public final Set<IFctCnToSt> getFcsCnToSt() {
+    return this.fcsCnToSt;
+  }
+
+  /**
+   * <p>Setter for fcsCnToSt.</p>
+   * @param pFcsCnToSt reference
+   **/
+  public final void setFcsCnToSt(final Set<IFctCnToSt> pFcsCnToSt) {
+    this.fcsCnToSt = pFcsCnToSt;
+  }
+
+  /**
+   * <p>Getter for fcsFlFdSt.</p>
+   * @return Set<IFcFlFdSt>
+   **/
+  public final Set<IFcFlFdSt> getFcsFlFdSt() {
+    return this.fcsFlFdSt;
+  }
+
+  /**
+   * <p>Setter for fcsFlFdSt.</p>
+   * @param pFcsFlFdSt reference
+   **/
+  public final void setFcsFlFdSt(final Set<IFcFlFdSt> pFcsFlFdSt) {
+    this.fcsFlFdSt = pFcsFlFdSt;
   }
 }

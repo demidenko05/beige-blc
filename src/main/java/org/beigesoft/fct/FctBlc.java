@@ -1037,6 +1037,7 @@ public class FctBlc<RS> implements IFctApp {
       rz.setHldFilFdNmsUvd(lazHldNmFilFdStUvd(pRvs));
       IHlNmClSt hlFilFd = (IHlNmClSt) laz(pRvs, FctDt.HLFILFDNMDBCP);
       rz.setHldFilFdNmsDbCp(hlFilFd);
+      rz.setFcts(this.fctDt.getFcsFlFdSt());
       this.beans.put(FctNmFilFdSt.class.getSimpleName(), rz);
       lazLogStd(pRvs).info(pRvs, getClass(),
         FctNmFilFdSt.class.getSimpleName() + " has been created.");
@@ -1066,6 +1067,7 @@ public class FctBlc<RS> implements IFctApp {
       rz.setStgUvd(lazStgUvd(pRvs));
       rz.setStgDbCp((ISetng) laz(pRvs, FctDt.STGDBCPNM));
       rz.setLogStd(lazLogStd(pRvs));
+      rz.setFcts(this.fctDt.getFcsCnToSt());
       this.beans.put(FctNmCnToSt.class.getSimpleName(), rz);
       lazLogStd(pRvs).info(pRvs, getClass(), FctNmCnToSt.class.getSimpleName()
         + " has been created.");

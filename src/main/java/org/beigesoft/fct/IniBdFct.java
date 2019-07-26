@@ -71,6 +71,11 @@ import org.beigesoft.rdb.IOrm;
 public class IniBdFct<RS> implements IIniBdFct<RS> {
 
   /**
+   * <p>Admin entities.</p>
+   **/
+  private List<Class<? extends IHasId<?>>> admEnts;
+
+  /**
    * <p>Initializes factory.</p>
    * @param pRvs request scoped vars
    * @param pFct factory
@@ -146,19 +151,20 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
    * <p>Getter for Admin non-shared Ents.</p>
    * @return List<Class<? extends IHasId<?>>>
    **/
-  public final List<Class<? extends IHasId<?>>> getAdmEnts() {
-    List<Class<? extends IHasId<?>>> admEnts =
-      new ArrayList<Class<? extends IHasId<?>>>();
-    admEnts.add(UsTmc.class);
-    admEnts.add(UsRlTmc.class);
-    admEnts.add(EmCon.class);
-    admEnts.add(EmMsg.class);
-    admEnts.add(EmAtch.class);
-    admEnts.add(EmAdr.class);
-    admEnts.add(EmInt.class);
-    admEnts.add(EmStr.class);
-    admEnts.add(EmRcp.class);
-    return admEnts;
+  public final List<Class<? extends IHasId<?>>> lazAdmEnts() {
+    if (this.admEnts == null) {
+      this.admEnts = new ArrayList<Class<? extends IHasId<?>>>();
+      this.admEnts.add(UsTmc.class);
+      this.admEnts.add(UsRlTmc.class);
+      this.admEnts.add(EmCon.class);
+      this.admEnts.add(EmMsg.class);
+      this.admEnts.add(EmAtch.class);
+      this.admEnts.add(EmAdr.class);
+      this.admEnts.add(EmInt.class);
+      this.admEnts.add(EmStr.class);
+      this.admEnts.add(EmRcp.class);
+    }
+    return this.admEnts;
   }
 
   /**
@@ -170,13 +176,12 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
   public final void makeUvdCls(final Map<String, Object> pRvs,
     final IFctAsm<RS> pFct) throws Exception {
     //UVD base entities restrictions:
-    List<Class<? extends IHasId<?>>> admEnts = getAdmEnts();
     pFct.getFctBlc().getFctDt()
       .setAdmEnts(new ArrayList<Class<? extends IHasId<?>>>());
-    pFct.getFctBlc().getFctDt().getAdmEnts().addAll(admEnts);
+    pFct.getFctBlc().getFctDt().getAdmEnts().addAll(lazAdmEnts());
     pFct.getFctBlc().getFctDt()
       .setFbdEnts(new ArrayList<Class<? extends IHasId<?>>>());
-    pFct.getFctBlc().getFctDt().getFbdEnts().addAll(admEnts);
+    pFct.getFctBlc().getFctDt().getFbdEnts().addAll(lazAdmEnts());
     //Entities with custom ID:
     pFct.getFctBlc().getFctDt()
       .setCustIdClss(new HashSet<Class<? extends IHasId<?>>>());

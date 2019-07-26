@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.rpl;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.io.Reader;
 
 import org.beigesoft.exc.ExcCode;
@@ -85,36 +86,42 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
   private ISetng setng;
 
   /**
+   * <p>Transaction isolation for changing DB phase.</p>
+   **/
+  private Integer writeTi;
+
+  /**
    * <p>Reads entities from given stream XML
    * (file or network connection) then replicates/synchronizes
    * them into database.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pReader Reader
    * @throws Exception - an exception
    **/
   @Override
-  public final void storeFr(final Map<String, Object> pRqVs,
+  public final void storeFr(final Map<String, Object> pRvs,
     final Reader pReader) throws Exception {
+    Map<String, Object> vs = new HashMap<String, Object>();
     try {
       this.rdb.setAcmt(false);
-      this.rdb.setTrIsl(IRdb.TRRUC);
+      this.rdb.setTrIsl(this.writeTi);
       this.rdb.begin();
       while (this.utlXml.readUntilStart(pReader, "entity")) {
-        IHasId<?> entity = this.rpEntRead.read(pRqVs, pReader);
+        IHasId<?> ent = this.rpEntRead.read(pRvs, pReader);
         String entSyNm = this.setng
-          .lazClsStg(entity.getClass(), IRpEntSync.RPENTSYNCNM);
+          .lazClsStg(ent.getClass(), IRpEntSync.RPENTSYNCNM);
         if (entSyNm == null) {
-          throw new ExcCode(ExcCode.WRCN, "There is no syncer for entity "
-            + entity.getClass());
+          throw new ExcCode(ExcCode.WRCN, "There is no syncer for "
+            + ent.getClass());
         }
         @SuppressWarnings("unchecked")
         IRpEntSync<IHasId<?>> entSy = (IRpEntSync<IHasId<?>>) this.fctEntSy
-          .laz(pRqVs, entSyNm);
-        boolean isNew = entSy.sync(pRqVs, entity);
-        if (isNew) {
-          this.orm.insert(pRqVs, null, entity);
+          .laz(pRvs, entSyNm);
+        entSy.sync(pRvs, ent);
+        if (ent.getIsNew()) {
+          this.orm.insert(pRvs, vs, ent);
         } else {
-          this.orm.update(pRqVs, null, entity);
+          this.orm.update(pRvs, vs, ent);
         }
       }
       this.rdb.commit();
@@ -239,5 +246,21 @@ public class RpStorDbXmlSy<RS> implements IRpStor {
    **/
   public final void setSetng(final ISetng pSetng) {
     this.setng = pSetng;
+  }
+
+  /**
+   * <p>Getter for writeTi.</p>
+   * @return Integer
+   **/
+  public final Integer getWriteTi() {
+    return this.writeTi;
+  }
+
+  /**
+   * <p>Setter for writeTi.</p>
+   * @param pWriteTi reference
+   **/
+  public final void setWriteTi(final Integer pWriteTi) {
+    this.writeTi = pWriteTi;
   }
 }

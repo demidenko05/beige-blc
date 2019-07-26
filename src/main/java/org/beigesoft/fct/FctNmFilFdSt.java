@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.fct;
 
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -43,7 +44,7 @@ import org.beigesoft.cnv.FilFldHsIdStr;
 import org.beigesoft.cnv.FilFldSmpStr;
 
 /**
- * <p>Factory of fields fillers from string.</p>
+ * <p>Factory of fields fillers from string for XML and UVD.</p>
  *
  * @author Yury Demidenko
  */
@@ -75,7 +76,7 @@ public class FctNmFilFdSt implements IFcFlFdSt {
    **/
   private ILog logStd;
 
-  //parts:
+  //parts: TODO lazy!
   /**
    * <p>Fields setters RAPI holder.</p>
    **/
@@ -121,6 +122,11 @@ public class FctNmFilFdSt implements IFcFlFdSt {
    **/
   private ISetng stgDbCp;
 
+  /**
+   * <p>Outside factories.</p>
+   **/
+  private Set<IFcFlFdSt> fcts;
+
   //requested data:
   /**
    * <p>Fillers map.</p>
@@ -153,7 +159,17 @@ public class FctNmFilFdSt implements IFcFlFdSt {
           } else if (FILSMPSTUVDNM.equals(pFiNm)) {
             rz = crPuFilFldSmpStrUvd();
           } else {
-            throw new ExcCode(ExcCode.WRCN, "There is no FIL FR STR: " + pFiNm);
+            if (this.fcts != null) {
+              for (IFcFlFdSt fc : this.fcts) {
+                rz = fc.laz(pRvs, pFiNm);
+                if (rz != null) {
+                  break;
+                }
+              }
+            }
+            if (rz == null) {
+              throw new ExcCode(ExcCode.WRCN, "There is no FILFRSTR: " + pFiNm);
+            }
           }
         }
       }
@@ -395,5 +411,21 @@ public class FctNmFilFdSt implements IFcFlFdSt {
    **/
   public final void setStgDbCp(final ISetng pStgDbCp) {
     this.stgDbCp = pStgDbCp;
+  }
+
+  /**
+   * <p>Getter for fcts.</p>
+   * @return Set<IFcFlFdSt>
+   **/
+  public final synchronized Set<IFcFlFdSt> getFcts() {
+    return this.fcts;
+  }
+
+  /**
+   * <p>Setter for fcts.</p>
+   * @param pFcts reference
+   **/
+  public final synchronized void setFcts(final Set<IFcFlFdSt> pFcts) {
+    this.fcts = pFcts;
   }
 }

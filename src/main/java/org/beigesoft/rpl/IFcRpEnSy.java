@@ -31,7 +31,7 @@ package org.beigesoft.rpl;
 import java.util.Map;
 
 /**
- * <p>Abstraction of synchronizer entity factory.</p>
+ * <p>Abstraction of synchronizers entity factory.</p>
  *
  * @author Yury Demidenko
  */

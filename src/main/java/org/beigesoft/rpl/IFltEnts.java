@@ -47,10 +47,10 @@ public interface IFltEnts {
   /**
    * <p>Makes SQL WHERE filter for given entity.</p>
    * @param pCls Entity Class
-   * @param pRqVs request scoped vars (e.g. requested database ID)
+   * @param pRvs request scoped vars (e.g. requested database ID)
    * @return filter - null or conditions without WHERE word e.g. "ITSID>12"
    * @throws Exception - an exception
    **/
-  String makeWhe(Map<String, Object> pRqVs,
+  String makeWhe(Map<String, Object> pRvs,
     Class<? extends IHasId<?>> pCls) throws Exception;
 }

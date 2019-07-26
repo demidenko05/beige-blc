@@ -39,11 +39,10 @@ import org.beigesoft.rdb.IOrm;
  * All persistable entities must has version, so it checks if entity exists
  * in home database, if does then fills it with home version.</p>
  *
- * @param <RS> platform dependent record set type
  * @param <T> entity type
  * @author Yury Demidenko
  */
-public class RpEntSyDb<RS, T extends IHasId<?>> implements IRpEntSync<T> {
+public class RpEntSyDb<T extends IHasId<?>> implements IRpEntSync<T> {
 
   /**
    * <p>ORM service.</p>
@@ -52,23 +51,21 @@ public class RpEntSyDb<RS, T extends IHasId<?>> implements IRpEntSync<T> {
 
   /**
    * <p>Just checks if entity exists in home database.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pEnt object
-   * @return if entity exists in database (needs to update)
    * @throws Exception - an exception
    **/
   @Override
-  public final boolean sync(final Map<String, Object> pRqVs,
+  public final void sync(final Map<String, Object> pRvs,
     final T pEnt) throws Exception {
     Map<String, Object> vs = new HashMap<String, Object>();
-    String[] ndFds = new String[] {"iid", "ver"};
+    String[] ndFds = new String[] {"ver"};
     vs.put("ndFds", ndFds);
-    T entDb = getOrm().retEnt(pRqVs, vs, pEnt);
+    T entDb = getOrm().retEnt(pRvs, vs, pEnt);
     if (entDb != null) {
-      pEnt.setVer(entDb.getVer());
-      return false;
+      pEnt.setIsNew(false);
     } else {
-      return true;
+      pEnt.setIsNew(true);
     }
   }
 

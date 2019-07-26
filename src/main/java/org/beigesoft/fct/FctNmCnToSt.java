@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.fct;
 
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -85,7 +86,7 @@ public class FctNmCnToSt implements IFctCnToSt {
    **/
   private ILog logStd;
 
-  //parts:
+  //parts: TODO lazy!
   /**
    * <p>Number to string service.</p>
    **/
@@ -125,6 +126,11 @@ public class FctNmCnToSt implements IFctCnToSt {
    * <p>Date service.</p>
    **/
   private ISrvDt srvDt;
+
+  /**
+   * <p>Outside factories.</p>
+   **/
+  private Set<IFctCnToSt> fcts;
 
   //requested data:
   /**
@@ -191,7 +197,17 @@ public class FctNmCnToSt implements IFctCnToSt {
           } else if (CnvBlnStr.class.getSimpleName().equals(pCnNm)) {
             rz = crPuCnvBlnStr();
           } else {
-            throw new ExcCode(ExcCode.WRCN, "There is no CNV TO STR: " + pCnNm);
+            if (this.fcts != null) {
+              for (IFctCnToSt fc : this.fcts) {
+                rz = fc.laz(pRvs, pCnNm);
+                if (rz != null) {
+                  break;
+                }
+              }
+            }
+            if (rz == null) {
+              throw new ExcCode(ExcCode.WRCN, "There is no CNVTOSTR: " + pCnNm);
+            }
           }
         }
       }
@@ -612,5 +628,21 @@ public class FctNmCnToSt implements IFctCnToSt {
    **/
   public final void setSrvDt(final ISrvDt pSrvDt) {
     this.srvDt = pSrvDt;
+  }
+
+  /**
+   * <p>Getter for fcts.</p>
+   * @return Set<IFctCnToSt>
+   **/
+  public final synchronized Set<IFctCnToSt> getFcts() {
+    return this.fcts;
+  }
+
+  /**
+   * <p>Setter for fcts.</p>
+   * @param pFcts reference
+   **/
+  public final synchronized void setFcts(final Set<IFctCnToSt> pFcts) {
+    this.fcts = pFcts;
   }
 }

@@ -43,11 +43,11 @@ public interface IRpEntWri {
   /**
    * <p>Writes entity into given stream (writer).</p>
    * @param <T> entity type
-   * @param pRqVs request scoped vars (e.g. exclude fields set)
+   * @param pRvs request scoped vars (e.g. exclude fields set)
    * @param pEnt object
    * @param pWri writer
    * @throws Exception - an exception
    **/
-  <T extends IHasId<?>> void write(Map<String, Object> pRqVs,
+  <T extends IHasId<?>> void write(Map<String, Object> pRvs,
     T pEnt, Writer pWri) throws Exception;
 }

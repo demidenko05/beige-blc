@@ -49,10 +49,9 @@ public interface IRpEntSync<T> {
 
   /**
    * <p>Synchronizes just read foreign entity with home one.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pEnt object
-   * @return if entity exists in database (needs to update)
    * @throws Exception - an exception
    **/
-  boolean sync(Map<String, Object> pRqVs, T pEnt) throws Exception;
+  void sync(Map<String, Object> pRvs, T pEnt) throws Exception;
 }

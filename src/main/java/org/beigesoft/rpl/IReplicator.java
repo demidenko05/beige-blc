@@ -41,8 +41,8 @@ public interface IReplicator {
   /**
    * <p>Replicates data from requested source
    * to requesting destination.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @throws Exception - an exception
    **/
-  void replicate(Map<String, Object> pRqVs) throws Exception;
+  void replicate(Map<String, Object> pRvs) throws Exception;
 }

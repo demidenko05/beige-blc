@@ -71,37 +71,42 @@ public class RpRtrvDbXml<RS> implements IRpRtrv {
   private IRdb<RS> rdb;
 
   /**
+   * <p>Transaction isolation for reading DB phase.</p>
+   **/
+  private Integer readTi;
+
+  /**
    * <p>Retrieves requested entities from DB then write them into a stream
    * by given writer.</p>
    * @param T Entity Class
-   * @param pRqVs request scoped vars (e.g. where clause)
+   * @param pRvs request scoped vars (e.g. where clause)
    * @param pCls Entity Class
    * @param pWri writer
    * @return entities count
    * @throws Exception - an exception
    **/
   @Override
-  public final <T extends IHasId<?>> int rtrvTo(final Map<String, Object> pRqVs,
+  public final <T extends IHasId<?>> int rtrvTo(final Map<String, Object> pRvs,
       final Class<T> pCls, final Writer pWri) throws Exception {
     //e.g. "limit 20 offset 19":
     //e.g. "where (IID>0 and IDOR=2135) limit 20 offset 19":
-    String cond = (String) pRqVs.get("cond");
-    int dsDbVr = Integer.parseInt((String) pRqVs.get("dsDbVr"));
+    String cond = (String) pRvs.get("cond");
+    int dsDbVr = Integer.parseInt((String) pRvs.get("dsDbVr"));
     List<T> entities = null;
     int entCnt = 0;
     DbInf di = this.rdb.getDbInf();
     if (dsDbVr == di.getDbVr()) {
       try {
         this.rdb.setAcmt(false);
-        this.rdb.setTrIsl(IRdb.TRRUC);
+        this.rdb.setTrIsl(this.readTi);
         this.rdb.begin();
-        String srDbIdStr = (String) pRqVs.get("srDbId");
+        String srDbIdStr = (String) pRvs.get("srDbId");
         if (srDbIdStr != null) { //replication
           int srDbId = Integer.parseInt(srDbIdStr);
           if (srDbId != di.getDbId()) {
             String error = "Different requested database ID! required/is: "
                 + srDbId + "/" + di.getDbId();
-            this.log.error(pRqVs, RpRtrvDbXml.class, error);
+            this.log.error(pRvs, RpRtrvDbXml.class, error);
             pWri.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             pWri.write("<message error=\"" + error + "\">\n");
             pWri.write("</message>\n");
@@ -111,9 +116,9 @@ public class RpRtrvDbXml<RS> implements IRpRtrv {
         Map<String, Object> vs = new HashMap<String, Object>();
         vs.put(pCls.getSimpleName() + "dpLv", 1);
         if (cond == null) {
-          entities = getOrm().retLst(pRqVs, vs, pCls);
+          entities = getOrm().retLst(pRvs, vs, pCls);
         } else {
-          entities = getOrm().retLstCnd(pRqVs, vs, pCls, cond);
+          entities = getOrm().retLstCnd(pRvs, vs, pCls, cond);
         }
         entCnt = entities.size();
         this.rdb.commit();
@@ -125,7 +130,7 @@ public class RpRtrvDbXml<RS> implements IRpRtrv {
       } finally {
         this.rdb.release();
       }
-      this.log.info(pRqVs, RpRtrvDbXml.class, "Start write entities of "
+      this.log.info(pRvs, RpRtrvDbXml.class, "Start write entities of "
         + pCls.getCanonicalName() + " count=" + entCnt);
       pWri.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       pWri.write("<message databaseId=\"" + di.getDbId()
@@ -133,13 +138,13 @@ public class RpRtrvDbXml<RS> implements IRpRtrv {
           + "\" description=\"" + di.getInf() + "\" entCnt=\""
             + entCnt + "\">\n");
       for (T entity : entities) {
-        this.rpEntWri.write(pRqVs, entity, pWri);
+        this.rpEntWri.write(pRvs, entity, pWri);
       }
       pWri.write("</message>\n");
-      this.log.info(pRqVs, RpRtrvDbXml.class,
+      this.log.info(pRvs, RpRtrvDbXml.class,
         "Entities has been wrote");
     } else {
-      this.log.error(pRqVs, RpRtrvDbXml.class,
+      this.log.error(pRvs, RpRtrvDbXml.class,
         "Send error message - Different database version!");
       pWri.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       pWri.write("<message error=\"Different database version!\">\n");
@@ -212,5 +217,21 @@ public class RpRtrvDbXml<RS> implements IRpRtrv {
    **/
   public final void setRdb(final IRdb<RS> pRdb) {
     this.rdb = pRdb;
+  }
+
+  /**
+   * <p>Getter for readTi.</p>
+   * @return Integer
+   **/
+  public final Integer getReadTi() {
+    return this.readTi;
+  }
+
+  /**
+   * <p>Setter for readTi.</p>
+   * @param pReadTi reference
+   **/
+  public final void setReadTi(final Integer pReadTi) {
+    this.readTi = pReadTi;
   }
 }

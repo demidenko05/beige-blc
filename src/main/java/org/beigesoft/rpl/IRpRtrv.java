@@ -47,12 +47,12 @@ public interface IRpRtrv {
    * them into stream (file or network connection) by given writer
    * in XML/JSON/... format.</p>
    * @param <T> Entity Class
-   * @param pRqVs request scoped vars (e.g. where clause)
+   * @param pRvs request scoped vars (e.g. where clause)
    * @param pCls Entity Class
    * @param pWri writer
    * @return entities count
    * @throws Exception - an exception
    **/
-  <T extends IHasId<?>> int rtrvTo(Map<String, Object> pRqVs,
+  <T extends IHasId<?>> int rtrvTo(Map<String, Object> pRvs,
     Class<T> pCls, Writer pWri) throws Exception;
 }

@@ -77,23 +77,28 @@ public class RpStorDbXmlCp<RS> implements IRpStor {
   private IUtlXml utlXml;
 
   /**
+   * <p>Transaction isolation for changing DB phase.</p>
+   **/
+  private Integer writeTi;
+
+  /**
    * <p>Reads entities from stream (by given reader) then inserts them
    * into DB with no changes. DB must be emptied before coping.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pReader Reader
    * @throws Exception - an exception
    **/
   @Override
-  public final void storeFr(final Map<String, Object> pRqVs,
+  public final void storeFr(final Map<String, Object> pRvs,
     final Reader pReader) throws Exception {
     try {
       this.rdb.setAcmt(false);
-      this.rdb.setTrIsl(IRdb.TRRUC);
+      this.rdb.setTrIsl(this.writeTi);
       this.rdb.begin();
       Map<String, Object> vs = new HashMap<String, Object>();
       while (this.utlXml.readUntilStart(pReader, "entity")) {
-        IHasId<?> entity = this.rpEntRead.read(pRqVs, pReader);
-        this.orm.insert(pRqVs, vs, entity);
+        IHasId<?> ent = this.rpEntRead.read(pRvs, pReader);
+        this.orm.insert(pRvs, vs, ent);
       }
       this.rdb.commit();
     } catch (Exception ex) {
@@ -185,5 +190,21 @@ public class RpStorDbXmlCp<RS> implements IRpStor {
    **/
   public final void setUtlXml(final IUtlXml pUtlXml) {
     this.utlXml = pUtlXml;
+  }
+
+  /**
+   * <p>Getter for writeTi.</p>
+   * @return Integer
+   **/
+  public final Integer getWriteTi() {
+    return this.writeTi;
+  }
+
+  /**
+   * <p>Setter for writeTi.</p>
+   * @param pWriteTi reference
+   **/
+  public final void setWriteTi(final Integer pWriteTi) {
+    this.writeTi = pWriteTi;
   }
 }

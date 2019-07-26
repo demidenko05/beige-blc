@@ -75,15 +75,15 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
 
   /**
    * <p>Reads/fills an entity from given stream (reader).</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pReader reader.
    * @return entity filled/refreshed.
    * @throws Exception - an exception
    **/
   @Override
-  public final IHasId<?> read(final Map<String, Object> pRqVs,
+  public final IHasId<?> read(final Map<String, Object> pRvs,
     final Reader pReader) throws Exception {
-    Map<String, String> attrs = this.utlXml.readAttrs(pRqVs, pReader);
+    Map<String, String> attrs = this.utlXml.readAttrs(pRvs, pReader);
     if (attrs.get("class") == null) {
      throw new ExcCode(ExcCode.WRCN, "There is no class attribute for entity!");
     }
@@ -95,18 +95,18 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 6502 && this.log.getDbgCl() > 6500;
     if (isDbgSh) {
-      this.log.debug(pRqVs, RpEntReadXml.class, "Filling entity from XML: "
+      this.log.debug(pRvs, RpEntReadXml.class, "Filling entity from XML: "
         + cls);
     }
     for (String flNm : this.setng.lazIdFldNms(cls)) {
       String filFdNm = this.hldFilFdNms.get(cls, flNm);
-      IFilFldStr filFl = this.fctFilFld.laz(pRqVs, filFdNm);
-      filFl.fill(pRqVs, null, ent, flNm, attrs.get(flNm));
+      IFilFldStr filFl = this.fctFilFld.laz(pRvs, filFdNm);
+      filFl.fill(pRvs, null, ent, flNm, attrs.get(flNm));
     }
     for (String flNm : this.setng.lazFldNms(cls)) {
       String filFdNm = this.hldFilFdNms.get(cls, flNm);
-      IFilFldStr filFl = this.fctFilFld.laz(pRqVs, filFdNm);
-      filFl.fill(pRqVs, null, ent, flNm, attrs.get(flNm));
+      IFilFldStr filFl = this.fctFilFld.laz(pRvs, filFdNm);
+      filFl.fill(pRvs, null, ent, flNm, attrs.get(flNm));
     }
     return ent;
   }

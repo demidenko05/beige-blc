@@ -28,7 +28,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.rpl;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -51,13 +50,12 @@ public class RpEntSyOrId<T extends IOrId> implements IRpEntSync<T> {
 
   /**
    * <p>Synchronizes given entity of type IOrId {iid, idOr and dbOr}.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pEnt object
-   * @return if entity exists in database (needs to update)
    * @throws Exception - an exception
    **/
   @Override
-  public final boolean sync(final Map<String, Object> pRqVs,
+  public final void sync(final Map<String, Object> pRvs,
     final T pEnt) throws Exception {
     if (getOrm().getDbId().equals(pEnt.getDbOr())) {
       throw new ExcCode(ExcCode.WR,
@@ -66,20 +64,18 @@ public class RpEntSyOrId<T extends IOrId> implements IRpEntSync<T> {
     }
     String whe = "IDOR=" + pEnt.getIid() + " and DBOR=" + pEnt.getDbOr();
     Map<String, Object> vs = new HashMap<String, Object>();
-    String[] ndFds = new String[] {"dbor", "idor", "iid", "ver"};
-    Arrays.sort(ndFds);
+    String[] ndFds = new String[] {"ver"};
     vs.put(pEnt.getClass().getSimpleName() + "ndFds", ndFds);
     @SuppressWarnings("unchecked")
-    T entDb = (T) getOrm().retEntCnd(pRqVs, vs, pEnt.getClass(), whe);
+    T entDb = (T) getOrm().retEntCnd(pRvs, vs, pEnt.getClass(), whe);
     vs.clear();
     pEnt.setIdOr(pEnt.getIid());
     if (entDb != null) {
-      pEnt.setVer(entDb.getVer());
       pEnt.setIid(entDb.getIid());
-      return false;
+      pEnt.setIsNew(false);
     } else {
       pEnt.setIid(null);
-      return true;
+      pEnt.setIsNew(true);
     }
   }
 

@@ -66,29 +66,29 @@ public class ClrDb<RS> implements IMake {
 
   /**
    * <p>Clears current database.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @throws Exception - an exception
    **/
   @Override
-  public final void make(final Map<String, Object> pRqVs) throws Exception {
+  public final void make(final Map<String, Object> pRvs) throws Exception {
     List<Class<? extends IHasId<?>>> clss = this.setng.lazClss();
     try {
       this.rdb.setAcmt(false);
-      this.rdb.setTrIsl(IRdb.TRRUC);
+      this.rdb.setTrIsl(IRdb.TRRUC); //it must be invoked for single user only
       this.rdb.begin();
-      this.log.info(pRqVs, ClrDb.class, "Start clear database.");
+      this.log.info(pRvs, ClrDb.class, "Start clear database.");
       for (int i = clss.size() - 1; i >= 0; i--) {
         Class<? extends IHasId<?>> cls = clss.get(i);
         this.rdb.delete(cls.getSimpleName().toUpperCase(), null);
       }
       this.rdb.commit();
-      Writer wri = (Writer) pRqVs.get("htmWri");
+      Writer wri = (Writer) pRvs.get("htmWri");
       if (wri != null) {
         wri.write("<h4>" + new Date().toString() + ", "
         + ClrDb.class.getSimpleName()
           + ", database has been cleared" + "</h4>");
       }
-      this.log.info(pRqVs, ClrDb.class, "Finish clear database.");
+      this.log.info(pRvs, ClrDb.class, "Finish clear database.");
     } catch (Exception ex) {
       if (!this.rdb.getAcmt()) {
         this.rdb.rollBack();

@@ -42,10 +42,10 @@ public interface IRpStor {
   /**
    * <p>Stores entities from stream (by given reader)
    * into file or inserts/updates them into DB.</p>
-   * @param pRqVs request scoped vars
+   * @param pRvs request scoped vars
    * @param pReader Reader
    * @throws Exception - an exception
    **/
-  void storeFr(Map<String, Object> pRqVs,
+  void storeFr(Map<String, Object> pRvs,
     Reader pReader) throws Exception;
 }
