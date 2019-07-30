@@ -32,9 +32,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
 import java.math.BigDecimal;
 import java.io.File;
 
@@ -55,6 +54,8 @@ import org.beigesoft.mdlp.DcSp;
 import org.beigesoft.mdlp.DcGrSp;
 import org.beigesoft.mdlp.Cntr;
 import org.beigesoft.mdlp.Lng;
+import org.beigesoft.hld.HldEnts;
+import org.beigesoft.hld.EntShr;
 import org.beigesoft.hld.HldFldStg;
 import org.beigesoft.hld.HldClsStg;
 import org.beigesoft.hld.ICtx;
@@ -73,7 +74,7 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
   /**
    * <p>Admin entities.</p>
    **/
-  private List<Class<? extends IHasId<?>>> admEnts;
+  private HldEnts admEnts;
 
   /**
    * <p>Initializes factory.</p>
@@ -148,21 +149,27 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
   }
 
   /**
-   * <p>Getter for Admin non-shared Ents.</p>
-   * @return List<Class<? extends IHasId<?>>>
+   * <p>Getter for Admin entities.</p>
+   * @return HldEnts
    **/
-  public final List<Class<? extends IHasId<?>>> lazAdmEnts() {
+  public final HldEnts lazAdmEnts() {
     if (this.admEnts == null) {
-      this.admEnts = new ArrayList<Class<? extends IHasId<?>>>();
-      this.admEnts.add(UsTmc.class);
-      this.admEnts.add(UsRlTmc.class);
-      this.admEnts.add(EmCon.class);
-      this.admEnts.add(EmMsg.class);
-      this.admEnts.add(EmAtch.class);
-      this.admEnts.add(EmAdr.class);
-      this.admEnts.add(EmInt.class);
-      this.admEnts.add(EmStr.class);
-      this.admEnts.add(EmRcp.class);
+      this.admEnts = new HldEnts();
+      this.admEnts.setIid(HldEnts.ID_ADMIN);
+      this.admEnts.setShrEnts(new HashSet<EntShr>());
+      Set<Integer> rdrs = new HashSet<Integer>();
+      rdrs.add(HldEnts.ID_BASE);
+      this.admEnts.getShrEnts().add(new EntShr(EmAdr.class, rdrs));
+      this.admEnts.setEnts(new HashSet<Class<? extends IHasId<?>>>());
+      this.admEnts.getEnts().add(UsTmc.class);
+      this.admEnts.getEnts().add(UsRlTmc.class);
+      this.admEnts.getEnts().add(EmCon.class);
+      this.admEnts.getEnts().add(EmMsg.class);
+      this.admEnts.getEnts().add(EmAtch.class);
+      this.admEnts.getEnts().add(EmAdr.class);
+      this.admEnts.getEnts().add(EmInt.class);
+      this.admEnts.getEnts().add(EmStr.class);
+      this.admEnts.getEnts().add(EmRcp.class);
     }
     return this.admEnts;
   }
@@ -176,12 +183,8 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
   public final void makeUvdCls(final Map<String, Object> pRvs,
     final IFctAsm<RS> pFct) throws Exception {
     //UVD base entities restrictions:
-    pFct.getFctBlc().getFctDt()
-      .setAdmEnts(new ArrayList<Class<? extends IHasId<?>>>());
-    pFct.getFctBlc().getFctDt().getAdmEnts().addAll(lazAdmEnts());
-    pFct.getFctBlc().getFctDt()
-      .setFbdEnts(new ArrayList<Class<? extends IHasId<?>>>());
-    pFct.getFctBlc().getFctDt().getFbdEnts().addAll(lazAdmEnts());
+    pFct.getFctBlc().getFctDt().setHldsEnts(new HashSet<HldEnts>());
+    pFct.getFctBlc().getFctDt().getHldsEnts().add(lazAdmEnts());
     //Entities with custom ID:
     pFct.getFctBlc().getFctDt()
       .setCustIdClss(new HashSet<Class<? extends IHasId<?>>>());

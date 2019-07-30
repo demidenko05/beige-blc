@@ -34,6 +34,7 @@ import java.util.HashMap;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
+import org.beigesoft.hld.HldEnts;
 import org.beigesoft.prc.IPrc;
 import org.beigesoft.prc.PrcEntPg;
 import org.beigesoft.srv.EntPg;
@@ -112,8 +113,7 @@ public class FctPrcFenAd<RS> implements IFctPrc {
     entPg.setEntMp(new HashMap<String, Class<? extends IHasId<?>>>());
     for (Class<? extends IHasId<?>> cls : this.fctBlc
       .lazStgUvd(pRvs).lazClss()) {
-      if (this.fctBlc.getFctDt().getAdmEnts() != null
-        && this.fctBlc.getFctDt().getAdmEnts().contains(cls)) {
+      if (this.fctBlc.getFctDt().isEntAlwd(cls, HldEnts.ID_ADMIN)) {
         entPg.getEntMp().put(cls.getSimpleName(), cls);
       }
     }

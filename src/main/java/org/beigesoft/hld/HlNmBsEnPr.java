@@ -29,7 +29,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.hld;
 
 import java.util.Set;
-import java.util.List;
 
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.IOwned;
@@ -52,7 +51,7 @@ public class HlNmBsEnPr implements IHlNmClSt {
    * <p>Shared non-editable entities for base entity request handler,
    * e.g. email connection EmCon.</p>
    **/
-  private List<Class<? extends IHasId<?>>> shrEnts;
+  private Set<Class<? extends IHasId<?>>> shrEnts;
 
   /**
    * <p>Additional base entity processors names holders
@@ -112,9 +111,9 @@ public class HlNmBsEnPr implements IHlNmClSt {
   //SGS:
   /**
    * <p>Getter for shrEnts.</p>
-   * @return List<Class<? extends IHasId<?>>>
+   * @return Set<Class<? extends IHasId<?>>>
    **/
-  public final List<Class<? extends IHasId<?>>> getShrEnts() {
+  public final Set<Class<? extends IHasId<?>>> getShrEnts() {
     return this.shrEnts;
   }
 
@@ -123,7 +122,7 @@ public class HlNmBsEnPr implements IHlNmClSt {
    * @param pShrEnts reference
    **/
   public final void setShrEnts(
-    final List<Class<? extends IHasId<?>>> pShrEnts) {
+    final Set<Class<? extends IHasId<?>>> pShrEnts) {
     this.shrEnts = pShrEnts;
   }
 

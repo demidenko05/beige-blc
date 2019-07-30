@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.rpl;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
 
@@ -94,6 +95,7 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
     IHasId<?> ent = constructor.newInstance();
     boolean isDbgSh = this.log.getDbgSh(this.getClass())
       && this.log.getDbgFl() < 6502 && this.log.getDbgCl() > 6500;
+    Map<String, Object> vs = new HashMap<String, Object>();
     if (isDbgSh) {
       this.log.debug(pRvs, RpEntReadXml.class, "Filling entity from XML: "
         + cls);
@@ -101,12 +103,12 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
     for (String flNm : this.setng.lazIdFldNms(cls)) {
       String filFdNm = this.hldFilFdNms.get(cls, flNm);
       IFilFldStr filFl = this.fctFilFld.laz(pRvs, filFdNm);
-      filFl.fill(pRvs, null, ent, flNm, attrs.get(flNm));
+      filFl.fill(pRvs, vs, ent, flNm, attrs.get(flNm));
     }
     for (String flNm : this.setng.lazFldNms(cls)) {
       String filFdNm = this.hldFilFdNms.get(cls, flNm);
       IFilFldStr filFl = this.fctFilFld.laz(pRvs, filFdNm);
-      filFl.fill(pRvs, null, ent, flNm, attrs.get(flNm));
+      filFl.fill(pRvs, vs, ent, flNm, attrs.get(flNm));
     }
     return ent;
   }

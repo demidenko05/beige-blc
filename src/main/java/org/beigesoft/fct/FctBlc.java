@@ -52,6 +52,7 @@ import org.beigesoft.hld.HlNmPrFe;
 import org.beigesoft.hld.HlNmPrFeAd;
 import org.beigesoft.hld.HlNmBsEnPr;
 import org.beigesoft.hld.HlNmAdEnPr;
+import org.beigesoft.hld.HldEnts;
 import org.beigesoft.hld.HldUvd;
 import org.beigesoft.hld.HldCnvId;
 import org.beigesoft.hld.HlMaFrCl;
@@ -324,13 +325,13 @@ public class FctBlc<RS> implements IFctApp {
       rz.setFctPrcFen(fen);
       HlNmAdEnPr hlNmAdEnPr = new HlNmAdEnPr();
       hlNmAdEnPr.setHldsAdEnPr(this.fctDt.getHldsAdEnPr());
+      hlNmAdEnPr.setShrEnts(this.fctDt.evShrEnts(HldEnts.ID_ADMIN));
       rz.setHldEntPrcNm(hlNmAdEnPr);
       rz.setFctEntPrc(lazFctEnPrc(pRvs));
       rz.setEntMap(new HashMap<String, Class<? extends IHasId<?>>>());
       Setng setng = lazStgUvd(pRvs);
       for (Class<? extends IHasId<?>> cls  : setng.lazClss()) {
-        if (this.fctDt.getAdmEnts() == null
-          || this.fctDt.getAdmEnts().contains(cls)) {
+        if (this.fctDt.isEntAlwd(cls, HldEnts.ID_ADMIN)) {
           rz.getEntMap().put(cls.getSimpleName(), cls);
         }
       }
@@ -367,7 +368,7 @@ public class FctBlc<RS> implements IFctApp {
       rz.setFctFctEnt(lazFctFctEnt(pRvs));
       rz.setFctPrcFen(lazFctPrcFen(pRvs));
       HlNmBsEnPr hlep = new HlNmBsEnPr();
-      hlep.setShrEnts(this.fctDt.getShrEnts());
+      hlep.setShrEnts(this.fctDt.evShrEnts(HldEnts.ID_BASE));
       hlep.setHldsBsEnPr(this.fctDt.getHldsBsEnPr());
       rz.setHldEntPrcNm(hlep);
       rz.setFctEntPrc(lazFctEnPrc(pRvs));
@@ -375,8 +376,7 @@ public class FctBlc<RS> implements IFctApp {
       rz.setEntMap(new HashMap<String, Class<? extends IHasId<?>>>());
       Setng setng = lazStgUvd(pRvs);
       for (Class<? extends IHasId<?>> cls  : setng.lazClss()) {
-        if (this.fctDt.getFbdEnts() == null
-          || !this.fctDt.getFbdEnts().contains(cls)) {
+        if (this.fctDt.isEntAlwd(cls, HldEnts.ID_BASE)) {
           rz.getEntMap().put(cls.getSimpleName(), cls);
         }
       }

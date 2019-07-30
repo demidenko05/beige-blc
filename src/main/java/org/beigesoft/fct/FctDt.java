@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.fct;
 
 import java.util.Set;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ import org.beigesoft.rdb.IRdb;
 import org.beigesoft.hld.HldFldStg;
 import org.beigesoft.hld.HldClsStg;
 import org.beigesoft.hld.IHlNmClSt;
+import org.beigesoft.hld.HldEnts;
 
 /**
  * <p>Holder of base and additional data for main factory.</p>
@@ -229,23 +231,6 @@ public class FctDt {
   private String uplDir;
 
   /**
-   * <p>Admin/webstore non-shared entities.</p>
-   **/
-  private List<Class<? extends IHasId<?>>> admEnts;
-
-//TODO base non-shared, base shared, admin... DURING S.E.Seller!
-  /**
-   * <p>Forbidden entities for base entity request handler, e.g. UsTmc.</p>
-   **/
-  private List<Class<? extends IHasId<?>>> fbdEnts;
-
-  /**
-   * <p>Shared non-editable entities for base entity request handler,
-   * e.g. email connection EmCon.</p>
-   **/
-  private List<Class<? extends IHasId<?>>> shrEnts;
-
-  /**
    * <p>Entities that can be printed via PDF, etc.</p>
    **/
   private List<Class<? extends IHasId<?>>> flRpEnts;
@@ -270,6 +255,11 @@ public class FctDt {
    * <p>Set of classes for matching to foreign.</p>
    **/
   private Set<Class<? extends IHasId<?>>> maFrClss;
+
+  /**
+   * <p>Other work-spaces entities holders.</p>
+   **/
+  private Set<HldEnts> hldsEnts;
 
   /**
    * <p>Outside base processors factories.</p>
@@ -312,6 +302,85 @@ public class FctDt {
    * <p>Outside factories of fillers fields from string.</p>
    **/
   private Set<IFcFlFdSt> fcsFlFdSt;
+
+  /**
+   * <p>Evaluates if entity allowed for given workspace.</p>
+   * @param pEnt class
+   * @param pIid reference
+   * @return if allowed
+   **/
+  public final boolean isEntAlwd(final Class<? extends IHasId<?>> pEnt,
+    final Integer pIid) {
+    if (pIid == null) {
+      throw new RuntimeException("Null workspace ID");
+    }
+    if (pIid.equals(HldEnts.ID_BASE)) {
+      if (this.hldsEnts == null) {
+        return true; //only workspace
+      } else {
+        for (HldEnts he :this.hldsEnts) {
+          if (!he.getIid().equals(pIid) && he.getEnts().contains(pEnt)) {
+            Set<Class<? extends IHasId<?>>> ents = he.evShrEnts(pIid);
+            if (ents != null && ents.contains(pEnt)) {
+              return true;
+            }
+            return false;
+          }
+        }
+        return true;
+      }
+    } else {
+      if (this.hldsEnts == null) {
+        throw new RuntimeException("Workspace has no HldEnts, ID " + pIid);
+      } else {
+        boolean hasHe = false;
+        for (HldEnts he :this.hldsEnts) {
+          if (he.getIid().equals(pIid)) {
+            if (he.getEnts().contains(pEnt)) {
+              return true;
+            }
+            hasHe = true;
+          }
+          if (!he.getIid().equals(pIid)) {
+            Set<Class<? extends IHasId<?>>> ents = he.evShrEnts(pIid);
+            if (ents != null && ents.contains(pEnt)) {
+              return true;
+            }
+          }
+        }
+        if (!hasHe) {
+          throw new RuntimeException("Workspace has no HldEnts, ID " + pIid);
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * <p>Evaluates shared entities for given workspace.</p>
+   * @param pIid reference
+   * @return Set<Class<? extends IHasId<?>>> or null
+   **/
+  public final Set<Class<? extends IHasId<?>>> evShrEnts(final Integer pIid) {
+    if (pIid == null) {
+      throw new RuntimeException("Null workspace ID");
+    }
+    Set<Class<? extends IHasId<?>>> rz = null;
+    if (this.hldsEnts != null) {
+      for (HldEnts he :this.hldsEnts) {
+        if (!he.getIid().equals(pIid)) {
+          Set<Class<? extends IHasId<?>>> ents = he.evShrEnts(pIid);
+          if (ents != null) {
+            if (rz == null) {
+              rz = new HashSet<Class<? extends IHasId<?>>>();
+            }
+            rz.addAll(ents);
+          }
+        }
+      }
+    }
+    return rz;
+  }
 
   //Simple getters and setters:
   /**
@@ -651,57 +720,6 @@ public class FctDt {
   }
 
   /**
-   * <p>Getter for shrEnts.</p>
-   * @return List<Class<? extends IHasId<?>>>
-   **/
-  public final List<Class<? extends IHasId<?>>> getShrEnts() {
-    return this.shrEnts;
-  }
-
-  /**
-   * <p>Setter for shrEnts.</p>
-   * @param pShrEnts reference
-   **/
-  public final void setShrEnts(
-    final List<Class<? extends IHasId<?>>> pShrEnts) {
-    this.shrEnts = pShrEnts;
-  }
-
-  /**
-   * <p>Getter for admEnts.</p>
-   * @return List<Class<? extends IHasId<?>>>
-   **/
-  public final List<Class<? extends IHasId<?>>> getAdmEnts() {
-    return this.admEnts;
-  }
-
-  /**
-   * <p>Setter for admEnts.</p>
-   * @param pAdmEnts reference
-   **/
-  public final void setAdmEnts(
-    final List<Class<? extends IHasId<?>>> pAdmEnts) {
-    this.admEnts = pAdmEnts;
-  }
-
-  /**
-   * <p>Getter for fbdEnts.</p>
-   * @return List<? extends Class<? extends IHasId<?>>>
-   **/
-  public final List<Class<? extends IHasId<?>>> getFbdEnts() {
-    return this.fbdEnts;
-  }
-
-  /**
-   * <p>Setter for fbdEnts.</p>
-   * @param pFbdEnts reference
-   **/
-  public final void setFbdEnts(
-    final List<Class<? extends IHasId<?>>> pFbdEnts) {
-    this.fbdEnts = pFbdEnts;
-  }
-
-  /**
    * <p>Getter for flRpEnts.</p>
    * @return List<? extends Class<? extends IHasId<?>>>
    **/
@@ -927,5 +945,21 @@ public class FctDt {
    **/
   public final void setFcsFlFdSt(final Set<IFcFlFdSt> pFcsFlFdSt) {
     this.fcsFlFdSt = pFcsFlFdSt;
+  }
+
+  /**
+   * <p>Getter for hldsEnts.</p>
+   * @return Set<HldEnts>
+   **/
+  public final Set<HldEnts> getHldsEnts() {
+    return this.hldsEnts;
+  }
+
+  /**
+   * <p>Setter for hldsEnts.</p>
+   * @param pHldsEnts reference
+   **/
+  public final void setHldsEnts(final Set<HldEnts> pHldsEnts) {
+    this.hldsEnts = pHldsEnts;
   }
 }
