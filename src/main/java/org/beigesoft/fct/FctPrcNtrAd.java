@@ -44,6 +44,7 @@ import org.beigesoft.rpl.RplXmlHttps;
 import org.beigesoft.rpl.ClrDb;
 import org.beigesoft.rpl.RpEntWriXml;
 import org.beigesoft.rpl.RpEntReadXml;
+import org.beigesoft.rpl.PsgAft;
 import org.beigesoft.rdb.IRdb;
 
 /**
@@ -182,6 +183,13 @@ public class FctPrcNtrAd<RS> implements IFctPrc {
     clrDb.setSetng(repl.getSetng());
     repl.setDbBefore(clrDb);
     rz.setRepl(repl);
+    if (this.fctBlc.getFctDt().getIsPstg()) {
+      PsgAft<RS> dbAf = new PsgAft<RS>();
+      dbAf.setRdb(rdb);
+      dbAf.setLog(repl.getLog());
+      dbAf.setSetng(repl.getSetng());
+      repl.setDbAfter(dbAf);
+    }
     this.procs.put(DbImp.class.getSimpleName(), rz);
     this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(),
       DbImp.class.getSimpleName() + " has been created");

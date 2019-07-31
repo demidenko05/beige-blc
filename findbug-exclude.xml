@@ -48,6 +48,14 @@
      <Class name="org.beigesoft.hld.UvdVar" />
      <Bug pattern="EI_EXPOSE_REP2" />
   </Match>
+  <Match>
+     <Class name="org.beigesoft.rpl.ARplMth" />
+     <Bug pattern="EI_EXPOSE_REP2" />
+  </Match>
+  <Match>
+     <Class name="org.beigesoft.rpl.ARplMth" />
+     <Bug pattern="EI_EXPOSE_REP" />
+  </Match>
   <!-- ResultSet and Statement will be closed by invoker inside wrapper RecSet: -->
   <Match>
      <Class name="org.beigesoft.jdbc.Rdb" />

@@ -28,62 +28,57 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.rpl;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Date;
 
-import org.beigesoft.mdl.IHasId;
-import org.beigesoft.rdb.IOrm;
+import org.beigesoft.mdlp.AOrIdNm;
 
 /**
- * <p>Standard service that synchronizes just read foreign entity with home one.
- * All persistable entities must has version, so it checks if entity exists
- * in home database, if does then fills it with home version.</p>
+ * <p>Base model of replication method.</p>
  *
- * @param <T> entity type
  * @author Yury Demidenko
  */
-public class RpEntSyDb<T extends IHasId<?>> implements IRpEntSync<T> {
+public abstract class ARplMth extends AOrIdNm {
 
   /**
-   * <p>ORM service.</p>
+   * <p>Last date replication, nullable.</p>
    **/
-  private IOrm orm;
+  private Date lstDt;
 
   /**
-   * <p>Just checks if entity exists in home database.</p>
-   * @param pRvs request scoped vars
-   * @param pEnt object
-   * @throws Exception - an exception
+   * <p>Requested (source) database ID, not null.</p>
    **/
-  @Override
-  public final void sync(final Map<String, Object> pRvs,
-    final T pEnt) throws Exception {
-    Map<String, Object> vs = new HashMap<String, Object>();
-    String[] ndFds = new String[] {"ver"};
-    vs.put("ndFds", ndFds);
-    T entDb = getOrm().retEnt(pRvs, vs, pEnt);
-    if (entDb != null) {
-      pEnt.setVer(entDb.getVer());
-      pEnt.setIsNew(false);
-    } else {
-      pEnt.setIsNew(true);
-    }
-  }
+  private Integer rqDbId;
 
   //Simple getters and setters:
   /**
-   * <p>Getter for orm.</p>
-   * @return IOrm
+   * <p>Getter for lstDt.</p>
+   * @return Date
    **/
-  public final IOrm getOrm() {
-    return this.orm;
+  public final Date getLstDt() {
+    return this.lstDt;
   }
 
   /**
-   * <p>Setter for orm.</p>
-   * @param pOrm reference
+   * <p>Setter for lstDt.</p>
+   * @param pLstDt reference
    **/
-  public final void setOrm(final IOrm pOrm) {
-    this.orm = pOrm;
+  public final void setLstDt(final Date pLstDt) {
+    this.lstDt = pLstDt;
+  }
+
+  /**
+   * <p>Getter for rqDbId.</p>
+   * @return Integer
+   **/
+  public final Integer getRqDbId() {
+    return this.rqDbId;
+  }
+
+  /**
+   * <p>Setter for rqDbId.</p>
+   * @param pRqDbId reference
+   **/
+  public final void setRqDbId(final Integer pRqDbId) {
+    this.rqDbId = pRqDbId;
   }
 }

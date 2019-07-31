@@ -71,6 +71,7 @@ public class RpEntSyOrId<T extends IOrId> implements IRpEntSync<T> {
     vs.clear();
     pEnt.setIdOr(pEnt.getIid());
     if (entDb != null) {
+      pEnt.setVer(entDb.getVer());
       pEnt.setIid(entDb.getIid());
       pEnt.setIsNew(false);
     } else {

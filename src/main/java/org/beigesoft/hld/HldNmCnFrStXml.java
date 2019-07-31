@@ -47,7 +47,7 @@ import org.beigesoft.cnv.CnvStrDtMs;
  * <p>Holder of names of converters of fields values from XML string.
  * Floats, Ints, BigDecimal are represented as toString values without
  * formatting. Date is in milliseconds.
- * Composite ID is made from key fields.</p>
+ * Composite ID is made from key fields. It's used for all XML replicators.</p>
  *
  * @author Yury Demidenko
  */

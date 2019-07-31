@@ -29,20 +29,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.rpl;
 
 import java.util.Map;
-import java.util.HashMap;
 
 import org.beigesoft.mdl.IHasId;
+import org.beigesoft.mdlp.IOrId;
 import org.beigesoft.rdb.IOrm;
 
 /**
- * <p>Standard service that synchronizes just read foreign entity with home one.
- * All persistable entities must has version, so it checks if entity exists
- * in home database, if does then fills it with home version.</p>
+ * <p>Base filter DB ID and version time (!) for replication.</p>
  *
- * @param <T> entity type
  * @author Yury Demidenko
  */
-public class RpEntSyDb<T extends IHasId<?>> implements IRpEntSync<T> {
+public class FltDbOrVt implements IFltEnts {
 
   /**
    * <p>ORM service.</p>
@@ -50,24 +47,29 @@ public class RpEntSyDb<T extends IHasId<?>> implements IRpEntSync<T> {
   private IOrm orm;
 
   /**
-   * <p>Just checks if entity exists in home database.</p>
-   * @param pRvs request scoped vars
-   * @param pEnt object
+   * <p>Makes SQL WHERE filter for given entity.</p>
+   * @param pCls Entity Class
+   * @param pRvs request scoped vars mast has ARplMth replication method
+   * @return filter, e.g. "DBOR=1 and VER>786786788"
    * @throws Exception - an exception
    **/
   @Override
-  public final void sync(final Map<String, Object> pRvs,
-    final T pEnt) throws Exception {
-    Map<String, Object> vs = new HashMap<String, Object>();
-    String[] ndFds = new String[] {"ver"};
-    vs.put("ndFds", ndFds);
-    T entDb = getOrm().retEnt(pRvs, vs, pEnt);
-    if (entDb != null) {
-      pEnt.setVer(entDb.getVer());
-      pEnt.setIsNew(false);
-    } else {
-      pEnt.setIsNew(true);
+  public final String makeWhe(final Map<String, Object> pRvs,
+    final Class<? extends IHasId<?>> pCls) throws Exception {
+    if (!IOrId.class.isAssignableFrom(pCls)) {
+  throw new Exception("Wrong configuration! This filter for IOrId!");
     }
+    ARplMth rplMth = (ARplMth) pRvs.get("ARplMth");
+    if (this.orm.getDbId().equals(rplMth.getRqDbId())) {
+      throw new Exception("Wrong DB ID! this DB ID/requested: "
+        + this.orm.getDbId() + "/" + rplMth.getRqDbId());
+    }
+    String tbNm = pCls.getSimpleName().toUpperCase();
+    StringBuffer sb = new StringBuffer(tbNm + ".DBOR=" + rplMth.getRqDbId());
+    if (rplMth.getLstDt() != null) {
+      sb.append(" and " + tbNm + ".VER>" + rplMth.getLstDt().getTime());
+    }
+    return sb.toString();
   }
 
   //Simple getters and setters:

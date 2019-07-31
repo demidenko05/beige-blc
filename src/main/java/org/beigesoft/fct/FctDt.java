@@ -165,6 +165,12 @@ public class FctDt {
   private boolean isAndr = false;
 
   /**
+   * <p>If PostgreSQL. After importing it requires
+   * refreshing auto-ID sequences.</p>
+   **/
+  private boolean isPstg = false;
+
+  /**
    * <p>New database ID.</p>
    **/
   private int newDbId = 1;
@@ -961,5 +967,21 @@ public class FctDt {
    **/
   public final void setHldsEnts(final Set<HldEnts> pHldsEnts) {
     this.hldsEnts = pHldsEnts;
+  }
+
+  /**
+   * <p>Getter for isPstg.</p>
+   * @return boolean
+   **/
+  public final boolean getIsPstg() {
+    return this.isPstg;
+  }
+
+  /**
+   * <p>Setter for isPstg.</p>
+   * @param pIsPstg reference
+   **/
+  public final void setIsPstg(final boolean pIsPstg) {
+    this.isPstg = pIsPstg;
   }
 }
