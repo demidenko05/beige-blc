@@ -15,4 +15,6 @@
     files="RplXmlHttps"/>
   <suppress checks="LineLength"
     files="RplXmlHttps|DbImp"/>
+  <suppress checks="FileTabCharacter"
+    files="CnvStrStr"/>
 </suppressions>

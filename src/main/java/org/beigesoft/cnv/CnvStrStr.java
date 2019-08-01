@@ -50,6 +50,7 @@ public class CnvStrStr implements ICnFrSt<String> {
     if (pStrVal == null || "".equals(pStrVal)) {
       return null;
     }
-    return pStrVal;
+    //copy-paste tab problem e.g. "State Income Tax withholding	" is tab-ending:
+    return pStrVal.replace("	", " ");
   }
 }
