@@ -222,7 +222,7 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     stgNm = "liAc"; //list item actions
     hlClSt = new HldClsStg(stgNm, stgNm);
     hlClSt.setStgSclss(new LinkedHashMap<Class<?>, String>());
-    hlClSt.getStgSclss().put(IOwned.class, "acd");
+    hlClSt.getStgSclss().put(IOwned.class, "aca");
     hlClSt.setStgClss(new HashMap<Class<? extends IHasId<?>>, String>());
     hlClSt.getStgClss().put(EmMsg.class, "eml");
     pFct.getFctBlc().getFctDt().getHlClStgMp().put(stgNm, hlClSt);
