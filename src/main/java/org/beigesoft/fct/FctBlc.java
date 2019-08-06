@@ -764,6 +764,7 @@ public class FctBlc<RS> implements IFctApp {
       rz = new FctCnvCv();
       rz.setLogStd(lazLogStd(pRvs));
       rz.setSqlEsc(lazSqlEsc(pRvs));
+      rz.setIsSqlEsc(!getFctDt().getIsAndr());
       this.beans.put(FctCnvCv.class.getSimpleName(), rz);
       lazLogStd(pRvs).info(pRvs, getClass(), FctCnvCv.class.getSimpleName()
         + " has been created.");
@@ -1386,6 +1387,7 @@ public class FctBlc<RS> implements IFctApp {
       LogFile logFl = new LogFile();
       logFl.setPath(this.fctDt.getLogPth() + File.separator
         + this.fctDt.getLogStdNm());
+      logFl.setClsImm(this.fctDt.getClsImm());
       logFl.setDbgSh(this.fctDt.getDbgSh());
       logFl.setDbgFl(this.fctDt.getDbgFl());
       logFl.setDbgCl(this.fctDt.getDbgCl());

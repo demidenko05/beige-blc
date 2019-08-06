@@ -221,6 +221,11 @@ public class FctDt {
   private int logSize = 1048576;
 
   /**
+   * <p>Log close immidiately.</p>
+   **/
+  private boolean clsImm = false;
+
+  /**
    * <p>Standard log file name.</p>
    **/
   private String logStdNm = LOGSTDNM;
@@ -983,5 +988,21 @@ public class FctDt {
    **/
   public final void setIsPstg(final boolean pIsPstg) {
     this.isPstg = pIsPstg;
+  }
+
+  /**
+   * <p>Getter for clsImm.</p>
+   * @return boolean
+   **/
+  public final boolean getClsImm() {
+    return this.clsImm;
+  }
+
+  /**
+   * <p>Setter for clsImm.</p>
+   * @param pClsImm reference
+   **/
+  public final void setClsImm(final boolean pClsImm) {
+    this.clsImm = pClsImm;
   }
 }

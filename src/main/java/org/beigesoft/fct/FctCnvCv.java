@@ -62,6 +62,12 @@ public class FctCnvCv implements IFcFlCvFdv {
    **/
   private ISqlEsc sqlEsc;
 
+  /**
+   * <p>If need to SQL escape for value string.
+   * Android do it itself.</p>
+   **/
+  private boolean isSqlEsc = true;
+
   //requested data:
   /**
    * <p>Converters map.</p>
@@ -117,6 +123,7 @@ public class FctCnvCv implements IFcFlCvFdv {
   private FilCvStr crPuCnvIbnStrCv() {
     FilCvStr rz = new FilCvStr();
     rz.setSqlEsc(getSqlEsc());
+    rz.setIsSqlEsc(getIsSqlEsc());
     this.convrts.put(FilCvStr.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), FilCvStr.class.getSimpleName()
       + " has been created.");
@@ -220,6 +227,22 @@ public class FctCnvCv implements IFcFlCvFdv {
   }
 
   //Simple getters and setters:
+  /**
+   * <p>Getter for isSqlEsc.</p>
+   * @return boolean
+   **/
+  public final boolean getIsSqlEsc() {
+    return this.isSqlEsc;
+  }
+
+  /**
+   * <p>Setter for isSqlEsc.</p>
+   * @param pIsSqlEsc reference
+   **/
+  public final void setIsSqlEsc(final boolean pIsSqlEsc) {
+    this.isSqlEsc = pIsSqlEsc;
+  }
+
   /**
    * <p>Getter for logStd.</p>
    * @return ILog
