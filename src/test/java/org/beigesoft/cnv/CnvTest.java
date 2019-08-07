@@ -105,9 +105,33 @@ public class CnvTest<RS> {
     gsp.setNme("Comma");
     this.upf.setDcGrSp(gsp);
     this.hndI18nRq = (HndI18nRq) this.fctApp.laz(this.rqVs, HndI18nRq.class.getSimpleName());
-    this.cpf = this.hndI18nRq.revCmnPrf(this.upf);
+    this.cpf = revCmnPrf(this.upf);
     this.rqVs.put("cpf", this.cpf);
     this.rqVs.put("upf", this.upf);
+  }
+
+  /**
+   * <p>Reveals common preferences from user preferences.</p>
+   * @param pUpf UsPrf
+   * @return common preferences
+   */
+  CmnPrf revCmnPrf(final UsPrf pUpf) {
+    CmnPrf cpf = new CmnPrf();
+    if (pUpf.getDcSp().getIid().equals(DcSp.SPACEID)) {
+      cpf.setDcSpv(DcSp.SPACEVL);
+    } else if (pUpf.getDcSp().getIid().equals(DcSp.EMPTYID)) {
+      cpf.setDcSpv(DcSp.EMPTYVL);
+    } else {
+      cpf.setDcSpv(pUpf.getDcSp().getIid());
+    }
+    if (pUpf.getDcGrSp().getIid().equals(DcSp.SPACEID)) {
+      cpf.setDcGrSpv(DcSp.SPACEVL);
+    } else if (pUpf.getDcGrSp().getIid().equals(DcSp.EMPTYID)) {
+      cpf.setDcGrSpv(DcSp.EMPTYVL);
+    } else {
+      cpf.setDcGrSpv(pUpf.getDcGrSp().getIid());
+    }
+    return cpf;
   }
 
   @Test

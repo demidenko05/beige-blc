@@ -84,7 +84,7 @@ public class CmnPrf  {
   /**
    * <p>Page size.</p>
    **/
-  private Integer pgSz = 50;
+  private Integer pgSz = 30;
 
   /**
    * <p>Page tile.</p>

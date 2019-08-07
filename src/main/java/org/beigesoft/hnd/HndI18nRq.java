@@ -177,7 +177,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
       //data for refreshing
     }
     UsPrf upf = revUsPrf(pRqDt, lgsTmp, dssTmp, dgssTmp, upfsTmp);
-    CmnPrf cpf = revCmnPrf(upf);
+    CmnPrf cpf = revCmnPrf(pRqDt, upf);
     for (UsPrf upft : upfsTmp) {
       if (upft.getDef()) {
         cpf.setLngDef(upft.getLng());
@@ -210,10 +210,11 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
 
   /**
    * <p>Reveals common preferences from user preferences.</p>
+   * @param pRqDt Request Data
    * @param pUpf UsPrf
    * @return common preferences
    */
-  public final CmnPrf revCmnPrf(final UsPrf pUpf) {
+  public final CmnPrf revCmnPrf(final IReqDt pRqDt, final UsPrf pUpf) {
     CmnPrf cpf = new CmnPrf();
     if (pUpf.getDcSp().getIid().equals(DcSp.SPACEID)) {
       cpf.setDcSpv(DcSp.SPACEVL);
@@ -228,6 +229,33 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
       cpf.setDcGrSpv(DcSp.EMPTYVL);
     } else {
       cpf.setDcGrSpv(pUpf.getDcGrSp().getIid());
+    }
+    boolean isDbgSh = this.log.getDbgSh(this.getClass())
+      && this.log.getDbgFl() < 5201 && this.log.getDbgCl() > 5199;
+    boolean ndStCk = false;
+    //check user request changing preferences:
+    String pgSz = pRqDt.getParam("pgSz");
+    if (isDbgSh) {
+      this.log.debug(null, HndI18nRq.class, "Request pgSz: " + pgSz);
+    }
+    if (pgSz != null) {
+      ndStCk = true;
+    } else {
+      //use from cookie:
+      pgSz = pRqDt.getCookVl("pgSz");
+      if (isDbgSh) {
+        this.log.debug(null, HndI18nRq.class, "Cookie pgSz: " + pgSz);
+      }
+    }
+    if (pgSz != null) {
+      // from request or cookie:
+      cpf.setPgSz(Integer.valueOf(pgSz));
+    }
+    if (ndStCk) {
+      pRqDt.setCookVl("pgSz", cpf.getPgSz().toString());
+      if (isDbgSh) {
+        this.log.debug(null, HndI18nRq.class, "Set cookie to pgSz: " + pgSz);
+      }
     }
     return cpf;
   }
