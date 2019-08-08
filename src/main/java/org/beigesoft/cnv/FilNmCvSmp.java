@@ -80,15 +80,14 @@ public class FilNmCvSmp implements IFilCvFld {
   public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final T pEnt, final String pFdNm,
       final ColVals pClVl) throws Exception {
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 7022 && this.log.getDbgCl() > 7020;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7200);
     String cnvFdNm = this.hldCnvFdNms.get(pEnt.getClass(), pFdNm);
     @SuppressWarnings("unchecked")
     IFilCvFdv<Object> flCvFdv = (IFilCvFdv<Object>)
       this.fctCnvFld.laz(pRvs, cnvFdNm);
     Method getter = this.hldGets.get(pEnt.getClass(), pFdNm);
     Object val = getter.invoke(pEnt);
-    if (isDbgSh) {
+    if (dbgSh) {
       this.log.debug(pRvs, FilNmCvSmp.class,
     "Converts fdNm/cls/val/converter: " + pFdNm + "/" + pEnt.getClass()
   .getSimpleName() + "/" + val + "/" + flCvFdv.getClass().getSimpleName());

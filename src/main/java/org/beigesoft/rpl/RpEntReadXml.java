@@ -93,10 +93,9 @@ public class RpEntReadXml implements IRpEntRead<IHasId<?>> {
       .forName(attrs.get("class"));
     Constructor<IHasId<?>> constructor = cls.getDeclaredConstructor();
     IHasId<?> ent = constructor.newInstance();
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6502 && this.log.getDbgCl() > 6500;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 6600);
     Map<String, Object> vs = new HashMap<String, Object>();
-    if (isDbgSh) {
+    if (dbgSh) {
       this.log.debug(pRvs, RpEntReadXml.class, "Filling entity from XML: "
         + cls);
     }

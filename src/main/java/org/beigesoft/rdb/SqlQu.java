@@ -191,8 +191,7 @@ public class SqlQu implements ISqlQu {
     StringBuffer sb = new StringBuffer("select ");
     StringBuffer sbe = new StringBuffer(" from "
       + pCls.getSimpleName().toUpperCase());
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 7101 && this.log.getDbgCl() > 7099;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7100);
     @SuppressWarnings("unchecked")
     List<LvDep> lvDeps = new ArrayList<LvDep>();
     LvDep clvDep = new LvDep();
@@ -202,21 +201,21 @@ public class SqlQu implements ISqlQu {
     }
     lvDeps.add(clvDep);
     pVs.put("lvDeps", lvDeps);
-    if (isDbgSh) {
+    if (dbgSh) {
       this.log.debug(pRvs, getClass(), "Start select root entity/DL/CL: "
         + pCls + "/" + clvDep.getDep() + "/" + clvDep.getCur());
     }
     List<String> tbAls = new ArrayList<String>();
     pVs.put("tbAls", tbAls);
     pVs.put("cuFdIdx", Integer.valueOf(0));
-    if (isDbgSh) {
+    if (dbgSh) {
       this.log.debug(pRvs, getClass(), "tbAls created");
     }
-    makeCls(pRvs, pVs, pCls, sb, sbe, isDbgSh);
+    makeCls(pRvs, pVs, pCls, sb, sbe, dbgSh);
     pVs.remove("lvDeps");
     pVs.remove("tbAls");
     pVs.remove("cuFdIdx");
-    if (isDbgSh) {
+    if (dbgSh) {
       this.log.debug(pRvs, getClass(),
         "Finish selecting root entity: " + pCls);
     }
@@ -237,8 +236,7 @@ public class SqlQu implements ISqlQu {
   @Override
  public final <T extends IHasId<?>> void evCndId(final Map<String, Object> pRvs,
     final T pEnt, final StringBuffer pSb) throws Exception {
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 7102 && this.log.getDbgCl() > 7100;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7101);
     boolean isFst = true;
     String als = pEnt.getClass().getSimpleName().toUpperCase() + ".";
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
@@ -246,7 +244,7 @@ public class SqlQu implements ISqlQu {
       Class<?> fdCls = this.hldFdCls.get(pEnt.getClass(), fdNm);
       Method getter = this.hldGets.get(pEnt.getClass(), fdNm);
       fdVl = getter.invoke(pEnt);
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(pRvs, getClass(), "EV CND ID ent/fd/fcls/vl: "
           + pEnt.getClass() + "/" + fdNm + "/" + fdCls + "/" + fdVl);
       }
@@ -267,7 +265,7 @@ public class SqlQu implements ISqlQu {
             + " cls/fd/fcl/f" + pEnt.getClass() + "/" + fdNm + "/"
               + fdCls + "/" + fdIdNms.get(0));
         }
-        if (isDbgSh) {
+        if (dbgSh) {
           this.log.debug(pRvs, getClass(), "EV CND ID sent/sfd: "
             + fcs + "/" + fdIdNms.get(0));
         }

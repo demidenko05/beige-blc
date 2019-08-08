@@ -301,9 +301,8 @@ public class Setng implements ISetng {
           }
           if (exlFdStr != null) {
             this.clsStgs.get(pCls).remove(KEYEXLFLDS);
-            boolean isDbgSh = this.log.getDbgSh(this.getClass())
-              && this.log.getDbgFl() < 6010 && this.log.getDbgCl() > 6008;
-            if (isDbgSh) {
+            boolean dbgSh = getLog().getDbgSh(this.getClass(), 6000);
+            if (dbgSh) {
           this.log.debug(null, Setng.class, "clsStgs deleted stg cls/stg/val: "
                 + pCls + "/" + KEYEXLFLDS + "/" + exlFdStr);
             }
@@ -392,9 +391,8 @@ public class Setng implements ISetng {
           List<String> idNms = null;
           if (idFldsStr != null) {
             this.clsStgs.get(pCls).put(KEYIDFLDS, null);
-            boolean isDbgSh = this.log.getDbgSh(this.getClass())
-              && this.log.getDbgFl() < 6009 && this.log.getDbgCl() > 6007;
-            if (isDbgSh) {
+            boolean dbgSh = getLog().getDbgSh(this.getClass(), 6001);
+            if (dbgSh) {
             this.log.debug(null, Setng.class, "clsStgs nulled stg cls/stg/val: "
                 + pCls + "/" + KEYIDFLDS + "/" + idFldsStr);
             }
@@ -482,19 +480,18 @@ public class Setng implements ISetng {
     final Class<T> pCls, final String pFldNm,
       final String pStgNm) throws Exception {
     String kyFdSt = pFldNm + pStgNm;
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6005 && this.log.getDbgCl() > 6003;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 6002);
     if (this.clsFs != null && this.clsFs.get(pCls) != null
       && this.clsFs.get(pCls).keySet().contains(kyFdSt)) {
       String rz = this.clsFs.get(pCls).get(kyFdSt);
       this.clsFs.get(pCls).remove(kyFdSt);
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(null, Setng.class, "clsFs deleted entry for cls/fd/stg: "
           + pCls + "/" + pFldNm + "/" + pStgNm);
       }
       if (this.clsFs.get(pCls).size() == 0) {
         this.clsFs.put(pCls, null);
-        if (isDbgSh) {
+        if (dbgSh) {
           this.log.debug(null, Setng.class, "clsFs nulled for cls: " + pCls);
         }
       }
@@ -524,7 +521,7 @@ public class Setng implements ISetng {
         return trz;
       }
     }
-    if (isDbgSh) {
+    if (dbgSh) {
       this.log.debug(null, Setng.class, "Setting not found for cls/fd/stg: "
         + pCls + "/" + pFldNm + "/" + pStgNm);
     }
@@ -541,19 +538,18 @@ public class Setng implements ISetng {
    **/
   public final synchronized <T extends IHasId<?>> String revClsStg(
     final Class<T> pCls, final String pStgNm) throws Exception {
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6008 && this.log.getDbgCl() > 6006;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 6003);
     if (this.clsCs != null && this.clsCs.get(pCls) != null
       && this.clsCs.get(pCls).keySet().contains(pStgNm)) {
       String rz = this.clsCs.get(pCls).get(pStgNm);
       this.clsCs.get(pCls).remove(pStgNm);
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(null, Setng.class, "clsCs deleted entry for cls/stg: "
           + pCls + "/" + pStgNm);
       }
       if (this.clsCs.get(pCls).size() == 0) {
         this.clsCs.put(pCls, null);
-        if (isDbgSh) {
+        if (dbgSh) {
           this.log.debug(null, Setng.class, "clsCs nulled for cls: " + pCls);
         }
       }
@@ -565,7 +561,7 @@ public class Setng implements ISetng {
         return trz;
       }
     }
-    if (isDbgSh) {
+    if (dbgSh) {
       this.log.debug(null, Setng.class, "Setting not found for cls/stg: "
         + pCls + "/" + pStgNm);
     }
@@ -583,10 +579,9 @@ public class Setng implements ISetng {
    **/
   public final synchronized <T extends IHasId<?>> String revStgByEnTy(
     final Map<Class<? extends IHasId<?>>, String> pStgs, final Class<T> pCls) {
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6004 && this.log.getDbgCl() > 6002;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 6004);
     if (pStgs.keySet().contains(pCls)) {
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(null, Setng.class, "found exact type/value: "
           + pCls + "/" + pStgs.get(pCls));
       }
@@ -594,7 +589,7 @@ public class Setng implements ISetng {
     }
     for (Entry<Class<? extends IHasId<?>>, String> enr : pStgs.entrySet()) {
       if (enr.getKey().isAssignableFrom(pCls)) {
-        if (isDbgSh) {
+        if (dbgSh) {
           this.log.debug(null, Setng.class, "found sub-type/type/value: "
             + pCls + "/" + enr.getKey() + "/" + enr.getValue());
         }
@@ -614,10 +609,9 @@ public class Setng implements ISetng {
    **/
   public final synchronized String revStgByFdTy(
     final Map<Class<?>, String> pStgs, final Class<?> pTy) {
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6004 && this.log.getDbgCl() > 6002;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 6005);
     if (pStgs.keySet().contains(pTy)) {
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(null, Setng.class, "found exact type/value: "
           + pTy + "/" + pStgs.get(pTy));
       }
@@ -625,7 +619,7 @@ public class Setng implements ISetng {
     }
     for (Entry<Class<?>, String> enr : pStgs.entrySet()) {
       if (enr.getKey().isAssignableFrom(pTy)) {
-        if (isDbgSh) {
+        if (dbgSh) {
           this.log.debug(null, Setng.class, "found sub-type/type/value: "
             + pTy + "/" + enr.getKey() + "/" + enr.getValue());
         }
@@ -658,9 +652,8 @@ public class Setng implements ISetng {
             || !this.fldNmFs.keySet().contains(pStgNm)
               || !this.fldNmTyFs.keySet().contains(fdStNm)
                 || !this.fldNmClTyFs.keySet().contains(fdStNm)) {
-          boolean isDbgSh = this.log.getDbgSh(this.getClass())
-            && this.log.getDbgFl() < 6006 && this.log.getDbgCl() > 6004;
-          if (isDbgSh) {
+          boolean dbgSh = getLog().getDbgSh(this.getClass(), 6006);
+          if (dbgSh) {
            this.log.debug(null, Setng.class, "Try get XML FDPR for cls/fd/stg: "
               + pCls + "/" + pFldNm + "/" + pStgNm);
           }
@@ -731,9 +724,8 @@ public class Setng implements ISetng {
       synchronized (this) {
         if (this.clsCs == null || !this.clsCs.keySet().contains(pCls)
           || !this.clsTyCs.keySet().contains(pStgNm)) {
-          boolean isDbgSh = this.log.getDbgSh(this.getClass())
-            && this.log.getDbgFl() < 6007 && this.log.getDbgCl() > 6005;
-          if (isDbgSh) {
+          boolean dbgSh = getLog().getDbgSh(this.getClass(), 6007);
+          if (dbgSh) {
             this.log.debug(null, Setng.class, "Try get XML CLPR for cls/stg: "
               + pCls + "/" + pStgNm);
           }
@@ -855,16 +847,15 @@ public class Setng implements ISetng {
     LnkPrps prp = this.utlPrp.load(pFiNm);
     if (prp != null) {
       rz = new LinkedHashMap<String, String>();
-      boolean isDbgSh = this.log.getDbgSh(this.getClass())
-        && this.log.getDbgFl() < 6002 && this.log.getDbgCl() > 6000;
-      if (isDbgSh) {
+      boolean dbgSh = getLog().getDbgSh(this.getClass(), 6008);
+      if (dbgSh) {
         this.log.debug(null, Setng.class, "added setting BN file: " + pFiNm);
       }
       for (String ky : prp.getOrdKeys()) {
         String valOr = prp.getProperty(ky);
         String val = this.utlPrp.evPrpVl(prp, ky);
         rz.put(ky, val);
-        if (isDbgSh) {
+        if (dbgSh) {
           this.log.debug(null, Setng.class, "added stg/valOr/val: " + ky
             + "/" + valOr + "/" + val);
         }
@@ -887,9 +878,8 @@ public class Setng implements ISetng {
       new LinkedHashMap<Class<? extends IHasId<?>>, String>();
     LnkPrps lprp = this.utlPrp.load(pFiNm);
     if (lprp != null) {
-      boolean isDbgSh = this.log.getDbgSh(this.getClass())
-        && this.log.getDbgFl() < 6003 && this.log.getDbgCl() > 6001;
-      if (isDbgSh) {
+      boolean dbgSh = getLog().getDbgSh(this.getClass(), 6009);
+      if (dbgSh) {
         this.log.debug(null, Setng.class, "added setting BCT file: " + pFiNm);
       }
       for (String ky : lprp.getOrdKeys()) {
@@ -899,7 +889,7 @@ public class Setng implements ISetng {
         Class<? extends IHasId<?>> cls =
           (Class<? extends IHasId<?>>) Class.forName(ky);
         rz.put(cls, val);
-        if (isDbgSh) {
+        if (dbgSh) {
           this.log.debug(null, Setng.class, "added stg/valOr/val: " + ky
             + "/" + valOr + "/" + val);
         }
@@ -921,16 +911,15 @@ public class Setng implements ISetng {
     Map<Class<?>, String> rz = new LinkedHashMap<Class<?>, String>();
     LnkPrps lprp = this.utlPrp.load(pFiNm);
     if (lprp != null) {
-      boolean isDbgSh = this.log.getDbgSh(this.getClass())
-        && this.log.getDbgFl() < 6004 && this.log.getDbgCl() > 6002;
-      if (isDbgSh) {
+      boolean dbgSh = getLog().getDbgSh(this.getClass(), 6010);
+      if (dbgSh) {
         this.log.debug(null, Setng.class, "added setting BFT file: " + pFiNm);
       }
       for (String ky : lprp.getOrdKeys()) {
         String valOr = lprp.getProperty(ky);
         String val = this.utlPrp.evPrpVl(lprp, ky);
         rz.put(Class.forName(ky), val);
-        if (isDbgSh) {
+        if (dbgSh) {
           this.log.debug(null, Setng.class, "added stg/valOr/val: " + ky
             + "/" + valOr + "/" + val);
         }

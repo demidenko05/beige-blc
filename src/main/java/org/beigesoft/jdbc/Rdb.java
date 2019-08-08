@@ -123,9 +123,8 @@ public class Rdb extends ARdb<ResultSet> {
    **/
   @Override
   public final void creSavPnt(final String pSpNm) throws Exception {
-    boolean isDbgSh = getLog().getDbgSh(getClass())
-      && getLog().getDbgFl() < 8012 && getLog().getDbgCl() > 8009;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 8000);
+    if (dbgSh) {
       getLog().debug(null, getClass(), "Thread ID=" + Thread.currentThread()
         .getId() + ", create SP " + pSpNm);
     }
@@ -140,9 +139,8 @@ public class Rdb extends ARdb<ResultSet> {
    **/
   @Override
   public final void relSavPnt(final String pSpNm) throws Exception {
-    boolean isDbgSh = getLog().getDbgSh(getClass())
-      && getLog().getDbgFl() < 8011 && getLog().getDbgCl() > 8008;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 8001);
+    if (dbgSh) {
       getLog().debug(null, getClass(), "Thread ID=" + Thread.currentThread()
         .getId() + ", release SP " + pSpNm);
     }
@@ -158,9 +156,8 @@ public class Rdb extends ARdb<ResultSet> {
    **/
   @Override
   public final void rollBack(final String pSpNm) throws Exception {
-    boolean isDbgSh = getLog().getDbgSh(getClass())
-      && getLog().getDbgFl() < 8010 && getLog().getDbgCl() > 8007;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 8002);
+    if (dbgSh) {
       getLog().debug(null, getClass(), "Thread ID=" + Thread.currentThread()
         .getId() + ", roll back to " + pSpNm);
     }
@@ -175,9 +172,8 @@ public class Rdb extends ARdb<ResultSet> {
    **/
   @Override
   public final void begin() throws Exception {
-    boolean isDbgSh = getLog().getDbgSh(getClass())
-      && getLog().getDbgFl() < 8008 && getLog().getDbgCl() > 8006;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 8003);
+    if (dbgSh) {
       getLog().debug(null, getClass(), "Thread ID=" + Thread.currentThread()
         .getId() + ", start.");
     }
@@ -190,9 +186,8 @@ public class Rdb extends ARdb<ResultSet> {
    **/
   @Override
   public final void commit() throws Exception {
-    boolean isDbgSh = getLog().getDbgSh(getClass())
-      && getLog().getDbgFl() < 8007 && getLog().getDbgCl() > 8005;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 8004);
+    if (dbgSh) {
       getLog().debug(null, getClass(), "Thread ID=" + Thread.currentThread()
         .getId() + ", commit.");
     }
@@ -205,9 +200,8 @@ public class Rdb extends ARdb<ResultSet> {
    **/
   @Override
   public final void rollBack() throws Exception {
-    boolean isDbgSh = getLog().getDbgSh(getClass())
-      && getLog().getDbgFl() < 8006 && getLog().getDbgCl() > 8004;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 8005);
+    if (dbgSh) {
       getLog().debug(null, getClass(), "Thread ID=" + Thread.currentThread()
         .getId() + ", roll back!");
     }
@@ -223,9 +217,8 @@ public class Rdb extends ARdb<ResultSet> {
   @Override
   public final IRecSet<ResultSet> retRs(final String pSel) throws Exception {
     try {
-      boolean isDbgSh = getLog().getDbgSh(getClass())
-        && getLog().getDbgFl() < 8005 && getLog().getDbgCl() > 8003;
-      if (isDbgSh) {
+      boolean dbgSh = getLog().getDbgSh(this.getClass(), 8006);
+      if (dbgSh) {
         getLog().debug(null, getClass(), "Thread ID=" + Thread.currentThread()
           .getId() + ", try to execute: " + pSel);
       }
@@ -248,9 +241,8 @@ public class Rdb extends ARdb<ResultSet> {
   public final void exec(final String pQu) throws Exception {
     Statement stmt = null;
     try {
-      boolean isDbgSh = getLog().getDbgSh(getClass())
-        && getLog().getDbgFl() < 8004 && getLog().getDbgCl() > 8002;
-      if (isDbgSh) {
+      boolean dbgSh = getLog().getDbgSh(this.getClass(), 8007);
+      if (dbgSh) {
         getLog().debug(null, getClass(), "Thread ID=" + Thread.currentThread()
           .getId() + ", try to execute: " + pQu);
       }
@@ -282,9 +274,8 @@ public class Rdb extends ARdb<ResultSet> {
     Statement stmt = null;
     String qu = getSrvClVl().evUpdateCnd(pCls, pCv, pWhe);
     try {
-      boolean isDbgSh = getLog().getDbgSh(getClass())
-        && getLog().getDbgFl() < 8003 && getLog().getDbgCl() > 8001;
-      if (isDbgSh) {
+      boolean dbgSh = getLog().getDbgSh(this.getClass(), 8008);
+      if (dbgSh) {
         getLog().debug(null, getClass(), "Thread ID=" + Thread.currentThread()
           .getId() + ", try to execute update: " + qu);
       }
@@ -315,9 +306,8 @@ public class Rdb extends ARdb<ResultSet> {
     Statement stmt = null;
     String qu = getSrvClVl().evInsert(pCls, pCv);
     try {
-      boolean isDbgSh = getLog().getDbgSh(getClass())
-        && getLog().getDbgFl() < 8002 && getLog().getDbgCl() > 8000;
-      if (isDbgSh) {
+      boolean dbgSh = getLog().getDbgSh(this.getClass(), 8009);
+      if (dbgSh) {
         getLog().debug(null, getClass(), "Thread ID=" + Thread.currentThread()
           .getId() + ", try to execute insert: " + qu);
       }
@@ -352,9 +342,8 @@ public class Rdb extends ARdb<ResultSet> {
     }
     String qu = "delete from " + pTbl + strWhe + ";";
     try {
-      boolean isDbgSh = getLog().getDbgSh(getClass())
-        && getLog().getDbgFl() < 8001 && getLog().getDbgCl() > 7999;
-      if (isDbgSh) {
+      boolean dbgSh = getLog().getDbgSh(this.getClass(), 8010);
+      if (dbgSh) {
         getLog().debug(null, getClass(), "Thread ID=" + Thread.currentThread()
           .getId() + ", try to execute delete: " + qu);
       }

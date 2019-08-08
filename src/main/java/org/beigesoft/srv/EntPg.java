@@ -80,9 +80,8 @@ public class EntPg<RS> implements IEntPg {
   @Override
   public final void retPg(final Map<String, Object> pRvs,
     final IReqDt pRqDt) throws Exception {
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 5601 && this.log.getDbgCl() > 5599;
-    this.hlpEntPg.retPg(pRvs, pRqDt, this.entMp, isDbgSh, this.mkrFlt);
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 5000);
+    this.hlpEntPg.retPg(pRvs, pRqDt, this.entMp, dbgSh, this.mkrFlt);
   }
 
   /**
@@ -98,9 +97,8 @@ public class EntPg<RS> implements IEntPg {
   public final StringBuffer revPgFltDt(final Map<String, Object> pRvs,
     final IReqDt pRqDt,
       final Class<? extends IHasId<?>> pCls) throws Exception {
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 5601 && this.log.getDbgCl() > 5599;
-    return this.hlpEntPg.revPgFltDt(pRvs, pRqDt, pCls, isDbgSh);
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 5001);
+    return this.hlpEntPg.revPgFltDt(pRvs, pRqDt, pCls, dbgSh);
   }
 
   //Simple getters and setters:

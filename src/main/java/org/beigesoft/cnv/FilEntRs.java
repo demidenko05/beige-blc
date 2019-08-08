@@ -84,8 +84,7 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
   public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final T pEnt,
       final IRecSet<RS> pRs) throws Exception {
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 7001 && this.log.getDbgCl() > 6999;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7225);
     @SuppressWarnings("unchecked")
     List<LvDep> lvDeps = (List<LvDep>) pVs.get("lvDeps");
     LvDep clvDep;
@@ -98,13 +97,13 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
       }
       lvDeps.add(clvDep);
       pVs.put("lvDeps", lvDeps);
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(pRvs, getClass(), "Start fill root entity/DL/CL: "
           + pEnt.getClass() + "/" + clvDep.getDep() + "/" + clvDep.getCur());
       }
       List<String> tbAls = new ArrayList<String>();
       pVs.put("tbAls", tbAls);
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(pRvs, getClass(), "tbAls created");
       }
       pVs.put("cuFdIdx", Integer.valueOf(0));
@@ -113,7 +112,7 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
     }
     String[] ndFds = (String[]) pVs.
       get(pEnt.getClass().getSimpleName() + "ndFds");
-    if (ndFds != null && isDbgSh) {
+    if (ndFds != null && dbgSh) {
       this.log.debug(pRvs, getClass(), "Needed fields entity: "
         + pEnt.getClass() + "/" + Arrays.toString(ndFds));
     }
@@ -121,7 +120,7 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
     Integer cuFdIdx = (Integer) pVs.get("cuFdIdx");
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
       pVs.put("cuFdIdx", cuFdIdx++);
-      if (!fillFld(pRvs, pVs, pEnt, pRs, fdNm, isDbgSh)) {
+      if (!fillFld(pRvs, pVs, pEnt, pRs, fdNm, dbgSh)) {
         idFilled = false;
       }
     }
@@ -133,7 +132,7 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
         }
         if (isNd) {
           pVs.put("cuFdIdx", cuFdIdx++);
-          fillFld(pRvs, pVs, pEnt, pRs, fdNm, isDbgSh);
+          fillFld(pRvs, pVs, pEnt, pRs, fdNm, dbgSh);
         }
       }
     }
@@ -143,7 +142,7 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
         pVs.remove("lvDeps");
         pVs.remove("tbAls");
         pVs.remove("cuFdIdx");
-        if (isDbgSh) {
+        if (dbgSh) {
           this.log.debug(pRvs, getClass(),
             "Finish filling root entity: " + pEnt.getClass());
         }

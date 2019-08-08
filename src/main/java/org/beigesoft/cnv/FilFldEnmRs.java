@@ -81,8 +81,7 @@ public class FilFldEnmRs<E extends Enum<E>, RS>
     final Map<String, Object> pRvs, final Map<String, Object> pVs, final T pEnt,
       final String pFdNm, final IRecSet<RS> pRs) throws Exception {
     String clNm;
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 7004 && this.log.getDbgCl() > 7002;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7210);
     @SuppressWarnings("unchecked")
     List<String> tbAls = (List<String>) pVs.get("tbAls");
     if (tbAls.size() > 0) {
@@ -90,7 +89,7 @@ public class FilFldEnmRs<E extends Enum<E>, RS>
     } else {
       clNm = pFdNm.toUpperCase();
     }
-    if (isDbgSh) {
+    if (dbgSh) {
       this.log.debug(pRvs, FilFldSmpRs.class, "Column alias/cls: "
         + clNm + "/" + pEnt.getClass());
     }

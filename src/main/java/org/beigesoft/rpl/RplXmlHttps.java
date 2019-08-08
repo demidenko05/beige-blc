@@ -388,9 +388,8 @@ public class RplXmlHttps<RS> implements IReplicator {
         "application/x-www-form-urlencoded");
       urlCn.addRequestProperty("Content-Length",
         String.valueOf(paramStr.length()));
-      boolean isDbgSh = this.log.getDbgSh(this.getClass())
-        && this.log.getDbgFl() < 5501 && this.log.getDbgCl() > 5499;
-      if (isDbgSh) {
+      boolean dbgSh = getLog().getDbgSh(this.getClass(), 6500);
+      if (dbgSh) {
         getLog().debug(pRvs, RplXmlHttps.class,
           "Request before flush auth:");
         for (Map.Entry<String, List<String>> entry

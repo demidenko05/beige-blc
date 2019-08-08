@@ -84,8 +84,7 @@ public class FilFldSmpRs<RS> implements IFilFldRs<RS> {
   public final <T extends IHasId<?>> boolean fill(
     final Map<String, Object> pRvs, final Map<String, Object> pVs, final T pEnt,
       final String pFdNm, final IRecSet<RS> pRs) throws Exception {
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 7003 && this.log.getDbgCl() > 7001;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7205);
     Object val = null;
     String cnNm = this.hldNmFdCn.get(pEnt.getClass(), pFdNm);
     @SuppressWarnings("unchecked")
@@ -99,7 +98,7 @@ public class FilFldSmpRs<RS> implements IFilFldRs<RS> {
     } else {
       clNm = pFdNm.toUpperCase();
     }
-    if (isDbgSh) {
+    if (dbgSh) {
       this.log.debug(pRvs, FilFldSmpRs.class, "Column alias/cls: "
         + clNm + "/" + pEnt.getClass());
     }

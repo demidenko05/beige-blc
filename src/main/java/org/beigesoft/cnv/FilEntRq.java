@@ -77,13 +77,12 @@ public class FilEntRq implements IFilEntRq {
   public final <T extends IHasId<?>> void fill(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final T pEnt,
       final IReqDt pRqDt) throws Exception {
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 5001 && this.log.getDbgCl() > 4999;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7220);
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
-      fillFld(pRvs, pVs, pEnt, pRqDt, fdNm, isDbgSh);
+      fillFld(pRvs, pVs, pEnt, pRqDt, fdNm, dbgSh);
     }
     for (String fdNm : this.setng.lazFldNms(pEnt.getClass())) {
-      fillFld(pRvs, pVs, pEnt, pRqDt, fdNm, isDbgSh);
+      fillFld(pRvs, pVs, pEnt, pRqDt, fdNm, dbgSh);
     }
   }
 

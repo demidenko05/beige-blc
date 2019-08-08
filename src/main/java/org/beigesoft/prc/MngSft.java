@@ -28,10 +28,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.prc;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.log.ILog;
+import org.beigesoft.log.ERngMth;
+import org.beigesoft.log.Range;
 
 /**
  * <p>Manager software.</p>
@@ -54,13 +57,39 @@ public class MngSft implements IPrc {
   @Override
   public final void process(final Map<String, Object> pRvs,
     final IReqDt pRqDt) throws Exception {
-    String dbgShStr = pRqDt.getParam("dbgSh");
-    if (dbgShStr != null) {
+    String act = pRqDt.getParam("act");
+    if ("sonl".equals(act) || "amul".equals(act)) {
+      String dbgShStr = pRqDt.getParam("dbgSh");
       this.log.setDbgSh(Boolean.valueOf(dbgShStr));
       String dbgFlStr = pRqDt.getParam("dbgFl");
-      this.log.setDbgFl(Integer.parseInt(dbgFlStr));
       String dbgClStr = pRqDt.getParam("dbgCl");
-      this.log.setDbgCl(Integer.parseInt(dbgClStr));
+      int dbgFl = Integer.parseInt(dbgFlStr);
+      int dbgCl = Integer.parseInt(dbgClStr);
+      if ("sonl".equals(act)) {
+        this.log.setRngMth(ERngMth.ONLY);
+        this.log.setDbgFl(dbgFl);
+        this.log.setDbgCl(dbgCl);
+      } else {
+        synchronized (this.log) {
+          this.log.setRngMth(ERngMth.MULTI);
+          Range rng = new Range();
+          rng.setDbgFl(dbgFl);
+          rng.setDbgCl(dbgCl);
+          if (this.log.getRanges() == null) {
+            this.log.setRanges(new ArrayList<Range>());
+          }
+          this.log.getRanges().add(rng);
+        }
+      }
+    } else if ("drng".equals(act)) {
+      synchronized (this.log) {
+        String ridxS = pRqDt.getParam("ridx");
+        int ridx = Integer.parseInt(ridxS);
+        if (this.log.getRanges() != null
+          && this.log.getRanges().size() > ridx) {
+          this.log.getRanges().remove(ridx);
+        }
+      }
     }
     pRqDt.setAttr("rnd", "mng");
     pRqDt.setAttr("mngSft", this);

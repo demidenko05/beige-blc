@@ -163,11 +163,10 @@ public class HndEntRq<RS> implements IHndRq {
     pRqDt.setAttr("hldUvd", this.hldUvd);
     UvdVar uvs = new UvdVar();
     pRvs.put("uvs", uvs);
-    boolean isDbgSh = this.logStd.getDbgSh(this.getClass())
-      && this.logStd.getDbgFl() < 5001 && this.logStd.getDbgCl() > 4999;
+    boolean dbgSh = getLogStd().getDbgSh(this.getClass(), 5550);
     String[] actArr = pRqDt.getParam("act").split(",");
     for (String actNm : actArr) {
-      if (isDbgSh) {
+      if (dbgSh) {
         this.logStd.debug(pRvs, HndEntRq.class,
           "Action: " + actNm);
       }
@@ -175,9 +174,9 @@ public class HndEntRq<RS> implements IHndRq {
     if (this.wrReSpTr && ("entSv".equals(actArr[0])
   || "entOwSv".equals(actArr[0]) || "entDl".equals(actArr[0])
 || "entOwDl".equals(actArr[0]))) {
-      hndChngIsl(pRvs, pRqDt, cls, actArr, isDbgSh, entNm);
+      hndChngIsl(pRvs, pRqDt, cls, actArr, dbgSh, entNm);
     } else {
-      hndNoChngIsl(pRvs, pRqDt, cls, actArr, isDbgSh, entNm);
+      hndNoChngIsl(pRvs, pRqDt, cls, actArr, dbgSh, entNm);
     }
   }
 

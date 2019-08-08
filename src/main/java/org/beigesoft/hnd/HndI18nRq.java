@@ -230,12 +230,11 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     } else {
       cpf.setDcGrSpv(pUpf.getDcGrSp().getIid());
     }
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 5201 && this.log.getDbgCl() > 5199;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 5500);
     boolean ndStCk = false;
     //check user request changing preferences:
     String pgSz = pRqDt.getParam("pgSz");
-    if (isDbgSh) {
+    if (dbgSh) {
       this.log.debug(null, HndI18nRq.class, "Request pgSz: " + pgSz);
     }
     if (pgSz != null) {
@@ -243,7 +242,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     } else {
       //use from cookie:
       pgSz = pRqDt.getCookVl("pgSz");
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(null, HndI18nRq.class, "Cookie pgSz: " + pgSz);
       }
     }
@@ -253,7 +252,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     }
     if (ndStCk) {
       pRqDt.setCookVl("pgSz", cpf.getPgSz().toString());
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(null, HndI18nRq.class, "Set cookie to pgSz: " + pgSz);
       }
     }
@@ -274,8 +273,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
   public final UsPrf revUsPrf(final IReqDt pRqDt, final List<Lng> pLngs,
     final List<DcSp> pDcSps, final List<DcGrSp> pDcGrSps,
       final List<UsPrf> pUsPrfs) throws Exception {
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 5201 && this.log.getDbgCl() > 5199;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 5501);
     UsPrf upf = null;
     boolean ndStCk = false;
     //check user request changing preferences:
@@ -283,7 +281,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     String dcSp = pRqDt.getParam("dcSp");
     String dcGrSp = pRqDt.getParam("dcGrSp");
     String dgInGr = pRqDt.getParam("dgInGr");
-    if (isDbgSh) {
+    if (dbgSh) {
       this.log.debug(null, HndI18nRq.class, "Request lng/dcSp/dcGrSp/dgInGr: "
         + lng + "/" + dcSp + "/" + dcGrSp + "/" + dgInGr);
     }
@@ -304,7 +302,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
       dcSp = pRqDt.getCookVl("dcSp");
       dcGrSp = pRqDt.getCookVl("dcGrSp");
       dgInGr = pRqDt.getCookVl("dgInGr");
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(null, HndI18nRq.class, "Cookie lng/dcSp/dcGrSp/dgInGr: "
           + lng + "/" + dcSp + "/" + dcGrSp + "/" + dgInGr);
       }
@@ -358,7 +356,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     if (upf == null) {
       // reveal from system settings:
       upf = revUsPrfSys(pRqDt, pLngs,  pDcSps, pDcGrSps, pUsPrfs);
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(null, HndI18nRq.class, "Use system lng/dcSp/dcGrSp: "
           + upf.getLng() .getIid() + "/" + upf.getDcSp().getIid() + "/"
             + upf.getDcGrSp().getIid());
@@ -370,7 +368,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
       pRqDt.setCookVl("lng", upf.getLng().getIid());
       pRqDt.setCookVl("dcSp", upf.getDcSp().getIid());
       pRqDt.setCookVl("dcGrSp", upf.getDcGrSp().getIid());
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(null, HndI18nRq.class, "Set cookie to lng/dcSp/dcGrSp: "
           + upf.getLng() .getIid() + "/" + upf.getDcSp().getIid() + "/"
             + upf.getDcGrSp().getIid());
@@ -447,8 +445,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     final List<DcSp> pDcSps, final List<DcGrSp> pDcGrSps,
       final List<UsPrf> pUsPrfs) throws Exception {
     UsPrf upf = null;
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 5202 && this.log.getDbgCl() > 5200;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 5502);
     // reveal from stored preferences:
     // try match client's locale, if not - default or the first:
     String ccountry = null;
@@ -456,7 +453,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     if (pRqDt.getLocale() != null) {
       ccountry = pRqDt.getLocale().getCountry();
       clang = pRqDt.getLocale().getLanguage();
-      if (isDbgSh) {
+      if (dbgSh) {
         this.log.debug(null, HndI18nRq.class,
           "Client prefers lng/country: " + clang + "/" + ccountry);
       }
@@ -481,21 +478,21 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     }
     if (upfMf != null) {
       upf = upfMf;
-      if (isDbgSh) {
+      if (dbgSh) {
     this.log.debug(null, HndI18nRq.class, "Full match lng/dcSp/dcGrSp/dgInGr: "
   + upf.getLng().getIid() + "/" + upf.getDcSp().getIid() + "/"
 + upf.getDcGrSp().getIid() + "/" + upf.getDgInGr());
       }
     } else if (upfMl != null) {
       upf = upfMl;
-      if (isDbgSh) {
+      if (dbgSh) {
     this.log.debug(null, HndI18nRq.class, "Lang match lng/dcSp/dcGrSp/dgInGr: "
   + upf.getLng().getIid() + "/" + upf.getDcSp().getIid() + "/"
 + upf.getDcGrSp().getIid() + "/" + upf.getDgInGr());
       }
     } else {
       upf = upfDef;
-      if (isDbgSh) {
+      if (dbgSh) {
     this.log.debug(null, HndI18nRq.class, "Default lng/dcSp/dcGrSp/dgInGr: "
   + upf.getLng().getIid() + "/" + upf.getDcSp().getIid() + "/"
 + upf.getDcGrSp().getIid() + "/" + upf.getDgInGr());

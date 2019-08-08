@@ -271,9 +271,8 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
         + pCls.getSimpleName() + "/" + pStgNm);
     }
     String rz = hl.get(pCls);
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6101 && this.log.getDbgCl() > 6099;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7000);
+    if (dbgSh) {
       this.log.debug(null, getClass(), "Setting for cls/stgNm/stg: "
         + pCls.getSimpleName() + "/" + pStgNm + "/" + rz);
     }
@@ -332,9 +331,8 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
         + pCls.getSimpleName() + "/" + pFdNm + "/" + pStgNm);
     }
     String rz = hl.get(pCls, pFdNm);
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6102 && this.log.getDbgCl() > 6100;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7001);
+    if (dbgSh) {
       this.log.debug(null, getClass(), "Setting for cls/fdNm/stgNm/stg: "
         + pCls.getSimpleName() + "/" + pFdNm + "/" + pStgNm + "/" + rz);
     }
@@ -450,9 +448,8 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
       }
     }
     String[] rz = this.frmFdsMp.get(pCls);
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6103 && this.log.getDbgCl() > 6101;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7002);
+    if (dbgSh) {
       this.log.debug(null, getClass(), "frmFds for cls/frmFds: "
         + pCls.getSimpleName() + "/" + Arrays.toString(rz));
     }
@@ -504,9 +501,8 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
       }
     }
     Map<String, Integer> rz = this.pgDplMp.get(pCls);
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6110 && this.log.getDbgCl() > 6108;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7003);
+    if (dbgSh) {
       if (rz != null) {
         StringBuffer sb = new StringBuffer();
         for (Map.Entry<String, Integer> enr : rz.entrySet()) {
@@ -575,9 +571,8 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
       }
     }
     Map<String, String[]> rz = this.pgFdsMp.get(pCls);
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6109 && this.log.getDbgCl() > 6107;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7004);
+    if (dbgSh) {
       if (rz != null) {
         StringBuffer sb = new StringBuffer();
         for (Map.Entry<String, String[]> enr : rz.entrySet()) {
@@ -639,9 +634,8 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
       }
     }
     Map<String, Integer> rz = this.selDplMp.get(pCls);
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6108 && this.log.getDbgCl() > 6106;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7005);
+    if (dbgSh) {
       if (rz != null) {
         StringBuffer sb = new StringBuffer();
         for (Map.Entry<String, Integer> enr : rz.entrySet()) {
@@ -710,9 +704,8 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
       }
     }
     Map<String, String[]> rz = this.selFdsMp.get(pCls);
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6107 && this.log.getDbgCl() > 6105;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7006);
+    if (dbgSh) {
       if (rz != null) {
         StringBuffer sb = new StringBuffer();
         for (Map.Entry<String, String[]> enr : rz.entrySet()) {
@@ -764,9 +757,8 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
     }
     String[] rz = this.lstFdsMp.get(pCls);
     if (rz != null) {
-      boolean isDbgSh = this.log.getDbgSh(this.getClass())
-        && this.log.getDbgFl() < 6104 && this.log.getDbgCl() > 6102;
-      if (isDbgSh) {
+      boolean dbgSh = getLog().getDbgSh(this.getClass(), 7007);
+      if (dbgSh) {
         this.log.debug(null, getClass(), "lstFds for cls/lstFds: "
           + pCls.getSimpleName() + "/" + Arrays.toString(rz));
       }
@@ -811,9 +803,8 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
     }
     String[] rz = this.pickFdsMp.get(pCls);
     if (rz != null) {
-      boolean isDbgSh = this.log.getDbgSh(this.getClass())
-        && this.log.getDbgFl() < 6105 && this.log.getDbgCl() > 6103;
-      if (isDbgSh) {
+      boolean dbgSh = getLog().getDbgSh(this.getClass(), 7008);
+      if (dbgSh) {
         this.log.debug(null, getClass(), "pickFds for cls/pickFds: "
           + pCls.getSimpleName() + "/" + Arrays.toString(rz));
       }
@@ -860,9 +851,8 @@ new HashMap<Class<? extends IHasId<?>>, List<Class<? extends IOwned<?, ?>>>>();
           }
           if (def != null) {
             Boolean nulb = !(def.contains("not null") || "false".equals(nul));
-            boolean isDbgSh = this.log.getDbgSh(this.getClass())
-              && this.log.getDbgFl() < 6106 && this.log.getDbgCl() > 6104;
-            if (isDbgSh) {
+            boolean dbgSh = getLog().getDbgSh(this.getClass(), 7009);
+            if (dbgSh) {
        this.log.debug(null, getClass(), "Nulable for cls/fd/def/nul/nulb: "
     + pCls.getSimpleName() + "/" + pFdNm + "/" + def + "/" + nul + "/" + nulb);
             }

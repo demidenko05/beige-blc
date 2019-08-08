@@ -87,9 +87,8 @@ public class RpEntWriXml implements IRpEntWri {
   @Override
   public final <T extends IHasId<?>> void write(final Map<String, Object> pRvs,
     final T pEnt, final Writer pWri) throws Exception {
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 6501 && this.log.getDbgCl() > 6499;
-    if (isDbgSh) {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 6700);
+    if (dbgSh) {
       this.log.debug(pRvs, RpEntWriXml.class, "Writing entity to XML: "
         + pEnt.getClass());
     }

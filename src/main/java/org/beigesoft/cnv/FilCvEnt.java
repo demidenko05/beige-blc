@@ -110,10 +110,9 @@ public class FilCvEnt implements IFilCvEnt {
       pCv.setOldVer(pEnt.getVer());
       pEnt.setVer(vlNew);
     }
-    boolean isDbgSh = this.log.getDbgSh(this.getClass())
-      && this.log.getDbgFl() < 7021 && this.log.getDbgCl() > 7019;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7230);
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
-      fillFd(pRvs, pVs, pEnt, pCv, fdNm, isDbgSh);
+      fillFd(pRvs, pVs, pEnt, pCv, fdNm, dbgSh);
     }
     for (String fdNm : this.setng.lazFldNms(pEnt.getClass())) {
       if (!IHasId.VERNM.equals(fdNm)) {
@@ -122,7 +121,7 @@ public class FilCvEnt implements IFilCvEnt {
           ndFl = Arrays.binarySearch(ndFds, fdNm) >= 0;
         }
         if (ndFl) {
-          fillFd(pRvs, pVs, pEnt, pCv, fdNm, isDbgSh);
+          fillFd(pRvs, pVs, pEnt, pCv, fdNm, dbgSh);
         }
       }
     }
