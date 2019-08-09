@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.math.BigDecimal;
 import java.io.OutputStream;
 
 import org.beigesoft.exc.ExcCode;
@@ -91,21 +90,6 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
     final IReqDt pRqDt, final OutputStream pSous) throws Exception {
     String csMtIdStr = pRqDt.getParam("csMt");
     Long csMtId = Long.parseLong(csMtIdStr);
-    String priCtIdStr = pRqDt.getParam("priCt");
-    Long priCtId = Long.parseLong(priCtIdStr);
-    pRvs.put("priCtId", priCtId);
-    String unPriStr = pRqDt.getParam("unPri");
-    if (unPriStr != null && !"".equals(unPriStr)) {
-      BigDecimal unPri = new BigDecimal(unPriStr);
-      if (unPri.compareTo(BigDecimal.ZERO) != 0) {
-        pRvs.put("unPri", unPri);
-      }
-    }
-    String optQuanStr = pRqDt.getParam("optQuan");
-    if (optQuanStr != null && !"".equals(optQuanStr)) {
-      BigDecimal optQuan = new BigDecimal(optQuanStr);
-      pRvs.put("optQuan", optQuan);
-    }
     CsvMth csMt = null;
     List<List<Object>> data = null;
     ICsvDtRet ret = null;

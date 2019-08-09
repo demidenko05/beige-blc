@@ -68,6 +68,12 @@ public interface IReqDt extends IAttrs {
   String getUsrNm();
 
   /**
+   * <p>Getter for all cookies.</p>
+   * @return cookies
+   **/
+  Cokie[] getCookies();
+
+  /**
    * <p>Get cookie value by name.</p>
    * @param pName Name
    * @return cookie value or null

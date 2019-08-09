@@ -60,7 +60,7 @@ public class ReqDtTst implements IReqDt {
   /**
    * <p>Cookies map.</p>
    **/
-  private final Map<String, String> cookies = new HashMap<String, String>();
+  private final Map<String, String> cookiesMap = new HashMap<String, String>();
 
   /**
    * <p>Context attributes map.</p>
@@ -207,7 +207,7 @@ public class ReqDtTst implements IReqDt {
    **/
   @Override
   public final String getCookVl(final String pNm) {
-    return this.cookies.get(pNm);
+    return this.cookiesMap.get(pNm);
   }
 
   /**
@@ -217,7 +217,7 @@ public class ReqDtTst implements IReqDt {
    **/
   @Override
   public final void setCookVl(final String pNm, final String pVal) {
-   this.cookies.put(pNm, pVal) ;
+   this.cookiesMap.put(pNm, pVal) ;
   }
 
   /**
@@ -284,6 +284,24 @@ public class ReqDtTst implements IReqDt {
   }
 
   /**
+   * <p>Getter for cookiesMap.</p>
+   * @return Cokie[]
+   **/
+  @Override
+  public final Cokie[] getCookies() {
+    Cokie[] cokies = new Cokie[this.cookiesMap.size()];
+    int i = 0;
+    for (Map.Entry<String, String> enr : this.cookiesMap.entrySet()) {
+      Cokie c = new Cokie();
+      c.setNme(enr.getKey());
+      c.setVal(enr.getValue());
+      cokies[i++] = c;
+    }
+    return cokies;
+  }
+
+
+  /**
    * <p>Initialize like new request, i.e cookie, port, etc are
    * still the same, only request data and attributes will be cleared.</p>
    **/
@@ -303,11 +321,11 @@ public class ReqDtTst implements IReqDt {
   }
 
   /**
-   * <p>Getter for cookies.</p>
+   * <p>Getter for cookiesMap.</p>
    * @return Map<String, String>
    **/
-  public final Map<String, String> getCookies() {
-    return this.cookies;
+  public final Map<String, String> getCookiesMap() {
+    return this.cookiesMap;
   }
 
   /**

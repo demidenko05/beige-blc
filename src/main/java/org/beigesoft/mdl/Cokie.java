@@ -26,58 +26,39 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.mdlp;
-
-import org.beigesoft.mdl.IHasNm;
-import org.beigesoft.mdl.IIdLnNm;
-import org.beigesoft.mdl.AHasVr;
+package org.beigesoft.mdl;
 
 /**
- * <p>Model of I18N name. Beige-ORM does not support generic fields,
- * so internationalized things IHasNm should be in extending class.
- * And so does language cause it's used in the ID.</p>
+ * <p>Cookie.</p>
  *
- * @param <T> item type
- * @param <ID> ID type
  * @author Yury Demidenko
  */
-public abstract class AI18nNm<T extends IIdLnNm, ID extends AI18nNmId<T>>
-    extends AHasVr<ID> implements IHasNm {
+public class Cokie {
 
   /**
-   * <p>Name in the language.</p>
+   * <p>Name.</p>
    **/
   private String nme;
 
   /**
-   * <p>Getter for hasName.</p>
-   * @return IHasNm
+   * <p>Value.</p>
    **/
-  public abstract T getHasNm();
+  private String val;
 
   /**
-   * <p>Setter for has name.</p>
-   * @param pHasNm reference
-   **/
-  public abstract void setHasNm(T pHasNm);
-
-  /**
-   * <p>Getter for ang.</p>
-   * @return Lng
-   **/
-  public abstract Lng getLng();
-
-  /**
-   * <p>Setter for lng.</p>
-   * @param pLng reference
-   **/
-  public abstract void setLng(Lng pLng);
-
-  /**
-   * <p>Geter for nme.</p>
-   * @return String
+   * <p>Representation.</p>
+   * @return String representation
    **/
   @Override
+  public final String toString() {
+    return this.nme + " - " + this.val;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for nme.</p>
+   * @return String
+   **/
   public final String getNme() {
     return this.nme;
   }
@@ -86,8 +67,23 @@ public abstract class AI18nNm<T extends IIdLnNm, ID extends AI18nNmId<T>>
    * <p>Setter for nme.</p>
    * @param pNme reference
    **/
-  @Override
   public final void setNme(final String pNme) {
     this.nme = pNme;
+  }
+
+  /**
+   * <p>Getter for val.</p>
+   * @return String
+   **/
+  public final String getVal() {
+    return this.val;
+  }
+
+  /**
+   * <p>Setter for val.</p>
+   * @param pVal reference
+   **/
+  public final void setVal(final String pVal) {
+    this.val = pVal;
   }
 }

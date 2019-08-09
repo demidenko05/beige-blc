@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.hnd;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -124,13 +125,24 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    * Shared data references is copied into temporary references
    * for shared usage.
    * Any way, it's hardly ever happens changing preferences in DB.</p>
-   * @param pRqVs Request scoped variables
-   * @param pRqDt Request Data
+   * @param pRvs Request scoped variables
+   * @param pRqd Request Data
    * @throws Exception - an exception
    */
   @Override
-  public final void handle(final Map<String, Object> pRqVs,
-    final IReqDt pRqDt) throws Exception {
+  public final void handle(final Map<String, Object> pRvs,
+    final IReqDt pRqd) throws Exception {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 5500);
+    if (dbgSh) {
+      this.log.debug(pRvs, HndI18nRq.class,
+    "Request user/URL/rem.user/addr/host/port/locale: " + pRqd.getUsrNm()
+  + "/" + pRqd.getReqUrl() + "/" + pRqd.getRemUsr() + "/" + pRqd.getRemAddr()
++ "/" + pRqd.getRemHost() + "/" + pRqd.getRemPort() + "/" + pRqd.getLocale());
+      this.log.debug(pRvs, HndI18nRq.class, "Request parameters: "
+        + pRqd.getParamMap());
+      this.log.debug(pRvs, HndI18nRq.class, "Request cookies: "
+        + Arrays.toString(pRqd.getCookies()));
+    }
     //unshared references of the latest versions of shared data:
     Map<String, Object> vs = new HashMap<String, Object>();
     List<UsPrf> upfsTmp = null;
@@ -142,14 +154,14 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
       synchronized (this) {
         if (this.usPrfs == null) {
           try {
-            this.log.info(pRqVs, HndI18nRq.class, "Refreshing preferences...");
+            this.log.info(pRvs, HndI18nRq.class, "Refreshing preferences...");
             this.rdb.setAcmt(false);
             this.rdb.setTrIsl(IRdb.TRRUC);
             this.rdb.begin();
-            upfsTmp = this.orm.retLst(pRqVs, vs, UsPrf.class);
-            lgsTmp = this.orm.retLst(pRqVs, vs, Lng.class);
-            dssTmp = this.orm.retLst(pRqVs, vs, DcSp.class);
-            dgssTmp = this.orm.retLst(pRqVs, vs, DcGrSp.class);
+            upfsTmp = this.orm.retLst(pRvs, vs, UsPrf.class);
+            lgsTmp = this.orm.retLst(pRvs, vs, Lng.class);
+            dssTmp = this.orm.retLst(pRvs, vs, DcSp.class);
+            dgssTmp = this.orm.retLst(pRvs, vs, DcGrSp.class);
             this.rdb.commit();
             //assigning fully initialized data:
             this.dcGrSps = dgssTmp;
@@ -176,8 +188,8 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
       //it will be error in case when other thread is clearing these unlocked
       //data for refreshing
     }
-    UsPrf upf = revUsPrf(pRqDt, lgsTmp, dssTmp, dgssTmp, upfsTmp);
-    CmnPrf cpf = revCmnPrf(pRqDt, upf);
+    UsPrf upf = revUsPrf(pRqd, lgsTmp, dssTmp, dgssTmp, upfsTmp);
+    CmnPrf cpf = revCmnPrf(pRqd, upf);
     for (UsPrf upft : upfsTmp) {
       if (upft.getDef()) {
         cpf.setLngDef(upft.getLng());
@@ -185,36 +197,36 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
       }
     }
     if (upfsTmp.size() == 0 || cpf.getLngDef() == null) {
-      this.log.error(pRqVs, HndI18nRq.class,
+      this.log.error(pRvs, HndI18nRq.class,
         "There is no default user preferences!");
       cpf.setLngDef(upf.getLng());
     }
     Locale locCurr;
-    if (pRqDt.getLocale().getLanguage().equals(upf.getLng().getIid())) {
-      locCurr = pRqDt.getLocale();
+    if (pRqd.getLocale().getLanguage().equals(upf.getLng().getIid())) {
+      locCurr = pRqd.getLocale();
     } else {
       locCurr = new Locale(upf.getLng().getIid());
     }
     cpf.setUsLoc(locCurr);
-    pRqVs.put("upf", upf);
-    pRqVs.put("cpf", cpf);
-    pRqVs.put("lngs", this.lngs);
-    pRqVs.put("dcSps", this.dcSps);
-    pRqVs.put("dcGrSps", this.dcGrSps);
-    pRqDt.setAttr("utJsp", this.utJsp);
-    pRqDt.setAttr("i18n", this.i18n);
-    pRqDt.setAttr("srvDt", this.srvDt);
-    pRqDt.setAttr("numStr", this.numStr);
-    pRqDt.setAttr("hlMaFrCl", this.hlMaFrCl);
+    pRvs.put("upf", upf);
+    pRvs.put("cpf", cpf);
+    pRvs.put("lngs", this.lngs);
+    pRvs.put("dcSps", this.dcSps);
+    pRvs.put("dcGrSps", this.dcGrSps);
+    pRqd.setAttr("utJsp", this.utJsp);
+    pRqd.setAttr("i18n", this.i18n);
+    pRqd.setAttr("srvDt", this.srvDt);
+    pRqd.setAttr("numStr", this.numStr);
+    pRqd.setAttr("hlMaFrCl", this.hlMaFrCl);
   }
 
   /**
    * <p>Reveals common preferences from user preferences.</p>
-   * @param pRqDt Request Data
+   * @param pRqd Request Data
    * @param pUpf UsPrf
    * @return common preferences
    */
-  public final CmnPrf revCmnPrf(final IReqDt pRqDt, final UsPrf pUpf) {
+  public final CmnPrf revCmnPrf(final IReqDt pRqd, final UsPrf pUpf) {
     CmnPrf cpf = new CmnPrf();
     if (pUpf.getDcSp().getIid().equals(DcSp.SPACEID)) {
       cpf.setDcSpv(DcSp.SPACEVL);
@@ -230,10 +242,10 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     } else {
       cpf.setDcGrSpv(pUpf.getDcGrSp().getIid());
     }
-    boolean dbgSh = getLog().getDbgSh(this.getClass(), 5500);
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 5501);
     boolean ndStCk = false;
     //check user request changing preferences:
-    String pgSz = pRqDt.getParam("pgSz");
+    String pgSz = pRqd.getParam("pgSz");
     if (dbgSh) {
       this.log.debug(null, HndI18nRq.class, "Request pgSz: " + pgSz);
     }
@@ -241,7 +253,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
       ndStCk = true;
     } else {
       //use from cookie:
-      pgSz = pRqDt.getCookVl("pgSz");
+      pgSz = pRqd.getCookVl("pgSz");
       if (dbgSh) {
         this.log.debug(null, HndI18nRq.class, "Cookie pgSz: " + pgSz);
       }
@@ -251,7 +263,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
       cpf.setPgSz(Integer.valueOf(pgSz));
     }
     if (ndStCk) {
-      pRqDt.setCookVl("pgSz", cpf.getPgSz().toString());
+      pRqd.setCookVl("pgSz", cpf.getPgSz().toString());
       if (dbgSh) {
         this.log.debug(null, HndI18nRq.class, "Set cookie to pgSz: " + pgSz);
       }
@@ -262,7 +274,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
   /**
    * <p>Reveals user preferences from request/cookie/stored/system and adds
    * them into cookie if need.</p>
-   * @param pRqDt Request Data
+   * @param pRqd Request Data
    * @param pLngs Lngs
    * @param pDcSps DcSps
    * @param pDcGrSps DcGrSps
@@ -270,17 +282,17 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    * @return user preferences
    * @throws Exception - an exception
    */
-  public final UsPrf revUsPrf(final IReqDt pRqDt, final List<Lng> pLngs,
+  public final UsPrf revUsPrf(final IReqDt pRqd, final List<Lng> pLngs,
     final List<DcSp> pDcSps, final List<DcGrSp> pDcGrSps,
       final List<UsPrf> pUsPrfs) throws Exception {
-    boolean dbgSh = getLog().getDbgSh(this.getClass(), 5501);
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 5502);
     UsPrf upf = null;
     boolean ndStCk = false;
     //check user request changing preferences:
-    String lng = pRqDt.getParam("lng");
-    String dcSp = pRqDt.getParam("dcSp");
-    String dcGrSp = pRqDt.getParam("dcGrSp");
-    String dgInGr = pRqDt.getParam("dgInGr");
+    String lng = pRqd.getParam("lng");
+    String dcSp = pRqd.getParam("dcSp");
+    String dcGrSp = pRqd.getParam("dcGrSp");
+    String dgInGr = pRqd.getParam("dgInGr");
     if (dbgSh) {
       this.log.debug(null, HndI18nRq.class, "Request lng/dcSp/dcGrSp/dgInGr: "
         + lng + "/" + dcSp + "/" + dcGrSp + "/" + dgInGr);
@@ -298,10 +310,10 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     }
     if (dcGrSp == null && dcSp == null && lng == null) {
       //use from cookie:
-      lng = pRqDt.getCookVl("lng");
-      dcSp = pRqDt.getCookVl("dcSp");
-      dcGrSp = pRqDt.getCookVl("dcGrSp");
-      dgInGr = pRqDt.getCookVl("dgInGr");
+      lng = pRqd.getCookVl("lng");
+      dcSp = pRqd.getCookVl("dcSp");
+      dcGrSp = pRqd.getCookVl("dcGrSp");
+      dgInGr = pRqd.getCookVl("dgInGr");
       if (dbgSh) {
         this.log.debug(null, HndI18nRq.class, "Cookie lng/dcSp/dcGrSp/dgInGr: "
           + lng + "/" + dcSp + "/" + dcGrSp + "/" + dgInGr);
@@ -350,12 +362,12 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     if (upf == null && pUsPrfs.size() > 0) {
       // reveal from stored preferences:
       // try match client's locale, if not - default or the first:
-      upf = revUsPrfDb(pRqDt, pLngs,  pDcSps, pDcGrSps, pUsPrfs);
+      upf = revUsPrfDb(pRqd, pLngs,  pDcSps, pDcGrSps, pUsPrfs);
       ndStCk = true;
     }
     if (upf == null) {
       // reveal from system settings:
-      upf = revUsPrfSys(pRqDt, pLngs,  pDcSps, pDcGrSps, pUsPrfs);
+      upf = revUsPrfSys(pRqd, pLngs,  pDcSps, pDcGrSps, pUsPrfs);
       if (dbgSh) {
         this.log.debug(null, HndI18nRq.class, "Use system lng/dcSp/dcGrSp: "
           + upf.getLng() .getIid() + "/" + upf.getDcSp().getIid() + "/"
@@ -364,10 +376,10 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
       ndStCk = true;
     }
     if (ndStCk) {
-      pRqDt.setCookVl("dgInGr", upf.getDgInGr().toString());
-      pRqDt.setCookVl("lng", upf.getLng().getIid());
-      pRqDt.setCookVl("dcSp", upf.getDcSp().getIid());
-      pRqDt.setCookVl("dcGrSp", upf.getDcGrSp().getIid());
+      pRqd.setCookVl("dgInGr", upf.getDgInGr().toString());
+      pRqd.setCookVl("lng", upf.getLng().getIid());
+      pRqd.setCookVl("dcSp", upf.getDcSp().getIid());
+      pRqd.setCookVl("dcGrSp", upf.getDcGrSp().getIid());
       if (dbgSh) {
         this.log.debug(null, HndI18nRq.class, "Set cookie to lng/dcSp/dcGrSp: "
           + upf.getLng() .getIid() + "/" + upf.getDcSp().getIid() + "/"
@@ -379,7 +391,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
 
   /**
    * <p>Reveals user preferences from system settings.</p>
-   * @param pRqDt Request Data
+   * @param pRqd Request Data
    * @param pLngs Lngs
    * @param pDcSps DcSps
    * @param pDcGrSps DcGrSps
@@ -387,12 +399,12 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    * @return user preferences
    * @throws Exception - an exception
    */
-  public final UsPrf revUsPrfSys(final IReqDt pRqDt, final List<Lng> pLngs,
+  public final UsPrf revUsPrfSys(final IReqDt pRqd, final List<Lng> pLngs,
     final List<DcSp> pDcSps, final List<DcGrSp> pDcGrSps,
       final List<UsPrf> pUsPrfs) throws Exception {
     // reveal from system settings:
     UsPrf upf = new UsPrf();
-    Locale lc = pRqDt.getLocale();
+    Locale lc = pRqd.getLocale();
     if (lc == null) {
       lc = Locale.getDefault();
     }
@@ -433,7 +445,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
 
   /**
    * <p>Reveals user preferences from stored ones.</p>
-   * @param pRqDt Request Data
+   * @param pRqd Request Data
    * @param pLngs Lngs
    * @param pDcSps DcSps
    * @param pDcGrSps DcGrSps
@@ -441,18 +453,18 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    * @return user preferences if stored or null
    * @throws Exception - an exception
    */
-  public final UsPrf revUsPrfDb(final IReqDt pRqDt, final List<Lng> pLngs,
+  public final UsPrf revUsPrfDb(final IReqDt pRqd, final List<Lng> pLngs,
     final List<DcSp> pDcSps, final List<DcGrSp> pDcGrSps,
       final List<UsPrf> pUsPrfs) throws Exception {
     UsPrf upf = null;
-    boolean dbgSh = getLog().getDbgSh(this.getClass(), 5502);
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 5503);
     // reveal from stored preferences:
     // try match client's locale, if not - default or the first:
     String ccountry = null;
     String clang = null;
-    if (pRqDt.getLocale() != null) {
-      ccountry = pRqDt.getLocale().getCountry();
-      clang = pRqDt.getLocale().getLanguage();
+    if (pRqd.getLocale() != null) {
+      ccountry = pRqd.getLocale().getCountry();
+      clang = pRqd.getLocale().getLanguage();
       if (dbgSh) {
         this.log.debug(null, HndI18nRq.class,
           "Client prefers lng/country: " + clang + "/" + ccountry);
