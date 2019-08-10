@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.beigesoft.mdl.Node;
+import org.beigesoft.mdl.IReqDt;
 
 /**
  * <p>Basic service that retrieves CSV data.</p>
@@ -43,10 +44,12 @@ public interface ICsvDtRet {
   /**
    * <p>Retrieves CSV data.</p>
    * @param pRqVs request scoped vars
+   * @param pRqDt Request Data
    * @return data table
    * @throws Exception an Exception
    **/
-  List<List<Object>> retData(Map<String, Object> pRqVs) throws Exception;
+  List<List<Object>> retData(Map<String, Object> pRqVs,
+    IReqDt pRqDt) throws Exception;
 
   /**
    * <p>Retrieves sample data row (tree) to make CSV column.</p>

@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.hld;
 
 import java.util.Map;
+import java.util.HashMap;
 
 import org.beigesoft.mdlp.MaFrn;
 import org.beigesoft.mdlp.MaFrnLn;
@@ -37,10 +38,9 @@ import org.beigesoft.rdb.IOrm;
 /**
  * <p>Retriever Match Foreign from database.</p>
  *
- * @param <RS> platform dependent RDBMS recordset
  * @author Yury Demidenko
  */
-public class HlMaFrn<RS> implements IHlMaFrn {
+public class HlMaFrn implements IHlMaFrn {
 
   /**
    * <p>ORM service.</p>
@@ -56,10 +56,12 @@ public class HlMaFrn<RS> implements IHlMaFrn {
    **/
   public final MaFrn get(final Map<String, Object> pRqVs,
     final Long pId) throws Exception {
+    Map<String, Object> vs = new HashMap<String, Object>();
     MaFrn mft = new MaFrn();
     mft.setIid(pId);
-    MaFrn mf = getOrm().retEnt(pRqVs, null, mft);
-    mf.setLns(getOrm().retLstCnd(pRqVs, null, MaFrnLn.class,
+    MaFrn mf = getOrm().retEnt(pRqVs, vs, mft);
+    vs.put("MaFrnLndpLv", 1);
+    mf.setLns(getOrm().retLstCnd(pRqVs, vs, MaFrnLn.class,
       "where OWNR=" + pId));
     return mf;
   }

@@ -38,6 +38,7 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdlp.CsvMth;
 import org.beigesoft.mdlp.CsvCl;
+import org.beigesoft.fct.IFcCsvDrt;
 import org.beigesoft.log.ILog;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.rdb.IOrm;
@@ -46,7 +47,8 @@ import org.beigesoft.srv.ICsvWri;
 
 /**
  * <p>Service that retrieves data by given CSV method and retriever,
- *  then writes CSV data to given output stream.</p>
+ * then writes CSV data to given output stream. It requires CsvMth parameter
+ * that holds CsvMth ID.</p>
  *
  * @param <RS> platform dependent RDBMS recordset
  * @author Yury Demidenko
@@ -74,9 +76,9 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
   private ICsvWri csvWri;
 
   /**
-   * <p>Retrs map.</p>
+   * <p>Retrievers factory.</p>
    **/
-  private Map<String, ICsvDtRet> retrs;
+  private IFcCsvDrt fctRet;
 
   /**
    * <p>Handle file-report request.</p>
@@ -88,7 +90,7 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
   @Override
   public final void handle(final Map<String, Object> pRvs,
     final IReqDt pRqDt, final OutputStream pSous) throws Exception {
-    String csMtIdStr = pRqDt.getParam("csMt");
+    String csMtIdStr = pRqDt.getParam("CsvMth");
     Long csMtId = Long.parseLong(csMtIdStr);
     CsvMth csMt = null;
     List<List<Object>> data = null;
@@ -104,12 +106,12 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
       List<CsvCl> cols = getOrm().retLstCnd(pRvs, vs,
         CsvCl.class, "where OWNR=" + csMt.getIid());
       csMt.setClns(cols);
-      ret = this.retrs.get(csMt.getRtrNm());
+      ret = this.fctRet.laz(pRvs, csMt.getRtrNm());
       if (ret == null) {
         throw new ExcCode(ExcCode.WR,
           "Can't find retriever " + csMt.getRtrNm());
       }
-      data = ret.retData(pRvs);
+      data = ret.retData(pRvs, pRqDt);
       this.rdb.commit();
     } catch (Exception ex) {
       @SuppressWarnings("unchecked")
@@ -151,23 +153,6 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
    **/
   public final void setLogStd(final ILog pLogStd) {
     this.logStd = pLogStd;
-  }
-
-  /**
-   * <p>Getter for retrs.</p>
-   * @return Map<String, ICsvDtRet>
-   **/
-  public final Map<String, ICsvDtRet> getRetrs() {
-    return this.retrs;
-  }
-
-  /**
-   * <p>Setter for retrs.</p>
-   * @param pRetrs reference
-   **/
-  public final void setRetrs(
-    final Map<String, ICsvDtRet> pRetrs) {
-    this.retrs = pRetrs;
   }
 
   /**
@@ -216,5 +201,21 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
    **/
   public final void setRdb(final IRdb<RS> pRdb) {
     this.rdb = pRdb;
+  }
+
+  /**
+   * <p>Getter for fctRet.</p>
+   * @return IFcCsvDrt
+   **/
+  public final IFcCsvDrt getFctRet() {
+    return this.fctRet;
+  }
+
+  /**
+   * <p>Setter for fctRet.</p>
+   * @param pFctRet reference
+   **/
+  public final void setFctRet(final IFcCsvDrt pFctRet) {
+    this.fctRet = pFctRet;
   }
 }

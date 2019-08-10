@@ -284,6 +284,9 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     HldFldStg hlFdSt = new HldFldStg(stgNm, stgNm);
     hlFdSt.setHldFdCls(pFct.getFctBlc().lazHldFldCls(pRvs));
     hlFdSt.setEnumVal("enm");
+    hlFdSt.setStgFdNm(new HashMap<String, String>());
+    hlFdSt.getStgFdNm().put("rtrNm", "i18n");
+    hlFdSt.getStgFdNm().put("clsNm", "i18n");
     hlFdSt.setSetng(pFct.getFctBlc().lazStgUvd(pRvs));
     hlFdSt.setCustClss(new HashSet<Class<?>>());
     hlFdSt.getCustClss().add(Date.class);
@@ -343,6 +346,7 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.setStgFdNm(new HashMap<String, String>());
     hlFdSt.getStgFdNm().put("idOr", null);
     hlFdSt.getStgFdNm().put("dbOr", null);
+    hlFdSt.getStgFdNm().put("dtIdx", null);
     pFct.getFctBlc().getFctDt().getHlFdStgMp().put(stgNm, hlFdSt);
     stgNm = "inp"; //input
     hlFdSt = new HldFldStg(stgNm, HldFldStg.NOSTD);

@@ -56,6 +56,8 @@ import org.beigesoft.hld.HldEnts;
 import org.beigesoft.hld.HldUvd;
 import org.beigesoft.hld.HldCnvId;
 import org.beigesoft.hld.HlMaFrCl;
+import org.beigesoft.hld.HlMaFrn;
+import org.beigesoft.hnd.HndCsvWri;
 import org.beigesoft.hnd.HndEntRq;
 import org.beigesoft.hnd.HndI18nRq;
 import org.beigesoft.hnd.HndNtrRq;
@@ -93,6 +95,7 @@ import org.beigesoft.srv.I18n;
 import org.beigesoft.srv.II18n;
 import org.beigesoft.srv.UtlJsp;
 import org.beigesoft.srv.HlpEntPg;
+import org.beigesoft.srv.CsvWri;
 
 /**
  * <p>Main application beans factory. All configuration dependent inner
@@ -148,6 +151,8 @@ public class FctBlc<RS> implements IFctApp {
         if (rz == null) {
           if (HndI18nRq.class.getSimpleName().equals(pBnNm)) {
             rz = lazHndI18nRq(pRvs);
+          } else if (HndCsvWri.class.getSimpleName().equals(pBnNm)) {
+            rz = lazHndCsvWri(pRvs);
           } else if (FctDt.HNNTRQAD.equals(pBnNm)) {
             rz = lazHndNtrRqAd(pRvs);
           } else if (FctDt.HNNTRQSC.equals(pBnNm)) {
@@ -403,6 +408,40 @@ public class FctBlc<RS> implements IFctApp {
       rz.setFctBlc(this);
       this.beans.put(FctPrcFen.class.getSimpleName(), rz);
       lazLogStd(pRvs).info(pRvs, getClass(), FctPrcFen.class.getSimpleName()
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter HndCsvWri.</p>
+   * @param pRvs request scoped vars
+   * @return HndCsvWri
+   * @throws Exception - an exception
+   */
+  public final synchronized HndCsvWri<RS> lazHndCsvWri(
+    final Map<String, Object> pRvs) throws Exception {
+    @SuppressWarnings("unchecked")
+    HndCsvWri<RS> rz = (HndCsvWri<RS>) this.beans
+      .get(HndCsvWri.class.getSimpleName());
+    if (rz == null) {
+      rz = new HndCsvWri<RS>();
+      rz.setOrm(lazOrm(pRvs));
+      @SuppressWarnings("unchecked")
+      IRdb<RS> rdb = (IRdb<RS>) laz(pRvs, IRdb.class.getSimpleName());
+      rz.setRdb(rdb);
+      IFcCsvDrt fr = (IFcCsvDrt) laz(pRvs, IFcCsvDrt.class.getSimpleName());
+      rz.setFctRet(fr);
+      rz.setLogStd(lazLogStd(pRvs));
+      CsvWri cw = new CsvWri();
+      rz.setCsvWri(cw);
+      cw.setReflect(lazReflect(pRvs));
+      cw.setNumStr(lazNumStr(pRvs));
+      HlMaFrn hmf = new HlMaFrn();
+      cw.setHlMaFrn(hmf);
+      hmf.setOrm(lazOrm(pRvs));
+      this.beans.put(HndCsvWri.class.getSimpleName(), rz);
+      lazLogStd(pRvs).info(pRvs, getClass(), HndCsvWri.class.getSimpleName()
         + " has been created.");
     }
     return rz;

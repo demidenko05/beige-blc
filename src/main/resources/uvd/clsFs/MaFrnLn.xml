@@ -7,6 +7,7 @@ See LICENSE in base folder
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Explicit final definition.</comment>
-<entry key="frmFds">iid,idOr,dbOr,frnVl,ntvVl,lnId1,lnId2,ownr</entry>
-<entry key="selFds">MaFrn,clsNm</entry>
+<entry key="ntvVlinp">mafnv</entry>
+<entry key="lnId1inp">hdn</entry>
+<entry key="lnId2inp">hdn</entry>
 </properties>

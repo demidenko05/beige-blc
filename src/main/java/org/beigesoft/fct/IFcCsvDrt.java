@@ -26,54 +26,25 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.prc;
+package org.beigesoft.fct;
 
 import java.util.Map;
 
-import org.beigesoft.mdl.IReqDt;
-import org.beigesoft.fct.IFcCsvDrt;
 import org.beigesoft.srv.ICsvDtRet;
 
 /**
- * <p>Service that retrieves CSV sample data row.</p>
+ * <p>Abstraction of CSV data retrievers factory.</p>
  *
  * @author Yury Demidenko
  */
-public class PrCsSmDtRo implements IPrc {
+public interface IFcCsvDrt {
 
   /**
-   * <p>Retrievers factory.</p>
-   **/
-  private IFcCsvDrt fctRet;
-
-  /**
-   * <p>Retrieves CSV sample data row and put as request attribute "csDtTr".</p>
-   * @param pRvs additional param
-   * @param pRqDt Request Data
+   * <p>Gets retriever in lazy mode by given name.</p>
+   * @param pRvs request scoped vars
+   * @param pNm - retriever name
+   * @return requested retriever
    * @throws Exception - an exception
-   **/
-  @Override
-  public final void process(final Map<String, Object> pRvs,
-    final IReqDt pRqDt) throws Exception {
-    String nmRet = pRqDt.getParam("ret");
-    ICsvDtRet ret = this.fctRet.laz(pRvs, nmRet);
-    pRvs.put("csDtTr", ret.getSmpDtRow(pRvs));
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for fctRet.</p>
-   * @return IFcCsvDrt
-   **/
-  public final IFcCsvDrt getFctRet() {
-    return this.fctRet;
-  }
-
-  /**
-   * <p>Setter for fctRet.</p>
-   * @param pFctRet reference
-   **/
-  public final void setFctRet(final IFcCsvDrt pFctRet) {
-    this.fctRet = pFctRet;
-  }
+   */
+  ICsvDtRet laz(Map<String, Object> pRvs, String pNm) throws Exception;
 }

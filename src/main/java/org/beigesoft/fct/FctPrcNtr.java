@@ -37,6 +37,7 @@ import org.beigesoft.rdb.IRdb;
 import org.beigesoft.prc.IPrc;
 import org.beigesoft.prc.About;
 import org.beigesoft.prc.RefrI18n;
+import org.beigesoft.prc.PrCsSmDtRo;
 
 /**
  * <p>Factory of processors for base, secure non-transactional requests.</p>
@@ -78,6 +79,8 @@ public class FctPrcNtr<RS> implements IFctPrc {
         if (rz == null) {
           if (About.class.getSimpleName().equals(pPrNm)) {
             rz = crPuAbout(pRvs);
+          } else if (PrCsSmDtRo.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrCsSmDtRo(pRvs);
           } else if (RefrI18n.class.getSimpleName().equals(pPrNm)) {
             rz = crPuRefrI18n(pRvs);
           } else {
@@ -96,6 +99,24 @@ public class FctPrcNtr<RS> implements IFctPrc {
         }
       }
     }
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map PrCsSmDtRo.</p>
+   * @param pRvs request scoped vars
+   * @return PrCsSmDtRo
+   * @throws Exception - an exception
+   */
+  private PrCsSmDtRo crPuPrCsSmDtRo(
+    final Map<String, Object> pRvs) throws Exception {
+    PrCsSmDtRo rz = new PrCsSmDtRo();
+    IFcCsvDrt fr = (IFcCsvDrt) this.fctBlc.laz(pRvs,
+      IFcCsvDrt.class.getSimpleName());
+    rz.setFctRet(fr);
+    this.procs.put(PrCsSmDtRo.class.getSimpleName(), rz);
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrCsSmDtRo.class
+      .getSimpleName() + " has been created.");
     return rz;
   }
 
