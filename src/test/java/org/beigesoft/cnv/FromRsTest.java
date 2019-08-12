@@ -131,7 +131,7 @@ public class FromRsTest<RS> {
     rs.getData().put("ITSTOTAL", pl.getItsTotal().doubleValue());
     rs.getData().put("ITSQUANTITY", pl.getItsQuantity().doubleValue());
       //dpLv 0 - only ID, 1 - its owned entities only ID...
-    rs.getData().put("OWNR15IID", pl.getOwnr().getIid()); //only ID, PersistableHeaddpLv=0 slv=0  exit
+    rs.getData().put("OWNR", pl.getOwnr().getIid()); //only ID, PersistableHeaddpLv=0 slv=0  exit
     //1st level:
     rs.getData().put("ITSPRODUCT16IID", pl.getItsProduct().getIid()); //GoodVersionTimedpLv=2 slv=0
     rs.getData().put("ITSPRODUCT16VER", pl.getItsProduct().getVer());
@@ -144,7 +144,7 @@ public class FromRsTest<RS> {
     rs.getData().put("GDCAT211DBOR", pl.getItsProduct().getGdCat().getDbOr());
     rs.getData().put("GDCAT211IDOR", pl.getItsProduct().getGdCat().getIdOr());
     rs.getData().put("GDCAT211NME", pl.getItsProduct().getGdCat().getNme());
-    rs.getData().put("DEP313IID", pl.getItsProduct().getGdCat().getDep().getIid()); //GoodVersionTimedpLv=2 slv=2 exit
+    rs.getData().put("GDCAT211DEP", pl.getItsProduct().getGdCat().getDep().getIid()); //GoodVersionTimedpLv=2 slv=2 exit
     //filling:
     Map<String, Object> vs = new HashMap<String, Object>();
     vs.put("PersistableHeaddpLv", 0);
@@ -157,7 +157,9 @@ public class FromRsTest<RS> {
     this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), cr);
     assertTrue(sel.contains("PERSISTABLELINE.VER as VER"));
     assertTrue(sel.contains("GDCAT211.NME as GDCAT211NME"));
-    assertTrue(sel.contains("left join DEPARTMENT as DEP313 on GDCAT211.DEP=DEP313.IID"));
+    assertTrue(sel.contains("GDCAT211.DEP as GDCAT211DEP"));
+    assertFalse(sel.contains("left join DEPARTMENT"));
+    assertTrue(sel.contains("PERSISTABLELINE.OWNR as OWNR"));
     assertFalse(sel.contains("OWNR15.ITSSTATUS as OWNR15ITSSTATUS"));
     FilEntRs<RS> filEntRs = (FilEntRs<RS>) this.fctApp.laz(this.rqVs, FilEntRs.class.getSimpleName());
     filEntRs.fill(this.rqVs, vs, plf, rs);
@@ -181,11 +183,12 @@ public class FromRsTest<RS> {
     assertEquals(pl.getItsProduct().getGdCat().getDep().getIid(), plf.getItsProduct().getGdCat().getDep().getIid());
     assertNull(plf.getItsProduct().getGdCat().getDep().getVer());
     vs.remove("PersistableHeaddpLv");
-    String[] ndFds = new String[] {"iid", "isClosed", "itsDate", "itsStatus"};
+    String[] ndFds = new String[] {"isClosed", "itsDate", "itsStatus"};
     vs.put("PersistableHeadndFds", ndFds);
     sel = selct.evSel(this.rqVs, vs, pl.getClass()).toString();
     assertTrue(sel.contains("OWNR15.ITSSTATUS as OWNR15ITSSTATUS"));
     this.fctApp.getFctBlc().lazLogStd(this.rqVs).test(this.rqVs, getClass(), sel);
+    rs.getData().put("OWNR15IID", pl.getOwnr().getIid());
     rs.getData().put("OWNR15ITSSTATUS", pl.getOwnr().getItsStatus().ordinal());
     rs.getData().put("OWNR15ITSDATE", pl.getOwnr().getItsDate().getTime());
     rs.getData().put("OWNR15ISCLOSED", pl.getOwnr().getIsClosed() ? 1 : 0);

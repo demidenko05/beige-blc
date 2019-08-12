@@ -394,25 +394,35 @@ public class SqlQu implements ISqlQu {
       }
       @SuppressWarnings("unchecked")
       List<String> tbAls = (List<String>) pVs.get("tbAls");
-      //WrhEnr.wpFr.wrh and WrhEnr.wpTo.wrh
-      Integer cuFdIdx = (Integer) pVs.get("cuFdIdx");
-      String tbAl = pFdNm.toUpperCase() + lvDeps.get(0).getCur() + cuFdIdx;
-      tbAls.add(tbAl);
-      String owEnNm;
-      if (tbAls.size() == 1) {
-        owEnNm = pCls.getSimpleName().toUpperCase();
-      } else {
-        owEnNm = tbAls.get(tbAls.size() - 2);
+      if (clvDep.getCur() < clvDep.getDep()) {
+        //WrhEnr.wpFr.wrh and WrhEnr.wpTo.wrh
+        Integer cuFdIdx = (Integer) pVs.get("cuFdIdx");
+        String tbAl = pFdNm.toUpperCase() + lvDeps.get(0).getCur() + cuFdIdx;
+        tbAls.add(tbAl);
+        String owEnNm;
+        if (tbAls.size() == 1) {
+          owEnNm = pCls.getSimpleName().toUpperCase();
+        } else {
+          owEnNm = tbAls.get(tbAls.size() - 2);
+        }
+        pSbe.append(" left join " + fdCls.getSimpleName().toUpperCase() + " as "
+      + tbAl + " on " + owEnNm + "." + pFdNm.toUpperCase() + "=" + tbAl + "."
+    + fdIdNms.get(0).toUpperCase());
+        if (pIsDbgSh) {
+          this.log.debug(pRvs, getClass(), "Added tbAl/cls: " + tbAl
+            + "/" + fdCls);
+        }
+        makeCls(pRvs, pVs, fdeCls, pSb, pSbe, pIsDbgSh);
+        tbAls.remove(tbAl);
+      } else { //only ID without joins:
+        String fnu = pFdNm.toUpperCase();
+        if (tbAls.size() > 0) {
+          pSb.append(tbAls.get(tbAls.size() - 1) + "." + fnu + " as "
+            + tbAls.get(tbAls.size() - 1) + fnu);
+        } else {
+      pSb.append(pCls.getSimpleName().toUpperCase() + "." + fnu + " as " + fnu);
+        }
       }
-      pSbe.append(" left join " + fdCls.getSimpleName().toUpperCase() + " as "
-        + tbAl + " on " + owEnNm + "." + pFdNm.toUpperCase() + "=" + tbAl + "."
-          + fdIdNms.get(0).toUpperCase());
-      if (pIsDbgSh) {
-        this.log.debug(pRvs, getClass(), "Added tbAl/cls: " + tbAl
-          + "/" + fdCls);
-      }
-      makeCls(pRvs, pVs, fdeCls, pSb, pSbe, pIsDbgSh);
-      tbAls.remove(tbAl);
       if (lvDeps.size() > 1) { //move down through custom DL subentities branch:
         LvDep ld = lvDeps.get(lvDeps.size() - 1);
         if (ld.getCur() == 0) { //ending custom DL subentity:

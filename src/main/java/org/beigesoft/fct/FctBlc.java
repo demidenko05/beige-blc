@@ -318,7 +318,6 @@ public class FctBlc<RS> implements IFctApp {
       rz.setWrReSpTr(this.fctDt.getWrReSpTr());
       rz.setLogStd(lazLogStd(pRvs));
       rz.setLogSec(lazLogSec(pRvs));
-      rz.setHldUvd(lazHldUvd(pRvs));
       @SuppressWarnings("unchecked")
       IRdb<RS> rdb = (IRdb<RS>) laz(pRvs, IRdb.class.getSimpleName());
       rz.setRdb(rdb);
@@ -365,7 +364,6 @@ public class FctBlc<RS> implements IFctApp {
       rz.setWrReSpTr(this.fctDt.getWrReSpTr());
       rz.setLogStd(lazLogStd(pRvs));
       rz.setLogSec(lazLogSec(pRvs));
-      rz.setHldUvd(lazHldUvd(pRvs));
       @SuppressWarnings("unchecked")
       IRdb<RS> rdb = (IRdb<RS>) laz(pRvs, IRdb.class.getSimpleName());
       rz.setRdb(rdb);
@@ -469,6 +467,7 @@ public class FctBlc<RS> implements IFctApp {
       HlMaFrCl hlMaFrCl = new HlMaFrCl();
       hlMaFrCl.setClss(getFctDt().getMaFrClss());
       rz.setHlMaFrCl(hlMaFrCl);
+      rz.setHldUvd(lazHldUvd(pRvs));
       rz.setLog(lazLogStd(pRvs));
       rz.setI18n(lazI18n(pRvs));
       rz.setUtJsp(new UtlJsp());
@@ -873,6 +872,7 @@ public class FctBlc<RS> implements IFctApp {
       rz = new FctNmFilFdRs<RS>();
       rz.setLogStd(lazLogStd(pRvs));
       rz.setHldSets(lazHldSets(pRvs));
+      rz.setSetng(lazStgOrm(pRvs));
       rz.setHldFdCls(lazHldFldCls(pRvs));
       rz.setHldNmFdCn(lazHldNmCnFrRs(pRvs));
       rz.setFctCnvFld(lazFctNmCnFrRs(pRvs));

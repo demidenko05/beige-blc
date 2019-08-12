@@ -141,7 +141,6 @@ public class FilFldSmpRs<RS> implements IFilFldRs<RS> {
     this.hldSets = pHldSets;
   }
 
-
   /**
    * <p>Getter for fctCnvFld.</p>
    * @return IFcCnRsFdv<RS>

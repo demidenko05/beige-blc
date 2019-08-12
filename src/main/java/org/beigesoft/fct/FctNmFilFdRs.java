@@ -36,6 +36,7 @@ import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClCl;
 import org.beigesoft.hld.IHlNmClSt;
+import org.beigesoft.prp.ISetng;
 import org.beigesoft.cnv.IFilEntRs;
 import org.beigesoft.cnv.IFilFldRs;
 import org.beigesoft.cnv.FilFldEnmRs;
@@ -63,6 +64,11 @@ public class FctNmFilFdRs<RS> implements IFcFlFdRs<RS> {
   private IHlNmClMt hldSets;
 
   /**
+   * <p>Settings service.</p>
+   **/
+  private ISetng setng;
+
+  /**
    * <p>Holder of an entity's field's class.</p>
    **/
   private IHlNmClCl hldFdCls;
@@ -73,14 +79,14 @@ public class FctNmFilFdRs<RS> implements IFcFlFdRs<RS> {
   private IHlNmClSt hldNmFdCn;
 
   /**
-   * <p>Factory simple converters.</p>
-   **/
-  private IFcCnRsFdv<RS> fctCnvFld;
-
-  /**
    * <p>Filler entity factory.</p>
    */
   private IFilEntRs<RS> filEnt;
+
+  /**
+   * <p>Factory simple converters.</p>
+   **/
+  private IFcCnRsFdv<RS> fctCnvFld;
 
   //requested data:
   /**
@@ -143,6 +149,9 @@ public class FctNmFilFdRs<RS> implements IFcFlFdRs<RS> {
     rz.setHldSets(getHldSets());
     rz.setHldFdCls(getHldFdCls());
     rz.setFilEnt(getFilEnt());
+    rz.setFctCnvFld(getFctCnvFld());
+    rz.setHldNmFdCn(getHldNmFdCn());
+    rz.setSetng(getSetng());
     this.fillers.put(FilFldHsIdRs.class.getSimpleName(), rz);
     getLogStd().info(null, getClass(), FilFldHsIdRs.class.getSimpleName()
       + " has been created.");
@@ -261,5 +270,21 @@ public class FctNmFilFdRs<RS> implements IFcFlFdRs<RS> {
    **/
   public final void setFilEnt(final IFilEntRs<RS> pFilEnt) {
     this.filEnt = pFilEnt;
+  }
+
+  /**
+   * <p>Getter for setng.</p>
+   * @return ISetng
+   **/
+  public final ISetng getSetng() {
+    return this.setng;
+  }
+
+  /**
+   * <p>Setter for setng.</p>
+   * @param pSetng reference
+   **/
+  public final void setSetng(final ISetng pSetng) {
+    this.setng = pSetng;
   }
 }

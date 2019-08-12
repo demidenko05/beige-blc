@@ -32,12 +32,16 @@ import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Method;
 
+import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.LvDep;
 import org.beigesoft.mdl.IRecSet;
 import org.beigesoft.mdl.IHasId;
+import org.beigesoft.fct.IFcCnRsFdv;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.hld.IHlNmClCl;
+import org.beigesoft.hld.IHlNmClSt;
+import org.beigesoft.prp.ISetng;
 
 /**
  * <p>Standard service that fills/converts object's field of type IHasId from
@@ -57,9 +61,24 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
   private ILog log;
 
   /**
+   * <p>Settings service.</p>
+   **/
+  private ISetng setng;
+
+  /**
    * <p>Fields classes holder.</p>
    **/
   private IHlNmClCl hldFdCls;
+
+  /**
+   * <p>Fields converters names holder.</p>
+   **/
+  private IHlNmClSt hldNmFdCn;
+
+  /**
+   * <p>Factory simple converters.</p>
+   **/
+  private IFcCnRsFdv<RS> fctCnvFld;
 
   /**
    * <p>Fields setters RAPI holder.</p>
@@ -119,12 +138,41 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
     }
     @SuppressWarnings("unchecked")
     List<String> tbAls = (List<String>) pVs.get("tbAls");
-    //WrhEnr.wpFr.wrh and WrhEnr.wpTo.wrh
-    Integer cuFdIdx = (Integer) pVs.get("cuFdIdx");
-    String tbAl = pFlNm.toUpperCase() + lvDeps.get(0).getCur() + cuFdIdx;
-    tbAls.add(tbAl);
-    this.filEnt.fill(pRvs, pVs, val, pRs);
-    tbAls.remove(tbAl);
+    if (clvDep.getCur() < clvDep.getDep()) {
+      //WrhEnr.wpFr.wrh and WrhEnr.wpTo.wrh
+      Integer cuFdIdx = (Integer) pVs.get("cuFdIdx");
+      String tbAl = pFlNm.toUpperCase() + lvDeps.get(0).getCur() + cuFdIdx;
+      tbAls.add(tbAl);
+      if (dbgSh) {
+        this.log.debug(pRvs, getClass(), "Added tbAl/cls: " + tbAl
+          + "/" + fdCls);
+      }
+      this.filEnt.fill(pRvs, pVs, val, pRs);
+      tbAls.remove(tbAl);
+    } else { //only ID without joins:
+      List<String> fdIdNms = this.setng.lazIdFldNms(fdCls);
+      if (fdIdNms.size() > 1) {
+        throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID!");
+      }
+      String idNm = fdIdNms.get(0);
+      String cnNm = this.hldNmFdCn.get(fdCls, idNm);
+      @SuppressWarnings("unchecked")
+      ICnvRsFdv<Object, RS> flCnv =
+        (ICnvRsFdv<Object, RS>) this.fctCnvFld.laz(pRvs, cnNm);
+      String clNm;
+      if (tbAls.size() > 0) {
+        clNm = tbAls.get(tbAls.size() - 1) + pFlNm.toUpperCase();
+      } else {
+        clNm = pFlNm.toUpperCase();
+      }
+      if (dbgSh) {
+        this.log.debug(pRvs, getClass(), "Column alias/cls/fdCls: "
+          + clNm + "/" + pEnt.getClass() + "/" + fdCls);
+      }
+      Object id = flCnv.conv(pRvs, pVs, pRs, clNm);
+      Method setr = this.hldSets.get(fdCls, idNm);
+      setr.invoke(val, id);
+    }
     if (lvDeps.size() > 1) { //move down through custom DL subentities branch:
       LvDep ld = lvDeps.get(lvDeps.size() - 1);
       if (ld.getCur() == 0) { //ending custom DL subentity:
@@ -151,8 +199,7 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
       if (ld.getCur() > 0) { //finish subentity:
         ld.setCur(ld.getCur() - 1);
         if (dbgSh) {
-          this.log.debug(pRvs, getClass(),
-            "Finish custom subentity: " + fdCls);
+          this.log.debug(pRvs, getClass(), "Finish custom subentity: " + fdCls);
         }
       }
     }
@@ -227,5 +274,54 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
    **/
   public final void setFilEnt(final IFilEntRs<RS> pFilEnt) {
     this.filEnt = pFilEnt;
+  }
+
+  /**
+   * <p>Getter for fctCnvFld.</p>
+   * @return IFcCnRsFdv<RS>
+   **/
+  public final IFcCnRsFdv<RS> getFctCnvFld() {
+    return this.fctCnvFld;
+  }
+
+  /**
+   * <p>Setter for fctCnvFld.</p>
+   * @param pFctCnvFld reference
+   **/
+  public final void setFctCnvFld(
+    final IFcCnRsFdv<RS> pFctCnvFld) {
+    this.fctCnvFld = pFctCnvFld;
+  }
+
+  /**
+   * <p>Getter for hldNmFdCn.</p>
+   * @return IHlNmClSt
+   **/
+  public final IHlNmClSt getHldNmFdCn() {
+    return this.hldNmFdCn;
+  }
+
+  /**
+   * <p>Setter for hldNmFdCn.</p>
+   * @param pHldNmFdCn reference
+   **/
+  public final void setHldNmFdCn(final IHlNmClSt pHldNmFdCn) {
+    this.hldNmFdCn = pHldNmFdCn;
+  }
+
+  /**
+   * <p>Getter for setng.</p>
+   * @return ISetng
+   **/
+  public final ISetng getSetng() {
+    return this.setng;
+  }
+
+  /**
+   * <p>Setter for setng.</p>
+   * @param pSetng reference
+   **/
+  public final void setSetng(final ISetng pSetng) {
+    this.setng = pSetng;
   }
 }

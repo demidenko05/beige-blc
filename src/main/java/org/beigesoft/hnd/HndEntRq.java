@@ -41,7 +41,6 @@ import org.beigesoft.fct.IFctPrc;
 import org.beigesoft.fct.IFcClFcRq;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClSt;
-import org.beigesoft.hld.HldUvd;
 import org.beigesoft.hld.UvdVar;
 import org.beigesoft.cnv.IFilEntRq;
 import org.beigesoft.prc.IPrc;
@@ -129,11 +128,6 @@ public class HndEntRq<RS> implements IHndRq {
   private Boolean wrReSpTr = Boolean.FALSE;
 
   /**
-   * <p>Holder transformed UVD settings, other holders and vars.</p>
-   */
-  private HldUvd hldUvd;
-
-  /**
    * <p>Handle request.
    * actions that change database use read_commited TI
    * this usually required only for complex transactions like loading
@@ -160,7 +154,6 @@ public class HndEntRq<RS> implements IHndRq {
 + pRqDt.getRemPort() + "/" + pRqDt.getUsrNm());
       throw new ExcCode(ExcCode.FORB, "FORB");
     }
-    pRqDt.setAttr("hldUvd", this.hldUvd);
     UvdVar uvs = new UvdVar();
     pRvs.put("uvs", uvs);
     boolean dbgSh = getLogStd().getDbgSh(this.getClass(), 5550);
@@ -637,21 +630,5 @@ public class HndEntRq<RS> implements IHndRq {
    **/
   public final void setWrReSpTr(final Boolean pWrReSpTr) {
     this.wrReSpTr = pWrReSpTr;
-  }
-
-  /**
-   * <p>Getter for hldUvd.</p>
-   * @return HldUvd
-   **/
-  public final HldUvd getHldUvd() {
-    return this.hldUvd;
-  }
-
-  /**
-   * <p>Setter for hldUvd.</p>
-   * @param pHldUvd reference
-   **/
-  public final void setHldUvd(final HldUvd pHldUvd) {
-    this.hldUvd = pHldUvd;
   }
 }

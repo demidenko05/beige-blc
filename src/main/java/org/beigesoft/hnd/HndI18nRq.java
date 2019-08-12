@@ -42,6 +42,7 @@ import org.beigesoft.mdlp.DcGrSp;
 import org.beigesoft.mdlp.UsPrf;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.HlMaFrCl;
+import org.beigesoft.hld.HldUvd;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.rdb.IOrm;
 import org.beigesoft.srv.UtlJsp;
@@ -51,7 +52,8 @@ import org.beigesoft.srv.INumStr;
 
 /**
  * <p>It handles request internationalization and other preferences.
- * It also adds base services to request attributes.</p>
+ * It adds base services and variables to request attributes.
+ * It's the first handler for any request.</p>
  *
  * @param <RS> platform dependent RDBMS recordset
  * @author Yury Demidenko
@@ -97,6 +99,11 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    * <p>Holder of classes to match.</p>
    **/
   private HlMaFrCl hlMaFrCl;
+
+  /**
+   * <p>Holder transformed UVD settings, other holders and vars.</p>
+   */
+  private HldUvd hldUvd;
 
   //Cached data:
   /**
@@ -213,6 +220,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     pRvs.put("lngs", this.lngs);
     pRvs.put("dcSps", this.dcSps);
     pRvs.put("dcGrSps", this.dcGrSps);
+    pRqd.setAttr("hldUvd", this.hldUvd);
     pRqd.setAttr("utJsp", this.utJsp);
     pRqd.setAttr("i18n", this.i18n);
     pRqd.setAttr("srvDt", this.srvDt);
@@ -655,5 +663,21 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
    **/
   public final void setHlMaFrCl(final HlMaFrCl pHlMaFrCl) {
     this.hlMaFrCl = pHlMaFrCl;
+  }
+
+  /**
+   * <p>Getter for hldUvd.</p>
+   * @return HldUvd
+   **/
+  public final HldUvd getHldUvd() {
+    return this.hldUvd;
+  }
+
+  /**
+   * <p>Setter for hldUvd.</p>
+   * @param pHldUvd reference
+   **/
+  public final void setHldUvd(final HldUvd pHldUvd) {
+    this.hldUvd = pHldUvd;
   }
 }
