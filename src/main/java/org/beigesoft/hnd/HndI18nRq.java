@@ -269,6 +269,11 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     if (pgSz != null) {
       // from request or cookie:
       cpf.setPgSz(Integer.valueOf(pgSz));
+      if (cpf.getPgSz() > 100) {
+        cpf.setPgSz(100);
+      } else if (cpf.getPgSz() < 5) {
+        cpf.setPgSz(5);
+      }
     }
     if (ndStCk) {
       pRqd.setCookVl("pgSz", cpf.getPgSz().toString());
