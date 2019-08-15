@@ -40,6 +40,7 @@ import org.beigesoft.fct.IFcFlCvFd;
 import org.beigesoft.log.ILog;
 import org.beigesoft.hld.IHlNmClSt;
 import org.beigesoft.prp.ISetng;
+import org.beigesoft.rdb.SrvClVl;
 
 /**
  * <p>Service that fills/converts given
@@ -68,6 +69,11 @@ public class FilCvEnt implements IFilCvEnt {
    * <p>Fillers fields factory.</p>
    */
   private IFcFlCvFd fctFilFld;
+
+  /**
+   * <p>Generating insert/update and CV service.</p>
+   **/
+  private SrvClVl srvClVl;
 
   /**
    * <p>Fills/converts given column values with given entity.</p>
@@ -124,6 +130,10 @@ public class FilCvEnt implements IFilCvEnt {
           fillFd(pRvs, pVs, pEnt, pCv, fdNm, dbgSh);
         }
       }
+    }
+    if (dbgSh) {
+      this.log.debug(pRvs, getClass(), "Filled CV: "
+        + this.srvClVl.str(pEnt.getClass(), pCv));
     }
   }
 
@@ -214,5 +224,21 @@ public class FilCvEnt implements IFilCvEnt {
    **/
   public final void setFctFilFld(final IFcFlCvFd pFctFilFld) {
     this.fctFilFld = pFctFilFld;
+  }
+
+  /**
+   * <p>Getter for srvClVl.</p>
+   * @return SrvClVl
+   **/
+  public final SrvClVl getSrvClVl() {
+    return this.srvClVl;
+  }
+
+  /**
+   * <p>Setter for srvClVl.</p>
+   * @param pSrvClVl reference
+   **/
+  public final void setSrvClVl(final SrvClVl pSrvClVl) {
+    this.srvClVl = pSrvClVl;
   }
 }

@@ -145,8 +145,11 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     "Request user/URL/rem.user/addr/host/port/locale: " + pRqd.getUsrNm()
   + "/" + pRqd.getReqUrl() + "/" + pRqd.getRemUsr() + "/" + pRqd.getRemAddr()
 + "/" + pRqd.getRemHost() + "/" + pRqd.getRemPort() + "/" + pRqd.getLocale());
-      this.log.debug(pRvs, HndI18nRq.class, "Request parameters: "
-        + pRqd.getParamMap());
+      StringBuffer prs = new StringBuffer();
+      for (Map.Entry<String, String[]> enr : pRqd.getParamMap().entrySet()) {
+        prs.append(enr.getKey() + "-" + Arrays.toString(enr.getValue()) + "; ");
+      }
+      this.log.debug(pRvs, HndI18nRq.class, "Request parameters: " + prs);
       this.log.debug(pRvs, HndI18nRq.class, "Request cookies: "
         + Arrays.toString(pRqd.getCookies()));
     }

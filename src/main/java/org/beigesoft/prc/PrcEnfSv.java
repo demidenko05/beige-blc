@@ -40,15 +40,14 @@ import java.lang.reflect.Method;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IReqDt;
-import org.beigesoft.mdl.IOwned;
+import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdlp.IOrId;
 import org.beigesoft.hld.IHlNmClMt;
-import org.beigesoft.hld.UvdVar;
 import org.beigesoft.rdb.IOrm;
 
 /**
- * <p>Service that saves entity from owned list with file into DB.
- * If file is already uploaded, then it acts like standard PrcEnoSv.
+ * <p>Service that saves entity with file into DB. If file is already uploaded,
+ * then it acts like standard PrcEntSv.
  * There are two kind of entity with file:
  * 1. an attachment (e.g. email)
  * 2. image/file on HTML page (e.g. WEB-Store's item specifics "Image")
@@ -70,7 +69,7 @@ import org.beigesoft.rdb.IOrm;
  * @param <ID> entity ID type
  * @author Yury Demidenko
  */
-public class PrcEnofSv<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
+public class PrcEnfSv<T extends IHasId<ID>, ID> implements IPrcEnt<T, ID> {
 
   /**
    * <p>ORM service.</p>
@@ -180,14 +179,7 @@ public class PrcEnofSv<T extends IOwned<?, ID>, ID> implements IPrcEnt<T, ID> {
       this.orm.update(pRvs, vs, pEnt);
       pRvs.put("msgSuc", "update_ok");
     }
-    this.orm.refrEnt(pRvs, vs, pEnt.getOwnr());
-    long owVrWs = Long.parseLong(pRqDt.getParam("owVr"));
-    if (owVrWs != pEnt.getOwnr().getVer()) {
-      throw new ExcCode(IOrm.DRTREAD, "dirty_read");
-    }
-    UvdVar uvs = (UvdVar) pRvs.get("uvs");
-    uvs.setOwnr(pEnt.getOwnr());
-    return null;
+    return pEnt;
   }
 
   //Simple getters and setters:

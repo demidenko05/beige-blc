@@ -44,6 +44,7 @@ import org.beigesoft.prc.PrcEmMsgSv;
 import org.beigesoft.prc.PrcEntSv;
 import org.beigesoft.prc.PrcEnoSv;
 import org.beigesoft.prc.PrcEnofSv;
+import org.beigesoft.prc.PrcEnfSv;
 import org.beigesoft.srv.IEmSnd;
 
 /**
@@ -98,6 +99,8 @@ public class FctEnPrc<RS> implements IFctPrcEnt {
             rz = crPuPrcEntSv(pRvs);
           } else if (PrcEnofDl.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEnofDl(pRvs);
+          } else if (PrcEnfSv.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEnfSv(pRvs);
           } else if (PrcEnofSv.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEnofSv(pRvs);
           } else if (PrcEnoSv.class.getSimpleName().equals(pPrNm)) {
@@ -153,6 +156,8 @@ public class FctEnPrc<RS> implements IFctPrcEnt {
             rz = crPuPrcEnofDl(pRvs);
           } else if (PrcEnofSv.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEnofSv(pRvs);
+          } else if (PrcEnfSv.class.getSimpleName().equals(pPrNm)) {
+            rz = crPuPrcEnfSv(pRvs);
           } else if (PrcEnoSv.class.getSimpleName().equals(pPrNm)) {
             rz = crPuPrcEnoSv(pRvs);
           } else if (PrcEnoCr.class.getSimpleName().equals(pPrNm)) {
@@ -196,6 +201,26 @@ public class FctEnPrc<RS> implements IFctPrcEnt {
     rz.setHldGets(this.fctBlc.lazHldGets(pRvs));
     this.procs.put(PrcEnofDl.class.getSimpleName(), rz);
     this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEnofDl.class
+      .getSimpleName() + " has been created.");
+    return rz;
+  }
+
+  /**
+   * <p>Create and put into the Map PrcEnfSv.</p>
+   * @param pRvs request scoped vars
+   * @return PrcEnfSv
+   * @throws Exception - an exception
+   */
+  private PrcEnfSv crPuPrcEnfSv(
+    final Map<String, Object> pRvs) throws Exception {
+    PrcEnfSv rz = new PrcEnfSv();
+    rz.setAppPth(this.fctBlc.getFctDt().getAppPth());
+    rz.setUplDir(this.fctBlc.getFctDt().getUplDir());
+    rz.setOrm(this.fctBlc.lazOrm(pRvs));
+    rz.setHldSets(this.fctBlc.lazHldSets(pRvs));
+    rz.setHldGets(this.fctBlc.lazHldGets(pRvs));
+    this.procs.put(PrcEnfSv.class.getSimpleName(), rz);
+    this.fctBlc.lazLogStd(pRvs).info(pRvs, getClass(), PrcEnfSv.class
       .getSimpleName() + " has been created.");
     return rz;
   }

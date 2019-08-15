@@ -673,6 +673,7 @@ public class FctBlc<RS> implements IFctApp {
     if (rz == null) {
       rz = new FilCvEnt();
       rz.setLog(lazLogStd(pRvs));
+      rz.setSrvClVl(lazSrvClVl(pRvs));
       rz.setSetng(lazStgOrm(pRvs));
       rz.setHldFilFdNms(lazHldFilFdCv(pRvs));
       rz.setFctFilFld(lazFctFilFdCv(pRvs));
