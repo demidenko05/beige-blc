@@ -202,8 +202,8 @@ public class ToCvTest<RS> {
     filCvEnt.fill(this.rqVs, vs, urtp, cv);
     assertTrue(cv.getStrs().keySet().contains("rol"));
     assertNull(cv.getStrs().get("rol"));
-    assertTrue(cv.getStrs().keySet().contains("usr"));
-    assertNull(cv.getStrs().get("usr"));
+    assertTrue(cv.getLongs().keySet().contains("usr"));
+    assertNull(cv.getLongs().get("usr"));
     assertEquals(urtp.getPriority(), cv.getInts().get("priority"));
     assertEquals(Long.valueOf(3L), cv.getLongs().get("ver"));
     this.fctApp.release(this.rqVs);

@@ -86,7 +86,7 @@ public class FctNmCnToSt implements IFctCnToSt {
    **/
   private ILog logStd;
 
-  //parts: TODO lazy!
+  //parts:
   /**
    * <p>Number to string service.</p>
    **/

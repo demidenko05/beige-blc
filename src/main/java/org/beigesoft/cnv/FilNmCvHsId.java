@@ -28,9 +28,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.cnv;
 
+import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.lang.reflect.Method;
 
+import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.mdl.ColVals;
 import org.beigesoft.fct.IFcFlCvFdv;
@@ -95,27 +98,93 @@ public class FilNmCvHsId implements IFilCvFld {
     @SuppressWarnings("unchecked")
     IHasId<?> subEnt = (IHasId<?>) getter.invoke(pEnt);
     @SuppressWarnings("unchecked")
-    Class<IHasId<?>> ifdCls = (Class<IHasId<?>>)
+    Class<IHasId<?>> fdCls = (Class<IHasId<?>>)
       this.hldFdCls.get(pEnt.getClass(), pFdNm);
-    for (String fdNm : this.setng.lazIdFldNms(ifdCls)) {
-      Object val;
-      if (subEnt != null) {
-        getter = this.hldGets.get(subEnt.getClass(), fdNm);
-        val = getter.invoke(subEnt);
-      } else {
-        val = null;
-      }
-      String cnvFdNm = this.hldCnvFdNms.get(ifdCls, fdNm);
-      @SuppressWarnings("unchecked")
-      IFilCvFdv<Object> flCvFdv = (IFilCvFdv<Object>)
-        this.fctCnvFld.laz(pRvs, cnvFdNm);
-      if (dbgSh) {
-        this.log.debug(pRvs, FilNmCvSmp.class,
-      "Converts fdNm/cls/val/converter: " + pFdNm + "/" + ifdCls
-    .getSimpleName() + "/" + val + "/" + flCvFdv.getClass().getSimpleName());
-      }
-      flCvFdv.fill(pRvs, pVs, pFdNm, val, pClVl);
+    List<String> fdIdNms = this.setng.lazIdFldNms(fdCls);
+    if (fdIdNms.size() > 1) {
+      throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID!"
+        + " ent/fd" + pEnt + "/" + pFdNm);
     }
+    if (subEnt != null) {
+      String idNm = fdIdNms.get(0);
+      getter = this.hldGets.get(subEnt.getClass(), idNm);
+      Object val = getter.invoke(subEnt);
+      if (IHasId.class.isAssignableFrom(val.getClass())) {
+        if (dbgSh) {
+          this.log.debug(pRvs, getClass(),
+        "Converts pEnt/pFdNm/subEnt/idNm/idCls: " + pEnt + "/" + pFdNm + "/"
+      + subEnt + "/" + idNm + "/" + fdCls);
+        }
+        @SuppressWarnings("unchecked")
+        IHasId<?> sse = (IHasId<?>) val;
+        Object id = revId(sse);
+        if (id.getClass().isEnum() || id.getClass() == Integer.class) {
+          if (pClVl.getInts() == null) {
+            pClVl.setInts(new HashMap<String, Integer>());
+          }
+          Integer iv;
+          if (id.getClass().isEnum()) {
+            iv = ((Enum) id).ordinal();
+          } else {
+            iv = (Integer) id;
+          }
+          pClVl.getInts().put(pFdNm, iv);
+        } else if (id.getClass() == Long.class) {
+          if (pClVl.getLongs() == null) {
+            pClVl.setLongs(new HashMap<String, Long>());
+          }
+          pClVl.getLongs().put(pFdNm, (Long) id);
+        } else if (id.getClass() == String.class) {
+          if (pClVl.getStrs() == null) {
+            pClVl.setStrs(new HashMap<String, String>());
+          }
+          pClVl.getStrs().put(pFdNm, (String) id);
+        } else {
+          throw new ExcCode(ExcCode.WRCN, "Subentity with wrong ID!"
+            + " ent/fd/idCls" + pEnt + "/" + pFdNm + "/" + id.getClass());
+        }
+      } else {
+        String cnvFdNm = this.hldCnvFdNms.get(fdCls, idNm);
+        @SuppressWarnings("unchecked")
+        IFilCvFdv<Object> flCvFdv = (IFilCvFdv<Object>)
+          this.fctCnvFld.laz(pRvs, cnvFdNm);
+        if (dbgSh) {
+          this.log.debug(pRvs, getClass(),
+        "Converts idNm/cls/val/converter: " + pFdNm + "/" + fdCls
+      .getSimpleName() + "/" + val + "/" + flCvFdv.getClass().getSimpleName());
+        }
+        flCvFdv.fill(pRvs, pVs, pFdNm, val, pClVl);
+      }
+    } else { //there is no different what is field's SQL type for null value:
+      if (pClVl.getLongs() == null) {
+        pClVl.setLongs(new HashMap<String, Long>());
+      }
+      pClVl.getLongs().put(pFdNm, null);
+    }
+  }
+
+  //Utils:
+  /**
+   * <p>Reveals last ID value.</p>
+   * @param pEnt entity
+   * @return ID value Integer/String/Long/Enum
+   * @throws Exception - an exception
+   **/
+  public final Object revId(final IHasId<?> pEnt) throws Exception {
+    Object rz;
+    List<String> fdIdNms = this.setng.lazIdFldNms(pEnt.getClass());
+    if (fdIdNms.size() > 1) {
+      throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID - "  + pEnt);
+    }
+    String idNm = fdIdNms.get(0);
+    Method getter = this.hldGets.get(pEnt.getClass(), idNm);
+    rz = getter.invoke(pEnt);
+    if (IHasId.class.isAssignableFrom(rz.getClass())) {
+      @SuppressWarnings("unchecked")
+      IHasId<?> sse = (IHasId<?>) rz;
+      return revId(sse);
+    }
+    return rz;
   }
 
   //Simple getters and setters:

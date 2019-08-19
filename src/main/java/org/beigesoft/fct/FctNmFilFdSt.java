@@ -76,7 +76,7 @@ public class FctNmFilFdSt implements IFcFlFdSt {
    **/
   private ILog logStd;
 
-  //parts: TODO lazy!
+  //parts:
   /**
    * <p>Fields setters RAPI holder.</p>
    **/

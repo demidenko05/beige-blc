@@ -92,6 +92,10 @@ public class SqlQu implements ISqlQu {
         def += " not null";
       }
       if (isFst) {
+        if (idNms.size() == 1 && !def.contains("key")) {
+          //e.g. CurrRt, its curr is only ID and foreign key
+          def += " primary key";
+        }
         isFst = false;
       } else {
         sb.append(",\n");
@@ -161,12 +165,6 @@ public class SqlQu implements ISqlQu {
       if (fdIdNms.size() > 1) {
         throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID!"
           + " cls/fd" + pCls + "/" + pFdNm);
-      }
-      Class<?> fcs = this.hldFdCls.get(fdeCls, fdIdNms.get(0));
-      if (IHasId.class.isAssignableFrom(fcs)) {
-        throw new ExcCode(ExcCode.WRCN, "Subentity with double foreign ID!"
-          + " cls/fd/fcl/f" + pCls + "/" + pFdNm + "/"
-            + fdCls + "/" + fdIdNms.get(0));
       }
       pSb.append(",\nconstraint fk" + pCls.getSimpleName() + pFdNm
         + " foreign key (" + pFdNm.toUpperCase() + ") references ");
@@ -253,24 +251,8 @@ public class SqlQu implements ISqlQu {
       }
       if (IHasId.class.isAssignableFrom(fdCls)) {
         @SuppressWarnings("unchecked")
-        Class<? extends IHasId<?>> fdeCls = (Class<? extends IHasId<?>>) fdCls;
-        List<String> fdIdNms = this.setng.lazIdFldNms(fdeCls);
-        if (fdIdNms.size() > 1) {
-          throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID!"
-            + " cls/fd" + pEnt.getClass() + "/" + fdNm);
-        }
-        Class<?> fcs = this.hldFdCls.get(fdeCls, fdIdNms.get(0));
-        if (IHasId.class.isAssignableFrom(fcs)) {
-          throw new ExcCode(ExcCode.WRCN, "Subentity with double foreign ID!"
-            + " cls/fd/fcl/f" + pEnt.getClass() + "/" + fdNm + "/"
-              + fdCls + "/" + fdIdNms.get(0));
-        }
-        if (dbgSh) {
-          this.log.debug(pRvs, getClass(), "EV CND ID sent/sfd: "
-            + fcs + "/" + fdIdNms.get(0));
-        }
-        getter = this.hldGets.get(fdeCls, fdIdNms.get(0));
-        fdVl = getter.invoke(fdVl);
+        IHasId<?> sse = (IHasId<?>) fdVl;
+        fdVl = revId(sse);
       }
       if (isFst) {
         isFst = false;
@@ -285,6 +267,29 @@ public class SqlQu implements ISqlQu {
       }
       pSb.append(als + fdNm.toUpperCase() + "=" + val);
     }
+  }
+
+  /**
+   * <p>Reveals last ID value.</p>
+   * @param pEnt entity
+   * @return ID value Integer/String/Long/Enum
+   * @throws Exception - an exception
+   **/
+  public final Object revId(final IHasId<?> pEnt) throws Exception {
+    Object rz;
+    List<String> fdIdNms = this.setng.lazIdFldNms(pEnt.getClass());
+    if (fdIdNms.size() > 1) {
+      throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID - "  + pEnt);
+    }
+    String idNm = fdIdNms.get(0);
+    Method getter = this.hldGets.get(pEnt.getClass(), idNm);
+    rz = getter.invoke(pEnt);
+    if (IHasId.class.isAssignableFrom(rz.getClass())) {
+      @SuppressWarnings("unchecked")
+      IHasId<?> sse = (IHasId<?>) rz;
+      return revId(sse);
+    }
+    return rz;
   }
 
   /**
