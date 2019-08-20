@@ -95,7 +95,7 @@ public class FilFldHsIdStr implements IFilFldStr {
       val = flCls.newInstance();
       List<String> fdIdNms = this.setng.lazIdFldNms(flCls);
       if (fdIdNms.size() > 1) {
-        throw new ExcCode(ExcCode.NYI, "NYI");
+        throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID "  + pEnt);
       }
       String filFdNm = this.hldFilFdNms.get(flCls, fdIdNms.get(0));
       IFilFldStr filFl = this.fctFilFld.laz(pRvs, filFdNm);

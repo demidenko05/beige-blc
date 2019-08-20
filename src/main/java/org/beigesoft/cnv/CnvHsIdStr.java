@@ -77,7 +77,7 @@ public class CnvHsIdStr<T extends IHasId<?>> implements ICnToSt<T> {
     }
     List<String> fdIdNms = this.setng.lazIdFldNms(pHsId.getClass());
     if (fdIdNms.size() > 1) {
-      throw new ExcCode(ExcCode.NYI, "NYI");
+      throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID "  + pHsId);
     }
     String cnNm = this.hldNmFdCn.get(pHsId.getClass(), fdIdNms.get(0));
     @SuppressWarnings("unchecked")

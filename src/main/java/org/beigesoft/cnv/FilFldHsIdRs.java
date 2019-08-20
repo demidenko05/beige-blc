@@ -150,28 +150,7 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
       this.filEnt.fill(pRvs, pVs, val, pRs);
       tbAls.remove(tbAl);
     } else { //only ID without joins:
-      List<String> fdIdNms = this.setng.lazIdFldNms(fdCls);
-      if (fdIdNms.size() > 1) {
-        throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID!");
-      }
-      String idNm = fdIdNms.get(0);
-      String cnNm = this.hldNmFdCn.get(fdCls, idNm);
-      @SuppressWarnings("unchecked")
-      ICnvRsFdv<Object, RS> flCnv =
-        (ICnvRsFdv<Object, RS>) this.fctCnvFld.laz(pRvs, cnNm);
-      String clNm;
-      if (tbAls.size() > 0) {
-        clNm = tbAls.get(tbAls.size() - 1) + pFlNm.toUpperCase();
-      } else {
-        clNm = pFlNm.toUpperCase();
-      }
-      if (dbgSh) {
-        this.log.debug(pRvs, getClass(), "Column alias/cls/fdCls: "
-          + clNm + "/" + pEnt.getClass() + "/" + fdCls);
-      }
-      Object id = flCnv.conv(pRvs, pVs, pRs, clNm);
-      Method setr = this.hldSets.get(fdCls, idNm);
-      setr.invoke(val, id);
+      fillId(pRvs, pVs, val, pFlNm, pRs, tbAls);
     }
     if (lvDeps.size() > 1) { //move down through custom DL subentities branch:
       LvDep ld = lvDeps.get(lvDeps.size() - 1);
@@ -209,6 +188,59 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
     Method setr = this.hldSets.get(pEnt.getClass(), pFlNm);
     setr.invoke(pEnt, val);
     return val != null;
+  }
+
+  //Utils:
+  /**
+   * <p>Fills given entity ID from result-set.</p>
+   * @param pRvs request scoped vars, not null
+   * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
+   * @param pEnt entity
+   * @param pFlNm main entity subentity field name, not null
+   * @param pRs record-set, not null
+   * @param pTbAls tables aliases
+   * @throws Exception - an exception
+   **/
+  public final void fillId(final Map<String, Object> pRvs,
+    final Map<String, Object> pVs, final IHasId<?> pEnt, final String pFlNm,
+      final IRecSet<RS> pRs, final List<String> pTbAls) throws Exception {
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7216);
+    List<String> fdIdNms = this.setng.lazIdFldNms(pEnt.getClass());
+    if (fdIdNms.size() > 1) {
+      throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID - "  + pEnt);
+    }
+    String idNm = fdIdNms.get(0);
+    Class<?> fdCls = this.hldFdCls.get(pEnt.getClass(), idNm);
+    if (IHasId.class.isAssignableFrom(fdCls)) {
+      if (dbgSh) {
+        this.log.debug(pRvs, getClass(), "Deep subentity idNm/idCls: "
+          + idNm + "/" + fdCls);
+      }
+      @SuppressWarnings("unchecked")
+      Class<IHasId<?>> fdeCls = (Class<IHasId<?>>) fdCls;
+      IHasId<?> oe = fdeCls.newInstance();
+      Method setr = this.hldSets.get(pEnt.getClass(), idNm);
+      setr.invoke(pEnt, oe);
+      fillId(pRvs, pVs, oe, pFlNm, pRs, pTbAls);
+    } else {
+      String cnNm = this.hldNmFdCn.get(pEnt.getClass(), idNm);
+      @SuppressWarnings("unchecked")
+      ICnvRsFdv<Object, RS> flCnv =
+        (ICnvRsFdv<Object, RS>) this.fctCnvFld.laz(pRvs, cnNm);
+      String clNm;
+      if (pTbAls.size() > 0) {
+        clNm = pTbAls.get(pTbAls.size() - 1) + pFlNm.toUpperCase();
+      } else {
+        clNm = pFlNm.toUpperCase();
+      }
+      if (dbgSh) {
+        this.log.debug(pRvs, getClass(), "Column alias/fdCls: "
+          + clNm + "/" + pEnt.getClass());
+      }
+      Object id = flCnv.conv(pRvs, pVs, pRs, clNm);
+      Method setr = this.hldSets.get(pEnt.getClass(), idNm);
+      setr.invoke(pEnt, id);
+    }
   }
 
   //Simple getters and setters:

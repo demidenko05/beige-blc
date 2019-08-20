@@ -280,8 +280,7 @@ public class FilNmCvHsId implements IFilCvFld {
    * <p>Setter for fctCnvFld.</p>
    * @param pFctCnvFld reference
    **/
-  public final void setFctCnvFld(
-    final IFcFlCvFdv pFctCnvFld) {
+  public final void setFctCnvFld(final IFcFlCvFdv pFctCnvFld) {
     this.fctCnvFld = pFctCnvFld;
   }
 }

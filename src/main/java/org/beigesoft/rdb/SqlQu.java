@@ -88,6 +88,10 @@ public class SqlQu implements ISqlQu {
     List<String> idNms = this.setng.lazIdFldNms(pCls);
     for (String fdNm : idNms) {
       String def = this.setng.lazFldStg(pCls, fdNm, DEF);
+      if (def == null) {
+        throw new ExcCode(ExcCode.WRCN,
+          "There is no definition for ID field/cls" + fdNm + "/" + pCls);
+      }
       if (!def.contains("not null")) {
         def += " not null";
       }
@@ -104,6 +108,10 @@ public class SqlQu implements ISqlQu {
     }
     for (String fdNm : this.setng.lazFldNms(pCls)) {
       String def = this.setng.lazFldStg(pCls, fdNm, DEF);
+      if (def == null) {
+        throw new ExcCode(ExcCode.WRCN,
+          "There is no definition for field/cls" + fdNm + "/" + pCls);
+      }
       String nul = this.setng.lazFldStg(pCls, fdNm, NUL);
       if ("false".equals(nul) && !def.contains("not null")) {
         def += " not null";
