@@ -90,7 +90,7 @@ public class SqlQu implements ISqlQu {
       String def = this.setng.lazFldStg(pCls, fdNm, DEF);
       if (def == null) {
         throw new ExcCode(ExcCode.WRCN,
-          "There is no definition for ID field/cls" + fdNm + "/" + pCls);
+          "There is no definition for ID field/cls: " + fdNm + "/" + pCls);
       }
       if (!def.contains("not null")) {
         def += " not null";
@@ -110,7 +110,7 @@ public class SqlQu implements ISqlQu {
       String def = this.setng.lazFldStg(pCls, fdNm, DEF);
       if (def == null) {
         throw new ExcCode(ExcCode.WRCN,
-          "There is no definition for field/cls" + fdNm + "/" + pCls);
+          "There is no definition for field/cls: " + fdNm + "/" + pCls);
       }
       String nul = this.setng.lazFldStg(pCls, fdNm, NUL);
       if ("false".equals(nul) && !def.contains("not null")) {
@@ -246,21 +246,21 @@ public class SqlQu implements ISqlQu {
     boolean isFst = true;
     String als = pEnt.getClass().getSimpleName().toUpperCase() + ".";
     for (String fdNm : this.setng.lazIdFldNms(pEnt.getClass())) {
-      Object fdVl = null;
+      Object id = null;
       Class<?> fdCls = this.hldFdCls.get(pEnt.getClass(), fdNm);
       Method getter = this.hldGets.get(pEnt.getClass(), fdNm);
-      fdVl = getter.invoke(pEnt);
+      id = getter.invoke(pEnt);
       if (dbgSh) {
         this.log.debug(pRvs, getClass(), "EV CND ID ent/fd/fcls/vl: "
-          + pEnt.getClass() + "/" + fdNm + "/" + fdCls + "/" + fdVl);
+          + pEnt.getClass() + "/" + fdNm + "/" + fdCls + "/" + id);
       }
-      if (fdVl == null) {
+      if (id == null) {
         throw new ExcCode(ExcCode.WR, "Entity with NULL ID!");
       }
       if (IHasId.class.isAssignableFrom(fdCls)) {
         @SuppressWarnings("unchecked")
-        IHasId<?> sse = (IHasId<?>) fdVl;
-        fdVl = revId(sse);
+        IHasId<?> sse = (IHasId<?>) id;
+        id = revId(sse);
       }
       if (isFst) {
         isFst = false;
@@ -268,10 +268,15 @@ public class SqlQu implements ISqlQu {
         pSb.append(" and ");
       }
       String val;
-      if (fdVl instanceof String) {
-        val = "'" + fdVl.toString() + "'";
+      if (id.getClass() == Long.class || id.getClass() == Integer.class) {
+        val = id.toString();
+      } else if (id.getClass() == String.class) {
+        val = "'" + id.toString() + "'";
+      } else if (id.getClass().isEnum()) {
+        val = String.valueOf(((Enum) id).ordinal());
       } else {
-        val = fdVl.toString();
+        throw new ExcCode(ExcCode.WRCN, "Entity with wrong ID!"
+          + " ent/idCls" + pEnt + "/" + id.getClass());
       }
       pSb.append(als + fdNm.toUpperCase() + "=" + val);
     }

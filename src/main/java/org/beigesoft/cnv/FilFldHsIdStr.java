@@ -33,6 +33,7 @@ import java.util.Map;
 import java.lang.reflect.Method;
 
 import org.beigesoft.exc.ExcCode;
+import org.beigesoft.log.ILog;
 import org.beigesoft.mdl.IHasId;
 import org.beigesoft.fct.IFcFlFdSt;
 import org.beigesoft.hld.IHlNmClMt;
@@ -47,6 +48,11 @@ import org.beigesoft.prp.ISetng;
  * @author Yury Demidenko
  */
 public class FilFldHsIdStr implements IFilFldStr {
+
+  /**
+   * <p>Log.</p>
+   **/
+  private ILog log;
 
   /**
    * <p>Fields classes holder.</p>
@@ -88,6 +94,7 @@ public class FilFldHsIdStr implements IFilFldStr {
     final Map<String, Object> pVs, final T pEnt, final String pFlNm,
       final String pStVl) throws Exception {
     IHasId<?> val = null;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 7217);
     if (pStVl != null && !"".equals(pStVl)) {
       @SuppressWarnings("unchecked")
       Class<IHasId<?>> flCls = (Class<IHasId<?>>) this.hldFdCls
@@ -97,15 +104,36 @@ public class FilFldHsIdStr implements IFilFldStr {
       if (fdIdNms.size() > 1) {
         throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID "  + pEnt);
       }
-      String filFdNm = this.hldFilFdNms.get(flCls, fdIdNms.get(0));
+      String idNm = fdIdNms.get(0);
+      String filFdNm = this.hldFilFdNms.get(flCls, idNm);
       IFilFldStr filFl = this.fctFilFld.laz(pRvs, filFdNm);
-      filFl.fill(pRvs, pVs, val, fdIdNms.get(0), pStVl);
+      if (dbgSh) {
+        this.log.debug(pRvs, getClass(), "Fill filler/ent/sent/idNm/stVl: "
+          + filFdNm + "/" + pEnt + "/" + val + "/" + idNm + "/" + pStVl);
+      }
+      filFl.fill(pRvs, pVs, val, idNm, pStVl);
     }
     Method setr = this.hldSets.get(pEnt.getClass(), pFlNm);
     setr.invoke(pEnt, val);
   }
 
   //Simple getters and setters:
+  /**
+   * <p>Getter for log.</p>
+   * @return ILog
+   **/
+  public final ILog getLog() {
+    return this.log;
+  }
+
+  /**
+   * <p>Setter for log.</p>
+   * @param pLog reference
+   **/
+  public final void setLog(final ILog pLog) {
+    this.log = pLog;
+  }
+
   /**
    * <p>Getter for hldSets.</p>
    * @return IHlNmClMt

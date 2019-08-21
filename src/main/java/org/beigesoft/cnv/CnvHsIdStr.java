@@ -30,11 +30,11 @@ package org.beigesoft.cnv;
 
 import java.util.List;
 import java.util.Map;
+import java.lang.reflect.Method;
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.mdl.IHasId;
-import org.beigesoft.fct.IFctCnToSt;
-import org.beigesoft.hld.IHlNmClSt;
+import org.beigesoft.hld.IHlNmClMt;
 import org.beigesoft.prp.ISetng;
 
 /**
@@ -48,14 +48,9 @@ import org.beigesoft.prp.ISetng;
 public class CnvHsIdStr<T extends IHasId<?>> implements ICnToSt<T> {
 
   /**
-   * <p>Converters fields factory.</p>
-   */
-  private IFctCnToSt fctCnvFld;
-
-  /**
-   * <p>Fields converters names holder.</p>
+   * <p>Fields getters RAPI holder.</p>
    **/
-  private IHlNmClSt hldNmFdCn;
+  private IHlNmClMt hldGets;
 
   /**
    * <p>Settings service.</p>
@@ -75,51 +70,43 @@ public class CnvHsIdStr<T extends IHasId<?>> implements ICnToSt<T> {
     if (pHsId == null) {
       return "";
     }
-    List<String> fdIdNms = this.setng.lazIdFldNms(pHsId.getClass());
-    if (fdIdNms.size() > 1) {
-      throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID "  + pHsId);
+    Object id = revId(pHsId);
+    if (id.getClass().isEnum()) {
+      return ((Enum) id).name();
+    } else if (id.getClass() == Long.class || id.getClass() == Integer.class
+      || id.getClass() == String.class) {
+      return id.toString();
+    } else {
+      throw new ExcCode(ExcCode.WRCN, "Subentity with wrong ID!"
+        + " ent/idCls" + pHsId + "/" + id.getClass());
     }
-    String cnNm = this.hldNmFdCn.get(pHsId.getClass(), fdIdNms.get(0));
-    @SuppressWarnings("unchecked")
-    ICnToSt<Object> flCn = (ICnToSt<Object>) this.fctCnvFld
-      .laz(pRvs, cnNm);
-    return flCn.conv(pRvs, pHsId.getIid());
+  }
+
+  //Utils:
+  /**
+   * <p>Reveals last ID value.</p>
+   * @param pEnt entity
+   * @return ID value Integer/String/Long/Enum
+   * @throws Exception - an exception
+   **/
+  public final Object revId(final IHasId<?> pEnt) throws Exception {
+    Object rz;
+    List<String> fdIdNms = this.setng.lazIdFldNms(pEnt.getClass());
+    if (fdIdNms.size() > 1) {
+      throw new ExcCode(ExcCode.WRCN, "Subentity with composite ID - "  + pEnt);
+    }
+    String idNm = fdIdNms.get(0);
+    Method getter = this.hldGets.get(pEnt.getClass(), idNm);
+    rz = getter.invoke(pEnt);
+    if (IHasId.class.isAssignableFrom(rz.getClass())) {
+      @SuppressWarnings("unchecked")
+      IHasId<?> sse = (IHasId<?>) rz;
+      return revId(sse);
+    }
+    return rz;
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Getter for fctCnvFld.</p>
-   * @return IFctCnToSt
-   **/
-  public final IFctCnToSt getFctCnvFld() {
-    return this.fctCnvFld;
-  }
-
-  /**
-   * <p>Setter for fctCnvFld.</p>
-   * @param pFctCnvFld reference
-   **/
-  public final void setFctCnvFld(
-    final IFctCnToSt pFctCnvFld) {
-    this.fctCnvFld = pFctCnvFld;
-  }
-
-  /**
-   * <p>Getter for hldNmFdCn.</p>
-   * @return IHlNmClSt
-   **/
-  public final IHlNmClSt getHldNmFdCn() {
-    return this.hldNmFdCn;
-  }
-
-  /**
-   * <p>Setter for hldNmFdCn.</p>
-   * @param pHldNmFdCn reference
-   **/
-  public final void setHldNmFdCn(final IHlNmClSt pHldNmFdCn) {
-    this.hldNmFdCn = pHldNmFdCn;
-  }
-
   /**
    * <p>Getter for setng.</p>
    * @return ISetng
@@ -134,5 +121,21 @@ public class CnvHsIdStr<T extends IHasId<?>> implements ICnToSt<T> {
    **/
   public final void setSetng(final ISetng pSetng) {
     this.setng = pSetng;
+  }
+
+  /**
+   * <p>Getter for hldGets.</p>
+   * @return IHlNmClMt
+   **/
+  public final IHlNmClMt getHldGets() {
+    return this.hldGets;
+  }
+
+  /**
+   * <p>Setter for hldGets.</p>
+   * @param pHldGets reference
+   **/
+  public final void setHldGets(final IHlNmClMt pHldGets) {
+    this.hldGets = pHldGets;
   }
 }

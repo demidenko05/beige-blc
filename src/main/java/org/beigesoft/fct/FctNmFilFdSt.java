@@ -197,6 +197,7 @@ public class FctNmFilFdSt implements IFcFlFdSt {
    */
   private FilFldHsIdStr crPuFilFldHsIdStrUvd() {
     FilFldHsIdStr rz = new FilFldHsIdStr();
+    rz.setLog(getLogStd());
     rz.setHldSets(getHldSets());
     rz.setHldFilFdNms(getHldFilFdNmsUvd());
     rz.setSetng(getStgUvd());
@@ -213,9 +214,10 @@ public class FctNmFilFdSt implements IFcFlFdSt {
    */
   private FilFldHsIdStr crPuFilFldHsIdStrDbCp() {
     FilFldHsIdStr rz = new FilFldHsIdStr();
+    rz.setLog(getLogStd());
     rz.setHldSets(getHldSets());
     rz.setHldFilFdNms(getHldFilFdNmsDbCp());
-    rz.setSetng(getStgDbCp());
+    rz.setSetng(getStgUvd()); //all entities including UsTmc!!!
     rz.setHldFdCls(getHldFdCls());
     rz.setFctFilFld(this);
     this.fillers.put(FILHSIDSTDBCPNM, rz);

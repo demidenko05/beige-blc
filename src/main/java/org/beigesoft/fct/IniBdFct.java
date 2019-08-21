@@ -287,6 +287,7 @@ public class IniBdFct<RS> implements IIniBdFct<RS> {
     hlFdSt.setStgFdNm(new HashMap<String, String>());
     hlFdSt.getStgFdNm().put("rtrNm", "i18n");
     hlFdSt.getStgFdNm().put("clsNm", "i18n");
+    hlFdSt.getStgFdNm().put("pwd", "pwd");
     hlFdSt.setSetng(pFct.getFctBlc().lazStgUvd(pRvs));
     hlFdSt.setCustClss(new HashSet<Class<?>>());
     hlFdSt.getCustClss().add(Date.class);

@@ -298,8 +298,7 @@ public class FctNmCnToSt implements IFctCnToSt {
    */
   private CnvHsIdStr<IHasId<?>> crPuCnvHsIdStrUvd() {
     CnvHsIdStr<IHasId<?>> rz = new CnvHsIdStr<IHasId<?>>();
-    rz.setFctCnvFld(this);
-    rz.setHldNmFdCn(getHldNmFdCnUvd());
+    rz.setHldGets(getHldGets());
     rz.setSetng(getStgUvd());
     this.convrts.put(CNHSIDSTUVDNM, rz);
     getLogStd().info(null, getClass(), CNHSIDSTUVDNM + " has been created.");
@@ -312,9 +311,8 @@ public class FctNmCnToSt implements IFctCnToSt {
    */
   private CnvHsIdStr<IHasId<?>> crPuCnvHsIdStrDbCp() {
     CnvHsIdStr<IHasId<?>> rz = new CnvHsIdStr<IHasId<?>>();
-    rz.setFctCnvFld(this);
-    rz.setHldNmFdCn(getHldNmFdCnDbcp());
-    rz.setSetng(getStgDbCp());
+    rz.setHldGets(getHldGets());
+    rz.setSetng(getStgUvd()); //all entities including UsTmc!!!
     this.convrts.put(CNHSIDSTDBCPNM, rz);
     getLogStd().info(null, getClass(), CNHSIDSTDBCPNM + " has been created.");
     return rz;
