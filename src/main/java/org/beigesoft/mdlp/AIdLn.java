@@ -32,7 +32,8 @@ import org.beigesoft.mdl.AHasVr;
 import org.beigesoft.mdl.IIdLn;
 
 /**
- * <p>Base abstraction mdlp model with ID Long type and version.</p>
+ * <p>Base abstraction mdlp model with ID Long type and version.
+ * This is for replicable model, i.e. ID is non-auto-generated.</p>
  *
  * @author Yury Demidenko
  */

@@ -31,7 +31,8 @@ package org.beigesoft.mdlp;
 import org.beigesoft.mdl.IIdLnNm;
 
 /**
- * <p>Abstraction of mdlp model with name, Long Id and version.</p>
+ * <p>Abstraction of mdlp model with name, Long Id and version.
+ * This is for replicable model, i.e. ID is non-auto-generated.</p>
  *
  * @author Yury Demidenko
  */

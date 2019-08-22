@@ -14,10 +14,10 @@ package org.beigesoft.mdl;
 
 /**
  * <p>Abstraction of persistable model with Long ID and version.
- * This is for replicable model, i.e. ID is non-auto-generated.</p>
+ * ID is auto-generated, for non-replicable models.</p>
  *
  * @author Yury Demidenko
  */
-public interface IIdLn extends IHasId<Long> {
+public interface IIdLna extends IIdLn {
 
 }

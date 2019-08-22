@@ -29,14 +29,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.mdlp;
 
 import org.beigesoft.mdl.AEditable;
-import org.beigesoft.mdl.IHasId;
+import org.beigesoft.mdl.IIdStr;
 
 /**
  * <p>Model User for Tomcat standard JDBC authentication.</p>
  *
  * @author Yury Demidenko
  */
-public class UsTmc extends AEditable implements IHasId<String> {
+public class UsTmc extends AEditable implements IIdStr {
 
   /**
    * <p>User's name/id.

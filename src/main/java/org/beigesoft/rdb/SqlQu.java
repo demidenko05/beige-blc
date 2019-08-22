@@ -98,6 +98,7 @@ public class SqlQu implements ISqlQu {
       if (isFst) {
         if (idNms.size() == 1 && !def.contains("key")) {
           //e.g. CurrRt, its curr is only ID and foreign key
+          //or Deliv whose iid is enum-EDeliv
           def += " primary key";
         }
         isFst = false;
