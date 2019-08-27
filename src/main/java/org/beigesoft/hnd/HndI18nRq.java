@@ -223,7 +223,7 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     pRvs.put("lngs", this.lngs);
     pRvs.put("dcSps", this.dcSps);
     pRvs.put("dcGrSps", this.dcGrSps);
-    pRvs.put("usPrfs", this.dcGrSps);
+    pRvs.put("usPrfs", this.usPrfs);
     pRqd.setAttr("hldUvd", this.hldUvd);
     pRqd.setAttr("utJsp", this.utJsp);
     pRqd.setAttr("i18n", this.i18n);
