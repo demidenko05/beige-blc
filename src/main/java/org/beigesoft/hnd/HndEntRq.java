@@ -146,6 +146,7 @@ public class HndEntRq<RS> implements IHndRq {
     if (entNm == null) { //dsk/mbl.jsp
       return;
     }
+    pRqDt.setAttr("urlPrf", "../"); //overridable, see prn.jsp
     Class<? extends IHasId<?>> cls = this.entMap.get(entNm);
     if (cls == null) {
       this.logSec.error(pRvs, HndEntRq.class,

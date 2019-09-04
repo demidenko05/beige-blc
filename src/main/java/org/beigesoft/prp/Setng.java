@@ -279,6 +279,7 @@ public class Setng implements ISetng {
     if (pCls == null) {
       throw new ExcCode(ExcCode.WR, "Null parameter cls!");
     }
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 6000);
     if (this.fldNms == null || this.fldNms.get(pCls) == null) {
       synchronized (this) {
         if (this.fldNms == null || this.fldNms.get(pCls) == null) {
@@ -301,7 +302,6 @@ public class Setng implements ISetng {
           }
           if (exlFdStr != null) {
             this.clsStgs.get(pCls).remove(KEYEXLFLDS);
-            boolean dbgSh = getLog().getDbgSh(this.getClass(), 6000);
             if (dbgSh) {
           this.log.debug(null, Setng.class, "clsStgs deleted stg cls/stg/val: "
                 + pCls + "/" + KEYEXLFLDS + "/" + exlFdStr);
@@ -315,7 +315,12 @@ public class Setng implements ISetng {
         }
       }
     }
-    return this.fldNms.get(pCls);
+    List<String> rz = this.fldNms.get(pCls);
+    if (dbgSh) {
+      this.log.debug(null, Setng.class, "cls/fields: "
+        + pCls + "-" + rz);
+    }
+    return rz;
   }
 
   /**
