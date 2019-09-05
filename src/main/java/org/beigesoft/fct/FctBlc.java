@@ -61,6 +61,7 @@ import org.beigesoft.hnd.HndCsvWri;
 import org.beigesoft.hnd.HndEntRq;
 import org.beigesoft.hnd.HndI18nRq;
 import org.beigesoft.hnd.HndNtrRq;
+import org.beigesoft.hnd.HndSpam;
 import org.beigesoft.prp.UtlPrp;
 import org.beigesoft.prp.Setng;
 import org.beigesoft.prp.ISetng;
@@ -167,6 +168,8 @@ public class FctBlc<RS> implements IFctApp {
             rz = lazStgOrm(pRvs);
           } else if (IOrm.class.getSimpleName().equals(pBnNm)) {
             rz = lazOrm(pRvs);
+          } else if (HndSpam.class.getSimpleName().equals(pBnNm)) {
+            rz = lazHndSpam(pRvs);
           } else if (SrvClVl.class.getSimpleName().equals(pBnNm)) {
             rz = lazSrvClVl(pRvs);
           } else if (ICsvRdr.class.getSimpleName().equals(pBnNm)) {
@@ -596,6 +599,25 @@ public class FctBlc<RS> implements IFctApp {
       rz.setLog(lazLogStd(pRvs));
       this.beans.put(FctDt.STGORMNM, rz);
       lazLogStd(pRvs).info(pRvs, getClass(), FctDt.STGORMNM
+        + " has been created.");
+    }
+    return rz;
+  }
+
+  /**
+   * <p>Lazy getter HndSpam.</p>
+   * @param pRvs request scoped vars
+   * @return HndSpam
+   * @throws Exception - an exception
+   */
+  public final synchronized HndSpam lazHndSpam(
+    final Map<String, Object> pRvs) throws Exception {
+    HndSpam rz = (HndSpam) this.beans.get(HndSpam.class.getSimpleName());
+    if (rz == null) {
+      rz = new HndSpam();
+      rz.setSecLog(lazLogSec(pRvs));
+      this.beans.put(HndSpam.class.getSimpleName(), rz);
+      lazLogStd(pRvs).info(pRvs, getClass(), HndSpam.class.getSimpleName()
         + " has been created.");
     }
     return rz;
