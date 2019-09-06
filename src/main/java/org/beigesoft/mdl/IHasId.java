@@ -64,7 +64,7 @@ public interface IHasId<ID> extends IEditable {
    * <p>Setter for itsVersion to check dirty.</p>
    * @param pVer reference
    **/
-  void setVer(final Long pVer);
+  void setVer(Long pVer);
 
   /**
    * <p>Usually it's simple getter that return model ID.</p>

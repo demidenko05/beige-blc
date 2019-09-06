@@ -78,7 +78,7 @@ public class RpRtrvDbXml<RS> implements IRpRtrv {
   /**
    * <p>Retrieves requested entities from DB then write them into a stream
    * by given writer.</p>
-   * @param T Entity Class
+   * @param <T> Entity Class
    * @param pRvs request scoped vars (e.g. where clause)
    * @param pCls Entity Class
    * @param pWri writer

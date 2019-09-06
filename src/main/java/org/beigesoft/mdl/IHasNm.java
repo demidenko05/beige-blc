@@ -40,7 +40,7 @@ public interface IHasNm {
    * </p>
    * @param pNme name
    **/
-  void setNme(final String pNme);
+  void setNme(String pNme);
 
   /**
    * <p>Usually it's simple getter that return model name.</p>

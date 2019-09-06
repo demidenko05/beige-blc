@@ -57,7 +57,7 @@ public class Reflect implements IReflect {
       }
     }
     final Class<?> supCls = clazz.getSuperclass();
-    if (supCls != null && supCls != java.lang.Object.class) {
+    if (supCls != null && supCls != Object.class) {
       for (Field fld : retFlds(supCls)) {
         fldSet.add(fld);
       }
@@ -81,7 +81,7 @@ public class Reflect implements IReflect {
       }
     }
     final Class<?> supCls = clazz.getSuperclass();
-    if (supCls != null && supCls != java.lang.Object.class) {
+    if (supCls != null && supCls != Object.class) {
       for (Method mfd : retMths(supCls)) {
         fldSet.add(mfd);
       }
@@ -104,7 +104,7 @@ public class Reflect implements IReflect {
     }
     final Class<?> supCls = pCls.getSuperclass();
     Field field = null;
-    if (supCls != null && supCls != java.lang.Object.class) {
+    if (supCls != null && supCls != Object.class) {
       field = retFld(supCls, pFlNm);
     }
     return field;
@@ -125,7 +125,7 @@ public class Reflect implements IReflect {
     }
     final Class<?> supCls = pCls.getSuperclass();
     Method mth = null;
-    if (supCls != null && supCls != java.lang.Object.class) {
+    if (supCls != null && supCls != Object.class) {
       mth = retMth(supCls, pMthNm);
     }
     return mth;

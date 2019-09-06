@@ -54,7 +54,6 @@ public class HldCnvId implements IHlClSt {
    * <p>Get converter name for given class and field name.</p>
    * @param <T> entity type
    * @param pCls a Class
-   * @param pFlNm Field Name
    * @return converter from string name
    * @throws Exception an Exception
    **/

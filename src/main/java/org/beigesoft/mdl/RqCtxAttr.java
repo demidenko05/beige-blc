@@ -74,7 +74,6 @@ public class RqCtxAttr implements IAttrs {
   /**
    * <p>Setter for attribute.</p>
    * @param pAttrName Attribute name
-   * @param pAttribute reference
    **/
   @Override
   public final void remAttr(final String pAttrName) {

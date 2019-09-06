@@ -75,7 +75,7 @@ public class FilFldSmpRs<RS> implements IFilFldRs<RS> {
    * @param pRvs request scoped vars, not null
    * @param pVs invoker scoped vars, e.g. needed fields {id, nme}, not null.
    * @param pEnt Entity to fill, not null
-   * @param pFlNm Field name, not null
+   * @param pFdNm Field name, not null
    * @param pRs record-set, not null
    * @return if not-null value
    * @throws Exception - an exception

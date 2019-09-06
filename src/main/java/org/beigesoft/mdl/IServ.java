@@ -47,7 +47,7 @@ public interface IServ extends IIdLnNm {
    * Not null, default TIME, booking time method.</p>
    * @param pTmMe reference
    **/
-  void setTmMe(final ESrvTm pTmMe);
+  void setTmMe(ESrvTm pTmMe);
 
   /**
    * <p>Getter for tmAd.
@@ -63,5 +63,5 @@ public interface IServ extends IIdLnNm {
    * e.g. step from zero in minutes (5/10/15/20/30) for tmMe=="*TIME*".</p>
    * @param pTmAd reference
    **/
-  void setTmAd(final Integer pTmAd);
+  void setTmAd(Integer pTmAd);
 }

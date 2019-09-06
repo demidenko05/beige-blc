@@ -51,5 +51,5 @@ public interface ICsvWri {
    * @throws Exception an Exception
    **/
   void write(Map<String, Object> pRqVs, List<List<Object>> pData,
-    CsvMth pCsvMth, final OutputStream pOus) throws Exception;
+    CsvMth pCsvMth, OutputStream pOus) throws Exception;
 }
