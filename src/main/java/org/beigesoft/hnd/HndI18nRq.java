@@ -329,7 +329,13 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
       //use from cookie:
       lng = pRqd.getCookVl("lng");
       dcSp = pRqd.getCookVl("dcSp");
+      if (DcSp.COMMACOV.equals(dcSp)) {
+        dcSp = DcSp.COMMAID;
+      }
       dcGrSp = pRqd.getCookVl("dcGrSp");
+      if (DcSp.COMMACOV.equals(dcGrSp)) {
+        dcGrSp = DcSp.COMMAID;
+      }
       dgInGr = pRqd.getCookVl("dgInGr");
       if (dbgSh) {
         this.log.debug(null, HndI18nRq.class, "Cookie lng/dcSp/dcGrSp/dgInGr: "
@@ -395,8 +401,20 @@ public class HndI18nRq<RS> implements IHndRq, IHndCh {
     if (ndStCk) {
       pRqd.setCookVl("dgInGr", upf.getDgInGr().toString());
       pRqd.setCookVl("lng", upf.getLng().getIid());
-      pRqd.setCookVl("dcSp", upf.getDcSp().getIid());
-      pRqd.setCookVl("dcGrSp", upf.getDcGrSp().getIid());
+      String dcSpc;
+      if (upf.getDcSp().getIid().equals(DcSp.COMMAID)) {
+        dcSpc = DcSp.COMMACOV;
+      } else {
+        dcSpc = upf.getDcSp().getIid();
+      }
+      pRqd.setCookVl("dcSp", dcSpc);
+      String dcGrSpc;
+      if (upf.getDcGrSp().getIid().equals(DcSp.COMMAID)) {
+        dcGrSpc = DcSp.COMMACOV;
+      } else {
+        dcGrSpc = upf.getDcGrSp().getIid();
+      }
+      pRqd.setCookVl("dcGrSp", dcGrSpc);
       if (dbgSh) {
         this.log.debug(null, HndI18nRq.class, "Set cookie to lng/dcSp/dcGrSp: "
           + upf.getLng() .getIid() + "/" + upf.getDcSp().getIid() + "/"

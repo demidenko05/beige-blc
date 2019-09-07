@@ -36,6 +36,26 @@ package org.beigesoft.mdlp;
 public class DcSp extends AIdStrNm {
 
   /**
+   * <p>Dot cookie value.</p>
+   **/
+  public static final String DOTCOV = "DOT";
+
+  /**
+   * <p>Comma cookie value.</p>
+   **/
+  public static final String COMMACOV = "COMMA";
+
+  /**
+   * <p>Dot ID.</p>
+   **/
+  public static final String DOTID = ".";
+
+  /**
+   * <p>Comma ID.</p>
+   **/
+  public static final String COMMAID = ",";
+
+  /**
    * <p>Space ID.</p>
    **/
   public static final String SPACEID = "SPACE";
