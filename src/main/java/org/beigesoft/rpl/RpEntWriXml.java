@@ -117,10 +117,19 @@ public class RpEntWriXml implements IRpEntWri {
     Method getter = this.hldGets.get(pEnt.getClass(), pFdNm);
     Object fdVl = getter.invoke(pEnt);
     String fdVlSt;
+    boolean dbgSh = getLog().getDbgSh(this.getClass(), 6701);
     if (fdVl == null) {
       fdVlSt = "";
+      if (dbgSh) {
+        this.log.debug(pRvs, RpEntWriXml.class, "Writing null fdNm: "
+          + pFdNm);
+      }
     } else {
       String cnNm = this.hldNmFdCn.get(pEnt.getClass(), pFdNm);
+      if (dbgSh) {
+        this.log.debug(pRvs, RpEntWriXml.class, "Writing fdNm/fdVl/cnv: "
+          + pFdNm + "/" + fdVl + "/" + cnNm);
+      }
       @SuppressWarnings("unchecked")
       ICnToSt<Object> flCn = (ICnToSt<Object>) this.fctCnvFld
         .laz(pRvs, cnNm);

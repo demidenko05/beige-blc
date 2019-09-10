@@ -312,7 +312,7 @@ public class FctNmCnToSt implements IFctCnToSt {
   private CnvHsIdStr<IHasId<?>> crPuCnvHsIdStrDbCp() {
     CnvHsIdStr<IHasId<?>> rz = new CnvHsIdStr<IHasId<?>>();
     rz.setHldGets(getHldGets());
-    rz.setSetng(getStgUvd()); //all entities including UsTmc!!!
+    rz.setSetng(getStgDbCp());
     this.convrts.put(CNHSIDSTDBCPNM, rz);
     getLogStd().info(null, getClass(), CNHSIDSTDBCPNM + " has been created.");
     return rz;

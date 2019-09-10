@@ -199,11 +199,13 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
    * @param pFlNm main entity subentity field name, not null
    * @param pRs record-set, not null
    * @param pTbAls tables aliases
+   * @return if ID null
    * @throws Exception - an exception
    **/
-  public final void fillId(final Map<String, Object> pRvs,
+  public final boolean fillId(final Map<String, Object> pRvs,
     final Map<String, Object> pVs, final IHasId<?> pEnt, final String pFlNm,
       final IRecSet<RS> pRs, final List<String> pTbAls) throws Exception {
+    boolean idNull = false;
     boolean dbgSh = getLog().getDbgSh(this.getClass(), 7216);
     List<String> fdIdNms = this.setng.lazIdFldNms(pEnt.getClass());
     if (fdIdNms.size() > 1) {
@@ -219,9 +221,12 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
       @SuppressWarnings("unchecked")
       Class<IHasId<?>> fdeCls = (Class<IHasId<?>>) fdCls;
       IHasId<?> oe = fdeCls.newInstance();
+      idNull = fillId(pRvs, pVs, oe, pFlNm, pRs, pTbAls);
+      if (idNull) {
+        oe = null;
+      }
       Method setr = this.hldSets.get(pEnt.getClass(), idNm);
       setr.invoke(pEnt, oe);
-      fillId(pRvs, pVs, oe, pFlNm, pRs, pTbAls);
     } else {
       String cnNm = this.hldNmFdCn.get(pEnt.getClass(), idNm);
       @SuppressWarnings("unchecked")
@@ -240,7 +245,11 @@ public class FilFldHsIdRs<E extends IHasId<ID>, ID, RS>
       Object id = flCnv.conv(pRvs, pVs, pRs, clNm);
       Method setr = this.hldSets.get(pEnt.getClass(), idNm);
       setr.invoke(pEnt, id);
+      if (id == null) {
+        idNull = true;
+      }
     }
+    return idNull;
   }
 
   //Simple getters and setters:

@@ -217,7 +217,7 @@ public class FctNmFilFdSt implements IFcFlFdSt {
     rz.setLog(getLogStd());
     rz.setHldSets(getHldSets());
     rz.setHldFilFdNms(getHldFilFdNmsDbCp());
-    rz.setSetng(getStgUvd()); //all entities including UsTmc!!!
+    rz.setSetng(getStgDbCp());
     rz.setHldFdCls(getHldFdCls());
     rz.setFctFilFld(this);
     this.fillers.put(FILHSIDSTDBCPNM, rz);
