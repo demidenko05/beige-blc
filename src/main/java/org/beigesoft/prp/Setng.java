@@ -30,6 +30,7 @@ package org.beigesoft.prp;
 
 import java.util.LinkedHashSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -311,6 +312,7 @@ public class Setng implements ISetng {
             this.fldNms =
               new HashMap<Class<? extends IHasId<?>>, List<String>>();
           }
+          Collections.sort(fNms);
           this.fldNms.put(pCls, fNms);
         }
       }
@@ -405,6 +407,7 @@ public class Setng implements ISetng {
             for (String idNm : idFldsStr.split(",")) {
               idNms.add(idNm);
             }
+            Collections.sort(idNms);
           }
           if (this.idFldNms == null) {
             this.idFldNms =

@@ -347,13 +347,13 @@ public class SqlQu implements ISqlQu {
         if (ndFds != null) {
           isNd = Arrays.binarySearch(ndFds, fdNm) >= 0;
         }
+        pVs.put("cuFdIdx", cuFdIdx++); //for no changing custom query
         if (isNd) {
           if (isFst) {
             isFst = false;
           } else {
             pSb.append(", ");
           }
-          pVs.put("cuFdIdx", cuFdIdx++);
           makeFld(pRvs, pVs, pCls, fdNm, pSb, pSbe, pIsDbgSh);
         }
       }

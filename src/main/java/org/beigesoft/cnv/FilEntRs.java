@@ -130,8 +130,8 @@ public class FilEntRs<RS> implements IFilEntRs<RS> {
         if (ndFds != null) {
           isNd = Arrays.binarySearch(ndFds, fdNm) >= 0;
         }
+        pVs.put("cuFdIdx", cuFdIdx++); //for no changing custom query
         if (isNd) {
-          pVs.put("cuFdIdx", cuFdIdx++);
           fillFld(pRvs, pVs, pEnt, pRs, fdNm, dbgSh);
         }
       }
