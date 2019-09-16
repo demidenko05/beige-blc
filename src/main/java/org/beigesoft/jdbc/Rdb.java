@@ -103,6 +103,13 @@ public class Rdb extends ARdb<ResultSet> {
    **/
   @Override
   public final void setTrIsl(final int pLevel) throws Exception {
+    if (!(pLevel == Connection.TRANSACTION_READ_COMMITTED
+      || pLevel == Connection.TRANSACTION_READ_UNCOMMITTED
+        || pLevel == Connection.TRANSACTION_REPEATABLE_READ
+          || pLevel == Connection.TRANSACTION_SERIALIZABLE)) {
+      throw new ExcCode(ExcCode.WRCN,
+        "Transaction isolation not supported# " + pLevel);
+    }
     lazCon().setTransactionIsolation(pLevel);
   }
 
