@@ -8,5 +8,5 @@ See LICENSE in base folder
 <properties>
 <comment>Explicit final definition.</comment>
 <entry key="owdEnts">org.beigesoft.mdlp.CsvCl</entry>
-<entry key="frmFds">iid,idOr,dbOr,nme,chrst,hasHd,clSp,rtrNm</entry>
+<entry key="frmFds">iid,nme,chrst,hasHd,clSp,rtrNm</entry>
 </properties>

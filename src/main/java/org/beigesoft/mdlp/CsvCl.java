@@ -29,7 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.beigesoft.mdlp;
 
 import org.beigesoft.mdl.ECsvClTy;
-import org.beigesoft.mdl.IOwned;
+import org.beigesoft.mdl.IOwnedi;
 
 /**
  * <p>Persistable model of column CSV method, i.e. how to import/export
@@ -37,7 +37,7 @@ import org.beigesoft.mdl.IOwned;
  *
  * @author Yury Demidenko
  */
-public class CsvCl extends AOrIdNm implements IOwned<CsvMth, Long> {
+public class CsvCl extends AIdLnNm implements IOwnedi<CsvMth> {
 
   /**
    * <p>CSV method.</p>

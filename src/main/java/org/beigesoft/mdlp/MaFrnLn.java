@@ -28,7 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.beigesoft.mdlp;
 
-import org.beigesoft.mdl.IOwned;
+import org.beigesoft.mdl.IOwnedi;
 
 /**
  * <p>Persistable model to match native value to foreign one.
@@ -36,7 +36,7 @@ import org.beigesoft.mdl.IOwned;
  *
  * @author Yury Demidenko
  */
-public class MaFrnLn extends AOrId implements IOwned<MaFrn, Long> {
+public class MaFrnLn extends AIdLn implements IOwnedi<MaFrn> {
 
   /**
    * <p>not null, owner.</p>

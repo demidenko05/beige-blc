@@ -26,59 +26,15 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.rpl;
-
-import java.util.Date;
-
-import org.beigesoft.mdlp.AIdLnNm;
+package org.beigesoft.mdl;
 
 /**
- * <p>Base model of replication method.</p>
+ * <p>Abstraction a persistable model that has owner.
+ * ID is non-generated, for replicable models.</p>
  *
+ * @param <T> type of owner
  * @author Yury Demidenko
  */
-public abstract class ARplMth extends AIdLnNm {
+public interface IOwnedi<T extends IHasId<?>> extends IOwned<T, Long>, IIdLn {
 
-  /**
-   * <p>Last date replication, nullable.</p>
-   **/
-  private Date lstDt;
-
-  /**
-   * <p>Requested (source) database ID, not null.</p>
-   **/
-  private Integer rqDbId;
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for lstDt.</p>
-   * @return Date
-   **/
-  public final Date getLstDt() {
-    return this.lstDt;
-  }
-
-  /**
-   * <p>Setter for lstDt.</p>
-   * @param pLstDt reference
-   **/
-  public final void setLstDt(final Date pLstDt) {
-    this.lstDt = pLstDt;
-  }
-
-  /**
-   * <p>Getter for rqDbId.</p>
-   * @return Integer
-   **/
-  public final Integer getRqDbId() {
-    return this.rqDbId;
-  }
-
-  /**
-   * <p>Setter for rqDbId.</p>
-   * @param pRqDbId reference
-   **/
-  public final void setRqDbId(final Integer pRqDbId) {
-    this.rqDbId = pRqDbId;
-  }
 }

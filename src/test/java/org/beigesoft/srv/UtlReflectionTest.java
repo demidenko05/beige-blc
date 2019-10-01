@@ -53,6 +53,6 @@ public class UtlReflectionTest {
       System.out.print(" " + fld.getName());
     }
     System.out.println(";");
-    assertEquals(11, fieldsArr.length);
+    assertEquals(9, fieldsArr.length);
   }
 }
