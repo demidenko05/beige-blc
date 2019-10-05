@@ -98,7 +98,7 @@ public class HndCsvWri<RS> implements IHndFlRpRq {
     Map<String, Object> vs = new HashMap<String, Object>();
     try {
       this.rdb.setAcmt(false);
-      this.rdb.setTrIsl(IRdb.TRRC);
+      this.rdb.setTrIsl(IRdb.TRRUC);
       this.rdb.begin();
       CsvMth csMtt = new CsvMth();
       csMtt.setIid(csMtId);

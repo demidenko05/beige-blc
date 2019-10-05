@@ -8,5 +8,5 @@ See LICENSE in base folder
 <properties>
 <comment>Explicit final definition.</comment>
 <entry key="frmFds">iid,nme,typ,indx,srIdx,txDlm,frmt,cnst,dtIdx,fldPh,maFrn,ownr</entry>
-<entry key="selFds">CsvMth,rtrNm</entry>
+<entry key="selFds">CsvMth,rtrNm,ver</entry>
 </properties>
