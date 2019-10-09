@@ -71,7 +71,7 @@ public class I18n implements II18n {
       this.log.error(null, I18n.class,
         " when loading msgs for default locale ", e);
     }
-    if (messages != null) {
+    if (this.messages != null) {
       this.messagesMap.put(Locale.getDefault().getLanguage(), this.messages);
       this.log.info(null, I18n.class,
         "Added messages for default locale: " + Locale.getDefault());
@@ -89,10 +89,11 @@ public class I18n implements II18n {
    **/
   public final void add(final String[] pLangCountries) {
     if (pLangCountries != null && pLangCountries.length % 2 == 0) {
+      ResourceBundle firstMsg = null;
       for (int i = 0; i < pLangCountries.length / 2; i++) {
         Locale locale = new Locale(pLangCountries[i * 2],
           pLangCountries[i * 2 + 1]);
-        if (!(messages != null && locale.equals(Locale.getDefault()))) {
+        if (!(this.messages != null && locale.equals(Locale.getDefault()))) {
           ResourceBundle msgs = null;
           try {
             msgs = ResourceBundle.getBundle("Msgs", locale);
@@ -101,13 +102,13 @@ public class I18n implements II18n {
               " when loading msg for locale " + locale, e);
           }
           if (msgs != null) {
+            if (firstMsg == null) {
+              firstMsg = msgs;
+            }
             this.messagesMap.put(pLangCountries[i * 2], msgs);
             this.log.info(null, I18n.class,
               "Added messages for lang/country: " + pLangCountries[i * 2]
                 + "/" + pLangCountries[i * 2 + 1]);
-            if (this.messages == null) {
-              this.messages = msgs;
-            }
           } else {
             //If there is no MessagesBundle[current-locale].properties
             this.log.error(null, I18n.class,
@@ -119,6 +120,9 @@ public class I18n implements II18n {
             "Messages already added as default for lang/country: "
               + pLangCountries[i * 2] + "/" + pLangCountries[i * 2 + 1]);
         }
+      }
+      if (this.messages == null) {
+       this.messages = firstMsg;
       }
     } else {
       String msg = null;

@@ -1354,6 +1354,7 @@ public class FctBlc<RS> implements IFctApp {
     if (rz == null) {
       rz = new I18n();
       rz.setLog(lazLogStd(pRvs));
+      rz.initDefault();
       rz.add(this.fctDt.getLngCntr().split(","));
       this.beans.put(II18n.class.getSimpleName(), rz);
       lazLogStd(pRvs).info(pRvs, getClass(), II18n.class.getSimpleName()
