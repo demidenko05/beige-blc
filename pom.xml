@@ -165,7 +165,7 @@
     <dependency>
       <groupId>org.beigesoft</groupId>
       <artifactId>beige-logging-base</artifactId>
-      <version>1.0.3-SNAPSHOT</version>
+      <version>1.0.3</version>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
@@ -181,7 +181,7 @@
     <dependency>
       <groupId>org.beigesoft</groupId>
       <artifactId>beige-logging-slf4j</artifactId>
-      <version>1.0.3-SNAPSHOT</version>
+      <version>1.0.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -330,9 +330,9 @@
   </licenses>
   
   <scm>
-    <url>https://github.com/demidenko05/beigesoft-blc.git</url>
-    <connection>scm:git:git@github.com:demidenko05/beigesoft-blc.git</connection>
-    <developerConnection>scm:git:git@github.com:demidenko05/beigesoft-blc.git</developerConnection>
+    <url>https://github.com/demidenko05/beige-blc.git</url>
+    <connection>scm:git:git@github.com:demidenko05/beige-blc.git</connection>
+    <developerConnection>scm:git:git@github.com:demidenko05/beige-blc.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
