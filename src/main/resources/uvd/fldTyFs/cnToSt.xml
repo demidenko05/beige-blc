@@ -8,4 +8,5 @@ See LICENSE in base folder
 <properties>
 <comment>Correspondence of Java types to converter to string. ORDER is essential, the FIRST value will be used.</comment>
 <entry key="java.util.Date">CnvDtTmStr</entry>
+<entry key="java.math.BigDecimal">CnvPriStr</entry>
 </properties>

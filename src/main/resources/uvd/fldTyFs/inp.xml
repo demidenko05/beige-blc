@@ -13,4 +13,5 @@ See LICENSE in base folder
 <entry key="java.lang.String">str</entry>
 <entry key="java.lang.Long">int</entry>
 <entry key="java.lang.Boolean">bln</entry>
+<entry key="java.math.BigDecimal">pri</entry>
 </properties>
