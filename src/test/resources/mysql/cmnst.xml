@@ -10,7 +10,7 @@ See LICENSE in base folder
 <entry key="appInf">Beige-BLC ver1.0</entry>
 <entry key="jdbcCls">com.mysql.jdbc.Driver</entry>
 <entry key="dbUrl">jdbc:mysql://localhost/bsblct</entry>
-<entry key="dsCls">com.mysql.jdbc.jdbc2.optional.MysqlDataSource</entry>
+<entry key="dsCls">com.mysql.cj.jdbc.MysqlDataSource</entry>
 <entry key="dbUsr">beigeaccounting</entry>
 <entry key="dbPsw">beigeaccounting</entry>
 <entry key="checkTbl">select * from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA='bsblct' and TABLE_NAME=':tblNm';</entry>
