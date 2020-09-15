@@ -34,6 +34,8 @@ import java.util.List;
 import java.io.Writer;
 
 import org.beigesoft.mdl.IHasId;
+import org.beigesoft.mdl.IOwneda;
+import org.beigesoft.mdl.IIdLna;
 import org.beigesoft.mdlp.IOrId;
 import org.beigesoft.log.ILog;
 import org.beigesoft.dlg.IMake;
@@ -81,7 +83,9 @@ public class PsgAft<RS> implements IMake {
       int rfrc = 0;
       for (int i = clss.size() - 1; i >= 0; i--) {
         Class<? extends IHasId<?>> cls = clss.get(i);
-        if (IOrId.class.isAssignableFrom(cls)) {
+        if (IOrId.class.isAssignableFrom(cls)
+          || IOwneda.class.isAssignableFrom(cls)
+            || IIdLna.class.isAssignableFrom(cls)) {
           rfrc++;
           String queryMaxId = "select max(IID) as MAXID from "
             + cls.getSimpleName().toUpperCase() + ";";
