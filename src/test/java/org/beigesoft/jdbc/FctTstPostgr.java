@@ -26,7 +26,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.fct;
+package org.beigesoft.jdbc;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -39,12 +39,12 @@ import org.beigesoft.exc.ExcCode;
 import org.beigesoft.hld.IAttrs;
 import org.beigesoft.log.ILog;
 import org.beigesoft.log.LogFile;
+import org.beigesoft.fct.FctBlc;
+import org.beigesoft.fct.IFctAsm;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.rdb.IOrm;
 import org.beigesoft.rdb.SrvClVl;
 import org.beigesoft.prp.ISetng;
-import org.beigesoft.jdbc.Rdb;
-import org.beigesoft.jdbc.FctPostgr;
 
 /**
  * <p>Tests final configuration factory for Postgres JDBC.</p>

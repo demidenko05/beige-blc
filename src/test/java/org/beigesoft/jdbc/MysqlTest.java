@@ -26,7 +26,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.rdb;
+package org.beigesoft.jdbc;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -43,7 +43,8 @@ import java.math.BigDecimal;
 
 import org.beigesoft.log.ILog;
 import org.beigesoft.fct.FctBlc;
-import org.beigesoft.fct.FctTstMysql;
+import org.beigesoft.rdb.IOrm;
+import org.beigesoft.rdb.Tst1;
 import org.beigesoft.prp.ISetng;
 
 /**

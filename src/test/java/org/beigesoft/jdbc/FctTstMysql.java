@@ -26,31 +26,32 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.beigesoft.fct;
+package org.beigesoft.jdbc;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Properties;
 import java.io.File;
 import java.sql.ResultSet;
+
 
 import org.beigesoft.exc.ExcCode;
 import org.beigesoft.hld.IAttrs;
 import org.beigesoft.log.ILog;
 import org.beigesoft.log.LogFile;
+import org.beigesoft.fct.IFctAsm;
+import org.beigesoft.fct.FctBlc;
 import org.beigesoft.rdb.IRdb;
 import org.beigesoft.rdb.IOrm;
 import org.beigesoft.rdb.SrvClVl;
 import org.beigesoft.prp.ISetng;
-import org.beigesoft.jdbc.Rdb;
-import org.beigesoft.jdbc.FctSqlite;
 
 /**
- * <p>Tests final configuration factory for SQLite JDBC.</p>
+ * <p>Tests final configuration factory for MySql JDBC.</p>
  *
  * @author Yury Demidenko
  */
-public class FctTstSqlt implements IFctAsm<ResultSet> {
-
+public class FctTstMysql implements IFctAsm<ResultSet> {
 
   /**
    * <p>Main only factory.</p>
@@ -61,7 +62,7 @@ public class FctTstSqlt implements IFctAsm<ResultSet> {
    * <p>Only constructor.</p>
    * @throws Exception - an exception
    */
-  public FctTstSqlt() throws Exception {
+  public FctTstMysql() throws Exception {
     Map<String, Object> rqVs = new HashMap<String, Object>();
     this.fctBlc = new FctBlc<ResultSet>();
     String tstDir = System.getProperty("user.dir") + File.separator
@@ -71,7 +72,7 @@ public class FctTstSqlt implements IFctAsm<ResultSet> {
     this.fctBlc.getFctDt().setDbgSh(true);
     this.fctBlc.getFctDt().setDbgFl(0);
     this.fctBlc.getFctDt().setDbgCl(100000);
-    this.fctBlc.getFctsAux().add(new FctSqlite());
+    this.fctBlc.getFctsAux().add(new FctMysql());
   }
 
   /**
