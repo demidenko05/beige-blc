@@ -63,6 +63,7 @@ public class About<RS> implements IPrc {
     final IReqDt pRqDt) throws Exception {
     pRvs.put("dbInf", this.rdb.getDbInf());
     pRvs.put("appVer", this.stgUvd.lazCmnst().get("appVer"));
+    pRvs.put("appInf", this.stgUvd.lazCmnst().get("appInf"));
     pRqDt.setAttr("rnd", "abj");
   }
 

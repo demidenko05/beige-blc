@@ -12,6 +12,8 @@ to fix MySQL error "The server time zone value 'MSK' is unrecognized or represen
 add into /etc/mysql/mariadb.conf.d/50-server.cnf:
 default_time_zone='+03:00'
 
+in case of a "foreign/rented" server, pass this as parameters in the JDBC URL.
+
 this doesn't work despite of tables are populated by this:
 mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql
 
