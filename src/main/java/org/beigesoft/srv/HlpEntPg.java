@@ -42,7 +42,9 @@ import org.beigesoft.mdl.IIdStr;
 import org.beigesoft.mdl.IReqDt;
 import org.beigesoft.mdl.Page;
 import org.beigesoft.mdl.CmnPrf;
-import org.beigesoft.fct.IFctCnToSt;
+import org.beigesoft.fct.IFctCnFrSt;
+import org.beigesoft.cnv.CnvStrBgd;
+import org.beigesoft.cnv.CnvStrLngFm;
 import org.beigesoft.log.ILog;
 import org.beigesoft.dlg.IEvalFr;
 import org.beigesoft.hld.IHlNmClCl;
@@ -105,9 +107,9 @@ public class HlpEntPg<RS> {
   private HldUvd hldUvd;
 
   /**
-   * <p>Fields converters factory.</p>
+   * <p>From request string converters factory.</p>
    **/
-  private IFctCnToSt fctCnvFd;
+  private IFctCnFrSt fctCnFrSt;
 
   /**
    * <p>Field converter names holder.</p>
@@ -323,8 +325,8 @@ public class HlpEntPg<RS> {
         } else if (flt.startsWith("expl")) {
           mkWheExcpl(sbWhe, pRqd, pCls, fdNm, uvs);
         } else {
-          mkWheStd(sbWhe, pRqd, pCls, fdNm, "1", uvs);
-          mkWheStd(sbWhe, pRqd, pCls, fdNm, "2", uvs);
+          mkWheStd(sbWhe, pRqd, pCls, fdNm, "1", uvs, flt, pRvs);
+          mkWheStd(sbWhe, pRqd, pCls, fdNm, "2", uvs, flt, pRvs);
         }
       }
     }
@@ -395,11 +397,14 @@ public class HlpEntPg<RS> {
    * @param pFdNm - field name
    * @param pParSuffix - parameter suffix
    * @param pUvs UVD vars
+   * @param pFlt filter name
+   * @param pRvs request scoped vars to return revealed data
    * @throws Exception - an Exception
    **/
   public final <T extends IHasId<?>> void mkWheStd(final StringBuffer pSbw,
     final IReqDt pRqd, final Class<T> pCls, final String pFdNm,
-      final String pParSuffix, final UvdVar pUvs) throws Exception {
+      final String pParSuffix, final UvdVar pUvs, final String pFlt,
+        final Map<String, Object> pRvs) throws Exception {
     String rnd = pRqd.getParam("rnd");
     String foprf;
     if (rnd != null && rnd.startsWith("pd")) {
@@ -425,6 +430,14 @@ public class HlpEntPg<RS> {
         cond = tbNm + "." + pFdNm.toUpperCase() + " " + toSqlOp(fltOp);
     } else if (fltVal != null && fltOp != null
       && !fltOp.equals("disabled") && !fltOp.equals("")) {
+      if ("pri".equals(pFlt) || "quant".equals(pFlt)) {
+        CnvStrBgd cnv = (CnvStrBgd) this.fctCnFrSt.laz(pRvs, CnvStrBgd.class.getSimpleName());
+        fltVal = cnv.conv(pRvs, fltVal).toString();
+      } else if ("int".equals(pFlt)) {
+        CnvStrLngFm cnv = (CnvStrLngFm) this.fctCnFrSt
+          .laz(pRvs, CnvStrLngFm.class.getSimpleName());
+        fltVal = cnv.conv(pRvs, fltVal).toString();
+      }
       cond = tbNm + "." + pFdNm.toUpperCase() + " " + toSqlOp(fltOp)
         + " " + fltVal;
     }
@@ -904,19 +917,19 @@ public class HlpEntPg<RS> {
   }
 
   /**
-   * <p>Getter for fctCnvFd.</p>
-   * @return IFctCnToSt
+   * <p>Getter for fctCnFrSt.</p>
+   * @return IFctCnFrSt
    **/
-  public final IFctCnToSt getFctCnvFd() {
-    return this.fctCnvFd;
+  public final IFctCnFrSt getFctCnFrSt() {
+    return this.fctCnFrSt;
   }
 
   /**
-   * <p>Setter for fctCnvFd.</p>
-   * @param pFctCnvFd reference
+   * <p>Setter for fctCnFrSt.</p>
+   * @param pFctCnFrSt reference
    **/
-  public final void setFctCnvFd(final IFctCnToSt pFctCnvFd) {
-    this.fctCnvFd = pFctCnvFd;
+  public final void setFctCnFrSt(final IFctCnFrSt pFctCnFrSt) {
+    this.fctCnFrSt = pFctCnFrSt;
   }
 
   /**

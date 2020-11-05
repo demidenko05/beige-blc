@@ -1263,6 +1263,7 @@ public class FctBlc<RS> implements IFctApp {
       rz.setSrvDt(lazSrvDt(pRvs));
       rz.setHldUvd(lazHldUvd(pRvs));
       rz.setHldFdCls(lazHldFldCls(pRvs));
+      rz.setFctCnFrSt(lazFctNmCnFrSt(pRvs));
       this.beans.put(HlpEntPg.class.getSimpleName(), rz);
       lazLogStd(pRvs).info(pRvs, getClass(), HlpEntPg.class.getSimpleName()
         + " has been created.");
