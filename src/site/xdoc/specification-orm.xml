@@ -12,6 +12,8 @@
     <!-- The body of the document contains a number of sections -->
     <section name="Specification Beige-ORM version #5">
       
+      <h4><b>This is old documentation of Beigesoft-ORM - https://repo1.maven.org/maven2/org/beigesoft/beigesoft-orm/</b></h4>
+      
       <h4>Goals And Requirements</h4>
       <p>* it must be configurable through XML (Beige-Settings)</p>
       <p>* it must be cross-platform</p>
@@ -359,8 +361,8 @@ CREATE TABLE GOODSRATING (
           <li>Locking table or row. Not good for performance.</li>
           <li>Dirty check - it's calling optimistic locking</li>
         </ol>
-        E.g. Postgresql for <b>Repeatable read</b> isolation mode block table to prevent changing.
-        But Postgresql for <b>Serializable</b> mode use checking (not exactly locking).
+        E.g. Postgresql for <b>Repeatable read</b> isolation mode can block table to prevent changing.
+        But Postgresql for <b>Serializable</b> mode use checking (not exactly locking) <i>See file:///usr/share/doc/postgresql-doc-11/html/transaction-iso.html:...In PostgreSQL these locks do not cause any blocking and therefore can not play any part in causing a deadlock. They are used to identify and flag dependencies among concurrent Serializable transactions which in certain combinations can lead to serialization anomalies. In contrast, a Read Committed or Repeatable Read transaction which wants to ensure data consistency may need to take out a lock on an entire table, which could block other users attempting to use that table, or it may use SELECT FOR UPDATE or SELECT FOR SHARE which not only can block other transactions but cause disk access.</i>
         During INSERT/UPDATE any record is locked.
         Performance depends of locking implementation in concrete RDBMS.
         Beige-Accounting is designed for high-performance. It's time to go from abstraction to concrete business logic.
@@ -374,7 +376,7 @@ CREATE TABLE GOODSRATING (
         So use custom <b>dirty check</b> and <b>Read uncommitted</b> level is reliable way that gives performance advantages.
       </p>
       <p>A RDBMS may not implements all 4 isolation modes.
-        Postgresql treated <b>read uncommitted</b> as <b>read committed</b>.
+        Postgresql treated <b>read uncommitted</b> as <b>read committed</b> <i>see /usr/share/doc/postgresql-doc-11/html/transaction-iso.html: ...i.e., PostgreSQL's Read Uncommitted mode behaves like Read Committed...</i>.
         Sqlite implements only <b>serializable</b> and <b>read uncommitted</b>.
       </p>
       <p><b>Read uncommitted</b> may cause dirty read especially on bulk operations.
@@ -459,7 +461,7 @@ join (
 </pre style="white-space: pre-wrap;">
   This query retrieves only non-auctioning goods (part of ITEMINLIST fields are omitted).
   Caching ORM entities possible only in simple way - find by ID.
-  Even simple pagination query is hard for ORM caching.
+  Even simple pagination query seems to be not easy for ORM caching, i.e. SQL request filter retrieves entities, and part of them are in DB and another in cache, so cache-manager must detect this, and it must change SQL filter to retrieve the rest of non-cached entities.
   ORM can uses cache for set of entities for example if last two SELECT queries is identical
   and there is no INSERT/UPDATE/DELETE between them.
   So the most queries aren't possible (or too hard) for ORM caching.
